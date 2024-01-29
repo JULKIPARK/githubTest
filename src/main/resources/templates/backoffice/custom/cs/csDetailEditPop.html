@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<!-- append/modify form -->
+<th:block th:fragment="fragmentByCsDetailEditPop">
+    <!-- modal-wrap -->
+    <div id="csDetailEditPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area">
+                <div class="modal-head">
+                    <h2 class="tit">문의 &middot; 요청 상세 조회 및 답변</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <form id="csDetailEditPopFrm">
+                    <section class="modal-cont">
+                        <input type="hidden" id="askUid" name="askUid">
+                        <input type="hidden" id="ansrUid" name="ansrUid">
+						<input type="hidden" id="askTpNm" name="askTpNm">
+                        <input type="hidden" id="prevAskStCd">
+                        <fieldset>
+                            <legend></legend>
+                            <h3 class="tit">문의사항 답변 등록</h3>
+                            <span class="state-badge askStNmTd">미확인</span>
+                            <div class="board-body">
+                                <div class="col-wrapper">
+                                    <ul class="list flex">
+                                        <li class="col-wrap">
+                                            <div class="th w100">
+                                                <label for="fstInsDt" class="label">등록일자</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap">
+													<input type="text" id="fstInsDt" name="fstInsDt" value="" class="" readonly>
+												</div>
+                                            </div>
+                                        </li>
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="fstInsMbrNm" class="label">등록자</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap">
+													<input type="text" id="fstInsMbrNm" name="fstInsMbrNm" value="홍길동" class="" readonly>
+												</div>
+                                            </div>
+                                        </li>
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="compNm" class="label">소속</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap">
+													<input type="text" name="compNm" id="compNm" value="OO 화학" class="" readonly>
+												</div>
+                                            </div>
+                                        </li>
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="askMail" class="label">이메일</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap">
+													<input type="text" name="askMail" id="askMail" value="hong123@chem.com" readonly>
+												</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul class="list">
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="askTtl" class="label">제목</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="td">
+                                                <div class="input-wrap">
+													<input type="text" name="askTtl" id="askTtl" value="ESG 경영전략 및 중장기 계획 수립 문의" class="" readonly>
+												</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="askCn" class="label">문의사항</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="askCn" id="askCn" class="h200" readonly>
+													안녕하십니까.
+													ESG 경영전략과 중장기 계획을 수립하기 위해 아래와 같은 사항을 문의 드리고자 합니다.
+													…. 이하 생략 ….
+												</textarea>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ansrCn" class="label">답변</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="ansrCn" id="ansrCn" class="h200"></textarea>
+                                            </div>
+                                        </div>
+                                    </li>
+									<li class="row-wrap">
+										<div class="th">
+											<label for="askTtl" class="label">자료첨부</label>
+										</div>
+										<div class="td">
+											<div class="td">
+												<div class='fileUpload'>
+													<input type='text' id="uploadFileName" name="uploadFileName" class='url' placeholder='' readonly style="background-color: #fff;">
+													<label for='uploadFile'>파일 선택</label>
+													<input type='file' name='uploadFile' id='uploadFile' class='upload'>
+												</div>
+											</div>
+										</div>
+									</li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ansrMemo" class="label">담당자<br>메모</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="ansrMemo" id="ansrMemo" class="memo-area"></textarea>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <!-- //list -->
+                            </div>
+                            <div class="board-btn-wrap flex statChgDiv">
+								<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+                                <label for="askStCd">처리상태 변경</label>
+                                <select name="askStCd" id="askStCd" class="select">
+                                    <option value="10">미확인</option>
+                                    <option value="20">처리중(IT)</option>
+                                    <option value="30">처리중(Biz)</option>
+                                    <option value="40">부서전달</option>
+                                    <option value="50">완료</option>
+                                </select>
+                                <button type="button" name="doSave" class="btn-primary"><span>등록</span></button>
+								</th:block>
+                            </div>
+                            <!-- board-btn-wrap -->
+                        </fieldset>
+                    </section>
+                </form>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+</th:block>
+
+</html>

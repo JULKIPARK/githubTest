@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function (_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var param = {
+					"url": "/sems/contents/documentCommonDataList"
+					, "type": "post"
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setData = function () {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+
+				getData(function (data) {
+					var items = data.tpicList;
+
+					// 검색조건::ES토픽
+					items.forEach(item => {
+						$("#searchListFrm SELECT[name=schTpicNmOpt]").append(`<option class="tpicMnu${item.tpicMnuCd}" value="${item.tpicUid}">${item.tpicNm}</option>`);
+					})
+
+					// ESG토픽
+					items = data.tpicMnuList;
+					items.forEach(item => {
+						$("#docForm #esgTopic .topicMenuTitle").append(`<th>${item.cdNm}</th>`);
+						var tmpl = '';
+						item.tpiclist.forEach(item2 => {
+							tmpl += `
+									<li>
+										<input type="checkbox" name="tpicUid" id="ck04-${item2.tpicUid}" value="${item2.tpicUid}">
+										<label for="ck04-${item2.tpicUid}">${item2.tpicNm}</label>
+									</li>
+								`;
+						})
+						$("#docForm #esgTopic .topicList").append(`<td><ul class="ck-list">${tmpl}</ul></td>`);
+					})
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData123`);
+				$("#cont-section DIV.result-wrap").LoadingOverlay("show");
+
+				var formData, param = {};
+				$("input:hidden[name='docPageSize']").val($("#docPageSize").val());
+				$("input:hidden[name='docPageNum']").val($("#docPageNum").val());
+				formData = _formLib.getFormData("searchListFrm");
+
+				param = {
+					"url": "/sems/contents/selectDocumentList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#docListDiv").replaceWith(fragment);
+						$("#docTotalCountView").text("총 " + _formLib.addComma($("#docTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#docPageNum').val();//현재 선택된 페이지
+						$('#docPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#docTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#docTotalPage").val() + "</option>");
+							$('#docPageNum').append(option);
+						}
+
+						$("#cont-section DIV.result-wrap").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let delData = function () {
+				console.log(`[MODULE] ${moduleNm} -> delData`);
+
+				var lists = [];
+				$("input[name=chkContList]:checked").each(function (i) {
+					lists.push($(this).val());
+				});
+				$.post(
+					"/sems/contents/deleteDocument"
+					, {contUids: lists}
+					, function (data) {
+						alert(data.deleteCnt + '건의 컨텐츠가 삭제되었습니다.');
+
+						getData();
+					}
+				);
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록일/수정일
+				$("#searchListFrm SELECT[name=schJoinType]").on("change", function () {
+					$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").prop("disabled", ($(this).val() === "N"));
+					if ($(this).val() !== "N") {
+						_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+						var stDay = _comLib.prevYear(1);
+						$("#schStrtDate").val(stDay);
+						$("#schEndDate").val(_comLib.toDay());
+					} else {
+						$("#schStrtDate").val("");
+						$("#schEndDate").val("");
+					}
+				}).trigger("change");
+
+				// 컨텐츠종류
+				$("#searchListFrm SELECT[name=schContKindOpt]").on("change", function () {
+					$("#searchListFrm SELECT[name=schContRmthdOpt]").prop("disabled", ($(this).val() === "ALL"));
+					$("#searchListFrm SELECT[name=schContRmthdOpt] OPTION:not([value=ALL])").hide();
+					if ($(this).val() === '10') {
+						$("#searchListFrm SELECT[name=schContRmthdOpt] OPTION[value=10], #searchListFrm SELECT[name=schContRmthdOpt] OPTION[value=20]").show();
+					} else if ($(this).val() === '20') {
+						$("#searchListFrm SELECT[name=schContRmthdOpt] OPTION[value=10], #searchListFrm SELECT[name=schContRmthdOpt] OPTION[value=30]").show();
+					}
+				}).trigger("change");
+
+				// 유형분류
+				$("#searchListFrm SELECT[name=schContTpLclsfOpt]").on("change", function () {
+					$("#searchListFrm SELECT[name=schContTpMclsfOpt]").val("ALL").prop("disabled", ($(this).val() !== "10"));
+				}).trigger("change");
+
+				// 전시여부
+				$("#searchListFrm INPUT[name=schDpTpRdo]").on("change", function () {
+					$("#searchListFrm INPUT[name=schRlsTgtChk]").prop("disabled", ($(this).val() !== "20"));
+					if ($(this).val() !== "20") {
+						$("#searchListFrm INPUT[name=schRlsTgtChk]").prop("checked", false);
+					}
+				}).trigger("change");
+
+				// ESG 토픽
+				$("#searchListFrm SELECT[name=schTpicMnuOpt]").on("change", function () {
+					$("#searchListFrm SELECT[name=schTpicNmOpt]").prop("disabled", ($(this).val() === "ALL"));
+					$("#searchListFrm SELECT[name=schTpicNmOpt] OPTION:not([value=ALL])").hide();
+					$("#searchListFrm SELECT[name=schTpicNmOpt]").val("ALL");
+					$("#searchListFrm SELECT[name=schTpicNmOpt] OPTION.tpicMnu" + $(this).val()).show();
+				}).trigger("change");
+
+				// 조회버튼
+				// $("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+				$("#searchListFrm").on("submit", function () {
+					$("#docPageNum").val('1');
+					getData();
+
+					return false;
+				}).trigger("submit");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+				});
+
+				// 데이터 페이징갯수
+				$("#docPageSize").on("change", function () {
+					$("#docPageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#docPageNum").on("change", function () {
+					getData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#docListDiv TBODY TD.contUnoTr A', function () {
+					view.openPop($(this).data('id'));
+				});
+
+				// 엑셀 다운로드
+				$("#btnExcelDown").on('click', function () {
+					if (!confirm("다운로드 하시겠습니까?")) {
+						return;
+					}
+
+					var data = "";
+					var formObj = $('<form></form>');
+					var formData = _formLib.getFormData("searchListFrm");
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/contents/selectDocumentListExcelDown");
+					formObj.append($('<input/>', {type: 'hidden', name: 'schJoinType', value: formData.schJoinType}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schStrtDate', value: formData.schStrtDate}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schEndDate', value: formData.schEndDate}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schOprtOpt', value: formData.schOprtOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schOprtWrd', value: formData.schOprtWrd}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContSt', value: formData.schContSt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContentOpt', value: formData.schContentOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContentWrd', value: formData.schContentWrd}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContKindOpt', value: formData.schContKindOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContRmthdOpt', value: formData.schContRmthdOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcOpt', value: formData.schSrcOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcWrd', value: formData.schSrcWrd}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schDmstcChk', value: formData.schDmstcChk}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSplyLangOpt', value: formData.schSplyLangOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContTpLclsfOpt', value: formData.schContTpLclsfOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schContTpMclsfOpt', value: formData.schContTpMclsfOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schTaskClsfOpt', value: formData.schTaskClsfOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schTopicOpt', value: formData.schTopicOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schDpTpRdo', value: formData.schDpTpRdo}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schRlsTgtChk', value: formData.schRlsTgtChk}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schDwnldPsbltyRdo', value: formData.schDwnldPsbltyRdo}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrchPsbltyRdo', value: formData.schSrchPsbltyRdo}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schTpicMnuOpt', value: formData.schTpicMnuOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schTpicNmOpt', value: formData.schTpicNmOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schKwrd', value: formData.schKwrd}));
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+
+				// 삭제
+				$("BUTTON[name=doDel]").on('click', function () {
+					if (!$("input[name=chkContList]:checked").length) {
+						alert('선택된 컨텐츠가 없습니다.');
+						return;
+					}
+
+					if (!confirm("체크된 컨텐츠의 모든내용이 삭제됩니다. \n삭제 하시겠습니까?")) {
+						return;
+					}
+
+					delData();
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function () {
+			let moduleNm = "view";
+			var canvas;
+			let autoThumb;
+			let prevValue;
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function (_contUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_contUid})`);
+
+				setData(_contUid, function () {
+					$("#viewPopContents").addClass("show");
+				})
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 컨텐츠업로드
+				$("#viewPopContents #docForm").on('change', 'INPUT[name=uploadFile]', function (e) {
+					var file = e.target.files[0];
+					$('#docForm INPUT[name=uploadFileName]').val(file.name);
+					$('#docForm INPUT[name=contSplyTpCd]').val('');
+					$('#docForm INPUT[name=contSplyTpCdNm]').val('');
+					if (file.type === 'application/pdf') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('10');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('PDF');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+					} else if (file.type === 'application/zip' || file.type === 'application/epub+zip') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('30');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('EPUB');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+					} else if (file.type === 'video/mp4') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('20');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('MP4');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+
+						autoThumb = file;
+
+						var videoPlayer = document.getElementById('videoPlayer');
+						videoPlayer.src = URL.createObjectURL(file);
+						videoPlayer.onloadedmetadata = function () {
+							var duration = videoPlayer.duration;
+
+							var hours = Math.floor(duration / 3600);
+							duration %= 3600;
+							var minutes = Math.floor(duration / 60);
+							var seconds = Math.floor(duration % 60);
+
+							$('#docForm INPUT[name=vodQuntyHh]').val(String(hours).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntyMi]').val(String(minutes).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntySec]').val(String(seconds).padStart(2, '0'));
+						};
+
+						// 썸네일
+						var video = document.createElement('video'); // 비디오 요소 생성
+						canvas = document.createElement('canvas'); // 캔버스 요소 생성
+						var context = canvas.getContext('2d'); // 캔버스 컨텍스트 가져오기
+						video.src = URL.createObjectURL(autoThumb); // 동영상 파일 경로 설정
+						video.addEventListener('loadeddata', function () {
+							// video.currentTime = video.duration / 2; // 동영상의 중간 지점으로 이동
+							video.currentTime = 15; // 동영상의 중간 지점으로 이동
+						}, false);
+						video.addEventListener('seeked', function () {
+							// 캔버스에 비디오의 현재 프레임을 그림
+							canvas.width = video.videoWidth;
+							canvas.height = video.videoHeight;
+							context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+							// 썸네일 이미지 URL을 가져옴
+							var thumbnailUrl = canvas.toDataURL("image/png");
+
+							// thumbnailUrl을 사용하여 썸네일 이미지를 표시하거나 저장
+							// $("IMG[name=previewImage]").attr('src', thumbnailUrl);
+						}, false);
+					}
+
+					function removeExtension(filename) {
+						var lastDotPosition = filename.lastIndexOf(".");
+						if (lastDotPosition === -1) {
+							return filename;
+						} else {
+							return filename.substr(0, lastDotPosition);
+						}
+					}
+				});
+				$("#viewPopContents #docForm").on('change', 'INPUT[name=uploadPdfFile]', function (e) {
+					var file = e.target.files[0];
+					$('#viewPopContents #docForm INPUT[name=uploadPdfFileName]').val(file.name);
+				});
+
+				// LINKURL
+				$("#viewPopContents #docForm").on('focus', 'INPUT[name=linkUrl]', function (e) {
+					prevValue = $(this).val();
+				});
+				$("#viewPopContents #docForm").on('blur', 'INPUT[name=linkUrl]', function (e) {
+					if ($("#viewPopContents #docForm INPUT[name=contKindCd]").val() === '20' && $("#viewPopContents #docForm INPUT[name=contRmthdCd]").val() === "30") {
+						if (prevValue !== $.trim($(this).val())) {
+							$("#viewPopContents #docForm INPUT[name=vodQuntyHh]").val('00');
+							$("#viewPopContents #docForm INPUT[name=vodQuntyMi]").val('00');
+							$("#viewPopContents #docForm INPUT[name=vodQuntySec]").val('00');
+							$("#viewPopContents #docForm IMG[name=previewImage]").attr('src', '/sems/assets/img/common/noimage.png');
+							$("#viewPopContents #docForm IMG[name=previewImage]").data('isChg', 'Y');
+
+							// Youtube Embed일 경우 영상분량 가져오기 및 대표이미지 적용
+							var linkUrl = $.trim($(this).val());
+							if (linkUrl && linkUrl.indexOf('https://www.youtube.com/embed/') >= 0) {
+								// 코드 분리
+								var youtubeId = (linkUrl.split('?'))[0];
+								youtubeId = youtubeId.replaceAll('https://www.youtube.com/embed/', '');
+
+								// 영상정보 가져오기
+								$.get(`https://www.googleapis.com/youtube/v3/videos?id=${youtubeId}&key=AIzaSyBT0uIT3-a8HV3ZG7VyRIv7JZhdSOi6yeY&part=contentDetails`, function(data) {
+									if (data.items.length == 0) {
+										alert('조회가 불가능한 Youyube 영상입니다\n영상의 url을 다시 확인해주세요.');
+										$(this).focus();
+										return;
+									}
+
+									// 영상 분량정보 적용
+									var duration = data.items[0].contentDetails.duration;
+									var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+									var hours = "00", minutes = "00", seconds = "00";
+									if (reptms.test(duration)) {
+										var matches = reptms.exec(duration);
+										if (matches[1]) hours = matches[1].padStart(2, '0');
+										if (matches[2]) minutes = matches[2].padStart(2, '0');
+										if (matches[3]) seconds = matches[3].padStart(2, '0');
+
+										$("#viewPopContents #docForm INPUT[name=vodQuntyHh]").val(hours);
+										$("#viewPopContents #docForm INPUT[name=vodQuntyMi]").val(minutes);
+										$("#viewPopContents #docForm INPUT[name=vodQuntySec]").val(seconds);
+									}
+
+									// 이미지 정보
+									let img = new Image();
+									img.src = `/sems/image?imageUrl=https://img.youtube.com/vi/${youtubeId}/0.jpg`;
+									img.onload = function() {
+										let canvas = document.createElement('canvas');
+										let ctx = canvas.getContext('2d');
+										canvas.width = img.width;
+										canvas.height = img.height;
+										ctx.drawImage(img, 0, 0, img.width, img.height);
+
+										let dataURL = canvas.toDataURL('image/png');
+										$("#viewPopContents #docForm IMG[name=previewImage]").attr('src', dataURL);
+									};
+								}).fail(function(error) {
+									console.error('Error:', error);
+								});
+							}
+						}
+					}
+				});
+
+				// 대표이미지
+				$("#viewPopContents #docForm INPUT[name=uploadImage]").on('change', function (e) {
+					var reader = new FileReader();
+					reader.onload = function () {
+						$("#viewPopContents #docForm IMG[name=previewImage]").each((e, item) => {
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+					$("#viewPopContents #docForm IMG[name=previewImage]").data('isChg', 'Y');
+					autoThumb = null;
+				});
+
+				// 원포인트레슨 행 추가
+				$("#viewPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doAddRow]', function () {
+					$("#viewPopContents #docForm #onePointResson #lessonList").append($("#viewPopContents TEMPLATE#onePointLessonHtml")[0].innerHTML);
+					if ($("#viewPopContents #docForm #onePointResson #lessonList TR").length == 1) {
+						$("#viewPopContents #docForm #onePointResson #lessonList BUTTON[name=doDelCont]").css('visibility', 'hidden');
+					}
+				});
+
+				// 원포인트레슨 행 삭제
+				$("#viewPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doDelRow]', function () {
+					$(this).parent().parent().remove();
+				});
+
+				// 원포인트레슨 내용 추가
+				$("#viewPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doAddCont]', function () {
+					$(this).parent().parent().find('DIV.wrap').append($(this).parent().parent().find('DIV.wrap DIV.select-group:eq(0)').clone(true));
+					$(this).parent().parent().find('DIV.wrap DIV.select-group:last BUTTON[name=doDelCont]').css('visibility', 'visible');
+					$(this).parent().parent().find('DIV.wrap DIV.select-group:last INPUT, DIV.wrap DIV.select-group:last TEXTAREA').val('');
+				});
+
+				// 원포인트레슨 내용 삭제
+				$("#viewPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doDelCont]', function () {
+					$(this).parent().parent().remove();
+				});
+
+				// 원포인트레슨 영상 업로드
+				$("#viewPopContents #docForm #onePointResson").on('click', 'LABEL.uploadFiles', function () {
+					$(this).parent().find('INPUT[name=uploadFiles]').trigger('click');
+				});
+				$("#viewPopContents #docForm #onePointResson").on('change', 'INPUT[name=uploadFiles]', function (e) {
+					var file = e.target.files[0];
+					var target = $(this);
+
+					$(target).parent().parent().find("IMG[name=previewImages]").one('load', function () {
+						$(this).data('isChg', 'Y');
+					});
+
+					$(this).parent().find('INPUT[name=uploadFilesName]').val(file.name);
+					var videoPlayer = document.getElementById('videoPlayer');
+					videoPlayer.src = URL.createObjectURL(file);
+					canvas = document.createElement('canvas');
+					videoPlayer.onloadedmetadata = function () {
+						var duration = videoPlayer.duration;
+
+						var hours = Math.floor(duration / 3600);
+						duration %= 3600;
+						var minutes = Math.floor(duration / 60);
+						var seconds = Math.floor(duration % 60);
+
+						$(target).parent().find('INPUT[name=vodQuntyHhs]').val(String(hours).padStart(2, '0'));
+						$(target).parent().find('INPUT[name=vodQuntyMis]').val(String(minutes).padStart(2, '0'));
+						$(target).parent().find('INPUT[name=vodQuntySecs]').val(String(seconds).padStart(2, '0'));
+
+						videoPlayer.currentTime = 10;
+						videoPlayer.onloadedmetadata = null;
+					};
+					videoPlayer.onseeked = function () {
+						canvas.width = videoPlayer.videoWidth;
+						canvas.height = videoPlayer.videoHeight;
+						canvas.getContext('2d').drawImage(videoPlayer, 0, 0, videoPlayer.videoWidth, videoPlayer.videoHeight);
+
+						// 썸네일 이미지 URL을 가져옴
+						$(target).parent().parent().find('IMG[name=previewImages]').attr('src', canvas.toDataURL("image/png"));
+
+						videoPlayer.onseeked = null;
+					};
+				});
+
+				// 원포인트레슨 대표이미지
+				$("#viewPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doUploadImages]', function () {
+					$(this).parent().parent().find('INPUT[name=uploadImages]').trigger('click');
+				});
+				$("#viewPopContents #docForm #onePointResson").on('change', 'INPUT[name=uploadImages]', function (e) {
+					var target = $(this);
+
+					$(target).parent().find("IMG[name=previewImages]").one('load', function () {
+						$(this).data('isChg', 'Y');
+					});
+
+					var reader = new FileReader();
+					reader.onload = function () {
+						$(target).parent().find("IMG[name=previewImages]").each((e, item) => {
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+				});
+
+				// 등록버튼
+				$("#viewPopContents #docForm BUTTON[name=doSave]").unbind('click').on("click", function () {
+					var contRmthdCd = $("#viewPopContents  #docForm INPUT[name=contRmthdCd]").val();
+					if (contRmthdCd == '20' && $.trim($('#viewPopContents #docForm INPUT[name=linkUrl]').val()) == '') {
+						alert('컨텐츠 링크를 입력해 주세요.');
+						return;
+					}
+					if (contRmthdCd == '30' && $.trim($('#viewPopContents #docForm INPUT[name=linkUrl]').val()) == '') {
+						alert('컨텐츠 소스코드(URL)를 입력해 주세요.');
+						return;
+					}
+
+					//컨텐츠명
+					if ($.trim($('#viewPopContents #docForm INPUT[name=contNm]').val()) == '') {
+						alert('컨텐츠명을 입력해 주세요.');
+						return;
+					}
+
+					//제공 언어
+					if ($('#viewPopContents #docForm SELECT[name=splyLangCd]').val() === '') {
+						alert('제공 언어를 선택해 주세요.');
+						return;
+					}
+
+					//발간 일자
+					var yy = $.trim($('#viewPopContents #docForm INPUT[name=pblcnYy]').val());
+					var mm = $.trim($('#viewPopContents #docForm INPUT[name=pblcnMm]').val());
+					var dd = $.trim($('#viewPopContents #docForm INPUT[name=pblcnDd]').val());
+					if (yy == '' ||
+						($('#viewPopContents #docForm SELECT[name=pblcnGbCd]').val() == '20' && (yy == '' || mm == '')) ||
+						($('#viewPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30' && (yy == '' || mm == '' || dd == ''))
+					) {
+						alert('발간 일자를 입력해 주세요.');
+						return;
+					} else {
+						$('#viewPopContents #docForm INPUT[name=pblcnYy]').val(String(yy).padStart(4, '0'));
+						if ($('#viewPopContents #docForm SELECT[name=pblcnGbCd]').val() == '20' || $('#viewPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30') {
+							$('#viewPopContents #docForm INPUT[name=pblcnMm]').val(String(mm).padStart(2, '0'));
+							if ($('#viewPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30') {
+								$('#viewPopContents #docForm INPUT[name=pblcnDd]').val(String(dd).padStart(2, '0'));
+							}
+						}
+					}
+
+					// 원포인트레슨::레슨명
+					var errCnt = 0;
+					$('#viewPopContents #docForm INPUT[name=lesnNms]').each(function () {
+						if ($.trim($(this).val()) === '') {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 레슨명을 입력해 주세요.');
+						return;
+					}
+
+					// 원포인트레슨::영상설명
+					$("#viewPopContents #docForm #onePointResson TR").each(function () {
+						var str = '';
+						$(this).find('SELECT[name=depth]').each(function () {
+							var lvl = $(this).val();
+							str += ((str != '') ? '[||]' : '') + `[{${$(this).val()}}]${$(this).parent().parent().find('TEXTAREA[name=vodComntsTmp]').val()}`;
+						});
+						$(this).find('SELECT[name=depth]').parent().parent().parent().find('INPUT[name=vodComnts]').val(str);
+					});
+					errCnt = 0;
+					$('#viewPopContents #docForm TEXTAREA[name=vodComntsTmp]').each(function () {
+						if (!$(this).val()) {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 영상설명을 입력해 주세요.');
+						return;
+					}
+
+					saveData();
+				});
+			};
+
+			let setData = function (_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_contUid})`);
+
+				$("#viewPopContents #docForm").resetForm();
+				$("#viewPopContents #docForm #previewImage").prop("src", '/sems/assets/img/common/noimage.png');
+
+				getData(_contUid, function (data) {
+					var info = data.item;
+
+					$("#viewPopContents INPUT[name=contUid]").val(info.contUid);
+					$("#viewPopContents INPUT[name=contKindCd]").val(info.contKindCd);
+					$("#viewPopContents INPUT[name=contRmthdCd]").val(info.contRmthdCd);
+					$("#viewPopContents INPUT[name=atacFileUid]").val(info.atacFileUid);
+					$("#viewPopContents #cell_contKindCdNm")[0].innerHTML = info.contKindCdNm;
+					if (info.contKindCd === '30') {
+						info.contRmthdCdNm = '원포인트레슨';
+					}
+					$("#viewPopContents #cell_contRmthdCdNm")[0].innerHTML = info.contRmthdCdNm;
+					$("#viewPopContents #cell_contUno")[0].innerHTML = info.contUno;
+					$("#viewPopContents INPUT[name=contNm]").val(info.contNm);
+					$("#viewPopContents SELECT[name=contStCd]").val(info.contStCd);
+					$("#viewPopContents #docForm #docSourceTr").empty();
+					(info.contKindCd === '10' && info.contRmthdCd === '10') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#docContHtml")[0].innerHTML : null;
+					(info.contKindCd === '10' && info.contRmthdCd === '20') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#docLinkHtml")[0].innerHTML : null;
+					(info.contKindCd === '20' && info.contRmthdCd === '10') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#vodContHtml")[0].innerHTML : null;
+					(info.contKindCd === '20' && info.contRmthdCd === '30') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#vodEmbedHtml")[0].innerHTML : null;
+					$("#viewPopContents #docForm #onePointResson #lessonList").empty();
+					if (info.contKindCd === '30') {
+						$("#viewPopContents #docForm #onePointResson").show();
+					} else {
+						$("#viewPopContents #docForm #onePointResson").hide();
+					}
+					$("#viewPopContents INPUT[name=contSplyTpCd]").val(info.contapndlist[0].contSplyTpCd);
+					$("#viewPopContents INPUT[name=contSplyTpCdNm]").val(info.contapndlist[0].contSplyTpCdNm);
+					$("#viewPopContents INPUT[name=pageCnt]").val(info.contapndlist[0].pageCnt);
+					if (info.contapndlist[0].contSplyTpCd === '30') {
+						$("#viewPopContents INPUT[name=uploadFileName]").val(info.contapndlist[0].linkUrl);
+						$('#viewPopContents #docForm DIV.fileUpload.pdf').show();
+						if (info.contapndlist[0].orgnlFileNm) {
+							$("#viewPopContents INPUT[name=uploadPdfFileName]").val(info.contapndlist[0].orgnlFileNm);
+						}
+					} else {
+						$("#viewPopContents INPUT[name=uploadFileName]").val(info.contapndlist[0].orgnlFileNm);
+					}
+					$("#viewPopContents INPUT[name=linkUrl]").val(info.contapndlist[0].linkUrl);
+					$("#viewPopContents INPUT[name=vodQuntyHh]").val(info.contapndlist[0].vodQuntyHh);
+					$("#viewPopContents INPUT[name=vodQuntyMi]").val(info.contapndlist[0].vodQuntyMi);
+					$("#viewPopContents INPUT[name=vodQuntySec]").val(info.contapndlist[0].vodQuntySec);
+					$("#viewPopContents INPUT[name=srcUid]").val(info.srcUid);
+					$("#viewPopContents INPUT[name=srcNm]").val(info.srcNm);
+					$("#viewPopContents INPUT[name=dmstcYn]").val(info.dmstcYn);
+					$("#viewPopContents INPUT[name=dmstcYnNm]").val(info.dmstcYnNm);
+					$("#viewPopContents SELECT[name=splyLangCd]").val(info.splyLangCd);
+					$("#viewPopContents SELECT[name=pblcnGbCd]").val(info.pblcnGbCd).trigger('change');
+					$("#viewPopContents INPUT[name=pblcnYy]").val(info.pblcnYy);
+					$("#viewPopContents INPUT[name=pblcnMm]").val(info.pblcnMm);
+					$("#viewPopContents INPUT[name=pblcnDd]").val(info.pblcnDd);
+					$("#viewPopContents #cell_contTpLclsfCdNm")[0].innerHTML = info.contTpLclsfCdNm;
+					$("#viewPopContents #cell_contTpMclsfCdNm")[0].innerHTML = info.contTpMclsfCdNm;
+					$("#viewPopContents #cell_taskClsfCdNm")[0].innerHTML = info.taskClsfCdNm;
+					$("#viewPopContents #cell_sbjtGbCdNm")[0].innerHTML = info.sbjtGbCdNm;
+					$("#viewPopContents INPUT[name=dpTpCd][value=" + info.dpTpCd + "]").prop('checked', true).trigger('change');
+					$("#viewPopContents INPUT[name=pirdStngUseYn]").trigger('change');
+					if (info.pirdStngUseYn === 'Y') {
+						$("#viewPopContents INPUT[name=pirdStngUseYn][value=Y]").prop('checked', true).trigger('change');
+						if (info.dpSttDt != null && info.dpSttDt != '') {
+							$("#viewPopContents INPUT[name=dpSttDte]").val(info.dpSttDt.split(' ')[0]);
+							$("#viewPopContents INPUT[name=dpSttHh]").val((info.dpSttDt.split(' ')[1]).split(':')[0]);
+							$("#viewPopContents INPUT[name=dpSttMi]").val((info.dpSttDt.split(' ')[1]).split(':')[1]);
+						}
+						if (info.dpEndDt != null && info.dpEndDt != '') {
+							$("#viewPopContents INPUT[name=dpEndDte]").val(info.dpEndDt.split(' ')[0]);
+							$("#viewPopContents INPUT[name=dpEndHh]").val((info.dpEndDt.split(' ')[1]).split(':')[0]);
+							$("#viewPopContents INPUT[name=dpEndMi]").val((info.dpEndDt.split(' ')[1]).split(':')[1]);
+						}
+					}
+					if (info.rlsTgtCdArry) {
+						$.each(info.rlsTgtCdArry.split(','), function (i, val) {
+							$("#viewPopContents INPUT[name=rlsTgtCd][value=" + val + "]").prop('checked', true)
+						});
+					}
+					$("#viewPopContents INPUT[name=dwnldPsbltyYn][value=" + info.dwnldPsbltyYn + "]").prop('checked', true);
+					$("#viewPopContents INPUT[name=srchPsbltyYn][value=" + info.srchPsbltyYn + "]").prop('checked', true);
+					// $("#viewPopContents #cell_kwrdArry")[0].innerHTML = info.kwrdArry;
+					$("#viewPopContents INPUT[name=tagKwrd]").val(info.kwrdArry);
+					$("#viewPopContents INPUT:checkbox[name=tpicUid]").prop('checked', false);
+					if (info.conttpiclist) {
+						info.conttpiclist.forEach((item, idx) => {
+							$("#viewPopContents INPUT[name=tpicUid][value=" + item.tpicUid + "]").prop('checked', true);
+						})
+					}
+					if (info.thumbnail) {
+						$("#viewPopContents IMG#previewImage").attr("src", info.thumbnail);
+					}
+					$("#viewPopContents textarea[name=contSumry]").val(info.contSumry);
+					if (info.contKindCd === '30') {
+						info.contapndlist.forEach(function (_item, _idx) {
+							if (_idx > 0) {
+								console.log(_item);
+								$("#viewPopContents #docForm #onePointResson BUTTON[name=doAddRow]").trigger('click');
+
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=seqNos]').val(_item.seqNo);
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=lesnNms]').val(_item.lesnNm);
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=uploadFilesName]').val(_item.orgnlFileNm);
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=vodQuntyHhs]').val(_item.vodQuntyHh);
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=vodQuntyMis]').val(_item.vodQuntyMi);
+								$("#viewPopContents #lessonList > TR:last").find('INPUT[name=vodQuntySecs]').val(_item.vodQuntySec);
+								if (_item.thumbnail) {
+									$("#viewPopContents #lessonList > TR:last").find('IMG[name=previewImages]').attr("src", _item.thumbnail);
+								}
+
+								/* vodComnt 데이터 변환 처리 */
+								if (_item.vodComnt.indexOf('[||]') > -1 || _item.vodComnt.indexOf('[{1}]') > -1 || _item.vodComnt.indexOf('[{2}]') > -1) {
+									// var htmlObject = $('<dl class="dep-1"></dl>');
+									var tarArry = _item.vodComnt.split("[||]");
+									var lv1Pos = -1;
+									var lv2Pos = -1;
+									tarArry.forEach(function (item2, idx2) {
+										// Lv.1
+										if (item2.indexOf('[{1}]') === 0) {
+											++lv1Pos;
+											lv2Pos = -1;
+
+											if (idx2 > 0) {
+												$("#viewPopContents #docForm #lessonList > TR:last BUTTON[name=doAddCont]").trigger('click');
+												console.log(`idx2 = ${idx2} Add Lv1 Line = ${item2.replaceAll('[{1}]', '')}`);
+											}
+											$("#viewPopContents #docForm #lessonList > TR:last SELECT[name=depth]:last").val('1');
+											$("#viewPopContents #docForm #lessonList > TR:last TEXTAREA[name=vodComntsTmp]:last").val(item2.replaceAll('[{1}]', ''));
+										}
+										// Lv.2
+										if (item2.indexOf('[{2}]') === 0) {
+											if (lv2Pos === -1) {
+												++lv2Pos;
+											}
+											if (idx2 > 0) {
+												$("#viewPopContents #docForm #lessonList > TR:last BUTTON[name=doAddCont]").trigger('click');
+												console.log(`idx2 = ${idx2} Add Lv2 Line = ${item2.replaceAll('[{2}]', '')}`);
+											}
+											$("#viewPopContents #docForm #lessonList > TR:last SELECT[name=depth]:last").val('2');
+											$("#viewPopContents #docForm #lessonList > TR:last TEXTAREA[name=vodComntsTmp]:last").val(item2.replaceAll('[{2}]', ''));
+										}
+									});
+								} else {
+									// 기존 데이터 포맷 처리
+									$("#viewPopContents #docForm #lessonList > TR:last TEXTAREA[name=vodComntsTmp]:last").val(_item.vodComnt);
+								}
+							}
+						});
+					}
+
+					_callback();
+				});
+			};
+
+			let getData = function (_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_contUid})`);
+
+				$("#viewPopContents SECTION.modal-area").LoadingOverlay("show");
+				var param = {
+					"url": "/sems/contents/selectDocumentView"
+					, "type": "post"
+					, "data": {"contUid": _contUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+
+						$("#viewPopContents SECTION.modal-area").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function () {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				function dataURLToBlob(dataURL) {
+					var byteString = atob(dataURL.split(',')[1]);
+					var mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+					var ab = new ArrayBuffer(byteString.length);
+					var ia = new Uint8Array(ab);
+					for (var i = 0; i < byteString.length; i++) {
+						ia[i] = byteString.charCodeAt(i);
+					}
+					return new Blob([ab], { type: mimeString });
+				}
+
+				// $("#viewPopContents #docForm BUTTON[name=doSave]").prop('disabled', true);
+				$("#viewPopContents SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData($("#viewPopContents #docForm")[0]);
+
+				// 레슨영상 대표이미지 처리
+				formData.delete("uploadImages");
+				$("#viewPopContents #docForm #onePointResson IMG[name=previewImages]").each(function() {
+					if ($(this).data('isChg') === 'Y') {
+						canvas = document.createElement('canvas'); // 캔버스 요소를 생성합니다.
+						var context = canvas.getContext('2d');
+						var imgWidth = ($(this))[0].naturalWidth;
+						var imgHeight =  ($(this))[0].naturalHeight;
+						canvas.width = imgWidth;
+						canvas.height = imgHeight;
+						context.drawImage(($(this))[0], 0, 0, imgWidth, imgHeight);
+						var dataURL = canvas.toDataURL('image/png');
+						var blob = dataURLToBlob(dataURL);
+
+						formData.append("uploadImages", blob, 'image.png');
+					} else {
+						formData.append("uploadImages", new File([], ''));
+					}
+				});
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/contents/updateDocInfo"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("저장에 성공하였습니다.");
+						$("#viewPopContents #docForm BUTTON[name=doSave]").prop('disabled', false);
+						$("#viewPopContents").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						$("#viewPopContents #docForm BUTTON[name=doSave]").prop('disabled', false);
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function () {
+						$("#viewPopContents SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+				// }
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		/* 데이터 입력 모듈 */
+		let regist = (function () {
+			let moduleNm = "regist";
+			let canvas;
+			let prevValue;
+
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 컨텐츠등록 버튼
+				$("#cont-section BUTTON[name=doContRegist]").on('click', function () {
+					openPop();
+				});
+
+				// 숫자입력
+				$("#docForm INPUT[type=text].inputNumber").on("input", function () {
+					this.value = this.value.replace(/[^0-9]/g, "");
+				});
+
+				// 컨텐츠 종류
+				$("#docForm INPUT[name=contKindCd]").on("change", function () {
+					$("#docForm INPUT[name=contRmthdCd][value='10']").prop("checked", true).trigger('change');
+					($(this).val() === '10') ? $("#docForm #linkLi").show() : $("#docForm #linkLi").hide();
+					($(this).val() === '20') ? $("#docForm #embedLi").show() : $("#docForm #embedLi").hide();
+					if ($(this).val() === '30') {
+						$("#docForm #regTypeTr").hide();
+						$("#regPopContents #docForm #onePointResson").show();
+						$("#regPopContents #docForm #onePointResson #lessonList").empty();
+						$("#regPopContents #docForm #onePointResson BUTTON[name=doAddRow]").trigger('click');
+						$("#regPopContents #docForm #onePointResson #lessonList BUTTON[name=doDelRow]").hide();
+					} else {
+						$("#docForm #regTypeTr").show();
+						$("#regPopContents #docForm #onePointResson").hide();
+					}
+				});
+
+				// 등록방식
+				$("#docForm INPUT[name=contRmthdCd]").on('change', function () {
+					$("#docForm #docSourceTr").empty();
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '10' && $(this).val() === '10') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#docContHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '10' && $(this).val() === '20') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#docLinkHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '20' && $(this).val() === '10') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#vodContHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '20' && $(this).val() === '30') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#vodEmbedHtml")[0].innerHTML : null;
+					$("#docForm #previewImage").prop("src", '/sems/assets/img/common/noimage.png');
+					$("#regPopContents #docForm INPUT[name=uploadImageChange]").val("");
+					$("#regPopContents #docForm INPUT[name=uploadImagesChange]").val("");
+				});
+
+				// 컨텐츠업로드
+				$("#regPopContents #docForm").on('change', 'INPUT[name=uploadFile]', function (e) {
+					var file = e.target.files[0];
+					$('#docForm INPUT[name=uploadFileName]').val(file.name);
+					$('#docForm INPUT[name=uploadPdfFileName]').val('');
+					$('#docForm INPUT[name=uploadPdfFile]').val('');
+					$('#docForm INPUT[name=contSplyTpCd]').val('');
+					$('#docForm INPUT[name=contSplyTpCdNm]').val('');
+					$('#docForm DIV.fileUpload.pdf').hide();
+					if (file.type === 'application/pdf') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('10');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('PDF');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+					} else if (file.type === 'application/zip' || file.type === 'application/epub+zip') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('30');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('EPUB');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+						$('#docForm DIV.fileUpload.pdf').show();
+					} else if (file.type === 'video/mp4') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('20');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('MP4');
+						$('#docForm INPUT[name=contNm]').val(removeExtension(file.name));
+
+						// 재생시간 및 썸네일
+						var videoPlayer = document.getElementById('videoPlayer');
+						videoPlayer.src = URL.createObjectURL(file);
+						canvas = document.createElement('canvas');
+						var context = canvas.getContext('2d'); // 캔버스 컨텍스트 가져오기
+						videoPlayer.onloadedmetadata = function () {
+							var duration = videoPlayer.duration;
+
+							var hours = Math.floor(duration / 3600);
+							duration %= 3600;
+							var minutes = Math.floor(duration / 60);
+							var seconds = Math.floor(duration % 60);
+
+							$('#docForm INPUT[name=vodQuntyHh]').val(String(hours).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntyMi]').val(String(minutes).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntySec]').val(String(seconds).padStart(2, '0'));
+						};
+						videoPlayer.addEventListener('loadeddata', function() {
+							videoPlayer.currentTime = 10;
+						}, false);
+						videoPlayer.addEventListener('seeked', function() {
+							canvas.width = videoPlayer.videoWidth;
+							canvas.height = videoPlayer.videoHeight;
+							context.drawImage(videoPlayer, 0, 0, videoPlayer.videoWidth, videoPlayer.videoHeight);
+
+							// 썸네일 이미지 URL을 가져옴
+							var thumbnailUrl = canvas.toDataURL("image/png");
+
+							$("#regPopContents #docForm IMG[name=previewImage]").attr('src', thumbnailUrl);
+						}, false);
+					}
+
+					function removeExtension(filename) {
+						var lastDotPosition = filename.lastIndexOf(".");
+						if (lastDotPosition === -1) return filename;
+						else return filename.substr(0, lastDotPosition);
+					}
+				});
+				$("#regPopContents #docForm").on('change', 'INPUT[name=uploadPdfFile]', function (e) {
+					var file = e.target.files[0];
+					$('#docForm INPUT[name=uploadPdfFileName]').val(file.name);
+				});
+
+				// LINKURL
+				$("#regPopContents #docForm").on('focus', 'INPUT[name=linkUrl]', function (e) {
+					prevValue = $(this).val();
+				});
+				$("#regPopContents #docForm").on('blur', 'INPUT[name=linkUrl]', function (e) {
+					if ($("#docForm INPUT[name=contKindCd]:checked").val() === '20' && $("#docForm INPUT[name=contRmthdCd]:checked").val() === "30") {
+						if (prevValue !== $.trim($(this).val())) {
+							$("#regPopContents #docForm INPUT[name=vodQuntyHh]").val('00');
+							$("#regPopContents #docForm INPUT[name=vodQuntyMi]").val('00');
+							$("#regPopContents #docForm INPUT[name=vodQuntySec]").val('00');
+							$("#regPopContents #docForm IMG[name=previewImage]").attr('src', '/sems/assets/img/common/noimage.png');
+
+							// Youtube Embed일 경우 영상분량 가져오기 및 대표이미지 적용
+							var linkUrl = $.trim($(this).val());
+							if (linkUrl && linkUrl.indexOf('https://www.youtube.com/embed/') >= 0) {
+								// 코드 분리
+								var youtubeId = (linkUrl.split('?'))[0];
+								youtubeId = youtubeId.replaceAll('https://www.youtube.com/embed/', '');
+
+								// 영상정보 가져오기
+								$.get(`https://www.googleapis.com/youtube/v3/videos?id=${youtubeId}&key=AIzaSyBT0uIT3-a8HV3ZG7VyRIv7JZhdSOi6yeY&part=contentDetails`, function(data) {
+									if (data.items.length == 0) {
+										alert('조회가 불가능한 Youyube 영상입니다\n영상의 url을 다시 확인해주세요.');
+										$(this).focus();
+										return;
+									}
+
+									// 영상 분량정보 적용
+									var duration = data.items[0].contentDetails.duration;
+									var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+									var hours = "00", minutes = "00", seconds = "00";
+									if (reptms.test(duration)) {
+										var matches = reptms.exec(duration);
+										if (matches[1]) hours = matches[1].padStart(2, '0');
+										if (matches[2]) minutes = matches[2].padStart(2, '0');
+										if (matches[3]) seconds = matches[3].padStart(2, '0');
+
+										$("#regPopContents #docForm INPUT[name=vodQuntyHh]").val(hours);
+										$("#regPopContents #docForm INPUT[name=vodQuntyMi]").val(minutes);
+										$("#regPopContents #docForm INPUT[name=vodQuntySec]").val(seconds);
+									}
+
+									// 이미지 정보
+									let img = new Image();
+									img.src = `/sems/image?imageUrl=https://img.youtube.com/vi/${youtubeId}/0.jpg`;
+									img.onload = function() {
+										let canvas = document.createElement('canvas');
+										let ctx = canvas.getContext('2d');
+										canvas.width = img.width;
+										canvas.height = img.height;
+										ctx.drawImage(img, 0, 0, img.width, img.height);
+
+										let dataURL = canvas.toDataURL('image/png');
+										$("#regPopContents #docForm IMG[name=previewImage]").attr('src', dataURL);
+									};
+								}).fail(function(error) {
+									console.error('Error:', error);
+								});
+							}
+						}
+					}
+				});
+
+				// 미리보기
+				$("#regPopContents #docForm").on('click', 'BUTTON[name=doPreview]', function (e) {
+					var tarUrl = $.trim($(this).parent().find('INPUT[name=linkUrl]').val());
+					if (tarUrl) {
+						window.open(tarUrl);
+					} else {
+						alert('미리보기의 대상 url을 입력해 주세요.')
+					}
+				});
+
+				// 발행일자구분코드
+				$("#docForm SELECT[name=pblcnGbCd]").on('change', function () {
+					$("#docForm INPUT[name=pblcnMm]").prop("readonly", !($(this).val() === '20' || $(this).val() === '30'));
+					$("#docForm INPUT[name=pblcnDd]").prop("readonly", !($(this).val() === '30'));
+					$("#docForm INPUT[name=pblcnMm]:read-only").val("");
+					$("#docForm INPUT[name=pblcnDd]:read-only").val("");
+				});
+
+				// 출처
+				$("#docForm INPUT[name=srcNm], #docForm BUTTON[name=doSrcSearch]").on('click', function () {
+					srcList.openPop();
+				});
+
+				// 유형분류
+				$("#docForm SELECT[name=contTpLclsfCd]").on("change", function () {
+					$("#docForm SELECT[name=contTpMclsfCd]").val("").prop("disabled", ($(this).val() !== "10"));
+				});
+
+				// 전시여부
+				$("#docForm INPUT[name=dpTpCd]").on("change", function () {
+					$("#docForm INPUT[name=rlsTgtCd]").prop("disabled", ($(this).val() !== "20")).prop("checked", false);
+				});
+
+				// 기간설정사용
+				$("#docForm INPUT[name=pirdStngUseYn]").on("change", function () {
+					$("#docForm INPUT[name=dpSttDte], #docForm INPUT[name=dpSttHh], #docForm INPUT[name=dpSttMi], #docForm INPUT[name=dpEndDte], #docForm INPUT[name=dpEndHh], #docForm INPUT[name=dpEndMi]").prop("disabled", !$(this).prop("checked"));
+				});
+
+				// 대표이미지
+				$("#regPopContents #docForm INPUT[name=uploadImage]").on('change', function (e) {
+					var reader = new FileReader();
+					reader.onload = function () {
+						$("IMG[name=previewImage]").each((e, item) => {
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+				});
+				$("#regPopContents #docForm IMG[name=previewImage]").on('load', function() {
+					if ($(this).attr('src') !== '/sems/assets/img/common/noimage.png') {
+						console.log('Image Change');
+						$("#regPopContents #docForm INPUT[name=uploadImageChange]").val("Y");
+					}
+				});
+
+				// 원포인트레슨 행 추가
+				$("#regPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doAddRow]', function () {
+					$("#regPopContents #docForm #onePointResson #lessonList").append($("#regPopContents TEMPLATE#onePointLessonHtml")[0].innerHTML);
+					if ($("#regPopContents #docForm #onePointResson #lessonList TR").length == 1) {
+						$("#regPopContents #docForm #onePointResson #lessonList BUTTON[name=doDelCont]").css('visibility', 'hidden');
+					}
+				});
+
+				// 원포인트레슨 행 삭제
+				$("#regPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doDelRow]', function () {
+					$(this).parent().parent().remove();
+				});
+
+				// 원포인트레슨 내용 추가
+				$("#regPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doAddCont]', function () {
+					$(this).parent().parent().find('DIV.wrap').append($(this).parent().parent().find('DIV.wrap DIV.select-group:eq(0)').clone(true));
+					$(this).parent().parent().find('DIV.wrap DIV.select-group:last BUTTON[name=doDelCont]').css('visibility', 'visible');
+					$(this).parent().parent().find('DIV.wrap DIV.select-group:last INPUT, DIV.wrap DIV.select-group:last TEXTAREA').val('');
+				});
+
+				// 원포인트레슨 내용 삭제
+				$("#regPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doDelCont]', function () {
+					$(this).parent().parent().remove();
+				});
+
+				// 원포인트레슨 영상 업로드
+				$("#regPopContents #docForm #onePointResson").on('click', 'LABEL.uploadFiles', function () {
+					$(this).parent().find('INPUT[name=uploadFiles]').trigger('click');
+				});
+				$("#regPopContents #docForm #onePointResson").on('change', 'INPUT[name=uploadFiles]', function (e) {
+					var file = e.target.files[0];
+					var target = $(this);
+
+					$(target).parent().parent().find("IMG[name=previewImages]").one('load', function() {
+						console.log('Image Change!!!');
+						if ($(this).attr('src') !== '/sems/assets/img/common/noimage.png') {
+							console.log('Image Change');
+							$(this).parent().parent().find('INPUT[name=uploadImagesChange]').val("Y");
+						}
+					});
+
+					$(this).parent().find('INPUT[name=uploadFilesName]').val(file.name);
+					var videoPlayer = document.getElementById('videoPlayer');
+					videoPlayer.src = URL.createObjectURL(file);
+					canvas = document.createElement('canvas');
+					videoPlayer.onloadedmetadata = function () {
+						var duration = videoPlayer.duration;
+
+						var hours = Math.floor(duration / 3600);
+						duration %= 3600;
+						var minutes = Math.floor(duration / 60);
+						var seconds = Math.floor(duration % 60);
+
+						$(target).parent().find('INPUT[name=vodQuntyHhs]').val(String(hours).padStart(2, '0'));
+						$(target).parent().find('INPUT[name=vodQuntyMis]').val(String(minutes).padStart(2, '0'));
+						$(target).parent().find('INPUT[name=vodQuntySecs]').val(String(seconds).padStart(2, '0'));
+
+						videoPlayer.currentTime = 10;
+						videoPlayer.onloadedmetadata=null;
+					};
+					videoPlayer.onseeked = function() {
+						canvas.width = videoPlayer.videoWidth;
+						canvas.height = videoPlayer.videoHeight;
+						canvas.getContext('2d').drawImage(videoPlayer, 0, 0, videoPlayer.videoWidth, videoPlayer.videoHeight);
+
+						// 썸네일 이미지 URL을 가져옴
+						$(target).parent().parent().find('IMG[name=previewImages]').attr('src', canvas.toDataURL("image/png"));
+
+						videoPlayer.onseeked=null;
+					};
+				});
+
+				// 원포인트레슨 대표이미지
+				$("#regPopContents #docForm #onePointResson").on('click', 'BUTTON[name=doUploadImages]', function () {
+					$(this).parent().parent().find('INPUT[name=uploadImages]').trigger('click');
+				});
+				$("#regPopContents #docForm #onePointResson").on('change', 'INPUT[name=uploadImages]', function (e) {
+					var target = $(this);
+
+					$(target).parent().find("IMG[name=previewImages]").one('load', function() {
+						console.log('Image Change!!!');
+						if ($(this).attr('src') !== '/sems/assets/img/common/noimage.png') {
+							console.log('Image Change');
+							$(this).parent().parent().find('INPUT[name=uploadImagesChange]').val("Y");
+						}
+					});
+
+					var reader = new FileReader();
+					reader.onload = function () {
+						$(target).parent().find("IMG[name=previewImages]").each((e, item) => {
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+
+
+				});
+
+				// 등록버튼
+				$("#regPopContents #docForm BUTTON[name=doRegist]").on("click", function () {
+					var contKindCd = $("#docForm INPUT[name=contKindCd]:checked").val();
+					var contRmthdCd = $("#docForm INPUT[name=contRmthdCd]:checked").val();
+					if (contRmthdCd == '10' && $('#docForm INPUT[name=uploadFile]').val() == '') {
+						alert('컨텐츠 파일을 업로드해 주세요.');
+						return;
+					}
+					if (contRmthdCd == '20' && $.trim($('#docForm INPUT[name=linkUrl]').val()) == '') {
+						alert('컨텐츠 링크를 입력해 주세요.');
+						return;
+					}
+					if (contRmthdCd == '30' && $.trim($('#docForm INPUT[name=linkUrl]').val()) == '') {
+						alert('컨텐츠 소스코드(URL)를 입력해 주세요.');
+						return;
+					}
+					//컨텐츠명
+					if ($.trim($('#contNm').val()) == '') {
+						alert('컨텐츠명을 입력해 주세요.');
+						return;
+					}
+
+					//발간 일자
+					var yy = $.trim($('#regPopContents #docForm INPUT[name=pblcnYy]').val());
+					var mm = $.trim($('#regPopContents #docForm INPUT[name=pblcnMm]').val());
+					var dd = $.trim($('#regPopContents #docForm INPUT[name=pblcnDd]').val());
+					if (yy == '' ||
+						($('#regPopContents #docForm SELECT[name=pblcnGbCd]').val() == '20' && (yy == '' || mm == '')) ||
+						($('#regPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30' && (yy == '' || mm == '' || dd == ''))
+					) {
+						alert('발간 일자를 입력해 주세요.');
+						return;
+					} else {
+						$('#regPopContents #docForm INPUT[name=pblcnYy]').val(String(yy).padStart(4, '0'));
+						if ($('#regPopContents #docForm SELECT[name=pblcnGbCd]').val() == '20' || $('#regPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30') {
+							$('#regPopContents #docForm INPUT[name=pblcnMm]').val(String(mm).padStart(2, '0'));
+							if ($('#regPopContents #docForm SELECT[name=pblcnGbCd]').val() == '30') {
+								$('#regPopContents #docForm INPUT[name=pblcnDd]').val(String(dd).padStart(2, '0'));
+							}
+						}
+					}
+
+					//출처
+					if ($('#docForm INPUT[name=srcUid]').val() === '') {
+						alert('출처를 선택해 주세요.');
+						return;
+					}
+
+					//제공 언어
+					if ($('#docForm SELECT[name=splyLangCd]').val() === '') {
+						alert('제공 언어를 선택해 주세요.');
+						return;
+					}
+
+					//유형 분류
+					if (
+						$('#docForm SELECT[name=contTpLclsfCd]').val() == '' ||
+						($('#docForm SELECT[name=contTpLclsfCd]').val() == '10' && $('#docForm SELECT[name=contTpMclsfCd]').val() == '')
+					) {
+						alert('유형 분류를 선택해 주세요.');
+						return;
+					}
+
+					//업무 분류
+					if ($('#docForm SELECT[name=taskClsfCd]').val() === '') {
+						alert('업무 분류를 선택해 주세요.');
+						return;
+					}
+
+					//주제 분류
+					if ($('#docForm SELECT[name=sbjtGbCd]').val() === '') {
+						alert('주제 분류를 선택해 주세요.');
+						return;
+					}
+
+					// 원포인트레슨::레슨명
+					var errCnt = 0;
+					$('#docForm INPUT[name=lesnNms]').each(function () {
+						if ($.trim($(this).val()) === '') {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 레슨명을 입력해 주세요.');
+						return;
+					}
+
+					// 원포인트레슨::영상파일
+					errCnt = 0;
+					$('#docForm INPUT[name=uploadFiles]').each(function () {
+						if (!$(this).val()) {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 영상파일을 입력해 주세요.');
+						return;
+					}
+
+					// 원포인트레슨::대표이미지파일
+					errCnt = 0;
+					$('#docForm INPUT[name=uploadImages]').each(function () {
+						if (!$(this).val()) {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 대표이미지를 입력해 주세요.');
+						return;
+					}
+
+					// 원포인트레슨::영상설명
+					$("#regPopContents #docForm #onePointResson TR").each(function () {
+						var str = '';
+						$(this).find('SELECT[name=depth]').each(function () {
+							var lvl = $(this).val();
+							str += ((str != '') ? '[||]' : '') + `[{${$(this).val()}}]${$(this).parent().parent().find('TEXTAREA[name=vodComntsTmp]').val()}`;
+						});
+						$(this).find('SELECT[name=depth]').parent().parent().parent().find('INPUT[name=vodComnts]').val(str);
+					});
+					errCnt = 0;
+					$('#docForm TEXTAREA[name=vodComntsTmp]').each(function () {
+						if (!$(this).val()) {
+							errCnt++;
+						}
+					});
+					if (errCnt) {
+						alert('영상 레슨의 영상설명을 입력해 주세요.');
+						return;
+					}
+
+					saveData();
+				});
+
+				// 초기화버튼
+				$("#docForm BUTTON[name=doInit]").on("click", function () {
+					$("#regPopContents #docForm").resetForm();
+					$("#docForm INPUT[name=contKindCd]:checked").trigger('change');
+					$("#docForm SELECT[name=pblcnGbCd]").trigger('change');
+					$("#docForm SELECT[name=contTpLclsfCd]").trigger('change');
+					$("#docForm INPUT[name=dpTpCd]").trigger('change');
+					$("#docForm INPUT[name=pirdStngUseYn]").trigger('change');
+					$("#docForm #previewImage").prop("src", '/sems/assets/img/common/noimage.png');
+					$("#regPopContents #docForm INPUT[name=uploadImageChange]").val("");
+				});
+			};
+
+			let openPop = function () {
+				console.log(`[MODULE] ${moduleNm} -> openPop`);
+
+				autoThumb = null;
+				$("#docForm BUTTON[name=doInit]").trigger('click');
+				$("#regPopContents").addClass("show");
+			};
+
+			let saveData = function () {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				function dataURLToBlob(dataURL) {
+					var byteString = atob(dataURL.split(',')[1]);
+					var mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+					var ab = new ArrayBuffer(byteString.length);
+					var ia = new Uint8Array(ab);
+					for (var i = 0; i < byteString.length; i++) {
+						ia[i] = byteString.charCodeAt(i);
+					}
+					return new Blob([ab], { type: mimeString });
+				}
+
+				$("#regPopContents SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData($("#docForm")[0]);
+
+				// 이미지 대이터 처리
+				canvas = document.createElement('canvas'); // 캔버스 요소를 생성합니다.
+				var context = canvas.getContext('2d');
+				var imgWidth = ($("#regPopContents #docForm IMG[name=previewImage]"))[0].naturalWidth;
+				var imgHeight =  ($("#regPopContents #docForm IMG[name=previewImage]"))[0].naturalHeight;
+				canvas.width = imgWidth;
+				canvas.height = imgHeight;
+				context.drawImage(($("#regPopContents #docForm IMG[name=previewImage]"))[0], 0, 0, imgWidth, imgHeight);
+				// 대표이미지 변환
+				var dataURL = canvas.toDataURL('image/png');
+				var blob = dataURLToBlob(dataURL);
+				formData.delete("uploadImage");
+				formData.append("uploadImage", blob, 'image.png');
+
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/contents/insertDocInfo"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("저장에 성공하였습니다.");
+						$("#regPopContents").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						$("#regPopContents #docForm BUTTON[name=doRegist]").prop('disabled', false);
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function () {
+						$("#regPopContents SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		$(function () {
+			page.init();
+			list.init();
+			view.init();
+			regist.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<video id="videoPlayer" preload="metadata" style="display: none;"></video>
+
+	<!-- container -->
+	<section id="cont-section" class="content">
+		<div class="location">
+			<h3>컨텐츠 조회</h3>
+			<ul class="breadcrumb">
+				<li>컨텐츠 관리</li>
+				<li>문서 &middot; 영상 컨텐츠 관리</li>
+				<li>컨텐츠 조회</li>
+			</ul>
+		</div>
+		<!-- //location -->
+		<!--	20230721 컨텐츠 등록버튼 추가//-->
+		<div class="btn-group-txtr">
+			<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+			<button type="button" name="doContRegist" class="btn_link">컨텐츠 등록</button>
+			</th:block>
+		</div>
+		<!--	//20230721 컨텐츠 등록버튼 추가-->
+		<div class="search-wrap">
+			<form id="searchListFrm">
+				<input type="hidden" name="docPageSize" value="">
+				<input type="hidden" name="docPageNum" value="">
+				<fieldset>
+					<legend>컨텐츠 조회</legend>
+					<div class="table-wrap">
+						<table class="inner-input">
+							<caption>콘텐츠 조회</caption>
+							<colgroup>
+								<col style="width: 12%;">
+								<col style="width: 39%;">
+								<col style="width: 13%;">
+								<col style="width: 19%;">
+								<col style="width: 10%;">
+								<col style="width: 12%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>등록일/수정일</th>
+								<td>
+									<div class="date-select flex">
+										<select name="schJoinType" id="schJoinType" class="select" title="기간설정 선택">
+											<option value="N">기간설정 안함</option>
+											<option value="01">등록일</option>
+											<option value="02">수정일</option>
+										</select>
+										<div class="datepicker-wrap">
+											<input type="text" name="schStrtDate" id="schStrtDate" class="datepicker">
+											<span class="separator"> - </span>
+											<input type="text" name="schEndDate" id="schEndDate" class="datepicker">
+										</div>
+									</div>
+								</td>
+								<th>등록자/수정자</th>
+								<td>
+									<div class="selectinput-wrap">
+										<select name="schOprtOpt" id="schOprtOpt" class="select" title="구분 선택">
+											<option value="01">등록자</option>
+											<option value="02">수정자</option>
+										</select>
+										<input type="text" name="schOprtWrd" id="schOprtWrd" title="이름입력">
+									</div>
+								</td>
+								<th>등록상태</th>
+								<td>
+									<select name="schContSt" class="select" title="상태 선택">
+										<option value="ALL">전체</option>
+										<option value="10">사용중</option>
+										<option value="20">사용중지</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>컨텐츠명/번호</th>
+								<td>
+									<div class="selectinput-wrap">
+										<select name="schContentOpt" class="select" title="컨텐츠명">
+											<option value="01">컨텐츠명</option>
+											<option value="02">컨텐츠번호</option>
+										</select>
+										<input type="text" name="schContentWrd" placeholder="" title="컨텐츠 입력">
+									</div>
+								</td>
+								<th>컨텐츠종류/등록방식</th>
+								<td colspan="3">
+									<div class="select-group">
+										<select name="schContKindOpt" id="schContKindOpt" class="select" title="컨텐츠종류 선택">
+											<option value="ALL">전체</option>
+											<option value="10">문서</option>
+											<option value="20">영상</option>
+											<option value="30">영상(원포인트레슨)</option>
+										</select>
+										<select name="schContRmthdOpt" id="schContRmthdOpt" class="select" readonly title="컨텐츠 등록방식 선택">
+											<option value="ALL">전체</option>
+											<option value="10">컨텐츠업로드</option>
+											<option value="20">아웃링크</option><!-- 영상 선택 시 비노출 -->
+											<option value="30">임베드 코드 입력</option><!-- 영상 선택 시 노출 -->
+										</select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>출처명/번호</th>
+								<td>
+									<div class="selectinput-wrap">
+										<select name="schSrcOpt" class="select" title="출처명/번호선택">
+											<option value="01">출처명</option>
+											<option value="02">출처번호</option>
+										</select>
+										<input type="text" name="schSrcWrd" placeholder="" title="입력">
+									</div>
+								</td>
+								<th>국내/해외</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schDmstcChk" value="ALL" id="radio01" checked="checked">
+											<label for="radio01">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schDmstcChk" value="Y" id="radio02">
+											<label for="radio02">국내</label>
+										</li>
+										<li>
+											<input type="radio" name="schDmstcChk" value="N" id="radio03">
+											<label for="radio03">해외</label>
+										</li>
+									</ul>
+								</td>
+								<th><label for="lang01">제공언어</label></th>
+								<td>
+									<select name="schSplyLangOpt" id="lang01" class="select">
+										<option value="ALL">전체</option>
+										<option value="10">국문</option>
+										<option value="20">영문</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>유형 분류</th>
+								<td>
+									<div class="select-group">
+										<select name="schContTpLclsfOpt" id="schContTpLclsfOpt" class="select" title="유형 선택">
+											<option value="ALL">전체</option>
+											<option value="10">삼일발간물</option>
+											<option value="20">기준/가이드라인</option>
+											<option value="30">법/제도</option>
+											<option value="40">보고/연구</option>
+											<option value="50">교육/안내</option>
+										</select>
+										<select name="schContTpMclsfOpt" id="schContTpMclsfOpt" class="select" title="발간물 선택">
+											<option value="ALL" selected="selected">전체</option>
+											<option value="10">뉴스레터</option>
+											<option value="20">인사이트 리포트</option>
+										</select>
+									</div>
+								</td>
+								<th><label for="class01">업무 분류</label></th>
+								<td>
+									<select name="schTaskClsfOpt" id="class01" class="select">
+										<option value="ALL">전체</option>
+										<option value="10">ESG경영관리</option>
+										<option value="20">실행</option>
+										<option value="30">전략/계획</option>
+										<option value="40">공시</option>
+										<option value="50">평가</option>
+									</select>
+								</td>
+								<th><label for="class02">주제 분류</label></th>
+								<td>
+									<select name="schTopicOpt" id="class02" class="select">
+										<option value="ALL">전체</option>
+										<option value="10">ESG일반</option>
+										<option value="20">환경</option>
+										<option value="30">사회</option>
+										<option value="40">거버넌스</option>
+										<option value="50">금융</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>전시 여부</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schDpTpRdo" value="ALL" id="radio07" checked="checked">
+											<label for="radio07">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schDpTpRdo" value="40" id="radio11">
+											<label for="radio11">전체열람허용</label>
+										</li>
+										<li>
+											<input type="radio" name="schDpTpRdo" value="10" id="radio08">
+											<label for="radio08">전체공개</label>
+										</li>
+										<li>
+											<input type="radio" name="schDpTpRdo" value="20" id="radio09">
+											<label for="radio09">일부공개</label>
+										</li>
+										<li>
+											<input type="radio" name="schDpTpRdo" value="30" id="radio10">
+											<label for="radio10">비전시</label>
+										</li>
+									</ul>
+								</td>
+								<th>일부 공개 대상</th>
+								<td colspan="3">
+									<ul class="flex ck-list">
+										<li>
+											<input type="checkbox" name="schRlsTgtChk" value="10" id="ck01">
+											<label for="ck01">그룹 A</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schRlsTgtChk" value="20" id="ck02">
+											<label for="ck02">그룹 B</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schRlsTgtChk" value="30" id="ck03">
+											<label for="ck03">그룹 C</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schRlsTgtChk" value="40" id="ck04">
+											<label for="ck04">그룹 D</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>다운로드 가능여부</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schDwnldPsbltyRdo" value="ALL" id="ck07" checked="checked">
+											<label for="ck07">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schDwnldPsbltyRdo" value="Y" id="ck08">
+											<label for="ck08">가능</label>
+										</li>
+										<li>
+											<input type="radio" name="schDwnldPsbltyRdo" value="N" id="ck09">
+											<label for="ck09">불가 </label>
+										</li>
+									</ul>
+								</td>
+								<th>검색 가능 여부</th>
+								<td colspan="3">
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schSrchPsbltyRdo" value="ALL" id="radio9" checked="checked">
+											<label for="radio9">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schSrchPsbltyRdo" value="Y" id="radi10">
+											<label for="radi10">가능</label>
+										</li>
+										<li>
+											<input type="radio" name="schSrchPsbltyRdo" value="N" id="radi11">
+											<label for="radi11">불가 </label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>ESG 토픽</th>
+								<td>
+									<div class="select-group">
+										<select name="schTpicMnuOpt" id="schTpicMnuOpt" class="select" title="ESG 토픽 선택">
+											<option value="ALL">전체</option>
+											<option value="10">E(환경)</option>
+											<option value="20">S(사회)</option>
+											<option value="30">G(거버넌스)</option>
+											<option value="40">F(금융)</option>
+											<option value="50">ESG TAX</option>
+											<option value="60">ESG Deal</option>
+											<option value="70">ESG 공시</option>
+										</select>
+										<select name="schTpicNmOpt" id="schTpicNmOpt" class="select" title="키워드 선택">
+											<option value="ALL">전체</option>
+										</select>
+									</div>
+								</td>
+								<th><label for="txt01">태그 키워드</label></th>
+								<td colspan="3">
+									<input type="text" name="schKwrd" id="txt01" class="w100p">
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+					<div class="btn-wrap">
+						<button type="submit" name="doSearch" class="btn-primary">조회</button>
+						<button type="button" name="doInit" class="btn-sub">초기화</button>
+					</div>
+					<!-- //btn-wrap -->
+				</fieldset>
+			</form>
+		</div>
+		<!-- //search-wrap -->
+		<div class="result-wrap">
+			<div class="total">
+				<span class="lable">컨텐츠 리스트</span> - <strong id="docTotalCountView">총 0건</strong>
+				<th:block th:if="${session.BoMbrInfo.rights.contains('D')}">
+				<button type="button" name="doDel" class="btn-del"><span>삭제</span></button>
+				</th:block>
+			</div>
+			<!-- total -->
+			<div class="sorting-wrap">
+				<select id="docPageSize" class="select" title="데이터 건수">
+					<option value="20">20개</option>
+					<option value="50">50개</option>
+					<option value="100">100개</option>
+					<option value="500">500개</option>
+					<option value="1000">1000개</option>
+				</select>
+				<select id="docPageNum" class="select" title="페이지 이동선택">
+				</select>
+				<div class="btn-ctl">
+					<button type="button" id="btnExcelDown" class="btn-download">다운로드</button>
+				</div>
+			</div>
+			<!-- //sorting-wrap -->
+			<div id="docListDiv" class="table-wrap xscroll-wrap">
+				<!-- 페이징 정보 -->
+				<th:block th:unless="${#lists.isEmpty(list)}">
+					<input type="hidden" id="docTotalCount" th:value="${PageInfo.totalCount}"/>
+					<input type="hidden" id="docPageNumber" th:value="${PageInfo.pageNumber}"/>
+					<input type="hidden" id="docTotalPage" th:value="${PageInfo.totalPage}"/>
+				</th:block>
+				<table class="w2300">
+					<caption>컨텐츠 리스트</caption>
+					<colgroup>
+						<col style="width: 2%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 5%;">
+						<col style="width: 3%;">
+						<col style="width: 6%;">
+						<col style="width: *;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 5%;">
+						<col style="width: 5%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 5%;">
+						<col style="width: 5%;">
+						<col style="width: 3%;">
+						<col style="width: 8%;">
+						<col style="width: 5%;">
+						<col style="width: 3%;">
+						<col style="width: 5%;">
+						<col style="width: 3%;">
+					</colgroup>
+					<thead>
+					<tr>
+						<th></th>
+						<th>NO</th>
+						<th>종류</th>
+						<th>등록방식</th>
+						<th>등록상태</th>
+						<th>컨텐츠 번호</th>
+						<th>컨텐츠명</th>
+						<th>출처</th>
+						<th>국내/해외</th>
+						<th>언어</th>
+						<th>유형분류</th>
+						<th>유형세분류</th>
+						<th>업무분류</th>
+						<th>주제분류</th>
+						<th>형태</th>
+						<th>전시여부</th>
+						<th>일부공개대상</th>
+						<th>다운로드가능</th>
+						<th>검색여부</th>
+						<th>토픽분류</th>
+						<th>등록일</th>
+						<th>등록자</th>
+						<th>수정일</th>
+						<th>수정자</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="dataListTr" th:each="item, stat : ${list}">
+						<td><input type="checkbox" name="chkContList" th:value="${item.contUid}" title="선택"></td>
+						<td th:text="${stat.count}">1</td>
+						<td th:text="${item.contKindCdNm}">문서</td>
+						<td th:text="${item.contRmthdCdNm}">컨텐츠업로드</td>
+						<td th:text="${item.contStCdNm}">등록</td>
+						<td class="contUnoTr"><a th:text="${item.contUno}" th:attr="data-id=${item.contUid}" class="link">CDIA00012</a></td>
+						<td class="left" th:text="${item.contNm}">GRI 1: Foundation 2021</td>
+						<td class="srcNmTr"><a th:text="${item.srcNm}" th:data-id="${item.contUid}" class="link">SK12345</a></td>
+						<td th:text="${item.dmstcYnNm}">해외</td>
+						<td th:text="${item.splyLangCdNm}">영문</td>
+						<td th:text="${item.contTpLclsfCdNm}">기준/표준</td>
+						<td th:text="${item.contTpMclsfCdNm}"></td>
+						<td th:text="${item.taskClsfCdNm}">공시</td>
+						<td th:text="${item.sbjtGbCdNm}">ESG일반</td>
+						<td th:text="${item.contSplyTpCdNm}">E-pub</td>
+						<td th:text="${item.dpTpCdNm}">전시</td>
+						<td th:text="${item.rlsTgtCdNmArry}"></td>
+						<td th:text="${item.dwnldPsbltyYnNm}">불가</td>
+						<td th:text="${item.srchPsbltyYnNm}">가능</td>
+						<td th:text="${item.tpicNmArry}">공시, GRI, 지속가능</td>
+						<td th:text="${item.fstInsDt}">2023-09-20</td>
+						<td th:text="${item.fstInsMbrNm}">정승은</td>
+						<td th:text="${item.lstUpdDt}"></td>
+						<td th:text="${item.lstUpdMbrNm}"></td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(list)}">
+						<td style="text-align: center;" colspan="24">데이터가 존재하지 않습니다.</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- //table-wrap -->
+		</div>
+		<!-- //result-list -->
+	</section>
+	<!-- //content -->
+
+	<!-- 컨텐츠 등록 팝업 -->
+	<div id="regPopContents" class="modal-wrap">
+		<div class="dimmed"></div>
+		<!-- Template -->
+		<template id="docContHtml">
+			<th>
+				컨텐츠 업로드<span class='required'><i class='blind'>필수입력</i></span>
+			</th>
+			<td>
+				<div class='fileUpload'>
+					<input type='text' name="uploadFileName" class='url' placeholder='컨텐츠 파일' readonly style="background-color: #fff;">
+					<label for='uploadFile'>파일 선택</label>
+					<input type='file' name='uploadFile' id='uploadFile' class='upload' accept="application/pdf, application/epub+zip, application/zip">
+				</div>
+				<div class='fileUpload pdf' style="margin-top: 5px; display: none">
+					<input type='text' name="uploadPdfFileName" class='url' placeholder='PDF 파일' readonly style="background-color: #fff;">
+					<label for='uploadPdfFile'>파일 선택</label>
+					<input type='file' name='uploadPdfFile' id='uploadPdfFile' class='upload' accept="application/pdf">
+				</div>
+			</td>
+			<th><label for='txt01'>제공형태</label></th>
+			<td>
+				<input type='hidden' name='contSplyTpCd'>
+				<input type='text' name='contSplyTpCdNm' readonly>
+			</td>
+			<th><label for='txt02'>페이지 수</label></th>
+			<td>
+				<input type='text' name='pageCnt' id='txt02' readonly>
+			</td>
+		</template>
+		<template id="docLinkHtml">
+			<th>
+				<label for='txt03'>링크(URL)<span class='required'><i class='blind'>필수입력</i></span></label>
+			</th>
+			<td colspan='5'>
+				<input type='text' name='linkUrl' id='txt03' class='w100p'>
+			</td>
+		</template>
+		<template id="vodContHtml">
+			<th>
+				컨텐츠 업로드<span class='required'><i class='blind'>필수입력</i></span>
+			</th>
+			<td>
+				<div class='fileUpload'>
+					<input type='text' name="uploadFileName" class='url' placeholder='' readonly style="background-color: #fff;">
+					<label for='uploadFile'>파일 선택</label>
+					<input type='file' name='uploadFile' id='uploadFile' class='upload' accept="video/mp4">
+				</div>
+			</td>
+			<th><label for='txt04'>제공형태</label></th>
+			<td>
+				<input type='hidden' name='contSplyTpCd'>
+				<input type='text' name='contSplyTpCdNm' readonly>
+			</td>
+			<th>영상분량</th>
+			<td>
+				<div class='time-wrap flex'>
+					<input type='text' name='vodQuntyHh' placeholder='HH' class='time' title='시간' readonly>:
+					<input type='text' name='vodQuntyMi' placeholder='MM' class='time' title='분' readonly>:
+					<input type='text' name='vodQuntySec' placeholder='SS' class='time' title='초' readonly>
+				</div>
+			</td>
+		</template>
+		<template id="vodEmbedHtml">
+			<th>
+				<label for='txt05'>소스코드(URL)<span class='required'><i class='blind'>필수입력</i></span></label>
+			</th>
+			<td colspan='3'>
+				<div class='url-area flex'>
+					<input type='text' id='txt05' name='linkUrl'>
+					<button type='button' name="doPreview" class='btn-play'><span>미리보기</span></button>
+				</div>
+			</td>
+			<th>영상분량</th>
+			<td>
+				<div class='time-wrap flex'>
+					<input type='text' name='vodQuntyHh' placeholder='HH' class='time' title='시간' readonly>:
+					<input type='text' name='vodQuntyMi' placeholder='MM' class='time' title='분' readonly>:
+					<input type='text' name='vodQuntySec' placeholder='SS' class='time' title='초' readonly>
+				</div>
+			</td>
+		</template>
+		<template id="onePointLessonHtml">
+			<tr>
+				<td class=''>
+					<input type="text" name='lesnNms' title='레슨명'>
+				</td>
+				<td class=''>
+					<div>영상 파일 :</div>
+					<div class="fileUpload flex" style="align-items: center; margin-top: 5px;">
+<!--						<canvas style="display: none"></canvas>-->
+						<input type="text" name="uploadFilesName" class="url" placeholder="" readonly="" style="background-color: #fff;">
+						<label class="uploadFiles">파일 선택</label>
+						<input type="file" name="uploadFiles" class="upload" accept="video/mp4">
+						<div class='time-wrap' style="margin-left: 10px">
+							<input type='text' name='vodQuntyHhs' placeholder='HH' class='time' title='시간' readonly>:
+							<input type='text' name='vodQuntyMis' placeholder='MM' class='time' title='분' readonly>:
+							<input type='text' name='vodQuntySecs' placeholder='SS' class='time' title='초' readonly>
+						</div>
+					</div>
+
+					<div style="margin-top: 20px">대표 이미지 :</div>
+					<div class="thum-upload-wrap flex" style=" margin-top: 5px;">
+						<div class="thumbnail" style="width: 230px; height: 130px">
+							<img class="previewImage" name="previewImages" src="/sems/assets/img/common/noimage.png" alt="대표 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+						</div>
+						<div class="btn-upload-wrap">
+							<button type="button" name="doUploadImages" class="btn-upload"><span>이미지 업로드</span></button>
+						</div>
+						<input type="hidden" name="uploadImagesChange">
+						<input type="file" name="uploadImages" accept="image/*" style="display:none;">
+					</div>
+				</td>
+				<td class=''>
+					<div class="wrap">
+						<input type="hidden" name="vodComnts">
+						<div class="select-group" style="margin-bottom: 5px">
+							<div style="text-align: center; line-height: 200%;">
+								<select name="depth" class="select">
+									<option value="1">Lv1</option>
+									<option value="2">Lv2</option>
+								</select>
+								<button name="doDelCont" style="color: darkred;">[삭제]</button>
+							</div>
+							<textarea name='vodComntsTmp' cols='' rows=''></textarea>
+						</div>
+					</div>
+					<div class='btn-add-wrap'>
+						<button type='button' name="doAddCont" style="padding: 0;"><span>내용 추가</span></button>
+					</div>
+				</td>
+				<td>
+					<button type="button" name="doDelRow" class="btn-del"><span>삭제</span></button>
+				</td>
+			</tr>
+		</template>
+		<!--// Template -->
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">컨텐츠 등록</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="search-wrap">
+						<form id="docForm">
+							<fieldset>
+								<legend>컨텐츠 등록</legend>
+								<div class="table-wrap">
+									<table class="inner-input">
+										<caption>컨텐츠 등록</caption>
+										<colgroup>
+											<col style="width: 10%;">
+											<col style="width: 33%;">
+											<col style="width: 9%;">
+											<col style="width: 19%;">
+											<col style="width: 9%;">
+											<col style="width: 20%;">
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>컨텐츠 종류<span class="required"><i class="blind">필수입력</i></span></th>
+											<td colspan="5">
+												<ul class="flex ck-list" id="contKindUl">
+													<li>
+														<input type="radio" name="contKindCd" id="radio001" value="10" checked="checked">
+														<label for="radio001">문서</label>
+													</li>
+													<li>
+														<input type="radio" name="contKindCd" id="radio002" value="20">
+														<label for="radio002">영상</label>
+													</li>
+													<li>
+														<input type="radio" name="contKindCd" id="radio003" value="30">
+														<label for="radio003">영상(원포인트레슨)</label>
+													</li>
+												</ul>
+											</td>
+										</tr>
+										<tr id="regTypeTr">
+											<th>등록방식<span class="required"><i class="blind">필수입력</i></span></th>
+											<td colspan="5">
+												<div class="flex">
+													<ul class="flex ck-list flex1" id="contRmthdUl">
+														<li>
+															<input type="radio" name="contRmthdCd" id="contRmthdCd10" value="10" checked="checked">
+															<label for="contRmthdCd10">컨텐츠 업로드</label>
+														</li>
+														<!-- 영상 선택시 비노출 -->
+														<li id="linkLi">
+															<input type="radio" name="contRmthdCd" id="contRmthdCd20" value="20">
+															<label for="contRmthdCd20">아웃링크</label>
+														</li>
+														<!-- 영상 선택시만 노출 -->
+														<li id="embedLi" style="display:none;">
+															<input type="radio" name="contRmthdCd" id="contRmthdCd30" value="30">
+															<label for="contRmthdCd30">임베드 코드(URL) 입력</label>
+														</li>
+													</ul>
+												</div>
+											</td>
+										</tr>
+										<tr id="docSourceTr">
+										</tr>
+										<tr>
+											<th><label for="contNm">컨텐츠명<span class="required"><i class="blind">필수입력</i></span></label></th>
+											<td>
+												<input type="text" name="contNm" id="contNm">
+											</td>
+											<th><label for="contUno">컨텐츠번호</label></th>
+											<td>
+												<input type="text" name="contUno" id="contUno" value="" readonly>
+											</td>
+											<th><label for="pblcnGbCd">발간 일자<span class="required"><i class="blind">필수입력</i></span></label>
+											</th>
+											<td>
+												<div class="flex date-publication">
+													<select name="pblcnGbCd" id="pblcnGbCd" class="type select">
+														<option value="10">연도</option>
+														<option value="20">월</option>
+														<option value="30">일자</option>
+													</select>
+													<input type="text" name="pblcnYy" id="pblcnYy" class="year inputNumber" value="" title="연도" placeholder="YYYY">
+													<input type="text" name="pblcnMm" id="pblcnMm" class="month inputNumber" minlength="2" maxlength="2" title="월" placeholder="MM" readonly>
+													<input type="text" name="pblcnDd" id="pblcnDd" class="day inputNumber" minlength="2" maxlength="2" title="일자" placeholder="DD" readonly>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<th><label for="srcNm">출처<span class="required"><i
+												class="blind">필수입력</i></span></label></th>
+											<td>
+												<div class="inputbtn-wrap">
+													<input type="hidden" name="srcUid" id="srcUid">
+													<input type="text" id="srcNm" name="srcNm" readonly="readonly">
+													<button type="button" name="doSrcSearch" class="btn-srch"><span class="blind">검색</span>
+													</button>
+												</div>
+											</td>
+											<th><label for="dmstcYnNm">국내/해외</label></th>
+											<td>
+												<input type="hidden" name="dmstcYn" id="dmstcYn">
+												<input type="text" name="dmstcYnNm" id="dmstcYnNm" value="" readonly>
+											</td>
+											<th><label for="splyLangCd">제공 언어<span class="required"><i class="blind">필수입력</i></span></label>
+											</th>
+											<td>
+												<select name="splyLangCd" id="splyLangCd" class="select">
+													<option value="">선택</option>
+													<option value="10">국문</option>
+													<option value="20">영문</option>
+													<option value="30">기타</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label for="contTpLclsfCd">유형 분류<span class="required"><i class="blind">필수입력</i></span></label>
+											</th>
+											<td>
+												<div class="select-group">
+													<select name="contTpLclsfCd" id="contTpLclsfCd" class="select">
+														<option value="">선택</option>
+														<option value="10">삼일발간물</option>
+														<option value="20">기준/가이드라인</option>
+														<option value="30">법/제도</option>
+														<option value="40">보고/연구</option>
+														<option value="50">교육/안내</option>
+													</select>
+													<select name="contTpMclsfCd" id="contTpMclsfCd" class="select" disabled>
+														<option value="">선택</option>
+														<option value="10">뉴스레터</option>
+														<option value="20">인사이트 리포트</option>
+													</select>
+												</div>
+											</td>
+											<th><label for="taskClsfCd">업무 분류<span class="required"><i class="blind">필수입력</i></span></label>
+											</th>
+											<td>
+												<select name="taskClsfCd" id="taskClsfCd" class="select">
+													<option value="">선택</option>
+													<option value="10">ESG경영관리</option>
+													<option value="20">실행</option>
+													<option value="30">전략계획</option>
+													<option value="40">공시</option>
+													<option value="50">평가</option>
+												</select>
+											</td>
+											<th><label for="sbjtGbCd">주제 분류<span class="required"><i class="blind">필수입력</i></span></label>
+											</th>
+											<td>
+												<select name="sbjtGbCd" id="sbjtGbCd" class="select">
+													<option value="">선택</option>
+													<option value="10">ESG일반</option>
+													<option value="20">환경</option>
+													<option value="30">사회</option>
+													<option value="40">거버넌스</option>
+													<option value="50">금융</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th>전시 여부<span class="required"><i class="blind">필수입력</i></span></th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd04" value="40">
+														<label for="dpTpCd04">전체열람허용</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd01" value="10" checked>
+														<label for="dpTpCd01">전체공개</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd02" value="20">
+														<label for="dpTpCd02">일부공개</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd03" value="30">
+														<label for="dpTpCd03">비전시</label>
+													</li>
+												</ul>
+											</td>
+											<th>전시 기간</th>
+											<td colspan="3">
+												<div class="date-select flex date-ck-mix">
+													<div class="datepicker-wrap flex">
+														<input type="text" name="dpSttDte" id="dpSttDte" class="datepicker" disabled>
+														<input type="text" name="dpSttHh" value="00" class="time inputNumber" disabled>:<input type="text" name="dpSttMi" class="time inputNumber" value="00" disabled>
+														<span class="separator"> - </span>
+														<input type="text" name="dpEndDte" id="dpEndDte" class="datepicker" disabled>
+														<input type="text" name="dpEndHh" value="23" class="time inputNumber" disabled>:<input type="text" name="dpEndMi" class="time inputNumber" value="59" disabled>
+													</div>
+													<input type="checkbox" id="pirdStngUseYn" name="pirdStngUseYn" value="Y"><label for="pirdStngUseYn">기간설정사용</label>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<th>일부 공개 대상</th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd01" value="10">
+														<label for="rlsTgtCd01">그룹 A</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd02" value="20">
+														<label for="rlsTgtCd02">그룹 B</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd03" value="30">
+														<label for="rlsTgtCd03">그룹 C</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd04" value="40">
+														<label for="rlsTgtCd04">그룹 D</label>
+													</li>
+												</ul>
+											</td>
+											<!-- 20230802 수정 -->
+											<th>다운로드 가능여부</th>
+											<td colspan="3">
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="dwnldPsbltyYn" id="dwnldPsbltyYn01" value="Y" checked="checked">
+														<label for="dwnldPsbltyYn01">가능</label>
+													</li>
+													<li>
+														<input type="radio" name="dwnldPsbltyYn" id="dwnldPsbltyYn02" value="N">
+														<label for="dwnldPsbltyYn02">불가 </label>
+													</li>
+												</ul>
+											</td>
+											<!-- //20230802 수정 -->
+										</tr>
+										<tr>
+											<th>검색 가능 여부</th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="srchPsbltyYn" id="radio12" value="Y" checked="checked">
+														<label for="radio12">가능</label>
+													</li>
+													<li>
+														<input type="radio" name="srchPsbltyYn" id="radio13" value="N">
+														<label for="radio13">불가</label>
+													</li>
+												</ul>
+											</td>
+											<th>태그 키워드</th>
+											<td colspan="3">
+												<input type="text" name="tagKwrd" class="w100p" placeholder="우선순위에 따라 콤마로 구분하여 입력하세요 (최대 100자)">
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- ESG토픽 -->
+								<div class="table-wrap">
+									<table id="esgTopic" class="table-type-mix line-gray">
+										<caption>ESG 토픽 선택</caption>
+										<colgroup>
+											<col style="width: 120px;">
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+										</colgroup>
+										<tbody>
+										<tr class="topicMenuTitle">
+											<th rowspan="2">ESG 토픽</th>
+										</tr>
+										<tr class="topicList">
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<!--// ESG토픽 -->
+
+								<!-- //table-wrap -->
+								<div class="table-wrap">
+									<table class="line-gray">
+										<caption>컨텐츠 등록</caption>
+										<colgroup>
+											<col style="width: 120px;">
+											<col>
+											<col style="width: 120px;">
+											<col>
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>대표 이미지<br>(230*130)</th>
+											<td>
+												<div class="thum-upload-wrap flex">
+													<div class="thumbnail" style="width: 230px; height: 130px">
+														<img id="previewImage" class="previewImage" name="previewImage" src="/sems/assets/img/common/noimage.png" alt="대표 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+														<img name="previewImageTmp" style="display: none;">
+													</div>
+													<div class="btn-upload-wrap">
+														<button type="button" class="btn-upload" onclick="$('#regPopContents #uploadImage').click();"><span>이미지 업로드</span></button>
+													</div>
+													<input type="hidden" name="uploadImageChange">
+													<input type="file" id="uploadImage" name="uploadImage" accept="image/*" style="display:none;">
+												</div>
+											</td>
+											<th>메모 (컨텐츠 요약)</th>
+											<td>
+												<textarea name="contSumry" id="contSumry" cols="" rows="" style="height: 130px"></textarea>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //table-wrap -->
+
+								<!-- 영상 원포인트레슨 선택시 노출 -->
+								<div id="onePointResson" class="table-wrap" style="display: none;">
+									<table class='lesson-table line-gray'>
+										<caption>컨텐츠 등록</caption>
+										<colgroup>
+											<col style='width: 25%;'>
+											<col style='width: 37%;'>
+											<col style='width: *;'>
+											<col style='width: 5%;'>
+										</colgroup>
+										<thead>
+										<tr>
+											<th colspan='4'>
+												<div class='inner-btn'>
+													영상 레슨 등록
+													<!--													<button type='button' class='btn_link'><span>미리보기</span></button>-->
+												</div>
+											</th>
+										</tr>
+										<tr>
+											<th>레슨명<span class="required"><i class="blind">필수입력</i></span></th>
+											<th>영상 파일 업로드<span class="required"><i class="blind">필수입력</i></span></th>
+											<th>영상 설명<span class="required"><i class="blind">필수입력</i></span></th>
+											<th></th>
+										</tr>
+										</thead>
+										<tbody class='lesson-list' id='lessonList'>
+										</tbody>
+									</table>
+									<div class='btn-add-wrap'>
+										<button type='button' name="doAddRow" class='btn-add'><span>영상 레슨 추가</span></button>
+									</div>
+								</div>
+								<!-- //영상 원포인트레슨 선택시 노출 -->
+
+								<div class="btn-wrap">
+									<button type="button" name="doRegist" class="btn-primary">등록</button>
+									<button type="button" name="doInit" class="btn-sub">초기화</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- //search-wrap -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!--//xycenter-->
+	</div>
+	<!--//modal-wrap-->
+
+	<!-- 컨텐츠 조회 팝업 -->
+	<th:block th:replace="/backoffice/contents/document/documentDetailEditPop :: documentDetailEditPopFragment"></th:block>
+	<!--//modal-wrap-->
+</div>
+
+</html>

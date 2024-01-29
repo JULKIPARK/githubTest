@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+
+	<div class="result-head">
+		<div class="total">문서자료<strong th:text="${docTotal}"></strong>건</div>	
+		<ul class="sorting-wrap current-wrap">
+			<li><button type="button" id="sort_rd" onclick="sorting('rd')"><span>등록일 최신순</span></button></li>
+			<li><button type="button" id="sort_pd" onclick="sorting('pd')"><span>발간일 최신순</span></button></li>
+			<li><button type="button" id="sort_c" onclick="sorting('c')"><span>조회순</span></button></li>
+			<li><button type="button" id="sort_r" onclick="sorting('r')"><span>정확도순</span></button></li>
+		</ul>
+	</div>
+	
+	<div class="table-wrap">
+		<table>
+			<caption>뉴스레터</caption>
+			<colgroup>
+				<col style="width: 8%;">
+				<col style="width: *">
+				<col style="width: 25%">
+				<col style="width: 13%">
+				<col style="width: 13%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>제목</th>
+					<th>출처</th>
+					<th>발간일</th>
+					<th>등록일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="result, status : ${docList}">
+					<td th:text="${status.count}"></td>
+					<td class="subject"><a href="javascript:void(0);" class="content_pop link ellipsis" th:data-kind="${result.cont_kind_cd}" th:data-uid="${result.cont_uid}" th:data-cd="${result.cont_rmthd_cd}" th:utext="${result.cont_nm}"></a></td>
+					<td th:utext="${result.src_nm}"></td>
+					
+					<!-- 발간일 -->
+					<td th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 4 }"
+							th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}"
+          					th:text="${year}">
+					</td>
+					<td th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 6 }"
+							th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}"
+          					th:text="${year + '.' + month}">
+					</td>
+					<td th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 8 }"
+							th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}, 
+          					 		day=${#strings.substring(result.pblcn_dte, 6, 8)}"
+          					th:text="${year + '.' + month + '.' + day}">
+					</td>
+					
+					
+					<!-- 등록일 -->
+					<td th:with="year=${#strings.substring(result.fst_ins_dt, 0, 4)}, 
+              					 month=${#strings.substring(result.fst_ins_dt, 4, 6)}, 
+              					 day=${#strings.substring(result.fst_ins_dt, 6, 8)}"
+              			th:text="${year + '.' + month + '.' + day}">
+					</td>	
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- paging -->
+		<div class="paging">
+			<ul class="pagination">
+				<li class="btn first"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateFirstPage} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">처음</span></a></li>
+				<li class="btn prev"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.prePage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">이전</span></a></li>				
+				<li th:each="page: ${PageInfo.navigatepageNums}" th:class="${page == PageInfo.pageNumber ? 'page-item on' : 'page-item'}">
+                	<a th:text="${page}" href="#" th:onclick="'javascript:gotopage(' + ${page-1} + '); return false;'" class="page-link"></a>
+            	</li>
+
+				<li class="btn next"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.nextPage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">다음</span></a></li>
+				<li class="btn last"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateLastPage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">마지막</span></a></li>
+			</ul>
+		</div>
+		<!-- //paging -->
+</body>
+
+
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function (_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function () {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				var stDay = _comLib.lastMonth();
+				$("#searchListFrm INPUT[name=schSchdlSttDte]").val(stDay.substring(0, 8) + '01');
+				$("#searchListFrm INPUT[name=schSchdlEndDte]").val(stDay);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/management/selectScheduleList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#schdlListDiv").replaceWith(fragment);
+						$("#schdlTotalCountView").text("총 " + _formLib.addComma($("#schdlTotalCount").val()) + "건");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let delData = function () {
+				console.log(`[MODULE] ${moduleNm} -> delData`);
+
+				var formData = new FormData($("#searchListFrm")[0]);
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/management/deleteSchedule"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("삭제에 성공하였습니다.");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+					}
+				});
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록일자
+				$("#searchListFrm BUTTON[name=doSetRangeOneMonth]").on("click", function() {
+					_comLib.setDatePicker("schSchdlSttDte", "schSchdlEndDte", "yy.mm.dd");
+					var stDay = _comLib.preMonth(1);
+					$("#searchListFrm INPUT[name=schSchdlSttDte]").val(stDay);
+					$("#searchListFrm INPUT[name=schSchdlEndDte]").val(_comLib.toDay());
+				})
+				$("#searchListFrm BUTTON[name=doSetRangeThreeMonth]").on("click", function() {
+					_comLib.setDatePicker("schSchdlSttDte", "schSchdlEndDte", "yy.mm.dd");
+					var stDay = _comLib.preMonth(3);
+					$("#searchListFrm INPUT[name=schSchdlSttDte]").val(stDay);
+					$("#searchListFrm INPUT[name=schSchdlEndDte]").val(_comLib.toDay());
+				});
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+					$("#searchListFrm BUTTON[name=doSetRangeOneMonth]").trigger('click');
+				});
+
+				// 일정등록 버튼
+				$("BODY").on('click', '#searchListFrm BUTTON[name=doSchdlAdd]', function() {
+					regist.openPop();
+				});
+
+				// 일정삭제 버튼
+				$("BODY").on('click', '#searchListFrm BUTTON[name=doSchdlDel]', function() {
+					if (!$("#searchListFrm input[name=schdlUid]:checked").length) {
+						alert('선택된 대이터가 없습니다.');
+						return;
+					}
+
+					if (!confirm("체크된 데이터의 모든내용이 삭제됩니다. \n삭제 하시겠습니까?")) {
+						return;
+					}
+
+					delData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#schdlListDiv A.link', function() {
+					view.openPop($(this).data('id'));
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function () {
+			let moduleNm = "view";
+			let dataId;
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function (_schdlUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_schdlUid})`);
+
+				setData(_schdlUid, function () {
+					dataId = _schdlUid;
+					$('#schdlViewPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				})
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 삭제버튼
+				$("#schdlViewPop BUTTON[name=doDelete]").on("click", function () {
+					if (confirm('정말 삭제하시겠습니까?')) {
+						delData();
+					}
+				});
+
+				// 수정버튼
+				$("#schdlViewPop BUTTON[name=doEdit]").on("click", function () {
+					console.log('EDIT');
+					$('#schdlViewPop').removeClass('show');
+					regist.openPop(dataId);
+				});
+			};
+
+			let setData = function (_schdlUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_schdlUid})`);
+
+				getData(_schdlUid, function (data) {
+					var info = data.item;
+
+					$("#schdlViewPop #schdlTpCdNm").empty().append(info.schdlTpCdNm);
+					$("#schdlViewPop INPUT[name=schdlTtl]").val(info.schdlTtl);
+					if (info.schdlGbCd !== '30') {
+						var tmpStr = info.schdlSttDte;
+						if (info.schdlGbCd === '20') {
+							tmpStr += ' ~ ' + info.schdlEndDte;
+						}
+						$("#schdlViewPop INPUT[name=schdlDte]").val(tmpStr);
+					} else {
+						$("#schdlViewPop INPUT[name=schdlDte]").val(info.udtmnSchdlYy + '년 ' + info.udtmnSchdl);
+					}
+					$("#schdlViewPop TEXTAREA[name=schdlCn]").val(info.schdlCn);
+					$("#schdlViewPop INPUT[name=linkUrl]").val(info.linkUrl);
+					$("#schdlViewPop BUTTON[name=doDelete], #schdlViewPop BUTTON[name=doEdit]").show();
+					if (info.mbrgbcd !== '10') {
+						$("#schdlViewPop BUTTON[name=doDelete], #schdlViewPop BUTTON[name=doEdit]").hide();
+					}
+
+					_callback();
+				});
+			};
+
+			let getData = function (_schdlUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_schdlUid})`);
+
+				var param = {
+					"url": "/sems/management/selectScheduleView"
+					, "type": "post"
+					, "data": {"schdlUid": _schdlUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+
+				_comLib.callAjax(param);
+			};
+
+			let delData = function () {
+				console.log(`[MODULE] ${moduleNm} -> delData`);
+
+				$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData();
+				formData.set("schdlUid", dataId);
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/management/deleteSchedule"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("삭제에 성공하였습니다.");
+						$("#schdlViewPop").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+						$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+				, getData
+			};
+		})();
+
+		/* 데이터 입력 모듈 */
+		let regist = (function () {
+			let moduleNm = "regist";
+			let schdlCnEdit;
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				schdlCnEdit = ace.edit("schdlCnEdit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/text",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				})
+
+				setEvent();
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 일정구분
+				$('#frmSchdlRegistPop INPUT[name=schdlGbCd]').on('change', function() {
+					var checked = $('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked');
+					$(checked).parent().parent().find('INPUT:not([type=radio]), SELECT').val('').prop('disabled', true);
+					$(checked).parent().find('INPUT:not([type=radio]), SELECT').prop('disabled', false);
+				}).trigger('change');
+
+				// 등록버튼
+				$("#frmSchdlRegistPop BUTTON[name=doSave]").on("click", function () {
+					// 일정제목
+					if ($('#frmSchdlRegistPop INPUT[name=schdlTtl]').val() === '') {
+						alert('일정제목을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlTtl]').focus();
+						return;
+					}
+
+					// 일정유형
+					if ($('#frmSchdlRegistPop SELECT[name=schdlTpCd]').val() === '') {
+						alert('일정유형을 선택해 주세요.');
+						$('#frmSchdlRegistPop SELECT[name=schdlTpCd]').focus();
+						return;
+					}
+
+					// 일정
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '10'
+						&& $('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').val() === '') {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').focus();
+						return;
+					}
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '20'
+						&& ($('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').val() === ''
+							|| $('#frmSchdlRegistPop INPUT[name=schdlEndDte]').val() === '')) {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').focus();
+						return;
+					}
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '30'
+						&& (!$('#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]').val()
+							|| !$('#frmSchdlRegistPop SELECT[name=udtmnSchdlMm]').val())) {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]').focus();
+						return;
+					}
+
+					// 상세내용
+					$('#frmSchdlRegistPop TEXTAREA[name=schdlCn]').val(schdlCnEdit.getValue());
+
+					saveData();
+				});
+			};
+
+			let openPop = function (_dataId) {
+				console.log(`[MODULE] ${moduleNm} -> openPop()`);
+
+				$("#frmSchdlRegistPop").resetForm();
+				$("#frmSchdlRegistPop INPUT[name=schdlUid]").val('');
+				$('#frmSchdlRegistPop INPUT[name=schdlGbCd]').trigger('change');
+				schdlCnEdit.setValue('');
+				$("#schdlRegistPop").addClass("show");
+
+				if (_dataId !== undefined) {
+					view.getData(_dataId, function(data) {
+						var info = data.item;
+
+						$("#frmSchdlRegistPop INPUT[name=schdlUid]").val(info.schdlUid);
+						$("#frmSchdlRegistPop INPUT[name=schdlTtl]").val(info.schdlTtl);
+						$("#frmSchdlRegistPop SELECT[name=schdlTpCd]").val(info.schdlTpCd);
+						$("#frmSchdlRegistPop INPUT[name=schdlGbCd][value='"+info.schdlGbCd+"']").prop('checked', true).trigger('change');
+						if (info.schdlGbCd !== '30') {
+							$("#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)").val(info.schdlSttDte);
+							if (info.schdlGbCd === '20') {
+								$("#frmSchdlRegistPop INPUT[name=schdlEndDte]:not(:disabled)").val(info.schdlEndDte);
+							}
+						} else {
+							$("#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]").val(info.udtmnSchdlYy);
+							$("#frmSchdlRegistPop SELECT[name=udtmnSchdlMm]").val(info.udtmnSchdlMm);
+						}
+						schdlCnEdit.setValue(info.schdlCn, -1);
+						$("#frmSchdlRegistPop INPUT[name=linkUrl]").val(info.linkUrl);
+					})
+				}
+
+				$("#frmSchdlRegistPop INPUT[name=schdlTtl]").focus();
+			};
+
+			let saveData = function () {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData($("#frmSchdlRegistPop")[0]);
+
+				var url = "/sems/management/insertSchedule";
+				if ($.trim($('#frmSchdlRegistPop INPUT[name=schdlUid]').val()) !== '') {
+					url = "/sems/management/updateSchedule";
+				}
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: url
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("저장에 성공하였습니다.");
+						$("#schdlRegistPop").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+						$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function () {
+			page.init();
+			list.init();
+			view.init();
+			regist.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="searchListFrm">
+
+		<!-- content -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>ESG 캘린더 관리</h3>
+				<ul class="breadcrumb">
+					<li>운영관리</li>
+					<li>ESG 캘린더 관리</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<div class="search-wrap">
+				<form action="">
+					<fieldset>
+						<legend>상세 검색</legend>
+						<div class="table-wrap">
+							<table class="inner-input">
+								<caption>일정 조회</caption>
+								<colgroup>
+									<col style="width:15%;">
+									<col style="width:75%;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th>관리 일정</th>
+									<td>
+										<div class="date-select flex">
+											<div class="datepicker-wrap">
+												<input type="text" name="schSchdlSttDte" class="datepicker" readonly>
+												<span class="separator"> - </span>
+												<input type="text" name="schSchdlEndDte" class="datepicker" readonly>
+											</div>
+											<button type="button" name="doSetRangeOneMonth" class="btn_date" value="1"><span>1개월</span></button>
+											<button type="button" name="doSetRangeThreeMonth" class="btn_date" value="3"><span>3개월</span></button>
+										</div>
+									</td>
+
+								</tr>
+								<tr>
+									<th>일정 유형</th>
+									<td>
+										<ul class="flex ck-list">
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area01" value="10" checked>
+												<label for="area01">ESG 행사 (포럼, 세미나)</label>
+											</li>
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area02" value="20" checked>
+												<label for="area02">ESG 도서/보고서 발간</label>
+											</li>
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area03" value="30" checked>
+												<label for="area03">ESG 정책</label>
+											</li>
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area04" value="40" checked>
+												<label for="area04">ESG 공시</label>
+											</li>
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area05" value="50" checked>
+												<label for="area05">ESG 평가</label>
+											</li>
+											<li>
+												<input type="checkbox" name="SchSchdlTpCd" id="area06" value="60" checked>
+												<label for="area06">기타</label>
+											</li>
+										</ul>
+									</td>
+								</tr>
+
+								<tr>
+									<th>검색</th>
+									<td>
+										<input type="text" name="schSrcWrd" title="검색" class="w100p">
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+						<div class="btn-wrap">
+							<button type="button" name="doSearch" class="btn-primary">조회</button>
+							<button type="button" name="doInit" class="btn-sub">초기화</button>
+						</div>
+						<!-- //btn-wrap -->
+					</fieldset>
+				</form>
+			</div>
+			<!-- //search-wrap -->
+			<div id="schdlListDiv" class="result-wrap">
+				<div class="total">
+					<span class="lable">ESG 일정 목록</span> - <strong id="schdlTotalCountView">총 12건</strong>
+					<th:block th:if="${session.BoMbrInfo.rights.contains('D')}">
+					<button type="button" name="doSchdlDel" class="btn-del"><span>일정 삭제</span></button>
+					</th:block>
+					<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+					<button type="button" name="doSchdlAdd" class="btn-del"><span>+일정 추가</span></button>
+					</th:block>
+				</div>
+
+				<!-- //sorting-wrap -->
+				<div class="table-wrap ">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="schdlTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="schdlPageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="schdlTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table>
+						<caption>일정목록</caption>
+						<colgroup>
+							<col style="width: 5%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 35%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th></th>
+							<th>일정</th>
+							<th>일정유형</th>
+							<th>일정제목</th>
+							<th>등록자</th>
+							<th>등록일자</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td><input type="checkbox" name="schdlUid" th:value="${item.schdlUid}"/></td>
+							<th:block th:if="${item.schdlEndDte == null}">
+								<td th:text="${item.schdlSttDte}">[일정]</td>
+							</th:block>
+							<th:block th:if="${item.schdlEndDte != null}">
+								<td th:text="${item.schdlSttDte} + ' ~ ' + ${item.schdlEndDte}">[일정]</td>
+							</th:block>
+							<td th:text="${item.schdlTpCdNm}">[일정유형]</td>
+							<td class="schdlTtlTd left">
+								<a th:text="${item.schdlTtl}" th:attr="data-id=${item.schdlUid}" class="link">[일정제목]</a>
+							</td>
+							<td th:text="${item.fstInsMbrNm}">[등록자]</td>
+							<td th:text="${item.fstInsDt}">[등록일자]</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td style="text-align: center;" colspan="6">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+				<div class="non_sch">
+					<div class="tit">미확정<br/>주요 일정</div>
+					<ul class="non_sch_list">
+						<li th:each="item, stat : ${list2}">
+							<span th:text="'[' + ${item.udtmnSchdl} + '] '"></span>
+							<a th:text="${item.schdlTtl}" th:attr="data-id=${item.schdlUid}" class="link" style="text-decoration: underline; cursor: pointer;">[일정제목]</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+
+	</form>
+
+	<!-- modal-wrap -->
+	<!-- 일정등록 popup fragment-->
+	<div id="schdlRegistPop" class="modal-wrap" style="z-index:1000">
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">ESG 일정 등록·변경</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="search-wrap">
+						<form id="frmSchdlRegistPop">
+							<input type="hidden" name="schdlUid">
+							<fieldset>
+								<legend>일정 등록</legend>
+								<div class="table-wrap">
+									<table class="inner-input">
+										<caption>일정 등록</caption>
+										<colgroup>
+											<col style="width:15%;">
+											<col style="width:35%;">
+											<col style="width:15%;">
+											<col style="width:35%;">
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>일정제목<span class="required"><i class="blind">필수입력</i></span></th>
+											<td>
+												<input type="text" name="schdlTtl" class="w100p" id="txt01" placeholder="">
+											</td>
+
+											<th>일정유형<span class="required"><i class="blind">필수입력</i></span></th>
+											<td>
+												<select name="schdlTpCd" class="select w100p">
+													<option value="">선택</option>
+													<option value="10">ESG 행사</option>
+													<option value="20">ESG 도서/보고서 발간</option>
+													<option value="30">ESG 정책</option>
+													<option value="40">ESG 공시</option>
+													<option value="50">ESG 평가</option>
+													<option value="60">기타</option>
+												</select>
+											</td>
+										</tr>
+
+										<tr>
+											<th>일정<span class="required"><i class="blind">필수입력</i></span></th>
+											<td colspan="3" class="w100p">
+                                                    <span class="se">
+                                                        <input type="radio" name="schdlGbCd" value="10" checked> 일자
+                                                        <div class="date-select flex">
+                                                            <div class="datepicker-wrap">
+                                                                <input type="text" name="schdlSttDte" class="datepicker" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </span>
+
+												<span class="se">
+                                                        <input type="radio" name="schdlGbCd" value="20"> 기간 범위
+                                                        <div class="date-select flex">
+                                                            <div class="datepicker-wrap">
+                                                                <input type="text" name="schdlSttDte" class="datepicker" readonly>
+                                                                <span class="separator"> - </span>
+                                                                <input type="text" name="schdlEndDte" class="datepicker" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </span>
+
+												<span class="se">
+                                                        <input type="radio" name="schdlGbCd" value="30"> 미확인일정
+                                                        <select name="udtmnSchdlYy" class="select">
+                                                            <option value="2023">2023년</option>
+															<option value="2024">2024년</option>
+															<option value="2025">2025년</option>
+															<option value="2026">2026년</option>
+															<option value="2027">2027년</option>
+															<option value="2028">2028년</option>
+															<option value="2029">2029년</option>
+															<option value="2030">2030년</option>
+                                                        </select>
+                                                        <select name="udtmnSchdlMm" class="select">
+															<optgroup label="[월]"></optgroup>
+                                                            <option value="01">1월</option>
+															<option value="02">2월</option>
+															<option value="03">3월</option>
+															<option value="04">4월</option>
+															<option value="05">5월</option>
+															<option value="06">6월</option>
+															<option value="07">7월</option>
+															<option value="08">8월</option>
+															<option value="09">9월</option>
+															<option value="10">10월</option>
+															<option value="11">11월</option>
+															<option value="12">12월</option>
+															<optgroup label=""></optgroup>
+															<optgroup label="[분기]"></optgroup>
+															<option value="21">1분기</option>
+															<option value="22">2분기</option>
+															<option value="23">3분기</option>
+															<option value="24">4분기</option>
+                                                        </select>
+                                                    </span>
+											</td>
+										</tr>
+
+
+										<tr>
+											<th>상세내용</th>
+											<td colspan="3">
+												<textarea name="schdlCn" cols="" rows="13" class="" style="display: none;"></textarea>
+												<div id="schdlCnEdit" class="editor" style="height: 300px; width: 100%;"></div>
+											</td>
+										</tr>
+
+										<tr>
+											<th>URL</th>
+											<td colspan="3">
+												<input type="text" name="linkUrl" class="w100p">
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- //영상 원포인트레슨 선택시 노출 -->
+								<div class="btn-wrap">
+									<button type="button" name="doSave" class="btn-primary">저장</button>
+									<button type="button" class="btn-sub btn-close">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- //search-wrap -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+	</div>
+
+	<!-- 일정View popup fragment-->
+	<div id="schdlViewPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">ESG 일정 상세조회</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+
+				<section class="modal-cont">
+					<div class="search-wrap">
+						<form action="">
+							<fieldset>
+								<legend>일정 정보</legend>
+								<h3 class="tit">ESG 일정정보</h3>
+								<span id="schdlTpCdNm" class="state-badge">행사</span>
+								<div class="table-wrap">
+									<table class="inner-input">
+										<caption>일정 정보</caption>
+										<colgroup>
+											<col style="width:15%;">
+											<col style="width:35%;">
+											<col style="width:15%;">
+											<col style="width:35%;">
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>일정제목</th>
+											<td>
+												<input type="text" class="w100p" name="schdlTtl" value="" readonly/>
+											</td>
+
+											<th>일정</th>
+											<td>
+												<input type="text" class="w100p" name="schdlDte" value="" readonly/>
+											</td>
+										</tr>
+										<tr>
+											<th>상세내용</th>
+											<td colspan="3">
+                                                    <textarea name="schdlCn" cols="" rows="13" class="" readonly></textarea>
+											</td>
+										</tr>
+										<tr>
+											<th>URL</th>
+											<td colspan="3">
+												<input type="text" name="linkUrl" class="w100p" value="" readonly/>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- //영상 원포인트레슨 선택시 노출 -->
+								<div class="btn-wrap">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('D')}">
+									<button type="button" name="doDelete" class="btn-sub">삭제</button>
+									</th:block>
+									<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+									<button type="button" name="doEdit" class="btn-primary">수정</button>
+									</th:block>
+									<button type="button" class="btn-sub btn-close">확인</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- //search-wrap -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!--//xycenter-->
+	</div>
+	<!--//modal-wrap-->
+</div>
+</html>

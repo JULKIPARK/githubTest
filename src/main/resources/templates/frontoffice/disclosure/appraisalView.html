@@ -1,0 +1,2625 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+
+
+		$(function(){
+			tab();
+
+			/*<![CDATA[*/
+				var tabId = "tabId"+/*[[${tabId}]]*/;
+				$("#"+tabId).addClass("current");
+				$("#tab"+/*[[${tabId}]]*/).show();
+			/*]]>*/
+
+ 			$(".keyword-wrap li button").on('click',function(){
+ 				var num = $(this).closest("li").index();
+ 				$(".keyword-wrap li button").removeClass("current");
+ 				$(this).addClass("current");
+ 				$(".tab-cont .contMain").hide();
+ 				$(".tab-cont .contMain").eq(num).show();
+ 		    })
+		});
+
+		$(function(){
+ 			$('.menu03').addClass("on");
+
+			 tabOffsetAuto();
+		});
+
+		function tabOffsetAuto() {
+			let winW = $(window).width();
+			if($(window).width() < 1180){
+			const btnLeft = $('.current-wrap .current').offset().left;
+			const btnW = $('.current-wrap .current').outerWidth(true);
+			$('.current-wrap').scrollLeft($('.current-wrap').scrollLeft() + btnLeft + -$(window).width()/2 + btnW/2);
+			}    
+		}
+	</script>
+
+</th:block>
+
+
+
+
+
+		<div layout:fragment="content">
+			<!-- content -->
+			 <section class="sub content content-esg-appraisal">
+
+
+                <div class="sub-title-a">
+					<div class="ct">
+						<div class="tit">ESG 평가</div>
+						<div class="subs">ESG 주요 평가기관을 소개하고, 산업별 중요 평가항목을 정리하였습니다.</div>
+					</div>
+					<div class="bgBack"></div>
+					<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+				</div>
+
+                <div class="tab-scroll">
+                    <ul class="keyword-wrap current-wrap">
+                        <li><button type="button" id="tabId1" class=" btn-rd-wh"><span>주요 평가기관</span></button></li>
+                        <li><button type="button" id="tabId2" class="btn-rd-wh"><span>주요 평가요소</span></button></li>
+                        <li><button type="button" id="tabId3" class="btn-rd-wh"><span>산업별 고려사항</span></button></li>
+                    </ul>
+                </div>
+
+
+                <div class="tab-cont">
+                	<!--//20230901 문구추가-->
+                	 <div class="esg05-wrap pt60 contMain tab-1" id="tab1"  style="display:none;">
+                	   	<section class="section">
+                   	   		 <div class="default-width pb60">
+                   	        	<!--20230901 수정//-->
+                   	        	<h3 class="tit-line-left">ESG 주요 평가기관</h3>
+                   	        	<h3 class="sutTit">기업의 ESG 경영활동을 평가하는 다양한 국내외 기관 중 대표적인 기관을 소개합니다.</h3>
+                   	        	<!--//20230901 수정-->
+								<div class="e_pc">
+									<div class="table-wrap mar_t30">
+										<table class="line">
+											<caption>ESG 주요 평가 기관</caption>
+											<!--20230901 col 수정//-->
+											<colgroup>
+												<col style="width: 6%;">
+												<col style="width: 28%;">
+												<col style="width: 41%">
+												<col style="width: 25%">
+											</colgroup>
+											<!--//20230901 수정-->
+											<thead>
+												<tr>
+													<th colspan="2">구분</th>
+													<th>설명</th>
+													<th>관련 URL</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td rowspan="3">국내</td>
+													<td class="lf">
+														<strong>KCGS</strong>
+														<p>한국 ESG 기준원</p>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>국내 기업과 자본·금융시장의 지속가능한 발전을 위해 기업 및 금융회사 지배구조 개선을 위한 다각도 지원</strong></p>
+														<ul class="bul-square">
+															<li>책임 투자를 위한 세부 원칙과 기준 제·개정 지원</li>
+															<li>ESG 평가 및 분석</li>
+															<li>책임 투자 및 의안분석 자문 서비스</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="http://www.cgs.or.kr/" class="btn-file" target="_blank">한국ESG기준원</a>
+													</td>
+												</tr>
+												<tr>
+													<td class="lf">
+														<strong>한국 ESG 연구소</strong>
+
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>다양한 출처(지속가능보고서, 각종 정보공개 시스템 등)의 정보를 종합하여 책임투자를 위한 ESG 평가정보, 자문서비스, 솔루션을 제공</strong></p>
+														<ul class="bul-square">
+															<li>투자자의 합리적 의사결정과 책임투자 지원을 위한 비재무적 성과 (환경, 사회, 지배구조)와 리스크 평가 제공</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="http://www.kesgresearch.com/" class="btn-file" target="_blank">한국ESG연구소</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>서스틴베스트</strong>
+
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>ESG 평가와 데이터, 펀드 운용 전략과 수탁자 책임 활동을 위한 종합 리서치 & 자문 서비스를 제공</strong></p>
+														<ul class="bul-square">
+															<li>투자자 관점의 ESG 전문회사로서 데이터에 기반한 ESG 분석 정보 제공</li>
+															<li>자체 개발한 평가모형으로 재무적 요소 뿐 아니라 비재무적 ESG 요소까지 고려한 지속가능한 투자 의사결정을 지원</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://sustinvest.com/" class="btn-file" target="_blank">서스틴베스트</a>
+													</td>
+												</tr>
+												<!--국외 table 전체수정 09.19-->
+												<tr>
+													<td rowspan="9">국외</td>
+													<td class="lf">
+														<strong>MSCI</strong>
+														<p>Morgan Stanley Capital International</p>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>모건스탠리의 자회사로서 글로벌 투자를 위한 의사결정 지원 도구 및 서비스를 제공</strong></p>
+														<ul class="bul-square">
+															<li>국가별 상장기업들의 ESG 위험과 기회에 대한 관리 수준을 측정하여 MSCI ESG 평가등급으로 제공</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.msci.com/zh/esg-ratings" class="btn-file" target="_blank">MSCI</a>
+													</td>
+												</tr>
+												<tr>
+													<td class="lf">
+														<strong>S&P Global</strong>
+														<p>Standard and Poor’s</p>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>1999년 다우존스 지속가능경영지수(DJSI, Dow Jones Sustainability Indices)를 개발해 매년 평가 결과 제공</strong></p>
+														<ul class="bul-square">
+															<li>전 세계 상위 기업을 대상으로 경제적 성과, 환경 및 사회 성과 등을 종합적으로 고려해 지속가능성을 분석</li>
+															<li>피평가기업이 설문에 답변한 내용을 기반으로 평가하며, 공통 평가 항목과 산업별 항목으로 구분하여 산업별 특성에 따라 가중치 부여 평가</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores" class="btn-file" target="_blank">S&P Global</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>CDP</strong>
+														<p>Carbon Disclosure Project</p>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>기업의 환경 지속가능성을 측정하여 탄소배출 등급을 평가</strong></p>
+														<ul class="bul-square">
+															<li>매년 수천개의 기업, 도시, 주, 지역을 지원하여 기후 변화, 물 안보 및 산림에 대한 위험과 기회를 측정</li>
+															<li>글로벌 환경 공시 시스템을 운영</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.cdp.net/" class="btn-file" target="_blank">CDP</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>EcoVadis</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>기업의 지속가능성을 평가하는 대표적인 국제 조사기구로 2007년부터 공급망 내 기업 대상 환경 및 사회적 성과를 평가·제공</strong></p>
+														<ul class="bul-square">
+															<li>160여개 국가, 200여개 산업, 7만5000여개 기업들을 대상으로 환경, 노동·인권, 윤리, 지속가능성 조달 등 4가지 주요 항목을 평가</li>
+															<li>유엔글로벌콤팩트 10대 원칙, 국제노동기구(ILO) 협약, GRI 기준, 유엔 기업과 인권 이행 원칙 등 국제 지속가능성 기준에 기초</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://ecovadis.com/" class="btn-file" target="_blank">EcoVadis</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>Sustainalytics</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>글로벌 펀드 평가회사 모닝스타가 인수한 후, Sustainalytics의 ESG 평가방법론을 활용하여 모든 펀드, 주식, 자산 분석에 ESG 요소 통합</strong></p>
+														<ul class="bul-square">
+															<li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+															<li>지속가능채권 가이드라인 검증기관으로 기업 및 금융기관이 ESG 채권을 발생할 때 평가와 인증을 수행</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.sustainalytics.com/" class="btn-file" target="_blank">Sustainalytics</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>FTSE Russell</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>2001년 ESG 평가를 바탕으로 한 지수인 ‘FTSE4Good’을 시작하였으며, 유럽 시장을 대표하는 지수</strong></p>
+														<ul class="bul-square">
+															<li>공개된 정보를 기반으로 평가하여 분기별로 지수에 편입된 기업을 발표</li>
+															<li>현재 14개 주제별로 300개 이상의 지표 포함</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.ftserussell.com/products/indices/ftse4good" class="btn-file" target="_blank">FTSE Russell</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>RepRisk</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>1998년 설립된 ESG 데이터 평가기관</strong></p>
+														<ul class="bul-square">
+															<li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+															<li>GRI, SASB, UNGC 등 글로벌 ESG 표준 의거 28개의 ESG 이슈, 58개 하위 주제로 ESG 리스크를 측정</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.reprisk.com" class="btn-file" target="_blank">RepRisk</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>Vigeo Eiris</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>2002년 설립된 지속가능금융 분야 전문 기업으로 ESG 평가, 데이터, 분석도구 등을 제공</strong></p>
+														<ul class="bul-square">
+															<li>2019년 4월 신용평가기관 무디스(Moody’s)가 인수</li>
+															<li>Vigeo Eiris의 ESG 평가체계는 환경, 사회 및 거버넌스 요소가 서로 관련 있고 보완적이라는 시각에 따라 각 요소를 분리하지 않음</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.moodys.com/web/en/us/capabilities/esg.html" class="btn-file" target="_blank">Moody's</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf">
+														<strong>Bloomberg</strong>
+													</td>
+													<td class="lf">
+														<p class="txt"><strong>10년 이상 전 세계 기업의 ESG 공시 데이터를 제공하고 있으며, 2020년 8월 이후 ESG Score 서비스도 제공</strong></p>
+														<ul class="bul-square">
+															<li>102개국 11,700개 이상의 기업에서 공개한 정보를 검증하여 블룸버그 터미널에 ESG 데이터를 공개하고 있음</li>
+															<li>ESG 데이터를 기반으로 자체 평가한 ESG Score를 MSCI, Sustainalytics 등 주요 ESG 평가기관 자료와 함께 제공</li>
+														</ul>
+													</td>
+													<td class="align-ct">
+														<a href="https://www.bloomberg.com/professional/product/esg-data/" class="btn-file" target="_blank">Bloomberg</a>
+													</td>
+												</tr>
+
+												<!--국외 table 전체수정 09.19 여기까지-->
+
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="e_mo">
+									<div class="row">
+										<div class="title-row">국내</div>
+										<div class="cont">
+											<div class="title-cont"><strong>KCGS</strong><p>한국 ESG 기준원</p></div>
+											<p><strong>국내 기업과 자본·금융시장의 지속가능한 발전을 위해 기업 및 금융회사 지배구조 개선을 위한 다각도 지원</strong></p>
+											<ul>
+												<li>책임 투자를 위한 세부 원칙과 기준 제·개정 지원</li>
+												<li>ESG 평가 및 분석</li>
+												<li>책임 투자 및 의안분석 자문 서비스</li>
+											</ul>
+											<a href="http://www.cgs.or.kr/" class="btn-file" target="_blank">한국ESG기준원</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>한국 ESG 연구소</strong></div>
+											<p><strong>다양한 출처(지속가능보고서, 각종 정보공개 시스템 등)의 정보를 종합하여 책임투자를 위한 ESG 평가정보, 자문서비스, 솔루션을 제공</strong></p>
+											<ul>
+												<li>투자자의 합리적 의사결정과 책임투자 지원을 위한 비재무적 성과 (환경, 사회, 지배구조)와 리스크 평가 제공</li>
+											</ul>
+											<a href="http://www.kesgresearch.com/" class="btn-file" target="_blank">한국ESG연구소</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>서스틴베스트</strong></div>
+											<p><strong>ESG 평가와 데이터, 펀드 운용 전략과 수탁자 책임 활동을 위한 종합 리서치 & 자문 서비스를 제공</strong></p>
+											<ul>
+												<li>투자자 관점의 ESG 전문회사로서 데이터에 기반한 ESG 분석 정보 제공</li>
+												<li>자체 개발한 평가모형으로 재무적 요소 뿐 아니라 비재무적 ESG 요소까지 고려한 지속가능한 투자 의사결정을 지원</li>									
+											</ul>
+											<a href="https://sustinvest.com/" class="btn-file" target="_blank">서스틴베스트</a>
+										</div>										
+									</div>
+									<div class="row">
+										<div class="title-row">국외</div>
+										<div class="cont">
+											<div class="title-cont"><strong>MSCI</strong><p>Morgan Stanley Capital International</p></div>
+											<p><strong>모건스탠리의 자회사로서 글로벌 투자를 위한 의사결정 지원 도구 및 서비스를 제공</strong></p>
+											<ul>
+												<li>국가별 상장기업들의 ESG 위험과 기회에 대한 관리 수준을 측정하여 MSCI ESG 평가등급으로 제공</li>										
+											</ul>
+											<a href="https://www.msci.com/zh/esg-ratings" class="btn-file" target="_blank">MSCI</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>S&P Global</strong><p>Standard and Poor’s</p></div>
+											<p><strong>1999년 다우존스 지속가능경영지수(DJSI, Dow Jones Sustainability Indices)를 개발해 매년 평가 결과 제공</strong></p>
+											<ul>
+												<li>전 세계 상위 기업을 대상으로 경제적 성과, 환경 및 사회 성과 등을 종합적으로 고려해 지속가능성을 분석</li>
+												<li>피평가기업이 설문에 답변한 내용을 기반으로 평가하며, 공통 평가 항목과 산업별 항목으로 구분하여 산업별 특성에 따라 가중치 부여 평가</li>
+											</ul>
+											<a href="https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores" class="btn-file" target="_blank">S&P Global</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>CDP</strong><p>Carbon Disclosure Project</p></div>
+											<p><strong>기업의 환경 지속가능성을 측정하여 탄소배출 등급을 평가</strong></p>
+											<ul>
+												<li>매년 수천개의 기업, 도시, 주, 지역을 지원하여 기후 변화, 물 안보 및 산림에 대한 위험과 기회를 측정</li>
+												<li>글로벌 환경 공시 시스템을 운영</li>
+											</ul>
+											<a href="https://www.cdp.net/" class="btn-file" target="_blank">CDP</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>EcoVadis</strong></div>
+											<p><strong>기업의 지속가능성을 평가하는 대표적인 국제 조사기구로 2007년부터 공급망 내 기업 대상 환경 및 사회적 성과를 평가·제공</strong></p>
+											<ul>
+												<li>160여개 국가, 200여개 산업, 7만5000여개 기업들을 대상으로 환경, 노동·인권, 윤리, 지속가능성 조달 등 4가지 주요 항목을 평가</li>
+												<li>유엔글로벌콤팩트 10대 원칙, 국제노동기구(ILO) 협약, GRI 기준, 유엔 기업과 인권 이행 원칙 등 국제 지속가능성 기준에 기초</li>
+											</ul>
+											<a href="https://ecovadis.com/" class="btn-file" target="_blank">EcoVadis</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>Sustainalytics</strong></div>
+											<p><strong>글로벌 펀드 평가회사 모닝스타가 인수한 후, Sustainalytics의 ESG 평가방법론을 활용하여 모든 펀드, 주식, 자산 분석에 ESG 요소 통합</strong></p>
+											<ul>
+												<li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+												<li>지속가능채권 가이드라인 검증기관으로 기업 및 금융기관이 ESG 채권을 발생할 때 평가와 인증을 수행</li>							
+											</ul>
+											<a href="https://www.sustainalytics.com/" class="btn-file" target="_blank">Sustainalytics</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>FTSE Russell</strong></div>
+											<p><strong>2001년 ESG 평가를 바탕으로 한 지수인 ‘FTSE4Good’을 시작하였으며, 유럽 시장을 대표하는 지수</strong></p>
+											<ul>
+												<li>공개된 정보를 기반으로 평가하여 분기별로 지수에 편입된 기업을 발표</li>
+												<li>현재 14개 주제별로 300개 이상의 지표 포함</li>
+											</ul>
+											<a href="https://www.ftserussell.com/products/indices/ftse4good" class="btn-file" target="_blank">FTSE Russell</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>RepRisk</strong></div>
+											<p><strong>1998년 설립된 ESG 데이터 평가기관</strong></p>
+											<ul>
+												<li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+												<li>GRI, SASB, UNGC 등 글로벌 ESG 표준 의거 28개의 ESG 이슈, 58개 하위 주제로 ESG 리스크를 측정</li>
+											</ul>
+											<a href="https://www.reprisk.com" class="btn-file" target="_blank">RepRisk</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>Vigeo Eiris</strong></div>
+											<p><strong>2002년 설립된 지속가능금융 분야 전문 기업으로 ESG 평가, 데이터, 분석도구 등을 제공</strong></p>
+											<ul>
+												<li>2019년 4월 신용평가기관 무디스(Moody’s)가 인수</li>
+												<li>Vigeo Eiris의 ESG 평가체계는 환경, 사회 및 거버넌스 요소가 서로 관련 있고 보완적이라는 시각에 따라 각 요소를 분리하지 않음</li>
+											</ul>
+											<a href="https://www.moodys.com/web/en/us/capabilities/esg.html" class="btn-file" target="_blank">Moody's</a>
+										</div>
+										<div class="cont">
+											<div class="title-cont"><strong>Bloomberg</strong></div>
+											<p><strong>10년 이상 전 세계 기업의 ESG 공시 데이터를 제공하고 있으며, 2020년 8월 이후 ESG Score 서비스도 제공</strong></p>
+											<ul>
+												<li>102개국 11,700개 이상의 기업에서 공개한 정보를 검증하여 블룸버그 터미널에 ESG 데이터를 공개하고 있음</li>
+												<li>ESG 데이터를 기반으로 자체 평가한 ESG Score를 MSCI, Sustainalytics 등 주요 ESG 평가기관 자료와 함께 제공</li>
+											</ul>
+											<a href="https://www.bloomberg.com/professional/product/esg-data/" class="btn-file" target="_blank">Bloomberg</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+                   		</section>
+               		 </div>
+
+                	<div class="esg05-wrap pt60 contMain tab-2" id="tab2" style="display:none;">
+                	    <section class="section">
+                	        <div class="default-width pb60">
+                            	<!--20230901 수정//-->
+                            	<h3 class="tit-line-left">ESG 주요 평가요소</h3>
+                            	<h3 class="sutTit">각 ESG 토픽에서 일반적으로 중요하게 고려하는 평가항목을 설명합니다.</h3>
+                            	<!--//20230901 수정-->
+								<div class="e_pc">
+									<div class="table-wrap mar_t30">
+										<table class="line sj_line">
+											<caption>ESG 주요 평가 기관</caption>
+											<!--20230901 col 수정//-->
+											<colgroup>
+												<col style="width:11%">
+												<col style="width:10%">
+												<col style="width:54%">
+												<col style="width:25%">
+											</colgroup>
+											<!--//20230901 수정-->
+											<thead>
+												<tr>
+													<th colspan="2">구분</th>
+													<th>평가요소</th>
+													<th>추가적인 ESG 토픽정보</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<tr>
+													<td rowspan="7" class="center">E(환경)</td>
+													<td class="lf center">
+														기후 변화
+													</td>
+													<td class="lf">
+														<div class="subs">기후변화는 오늘날 우리 세계가 직면한 가장 시급한 문제 중 하나입니다. 기업은 탄소 배출을 체계적으로 감축하여 기후변화에 대응하고, 녹색 성장을 경제 성장의 새로운 모멘텀으로 받아들이는 자세가 필요합니다. </div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.기후변화 거버넌스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">이사회와 경영진은 기후 관련 문제와 탄소중립에 대한 책임과 감독을 수행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.기후변화 대응 목표</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">기후 관련 중장기 목표를 설정하고 목표 이행을 위한 로드맵과 배출량 감축 목표가 공개되어 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.환경 성과 연계</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">경영진 또는 임원의 핵심성과지표(KPI)에 기후 관련 지표가 포함되며, 성과에 따른 인센티브가 제공됩니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.기후변화 위험 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">기후변화와 관련된 위험 및 기회를 식별하고 평가하며, 이에 대한 대응 전략과 재무적 영향을 어떻게 관리하고 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.시나리오 분석</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">기후변화 시나리오 분석을 통해 기후 변화의 재무적 영향을 측정하고, 그 결과를 공개하고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=2" class="p-btn">환경 > 기후변화</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														오염과 폐기물
+													</td>
+													<td class="lf">
+														<div class="subs">기업은 경영활동 과정에서 환경 및 신체의 건강에 해로운 물질을 배출하고, 자원을 불필요하게 낭비할 수 있습니다. 기업은 오염과 폐기물 관리에 있어 적극적으로 대응하여 환경에 미치는 부정적 영향을 최소화해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.오염과 폐기물 정책</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">오염 및 폐기물 이슈에 대한 중장기 목표와 전략, 정책 및 약속이 공개되어 있고 이를 담당·관리·감독하는 인원과 부서가 존재합니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.오염과 폐기물 목표</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">자체 폐기물 발생량 또는 산업 평균에 기초하여 폐기물 저감 목표를 설정하고, 감축 방안을 수립하였습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.오염물질 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">질소산화물(NOx), 황산화물(SOx), 생물화학적 산소요구량(BOD), 화학적 산소요구량(COD), 부유물질량(SS)등 대기 및 수질 오염 물질과 관련된 리스크를 식별하고 이를 감축 또는 관리하기 위한 프로세스를 운영하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.폐기물 발생량</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">폐기물 발생량을 매립, 소각, 재활, 기타 처리 방법으로 구분하여 집계하고, 폐기물 저감 목표에 따라 감축하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.유해화학물질 관리</div> 
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">유해물질에 대해서는 오염 및 폐기물과 별도로 집계하여 감축 목표를 설정하고 이를 이행하고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=5" class="p-btn">환경 > 오염과 폐기물</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														친환경 제품 및 기술
+													</td>
+													<td class="lf">
+														<div class="subs">
+															친환경 제품 및 기술을 활용하거나 제공함으로써 기업은 환경을 보호하고 당면한 환경문제에 적극적으로 대응할 수 있습니다. 또한, 친환경 제품 및 기술은 기업의 시장 경쟁력을 제고하고 새로운 소비자 층을 확보하는 등 지속가능한 비즈니스 모델을 구축하여 기업가치를 상승시킵니다.
+														</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.친환경 매출 및 구매액</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">친환경 매출 및 구매를 집계하기 위한 내부 기준이 존재하며, 저탄소 제품 등 친환경 매출 및 구매 비중이 증가하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.환경 영향 식별</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">전 과정 평가(LCA)를 통해 제품 및 서비스의 환경 영향을 식별하고 환경 영향 저감 활동을 수행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.친환경 투자</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">친환경 제품 및 서비스 투자를 통해 제품 및 서비스를 혁신하고, 총 R&D 지출액 대비 친환경 제품 및 서비스에 대한 R&D 지출액을 공개하고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=7" class="p-btn">환경 > 친환경 제품 및 기술</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														온실가스
+													</td>
+													<td class="lf">
+														<div class="subs">
+															온실가스 배출은 인간을 포함한 대기권, 수권, 빙권, 육지권과 생물권 등에 기후 변화를 심화시킵니다. 가뭄 증가, 산불, 홍수, 집중호우, 폭염 등 물리적 기후 조건의 부정적 변화는 인간과 생태계의 생존을 위협하고 있습니다.
+														</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.온실가스 감축 목표</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">SBTi 또는 이와 유사한 기준을 바탕으로 온실가스 배출량 감축 목표를 설정하고, 관련 이행 실적을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.직접 온실가스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">직접 온실가스(Scope 1) 배출량과 집약도는 목표 대비 실제 감축이 이루어지고, 외부 검증을 거쳐 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.간접 온실가스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">간접 온실가스(Scope 2) 배출량과 집약도는 목표 대비 실제 감축이 이루어지고, 외부 검증을 거쳐 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.기타 간접 온실가스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">기타 간접 온실가스(Scope 3) 배출량은 GHG프로토콜에 따라 카테고리별로 측정되었습니까? Scope 3 배출량과 집약도는 목표 대비 실제 감축이 이루어지고, 외부 검증을 거쳐 공개하고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=1" class="p-btn">환경 > 온실가스</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														에너지 사용
+													</td>
+													<td class="lf">
+														<div class="subs">
+															기업은 경영 활동을 수행하기 위해서 소비되는 에너지 유형과 소비량을 파악하여 에너지 사용 총량을 절감하여 친환경 에너지 체계로 전환해야 합니다. 지속가능하고 효율적인 에너지 사용은 환경을 보호하고, 기업의 운영 효율성과 수익성에 긍정적 영향을 미칠 수 있습니다.
+														</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.에너지 효율성 개선 정책</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">조직은 에너지 효율성 개선 관련하여 대외 공개된 정책이 있으며, 에너지 사용량 감축 목표를 설정하여 이를 이행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.에너지 사용량</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">조직은 에너지 사용량과 집약도를 재생에너지와 비재생에너지로 구분하여 측정하고, 외부 검증 절차를 거쳐 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.재생에너지로의 전환</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">조직은 재생에너지 사용 및 관리에 대한 중장기 목표를 설정하고, 재생에너지로의 전환을 실행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.제3자 인증</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">체계적인 에너지경영을 위하여(에너지경영시스템(ISO50001) 등) 제3자로부터 친환경 인증을 획득하였습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=3" class="p-btn">환경 > 에너지 사용</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														자원 및 순환경제
+													</td>
+													<td class="lf">
+														<div class="subs">
+															자원의 소모와 폐기를 최소화하고, 가능한 모든 자원을 재생하고 재사용함으로써 기업은 탄소 중립을 실현할 수 있습니다. 기업은 경영 활동의 가치 사슬 전 과정에서 순환경제와 연계를 강화 자원을 선순환하고 친환경 사업과 활동에 대해 지속적으로 고민하고 확장하는 자세가 필요합니다.
+														</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.원부자재</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">재생원료를 포함하여 원부자재 사용량을 공개하고, 재생원료 사용 비중을 확대하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.폐자원 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">소비 후 포장재나 플라스틱 포장과 같은 폐자원을 회수·재활용·업사이클링 과정을 통해 환경 영향 저감을 위한 활동을 하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.폐기물 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">발생된 폐기물은 적절하게 재활용·재사용 또는 처리하여 자원의 생산 및 소비 과정 효율성 개선을 위한 노력을 이행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.수자원 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">제품 및 서비스 생산·제조 과정에서 발생하는 용수 사용량을 감축 및 재사용하고, 물 부족 지역에 위치한 사업장의 수자원 리스크를 분석하고 중장기 목표 설정 및 구체적 방안을 통해 관리하고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=4" class="p-btn">환경 > 자원 및 순환경제</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														생물다양성
+													</td>
+													<td class="lf">
+														<div class="subs">
+															생물다양성은 생물 종의 다양성, 생물이 서식하는 생태계의 다양성, 생물이 지닌 유전적 다양성을 포괄하는 개념입니다. 생태계의 균형을 유지하고 생물다양성을 보존하는 것은 인류의 생존 및 번영과 직결되므로, 기업은 경영활동 과정에서 생물다양성에 부정적 영향을 미치는 사업의 잠재적 요소를 파악하고 관리해야 합니다.
+														</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.생물다양성 리스크 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">생물다양성과 관련된 위험과 기회를 식별하고 평가 및 관리하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.생물다양성 정책</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">생물다양성 정책은 조직의 활동으로 인한 자연 서식지 손상 예방 또는 관리 및 해결에 대한 전략과 이행 방안, 외부 이해관계자 그룹과의 협력 등을 포함하며, 이를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.생태계 보호</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">조직은 생물다양성 보전을 위한 활동 또는 프로그램을 이행하고 있으며, 이로 인한 생물다양성 보전 또는 강화를 정량화된 수치로 공개할 수 있습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/environmentView?tabId=6" class="p-btn">환경 > 생물다양성</a>
+													</td>
+												</tr>
+
+
+												<tr>
+													<td rowspan="6" class="center"> S(사회)</td>
+													<td class="lf center">
+														인적자원 관리
+													</td>
+													<td class="lf">
+														<div class="subs">기업은 지속가능경영 전략을 조직에 내재화 시키고, 조직과 다양한 이해관계자들의 지속가능한 성장에 기여하는 인적자원 관리 시스템을 구축해야 합니다. 인적자원 관리 시스템을 통해 기업은 인적자원의 성장 방향을 설정하여 인적자원이 바람직하게 성장할 수 있도록 지원하고, 임직원이 건강한 삶을 살 수 있도록 다양한 정책을 보장하고 운영해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.인적자원의 다양성 현황</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">성별, 국적, 인종 또는 민족 등 근로자의 다양성과 관련된 지표를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.인적자원의 다양성 제고</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">총 관리직 대비 여성 고위 관리자 수와 비율, 총 임원직 대비 여성 임원 수와 비율와 같이 근로자의 다양성 제고를 위한 목표값이 설정되어 있으며, 이를 뒷받침하는 프로그램이 운영되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.근무환경</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">근로자의 일과 생활의 균형, 건강과 웰빙을 위한 지원 프로그램 또는 제도가 마련되어 있으며 실제로 운영되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.노사관계</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">노동자 권리를 보장하는 내부 정책 및 실질적인 운영 현황을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.교육훈련</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">근로자의 역량 개발을 위한 교육 프로그램을 운영하며, 비즈니스 실제 활용 여부와 그 영향을 측정하고 관리하고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=3" class="p-btn">사회 > 인적자원 관리</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														안전보건
+													</td>
+													<td class="lf">
+														<div class="subs">기업은 작업장에서의 물리적, 화학적, 생물학적 위험을 최소화하여 직원의 안전과 건강을 보장해야 합니다. 기업의 안전보건 조치는 직원의 복지를 증진시키며, 기업의 생산성 향상과도 연계됩니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.안전보건 체계</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">산업안전보건 체계 또는 정책이 확립되어 전사 차원에서 운영되고 있으며, 협력사도 관리 대상에 포함되어 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.임직원 및 협력사 참여</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">임직원과 협력사가 산업안전보건과 관련 위험에 대해 의견을 제시하고, 체계 및 목표 수립 과정에 참여할 수 있도록 다양한 채널을 활용할 수 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.안전보건 위험 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">산업안전보건 프로그램은 산업안전 관련 주요 위험을 식별하고 이를 제거하거나 통제할 수 있는 구체적인 관리 활동으로 구성되어 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.산업재해율</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">임직원과 협력사의 근로손실재해율(LTIFR), 사망자 수, 결근율, 공정 안전 사고 등 산업재해 관련 지표를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.공급망 안전보건</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">협력사의 산업안전보건 역량은 조직의 산업안전보건 지표의 하나로써, 정기적으로 평가 및 관리, 모니터링되고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=1" class="p-btn">사회 > 안전보건</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														인권
+													</td>
+													<td class="lf">
+														<div class="subs">UN 기업 인권 이행원칙(UNGP)에 의하면 모든 기업은 국제적으로 인정된 모든 인권을 존중하고, 기업은 직접 인권 침해를 야기해선 안 되며, 인권 침해에 기여해선 안 됩니다. 기업은 인권정책 선언에서 나아가 인권실사를 실시하고 구체적인 과정과 결과를 공시하는 단계로 나아가야 하며, 인권경영을 위해 소요되는 비용은 단순한 비용이 아니라 인류 보편적 가치를 추구하고 지속가능한 경영을 위한 투자로 인식을 전환해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.인권 정책</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">인권 관련 글로벌 이니셔티브를 바탕으로 수립한 인권경영 정책이 존재하고, 개별 인권 이슈에 대한 경영 방침 또는 정책이 공개되어 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.적용범위</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">인권경영은 전사 차원에서 운영되어 국내외 모든 사업장에 적용되며, 모든 이해관계자를 포함하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.인권 리스크</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">경영활동 과정에서 발생할 수 있는 인권 리스크를 식별하고 점검과 실사 등 구체적인 위험 관리 활동을 통해 인권 리스크를 완화 또는 해소하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.고충처리 프로세스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">인권 침해를 당하거나 인권 리스크를 인지한 이해관계자가 해당 내용을 신고할 수 있는 채널은 기밀 유지 원칙에 의해 운영되며, 처리 현황과 개선 및 완화 사항은 공개되고 있습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=2" class="p-btn">사회 > 인권</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														소비자
+													</td>
+													<td class="lf">
+														<div class="subs">기업은 경영 활동 시 제품과 서비스의 품질 및 안전성을 보장하고, 소비자의 기본권을 존중해야 합니다. 소비자를 보호하고 소비자의 만족도 증진을 위한 기업의 노력과 이행은 소비자와 신뢰를 형성하며, 이는 기업의 경쟁력과 지속가능성을 향상시킬 수 있습니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.소비자 보호 정책</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">소비자 안전 및 불완전판매 방지와 같이 소비자를 보호하기 위한 정책을 보유하고 있으며, 해당 정책에는 소비자 보호를 위한 구체적인 목표 및 이행 방안이 포함되어 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.소비자 피해 보상</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">제품 및 서비스로 인해 소비자 피해 발생 시, 이를 적극적으로 해결하고 각 단계별 진행상황에 대해서 투명하게 공유하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.소비자 만족도 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">소비자 및 고객 만족도 향상을 위해 만족도를 측정하고, 불만을 접수하는 다양한 채널을 실질적으로 운영하며, 처리 내역을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.소비자 개인정보</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">개인정보 처리 방침은 평이한 언어로 작성되어 소비자에게 안내되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.소비자 개인정보 위험 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">데이터 침해 사고 등 소비자의 개인정보 보호 관련 주요 위험을 식별하고 이를 관리하기 위한 프로세스가 운영되고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=4" class="p-btn">사회 > 소비자</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														공급망 관리
+													</td>
+													<td class="lf">
+														<div class="subs">EU의 공급망 실사제도, ESG 정보공개, 탄소중립 이행과정에서 Scope 3 감축 요구, 기관투자자의 영향력 행사 등으로 국제사회에서 공급망 관리를 강조하는 흐름은 점차 거세지고 있습니다. 기업의 가치사슬 구조가 복잡해짐에 따라 다수의 ESG리스크가 공급망에서 발생하고 있어, 이는 기업의 비즈니스 모델과 지속가능성을 위협하는 요소가 될 수 있습니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.협력사 ESG 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">조직이 협력사 ESG 리스크 관리 체계를 구축하고 있으며, 협력사 ESG 리스크는 실사 - 진단 - 개선의 프로세스를 거쳐 관리되고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.협력사 ESG 평가</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">협력사 ESG 리스크를 관리하기 위해 주요 협력사를 대상으로 ESG 경영 준수여부를 정기적으로 점검하여 협력사 ESG 경영 수준을 평가하고, 개선을 지원하며 미이행 협력사에 대한 조치가 이행되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.동반성장</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">협력사 ESG 역량 강화를 위해 교육 및 기술 지원, 투자 등을 지원하고 이를 KPI와 연계하여 성과를 관리하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.고충처리 프로세스</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">협력사를 위한 고충처리 시스템이 수립되어 있으며, 실질적으로 운영되고 현황을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.지속가능한 공급망</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">국가 간 분쟁이나 무역장벽 도입, 물류 및 유통망 경색, 기후 변화로 인한 생산량 감소 등 외부 요인으로 인해 발생할 수 있는 공급망 불안정 위험을 식별하고 대응하기 위한 계획을 수립하였습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">06.분쟁광물 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">분쟁광물 규제 관련 국제 기준을 준수하여 분쟁광물 대응 프로세스를 수립하고 보고 체계와 사용현황 조사, 관리 및 개선활동 등을 포함하는 분쟁광물 관리 정책을 수립였습니까? 해당 정책은 하위 공급사 내에서도 일관되게 적용되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">07.분쟁광물 사용 공개</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">분쟁광물 사용 금지를 원칙으로 하되, 분쟁 광물 구매 시에는 RBA 요구 사항에 따라 관련 원산지 정보 및 합법적 채굴이 증명된 경우에만 허용되며 이를 투명하게 공개하고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=1" class="p-btn">사회 > 공급망 관리</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														지역사회
+													</td>
+													<td class="lf">
+														<div class="subs">기업은 지역사회로부터 사업을 운영할 권리를 획득하고 지역사회의 일원으로서 공동의 환경과 사회 문제 해결에 적극적으로 앞장서야 합니다. 기업의 지역사회 공헌은 임직원 봉사활동과 기부금에서 그치는 것이 아니라 기업의 경영활동으로 인해 지역사회에 발생할 수 있는 리스크 요인을 분석하고 이를 해결하기 위한 전략적 사회공헌을 추진하는 것으로 전환되어야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.지역사회 공헌</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">지역사회 공헌을 위한 전략과 중장기 목표 및 구체적인 이행 방안이 수립되어 있으며, 지역사회 공헌 활동으로 인한 실제 성과를 KPI와 연계하여 관리하기 위한 정량적 지표를 정의하고 활용하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.지역사회 참여</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">이해관계자를 식별하고 의견을 수렴할 수 있는 채널이 실제로 운영되고 있으며, 지역사회의 의견이 조직의 경영활동에 반영되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.부정 영향 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">지역사회에 환경 오염, 강제 노동, 인권 침해 등 부정적 환경·사회 영향을 미칠 수 있는 리스크 요인을 식별 및 평가하고, 리스크별로 개선 또는 완화 조치의 이행 및 정기적 모니터링 작업을 수행하고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/socialView?tabId=5" class="p-btn">사회 > 지역사회</a>
+													</td>
+												</tr>
+
+
+
+												<tr>
+													<td rowspan="6" class="center">G(거버넌스)</td>
+													<td class="lf center">
+														주주 권리
+													</td>
+													<td class="lf">
+														<div class="subs">최근 주주행동주의가 본격화하면서 소액 주주의 적극적인 의사 개진과 요구가 증가하고 있습니다. 기업은 주주제안권 행사를 의사결정에 반영하고, 적합한 절차와 기준에 따라 주주 권리가 행사될 수 있도록 운영해야 합니다. </div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.주주 권익 보호</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">주주총회소집권, 다양한 의결권 행사 등 주주 권리 보호를 위한 정책을 수립하고 이를 정관에 반영하여 이행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.주주 환원</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">수립한 배당정책을 공개하고, 주당 배당금을 지속적으로 상향하거나 자사주를 매입하는 등 주주 가치 제고를 위해 적극적으로 활동하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.주주와의 소통</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">홈페이지 및 공시 조회 시스템, NDR(Non Deal Roadshow) 개최 등을 통해 주주에게 기업정보를 투명하게 제공하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.소유구조 공개</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">경영권 안정성을 저하시킬 수 있는 지분구조의 집중 및 분산 현황, 경영권 변동 이력 등과 같이 이해관계자가 전반적인 경영활동과 경영 위험을 평가할 수 있도록 해당 정보를 적기에 투명하게 제공하고 있습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/governanceView?tabId=2" class="p-btn">거버넌스 > 주주 권리</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														이사회
+													</td>
+													<td class="lf">
+														<div class="subs">이사회는 기업의 지속가능성 전략을 체계적으로 수립, 감독 및 실행합니다. 이사회의 적극적인 참여와 체계적인 지속가능성 관리는 장기적으로 기업의 경쟁력을 제고하고 사회적 책임을 다할 수 있도록 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.ESG 역할 및 책임</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">이사회는 최상위거버넌스 기구로서 ESG 안건과 중대성 평가 사항을 검토 및 승인하고 이를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.이사회 독립성</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">이사회는 독립성 관련 법적 기준을 충족하고, 조직과 중대한 이해관계를 가지지 않은 사람을 사외이사로 선임하여 경영진 및 지배주주에 의해 영향을 받지 않고 독립적인 의사결정 수행을 보장받고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.이사회 다양성</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">다양한 이해관계자를 고려하고 보다 넓은 관점에서 주요 의사결정을 내릴 수 있도록 성별·연령·출신 배경·국적·인종·종교·민족 및 문화적 배경 등의 다양성이 반영되어 있으며, 이사회 구성의 다양성 제고를 위한 구체적인 목표가 설정되어 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.이사회 전문성</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">개별 이사는 소속 이사회에 필요한 산업 경험과 역량을 갖춘 전문 인력이며, 다양한 이해관계자가 확인이 가능하도록 관련 정보는 대외 공개되어 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.성과 평가 및 보수</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">ESG 관련 성과 평가 체계가 수립되어 정기적으로 시행되고, 해당 성과는 KPI와 연계되어 보상의 기준으로 활용되고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/governanceView?tabId=1" class="p-btn">거버넌스 > 이사회</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														윤리경영
+													</td>
+													<td class="lf">
+														<div class="subs">기업의 사회적 책임을 다하기 위해 기업윤리를 실천하고 책임 있는 경영활동을 이행해야 합니다. 기업은 윤리 및 준법경영 활동을 통해 기업의 문화를 개선하고, 사회에 긍정적인 영향을 미치며, 이는 기업의 지속가능성을 높이는 요인입니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.윤리 규정 제정</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">부패 및 뇌물, 반독점 및 반경쟁 관행, 차별, 이해관계 상충, 정보보호, 내부 거래, 안전보건 등을 포함하는 윤리 규정을 제정하고 이를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.윤리경영 시스템</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">윤리 경영 및 컴플라이언스 준수를 위한 보고 체계와 핫라인 운영, 위반 시 징계 제도, 모니터링 시스템 등과 같은 구체적인 프로세스가 확립되어 운영되고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.임직원 윤리 교육</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">윤리 규정의 적용을 받는 조직의 구성원을 대상으로 컴플라이언스 준수를 위한 교육을 정기적으로 실시하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.위반 사례 공개</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">윤리 및 부정/부패 관련 컴플라이언스 위반 사례와 재발 방지를 위해 실제로 이행한 조치와 결과를 투명하게 공개하고 있습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/governanceView?tabId=4" class="p-btn">거버넌스 > 윤리경영</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														위험 관리
+													</td>
+													<td class="lf">
+														<div class="subs">경영환경이 급변함에 따라 기업을 둘러싼 리스크도 다양해지고 있습니다. 기업은 불안정한 환경 속에서 안정적인 경영 기반을 확보하기 위해 다양한 리스크에 선제적으로 대응해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.통합 리스크 관리</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">조직의 사업 모델과 경영 활동 전반에 걸쳐 발생할 수 있는 모든 리스크를 인식하고 관리하여 안정적인 경영 기반을 확보하기 위해 리스크 전문 인력으로 구성된 리스크관리워원회가 설립되어 있으며, 재무 리스크와 비재무 리스크를 분석하고 모니터링하며 정기적으로 스트레스 테스트를 진행하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.리스크 관리 역량</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">임직원의 리스크 관리 역량 강화를 위해 교육을 실시하고 조직의 리스크 이슈를 공유하며, 리스크 관리 인력에 대해선 리스크 관리 업무에 필요한 지식 및 기술, 업계 동향 등을 교육과정에 추가하여 제공하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.내부통제</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">재무정보의 신뢰성 확보, 관련 법령 및 규제 사항 준수 등 건전한 경영활동을 위한 기준 및 절차와 보고 체계가 확립되어 있고, 정기적으로 내부통제 위원회를 개최하여 주요 안건 및 협의 내용을 감사위원회에 보고하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.내부감사</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">독립된 내부감사부서가 존재하고, 해당 부서는 조직의 재무, 회계, 감사 관련 부정 사안 및 기타 내부통제 관련 리스크를 상시 점검하여 주요 안건을 감사위에 정기적으로 보고하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">05.감사기구의 전문성</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">상법 및 금융회사의 지배구조에 관한 법률에 의거하여 감사위원회는 독립성을 갖추고 회계 및 감사 분야의 전문성을 확보한 감사위원을 선임하여 감사위원회를 효과적으로 운영하고 있습니까?</div>
+															</dd>
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/governanceView?tabId=3" class="p-btn">거버넌스 > 위험 관리</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														투명한 정보 공개
+													</td>
+													<td class="lf">
+														<div class="subs">기업이 ESG 성과와 계획을 투명하게 공개함으로써 투자자, 소비자 등 다양한 이해관계자가 기업의 지속가능성을 평가하고 지원할 수 있습니다. 기업의 투명한 정보 공개는 지속가능한 발전 촉진과 기업과 이해관계자 간 신뢰 형성에 중요한 역할을 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.ESG 정보 공개</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">ESG 정책, 경영 현황, 평가 등급, 보고서 등과 같은 비재무 정보는 다양한 채널을 통해 이해관계자에게 공개되며, 관련 정보는 정기적으로 제공되고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.제3자 인증</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">공개된 ESG 정보는 전문성을 갖춘 제3자의 인증을 받았으며, 인증 내역과 인증 시 활용한 기준 또는 원칙 등을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.회계 투명성</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">조세부문의 사회적 책임과 의무를 다하고 조세 관련 리스크를 선제적으로 파악·관리하며, 국내외 법규를 준수하고 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/disclosure/disclosureView?tabId=1" class="p-btn">거버넌스 > 투명한 정보 공개</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														정보 보호
+													</td>
+													<td class="lf">
+														<div class="subs">철저한 정보 보안은 기업의 자산을 지키는 것일뿐 아니라 기업과 이해관계자 간의 신뢰 구축에 있어 필수적인 요소입니다. 기업은 효율적인 정보 관리를 통해 기업의 신뢰성을 높이고, 데이터 유출 등과 같은 사고로 인한 법률 및 재무적 부담을 완화하고 점차 고도화되는 보안 위협 속에서 다방면으로 보안체계를 강화해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.정보 보호 책임</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">정보 보호 최고책임자 및 담당 부서가 명시되어 있으며, 책임자는 관련 전문 지식을 보유하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.정보 보호 투자</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">정보 보안 및 개인정보보호를 위해 관련 프로세스 및 인프라에 투자하고, 관련 기술을 강화하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.정보 보안 교육</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">개인정보에 접근이 용이하고 이를 침해할 위험이 높은 임직원의 범위를 설정하고, 해당 인원에게 정보 보안 교육을 실시하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.정보 보안 사고 대응</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">물리적·인적 요인으로 발생할 수 있는 정보 보안 리스크를 식별 및 평가하고, 이에 대비하기 위한 프로세스를 수립하는 등 정보보안의 안정성을 확보하기 위한 구체적인 이행 방안이 마련되어 있습니까?</div>
+															</dd>
+
+														</dl>
+													</td>
+
+													<td>
+														<!-- <a href="#" class="p-btn" onclick="return false;">거버넌스 > 정보 보호</a> -->
+													</td>
+												</tr>
+
+
+
+
+												<tr>
+													<td rowspan="2" class="center">F(금융)</td>
+													<td class="lf center">
+														금융배출량
+													</td>
+													<td class="lf">
+														<div class="subs">금융배출량은 15가지 카테고리로 구분되어 있는 Scope 3 배출량 중 15번 ‘투자’ 부문 배출량에 해당되고, 일반기업과 달리 금융기업은 전체 온실가스 배출량 중 금융배출량이 차지하는 비중이 대부분입니다. 금융회사는 기후변화와 관련된 위험과 기회를 식별하기 위해 금융배출량을 정확히 산정해야 합니다. </div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.금융배출량</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">PCAF 등 금융배출량 산정 방법론에 따라 배출량을 산정하고 이를 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.탄소 중립 목표</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">산정한 금융배출량을 바탕으로 구체적인 탄소 중립 목표 설정과 이행 방안을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.글로벌 이니셔티브 참여</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">글로벌 이니셔티브에 가입하고 감축 목표 승인을 받아 글로벌 이해관계자의 요구에 대응하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.데이터 구축</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">금융기관의 금융배출량 공시 요구에 대응하고, 배출량을 정확하게 산정하기 위한 데이터 구축 및 모니터링 체계를 확립하였습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/financeView?tabId=4" class="p-btn">금융 > 금융배출량</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="lf center">
+														책임 투자
+													</td>
+													<td class="lf">
+														<div class="subs">금융기업의 투자 활동은 금융 이익을 창출할 뿐만 아니라 ESG 측면에서도 다양한 산업 분야의 기업, 자산, 프로젝트에 중요한 영향을 미칠 수 있습니다. 금융기업은 지속가능한 발전을 지원하는 투자 활동을 통해 환경과 사회에 긍정적인 영향을 미치는 것을 목표로 해야 합니다.</div>
+
+
+														<dl class="p-listA">
+															<dt>주요평가항목</dt>
+															<dd>
+
+																<div class="subj">01.ESG 통합(Integration)</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+
+																<div class="subs" style="display:none">수익 창출 전략, 포트폴리오의 위험 조정, 투자 기회 발굴 등 투자의사결정 과정에서 ESG 지표를 고려 및 통합하고 있습니까?</div>
+															</dd>
+
+															<dd>
+
+																<div class="subj">02.책임투자 원칙</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">조직의 핵심가치와 투자원칙을 바탕으로 책임투자를 구현하는 방안과, 이 과정에서 이해관계자들의 참여가 이루어지는 과정을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">03.ESG 참여(Engagement)</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs" style="display:none">'기관투자자의 수탁자 책임에 대한 원칙(스튜어드십 코드)'에 따라 의결권을 행사하고, 행사 내역을 공개하고 있습니까?</div>
+															</dd>
+
+															<dd>
+																<div class="subj">04.글로벌 이니셔티브 참여</div>
+																<div class="toggleBtn plusbtn">
+																	<img src="/assets/img/common/viewPlus.png">
+																</div>
+
+																<div class="toggleBtn minusbtn">
+																	<img src="/assets/img/common/viewMinus.png">
+																</div>
+																<div class="subs"  style="display:none">참여하고 있는 글로벌 책임투자 이니셔티브와 활동 내역을 공개하고 있습니까?</div>
+															</dd>
+
+
+														</dl>
+													</td>
+
+													<td>
+														<a href="/action/esgDealView?tabId=1" class="p-btn">금융 > 책임 투자</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="e_mo">
+									<div class="row">
+										<div class="title-row"><strong>E</strong>(환경)</div>
+										<div class="cont">
+											<div class="title-cont">기후 변화</div>
+											<p>기후변화는 오늘날 우리 세계가 직면한 가장 시급한 문제 중 하나입니다. 기업은 탄소 배출을 체계적으로 감축하여 기후변화에 대응하고, 녹색 성장을 경제 성장의 새로운 모멘텀으로 받아들이는 자세가 필요합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.기후변화 거버넌스</dt>
+														<dd>이사회와 경영진은 기후 관련 문제와 탄소중립에 대한 책임과 감독을 수행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.기후변화 대응 목표</dt>
+														<dd>기후 관련 중장기 목표를 설정하고 목표 이행을 위한 로드맵과 배출량 감축 목표가 공개되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.환경 성과 연계</dt>
+														<dd>경영진 또는 임원의 핵심성과지표(KPI)에 기후 관련 지표가 포함되며, 성과에 따른 인센티브가 제공됩니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.기후변화 위험 관리</dt>
+														<dd>기후변화와 관련된 위험 및 기회를 식별하고 평가하며, 이에 대한 대응 전략과 재무적 영향을 어떻게 관리하고 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.시나리오 분석</dt>
+														<dd>기후변화 시나리오 분석을 통해 기후 변화의 재무적 영향을 측정하고, 그 결과를 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=2" class="gray-box">기후변화 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">오염과 폐기물</div>
+											<p>기업은 경영활동 과정에서 환경 및 신체의 건강에 해로운 물질을 배출하고, 자원을 불필요하게 낭비할 수 있습니다. 기업은 오염과 폐기물 관리에 있어 적극적으로 대응하여 환경에 미치는 부정적 영향을 최소화해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.오염과 폐기물 정책</dt>
+														<dd>오염 및 폐기물 이슈에 대한 중장기 목표와 전략, 정책 및 약속이 공개되어 있고 이를 담당·관리·감독하는 인원과 부서가 존재합니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.오염과 폐기물 목표</dt>
+														<dd>자체 폐기물 발생량 또는 산업 평균에 기초하여 폐기물 저감 목표를 설정하고, 감축 방안을 수립하였습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.오염물질 관리</dt>
+														<dd>질소산화물(NOx), 황산화물(SOx), 생물화학적 산소요구량(BOD), 화학적 산소요구량(COD), 부유물질량(SS)등 대기 및 수질 오염 물질과 관련된 리스크를 식별하고 이를 감축 또는 관리하기 위한 프로세스를 운영하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.폐기물 발생량</dt>
+														<dd>폐기물 발생량을 매립, 소각, 재활, 기타 처리 방법으로 구분하여 집계하고, 폐기물 저감 목표에 따라 감축하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.유해화학물질 관리</dt>
+														<dd>유해물질에 대해서는 오염 및 폐기물과 별도로 집계하여 감축 목표를 설정하고 이를 이행하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=5" class="gray-box">오염과 폐기물 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">친환경 제품 및 기술</div>
+											<p>친환경 제품 및 기술을 활용하거나 제공함으로써 기업은 환경을 보호하고 당면한 환경문제에 적극적으로 대응할 수 있습니다. 또한, 친환경 제품 및 기술은 기업의 시장 경쟁력을 제고하고 새로운 소비자 층을 확보하는 등 지속가능한 비즈니스 모델을 구축하여 기업가치를 상승시킵니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.친환경 매출 및 구매액</dt>
+														<dd>친환경 매출 및 구매를 집계하기 위한 내부 기준이 존재하며, 저탄소 제품 등 친환경 매출 및 구매 비중이 증가하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.환경 영향 식별</dt>
+														<dd>전 과정 평가(LCA)를 통해 제품 및 서비스의 환경영향을 식별하고 환경영향 저감 활동을 수행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.친환경 투자</dt>
+														<dd>친환경 제품 및 서비스 투자를 통해 제품 및 서비스 혁신하고, 총 R&D 지출액 대비 친환경 제품 및 서비스에 대한 R&D 지출액을 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=7" class="gray-box">친환경 제품 및 기술 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">온실가스</div>
+											<p>온실가스 배출은 인간을 포함한 대기권, 수권, 빙권, 육지권과 생물권 등에 기후 변화를 심화시킵니다. 가뭄 증가, 산불, 홍수, 집중호우, 폭염 등 물리적 기후 조건의 부정적 변화는 인간과 생태계의 생존을 위협하고 있습니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.온실가스 감축 목표</dt>
+														<dd>SBTi 또는 이와 유사한 기준을 바탕으로 온실가스 배출량 감축 목표를 설정하고, 관련 이행 실적을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.직접 온실가스</dt>
+														<dd>SBTi 또는 이와 유사한 기준을 바탕으로 온실가스 배출량 감축 목표를 설정하고, 관련 이행 실적을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.간접 온실가스</dt>
+														<dd>간접 온실가스(Scope 2) 배출량과 집약도는 목표 대비 실제 감축이 이루어지고, 외부 검증을 거쳐 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.기타 간접 온실가스</dt>
+														<dd>간접 온실가스(Scope 2) 배출량과 집약도는 목표 대비 실제 감축이 이루어지고, 외부 검증을 거쳐 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=1" class="gray-box">온실가스 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">에너지 사용</div>
+											<p>기업은 경영 활동을 수행하기 위해서 소비되는 에너지 유형과 소비량을 파악하여 에너지 사용 총량을 절감하여 친환경 에너지 체계로 전환해야 합니다. 지속가능하고 효율적인 에너지 사용은 환경을 보호하고, 기업의 운영 효율성과 수익성에 긍정적 영향을 미칠 수 있습니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.에너지 효율성 개선 정책</dt>
+														<dd>조직은 에너지 효율성 개선 관련하여 대외 공개된 정책이 있으며, 에너지 사용량 감축 목표를 설정하여 이를 이행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.에너지 사용량</dt>
+														<dd>조직은 에너지 사용량과 집약도를 재생에너지와 비재생에너지로 구분하여 측정하고, 외부 검증 절차를 거쳐 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.재생에너지로의 전환</dt>
+														<dd>조직은 재생에너지 사용 및 관리에 대한 중장기 목표를 설정하고, 재생에너지로의 전환을 실행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.제3자 인증</dt>
+														<dd>체계적인 에너지경영을 위하여(에너지경영시스템(ISO50001) 등) 제3자로부터 친환경 인증을 획득하였습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=3" class="gray-box">에너지 사용 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">자원 및 순환경제</div>
+											<p>자원의 소모와 폐기를 최소화하고, 가능한 모든 자원을 재생하고 재사용함으로써 기업은 탄소 중립을 실현할 수 있습니다. 기업은 경영 활동의 가치 사슬 전 과정에서 순환경제와 연계를 강화 자원을 선순환하고 친환경 사업과 활동에 대해 지속적으로 고민하고 확장하는 자세가 필요합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.원부자재</dt>
+														<dd>재생원료를 포함하여 원부자재 사용량을 공개하고, 재생원료 사용 비중을 확대하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.폐자원 관리</dt>
+														<dd>소비 후 포장재나 플라스틱 포장과 같은 폐자원을 회수·재활용·업사이클링 과정을 통해 환경 영향 저감을 위한 활동을 하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.폐기물 관리</dt>
+														<dd>발생된 폐기물은 적절하게 재활용·재사용 또는 처리하여 자원의 생산 및 소비 과정 효율선 개선을 위한 노력을 이행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.수자원 관리</dt>
+														<dd>제품 및 서비스 생산·제조 과정에서 발생하는 용수 사용량을 감축 및 재사용하고, 물 부족 지역에 위치한 사업장의 수자원 리스크를 분석하고 중장기 목표 설정 및 구체적 방안을 통해 관리하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=4" class="gray-box">자원 및 순환경제 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">생물다양성</div>
+											<p>생물다양성은 생물 종의 다양성, 생물이 서식하는 생태계의 다양성, 생물이 지닌 유전적 다양성을 포괄하는 개념입니다. 생태계의 균형을 유지하고 생물다양성을 보존하는 것은 인류의 생존 및 번영과 직결되므로, 기업은 경영활동 과정에서 생물다양성에 부정적 영향을 미치는 사업의 잠재적 요소를 파악하고 관리해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.생물다양성 리스크 관리</dt>
+														<dd>생물다양성과 관련된 위험과 기회를 식별하고 평가 및 관리하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.생물다양성 정책</dt>
+														<dd>생물다양성 정책은 조직의 활동으로 인한 자연 서식지 손상 예방 또는 관리 및 해결에 대한 전략과 이행 방안, 외부 이해관계자 그룹과의 협력 등을 포함하며, 이를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.생태계 보호</dt>
+														<dd>조직은 생물다양성 보전을 위한 활동 또는 프로그램을 이행하고 있으며, 이로 인한 생물다양성 보전 또는 강화를 정량화된 수치로 공개할 수 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/environmentView?tabId=6" class="gray-box">생물다양성 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>										
+									</div>
+									<div class="row">
+										<div class="title-row"><strong>S</strong>(사회)</div>
+										<div class="cont">
+											<div class="title-cont">인적자원 관리</div>
+											<p>기업은 지속가능경영 전략을 조직에 내재화 시키고, 조직과 다양한 이해관계자들의 지속가능한 성장에 기여하는 인적자원 관리 시스템을 구축해야 합니다. 인적자원 관리 시스템을 통해 기업은 인적자원의 성장 방향을 설정하여 인적자원이 바람직하게 성장할 수 있도록 지원하고, 임직원이 건강한 삶을 살 수 있도록 다양한 정책을 보장하고 운영해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.인적자원의 다양성 현황</dt>
+														<dd>성별, 국적, 인종 또는 민족 등 근로자의 다양성과 관련된 지표를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.인적자원의 다양성 제고</dt>
+														<dd>총 관리직 대비 여성 고위 관리자 수와 비율, 총 임원직 대비 여성 임원 수와 비율와 같이 근로자의 다양성 제고를 위한 목표값이 설정되어 있으며, 이를 뒷받침하는 프로그램이 운영되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.근무환경</dt>
+														<dd>근로자의 일과 생활의 균형, 건강과 웰빙을 위한 지원 프로그램 또는 제도가 마련되어 있으며 실제로 운영되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.노사관계</dt>
+														<dd>노동자 권리를 보장하는 내부 정책 및 실질적인 운영 현황을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.교육훈련</dt>
+														<dd>근로자의 역량 개발을 위한 교육 프로그램을 운영하며, 비즈니스 실제 활용 여부와 그 영향을 측정하고 관리하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=3" class="gray-box">인적자원 관리 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">안전보건</div>
+											<p>기업은 작업장에서의 물리적, 화학적, 생물학적 위험을 최소화하여 직원의 안전과 건강을 보장해야 합니다. 기업의 안전보건 조치는 직원의 복지를 증진시키며, 기업의 생산성 향상과도 연계됩니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.안전보건 체계</dt>
+														<dd>산업안전보건 체계 또는 정책이 확립되어 전사 차원에서 운영되고 있으며, 협력사도 관리 대상에 포함되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.임직원 및 협력사 참여</dt>
+														<dd>임직원과 협력사가 산업안전보건과 관련 위험에 대해 의견을 제시하고, 체계 및 목표 수립 과정에 참여할 수 있도록 다양한 채널을 활용할 수 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.안전보건 위험 관리</dt>
+														<dd>산업안전보건 프로그램은 산업안전 관련 주요 위험을 식별하고 이를 제거하거나 통제할 수 있는 구체적은 관리 활동으로 구성되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.산업재해율</dt>
+														<dd>임직원과 협력사의 근로손실재해율(LTIFR), 사망자 수, 결근율, 공정 안전 사고 등 산업재해 관련 지표를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.공급망 안전보건</dt>
+														<dd>협력사의 산업안전보건 역량은 조직의 산업안전보건 지표의 하나로써, 정기적으로 평가 및 관리, 모니터링되고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=1" class="gray-box">안전보건 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">인권</div>
+											<p>UN 기업 인권 이행원칙(UNGP)에 의하면 모든 기업은 국제적으로 인정된 모든 인권을 존중하고, 기업은 직접 인권 침해를 야기해선 안 되며, 인권 침해에 기여해선 안 됩니다. 기업은 인권정책 선언에서 나아가 인권실사를 실시하고 구체적인 과정과 결과를 공시하는 단계로 나아가야 하며, 인권경영을 위해 소요되는 비용은 단순한 비용이 아니라 인류 보편적 가치를 추구하고 지속가능한 경영을 위한 투자로 인식을 전환해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.인권 정책</dt>
+														<dd>인권 관련 글로벌 이니셔티브를 바탕으로 수립한 인권 경영 정책이 존재하고, 개별 인권 이슈에 대한 경영 방침 또는 정책이 공개되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.적용범위</dt>
+														<dd>인권 경영은 전사 차원에서 운영되어 국내외 모든 사업장에 적용되며, 모든 이해관계자를 포함하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.인권 리스크</dt>
+														<dd>경영활동 과정에서 발생할 수 있는 인권 리스크를 식별하고 점검과 실사 등 구체적인 위험 관리 활동을 통해 인권 리스크를 완화 또는 해소하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.고충처리 프로세스</dt>
+														<dd>인권 침해를 당하거나 인권 리스크를 인지한 이해관계자가 해당 내용을 신고할 수 있는 채널은 기밀 유지 원칙에 의해 운영되며, 처리 현황과 개선 및 완화 사항은 공개되고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=2" class="gray-box">인권 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">소비자</div>
+											<p>기업은 경영 활동 시 제품과 서비스의 품질 및 안전성을 보장하고, 소비자의 기본권을 존중해야 합니다. 소비자를 보호하고 소비자의 만족도 증진을 위한 기업의 노력과 이행은 소비자와 신뢰를 형성하며, 이는 기업의 경쟁력과 지속가능성을 향상시킬 수 있습니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.소비자 보호 정책</dt>
+														<dd>소비자 안전 및 불완전판매 방지와 같이 소비자를 보호하기 위한 정책을 보유하고 있으며, 해당 정책에는 소비자 보호를 위한 구체적인 목표 및 이행 방안이 포함되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.소비자 피해 보상</dt>
+														<dd>제품 및 서비스로 인해 소비자 피해 발생 시, 이를 적극적으로 해결하고 각 단계별 진행상황에 대해서 투명하게 공유하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.소비자 만족도 관리</dt>
+														<dd>소비자 및 고객 만족도 향상을 위해 만족도를 측정하고, 불만을 접수하는 다양한 채널을 실질적으로 운영하며, 처리 내역을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.소비자 개인정보</dt>
+														<dd>개인정보 처리 방침은 평이한 언어로 작성되어 소비자에게 안내되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.소비자 개인정보 위험 관리</dt>
+														<dd>데이터 침해 사고 등 소비자의 개인정보 보호 관련 주요 위험을 식별하고 이를 관리하기 위한 프로세스가 운영되고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=4" class="gray-box">소비자 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">공급망 관리</div>
+											<p>EU의 공급망 실사제도, ESG 정보공개, 탄소중립 이행과정에서 Scope3 감축 요구, 기관투자자의 영향력 행사 등으로 국제사회에서 공급망 관리를 강조하는 흐름은 점차 거세지고 있습니다. 기업의 가치사슬 구조가 복잡해짐에 따라 다수의 ESG리스크가 공급망에서 발생하고 있어, 이는 기업의 비즈니스 모델과 지속가능성을 위협하는 요소가 될 수 있습니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.협력사 ESG 관리</dt>
+														<dd>조직이 협력사 ESG 리스크 관리 체계를 구축하고 있으며, 협력사 ESG 리스크는 실사 - 진단 - 개선의 프로세스를 거쳐 관리되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.협력사 ESG 평가</dt>
+														<dd>협력사 ESG 리스크를 관리하기 위해 주요 협력사를 대상으로 ESG경영 준수여부를 정기적으로 점검하여 협력사 ESG 경영 수준을 평가하고, 개선을 지원하며 미이행 협력사에 대한 조치가 이행되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.동반성장</dt>
+														<dd>협력사 ESG 역량 강화를 위해 교육 및 기술 지원, 투자 등을 지원하고 이를 KPI와 연계하여 성과를 관리하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.고충처리 프로세스</dt>
+														<dd>협력사를 위한 고충처리 시스템이 수립되어 있으며, 실질적으로 운영되고 현황을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.지속가능한 공급망</dt>
+														<dd>국가 간 분쟁이나 무역장벽 도입, 물류 및 유통망 경색, 기후 변화로 인한 생산량 감소 등 외부 요인으로 인해 발생할 수 있는 공급망 불안정 위험을 식별하고 대응하기 위한 계획을 수립하였습니까?</dd>
+													</dl>
+													<dl>
+														<dt>06.분쟁광물 관리</dt>
+														<dd>분쟁광물 규제 관련 국제 기준을 준수하여 분쟁광물 대응 프로세스를 수립하고 보고 체계와 사용현황 조사, 관리 및 개선활동 등을 포함하는 분쟁광물 관리 정책을 수립였습니까? 해당 정책은 하위 공급사 내에서도 일관되게 적용되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>07.분쟁광물 사용 공개</dt>
+														<dd>분쟁광물 사용 금지를 원칙으로 하되, 분쟁 광물 구매 시에는 RBA 요구 사항에 따라 관련 원산지 정보 및 합법적 채굴이 증명된 경우에만 허용되며 이를 투명하게 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=1" class="gray-box">공급망 관리 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">지역사회</div>
+											<p>기업은 지역사회로부터 사업을 운영할 권리를 획득하고 지역사회의 일원으로서 공동의 환경과 사회 문제 해결에 적극적으로 앞장서야 합니다. 기업의 지역사회 공헌은 임직원 봉사활동과 기부금에서 그치는 것이 아니라 기업의 경영 활동으로 인해 지역사회에 발생할 수 있는 리스크 요인을 분석하고 이를 해결하기 위한 전략적 사회공헌을 추진하는 것으로 전환되어야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.지역사회 공헌</dt>
+														<dd>지역사회 공헌을 위한 전략과 중장기 목표 및 구체적인 이행 방안이 수립되어 있으며, 지역사회 공헌 활동으로 인한 실제 성과를 KPI와 연계하여 관리하기 위한 정량적 지표를 정의하고 활용하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.지역사회 참여</dt>
+														<dd>이해관계자를 식별하고 의견을 수렴할 수 있는 채널이 실제로 운영되고 있으며, 지역사회의 의견이 조직의 경영활동에 반영되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.부정 영향 관리</dt>
+														<dd>지역사회에 환경 오염, 강제 노동, 인권 침해 등 부정적 환경·사회 영향을 미칠 수 있는 리스크 요인을 식별 및 평가하고, 리스크별로 개선 또는 완화 조치의 이행 및 정기적 모니터링 작업을 수행하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/socialView?tabId=5" class="gray-box">지역사회 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>										
+									</div>
+									<div class="row">
+										<div class="title-row"><strong>G</strong>(거버넌스)</div>
+										<div class="cont">
+											<div class="title-cont">주주 권리</div>
+											<p>최근 주주행동주의가 본격화하면서 소액 주주의 적극적인 의사 개진과 요구가 증가하고 있습니다. 기업은 주주제안권 행사를 의사결정에 반영하고, 적합한 절차와 기준에 따라 주주권리가 행사될 수 있도록 운영해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.주주 권익 보호</dt>
+														<dd>주주총회소집권, 다양한 의결권 행사 등 주주권리 보호를 위한 정책을 수립하고 이를 정관에 반영하여 이행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.주주 환원</dt>
+														<dd>수립한 배당정책을 공개하고, 주당 배당금을 지속적으로 상향하거나 자사주를 매입하는 등 주주가치 제고를 위해 적극적으로 활동하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.주주와의 소통</dt>
+														<dd>홈페이지 및 공시조회시스템, NDR(Non Deal Roadshow) 개최 등을 통해 주주에게 기업정보를 투명하게 제공하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.소유구조 공개</dt>
+														<dd>경영권 안정성을 저하시킬 수 있는 지분구조의 집중 및 분산 현황, 경영권 변동 이력 등과 같이 이해관계자가 전반적인 경영활동과 경영 위험을 평가할 수 있도록 해당 정보를 적기에 투명하게 제공하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/governanceView?tabId=2" class="gray-box">주주 권리 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">이사회</div>
+											<p>이사회는 기업의 지속가능성 전략을 체계적으로 수립, 감독, 및 실행합니다. 이사회의 적극적인 참여와 체계적인 지속가능성 관리는 장기적으로 기업의 경쟁력을 제고하고 사회적 책임을 다할 수 있도록 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.ESG 역할 및 책임</dt>
+														<dd>이사회는 최상위거버넌스 기구로서 ESG 안건과 중대성 평가 사항을 검토 및 승인하고 이를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.이사회 독립성</dt>
+														<dd>이사회는 독립성 관련 법적 기준을 충족하고, 조직과 중대한 이해관계를 가지지 않은 사람을 사외이사로 선임하여 경영진 및 지배주주에 의해 영향을 받지 않고 독립적인 의사결정 수행을 보장받고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.이사회 다양성</dt>
+														<dd>다양한 이해관계자를 고려하고 보다 넓은 관점에서 주요 의사결정을 내릴 수 있도록 성별, 연령, 출신 배경, 국적, 인종, 종교, 민족 및 문화적 배경 등의 다양성이 반영되어 있으며, 이사회 구성의 다양성 제고를 위한 구체적인 목표가 설정되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.이사회 전문성</dt>
+														<dd>개별 이사는 소속 이사회에 필요한 산업 경험과 역량을 갖춘 전문 인력이며, 다양한 이해관계자가 확인이 가능하도록 관련 정보는 대외 공개되어 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.성과 평가 및 보수</dt>
+														<dd>ESG 관련 성과 평가 체계가 수립되어 정기적으로 시행되고, 해당 성과는 KPI와 연계되어 보상의 기준으로 활용되고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/governanceView?tabId=1" class="gray-box">이사회 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">윤리경영</div>
+											<p>기업의 사회적 책임을 다하기 위해 기업윤리를 실천하고 책임 있는 경영활동을 이행해야 합니다. 기업은 윤리 및 준법경영 활동을 통해 기업의 문화를 개선하고, 사회에 긍정적인 영향을 미치며, 이는 기업의 지속가능성을 높이는 요인입니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.윤리 규정 제정</dt>
+														<dd>부패 및 뇌물, 반독점 및 반경쟁 관행, 차별, 이해관계 상충, 정보보호, 내부 거래, 안전보건 등을 포함하는 윤리 규정을 제정하고 이를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.윤리경영 시스템</dt>
+														<dd>윤리 경영 및 컴플라이언스 준수를 위한 보고 체계와 핫라인 운영, 위반 시 징계 제도, 모니터링 시스템 등과 같은 구체적인 프로세스가 확립되어 운영되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.임직원 윤리 교육</dt>
+														<dd>윤리 규정의 적용을 받는 조직의 구성원을 대상으로 컴플라이언스 준수를 위한 교육을 정기적으로 실시하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.위반 사례 공개</dt>
+														<dd>윤리 및 부정/부패 관련 컴플라이언스 위반 사례와 재발 방지를 위해 실제로 이행한 조치와 결과를 투명하게 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/governanceView?tabId=4" class="gray-box">윤리경영 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">위험 관리</div>
+											<p>경영환경이 급변함에 따라 기업을 둘러싼 리스크도 다양해지고 있습니다. 기업은 불안정한 환경 속에서 안정적인 경영 기반을 확보하기 위해 다양한 리스크에 선제적으로 대응해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.통합 리스크 관리정</dt>
+														<dd>조직의 사업 모델과 경영 활동 전반에 걸쳐 발생할 수 있는 모든 리스크를 인식하고 관리하여 안정적인 경영 기반을 확보하기 위해 리스크 전문 인력으로 구성된 리스크관리워원회가 설립되어 있으며, 재무 리스크와 비재무 리스크를 분석하고 모니터링하고 정기적으로 스트레스 테스트를 진행하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.리스크 관리 역량</dt>
+														<dd>임직원의 리스크 관리 역량 강화를 위해 교육을 실시하고 조직의 리스크 이슈를 공유하며, 리스크 관리 인력에 대해선 리스크 관리 업무에 필요한 지식 및 기술, 업계 동향 등의 교육과정에 추가하여 제공하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.내부통제</dt>
+														<dd>재무정보의 신뢰성 확보, 관련 법령 및 규제 사항 준수 등 건전한 경영활동을 위한 기준 및 절차와 보고 체계가 확립되어 있고, 정기적으로 내부통제 위원회를 개최하여 주요 안건 및 협의 내용을 감사위원회에 보고하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.내부감사</dt>
+														<dd>독립된 내부감사부서가 존재하고, 해당 부서는 조직의 재무, 회계, 감사 관련 부정 사안 및 기타 내부통제 관련 리스크를 상시 점검하여 주요 안건을 감사위에 정기적으로 보고하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>05.감사기구의 전문성</dt>
+														<dd>상법 및 금융회사의 지배구조에 관한 법률에 의거하여 감사위원회는 독립성을 갖추고 회계 및 감사 분야의 전문성을 확보한 감사위원을 선임하여 감사위원회를 효과적으로 운영하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/governanceView?tabId=3" class="gray-box">위험 관리 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">투명한 정보 공개</div>
+											<p>기업이 ESG 성과와 계획을 투명하게 공개함으로써 투자자, 소비자 등 다양한 이해관계자가 기업의 지속가능성을 평가하고 지원할 수 있습니다. 기업의 투명한 정보 공개는 지속가능한 발전 촉진과 기업과 이해관계자 간 신뢰 형성에 중요한 역할을 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.ESG 정보 공개</dt>
+														<dd>ESG 정책, 경영 현황, 평가 등급, 보고서 등과 같은 비재무 정보는 다양한 채널을 통해 이해관계자에게 공개되며, 관련 정보는 정기적으로 제공되고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.제3자 검증</dt>
+														<dd>공개된 ESG 정보는 전문성을 갖춘 제3자의 검증을 받았으며, 검증 내역과 검증 시 활용한 기준 또는 원칙 등을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.회계 투명성</dt>
+														<dd>조세부문의 사회적 책임과 의무를 다하고 조세관련 리스크를 선제적으로 파악·관리하며, 국내외 법규를 준수하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/governanceView?tabId=1" class="gray-box">투명한 정보 공개 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">정보 보호</div>
+											<p>철저한 정보 보안은 기업의 자산을 지키는 것일뿐 아니라 기업과 이해관계자 간의 신뢰 구축에 있어 필수적인 요소입니다. 기업은 효율적인 정보 관리를 통해 기업의 신뢰성을 높이고, 데이터 유출 등과 같은 사고로 인한 법률 및 재무적 부담을 완화하고 점차 고도화되는 보안 위협 속에서 다방면으로 보안체계를 강화해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.정보 보호 책임</dt>
+														<dd>정보 보호 최고책임자 및 담당 부서가 명시되어 있으며, 책임자는 관련 전문 지식을 보유하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.정보 보호 투자</dt>
+														<dd>정보 보안 및 개인정보보호를 위해 관련 프로세스 및 인프라에 투자하고, 관련 기술을 강화하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.정보 보안 교육</dt>
+														<dd>개인정보에 접근이 용이하고 이를 침해할 위험이 높은 임직원의 범위를 설정하고, 해당 인원에게 정보 보안 교육을 실시하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.정보 보안 사고 대응</dt>
+														<dd>물리적·인적 요인으로 발생할 수 있는 정보 보안 리스크를 식별 및 평가하고, 이에 대비하기 위한 프로세스를 수립하는 등 정보보안의 안정성을 확보하기 위한 구체적인 이행 방안이 마련되어 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<!-- <a href="/action/governanceView?tabId=3" class="gray-box">정보 보호 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a> -->
+										</div>
+									</div>
+									<div class="row">
+										<div class="title-row"><strong>F</strong>(금융)</div>
+										<div class="cont">
+											<div class="title-cont">금융배출량</div>
+											<p>금융배출량은 15가지 카테고리로 구분되어 있는 Scope 3 배출량 중 15번 ‘투자’ 부문 배출량에 해당되고, 일반기업과 달리 금융기업은 전체 온실가스 배출량 중 금융배출량이 차지하는 비중이 대부분입니다. 금융회사는 기후변화와 관련된 위험과 기회를 식별하기 위해 금융배출량을 정확히 산정해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.금융배출량</dt>
+														<dd>PCAF 등 금융배출량 산정 방법론에 따라 배출량을 산정하고 이를 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.탄소 중립 목표</dt>
+														<dd>산정한 금융배출량을 바탕으로 구체적인 탄소 중립 목표 설정과 이행방안을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.글로벌 이니셔티브 참여</dt>
+														<dd>글로벌 이니셔티브에 가입하고 감축 목표 승인을 받아 글로벌 이해관계자의 요구에 대응하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.데이터 구축</dt>
+														<dd>금융기관의 금융배출량 공시 요구에 대응하고, 배출량을 정확하게 산정하기 위한 데이터 구축 및 모니터링 체계를 확립하였습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/financeView?tabId=4" class="gray-box">금융배출량 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>
+										<div class="cont">
+											<div class="title-cont">책임 투자</div>
+											<p>금융기업의 투자 활동은 금융 이익을 창출할 뿐만 아니라 ESG 측면에서도 다양한 산업 분야의 기업, 자산, 프로젝트에 중요한 영향을 미칠 수 있습니다. 금융기업은 지속가능한 발전을 지원하는 투자 활동을 통해 환경과 사회에 긍정적인 영향을 미치는 것을 목표로 해야 합니다.</p>
+											<div class="toggle-wrap">
+												<div class="gray-box js-toggle">주요 평가항목<span class="icon"><img src="/assets/img/common/ico_m_plus.svg" alt="plus"/></span></div>
+												<div class="toggle-cont">
+													<dl>
+														<dt>01.ESG 통합(Integration)</dt>
+														<dd>수익 창출 전략, 포트폴리오의 위험 조정, 투자 기회 발굴 등 투자의사결정 과정에서 ESG 지표를 고려 및 통합하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>02.책임투자 원칙</dt>
+														<dd>조직의 핵심가치와 투자원칙을 바탕으로 책임투자를 구현하는 방안과, 이 과정에서 이해관계자들의 참여가 이루어지는 과정을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>03.ESG 참여(Engagement)</dt>
+														<dd>'기관투자자의 수탁자 책임에 대한 원칙(스튜어드십 코드)'에 따라 의결권을 행사하고, 행사 내역을 공개하고 있습니까?</dd>
+													</dl>
+													<dl>
+														<dt>04.글로벌 이니셔티브 참여</dt>
+														<dd>참여하고 있는 글로벌 책임투자 이니셔티브와 활동 내역을 공개하고 있습니까?</dd>
+													</dl>
+												</div>
+											</div>
+											<a href="/action/financeView?tabId=1" class="gray-box">기후변화 토픽 더 알아보기<span class="icon"><img src="/assets/img/common/ico_m_link.svg" alt="link"/></span></a>
+										</div>										
+									</div>
+								</div>
+                       		 </div>
+
+                	    </section>
+                	</div>
+
+                	<div class="esg05-wrap pt60 contMain tab-3" id="tab3" style="display:none; text-align:center;">
+						<section class="section">
+                	        <div class="default-width pb60">
+								<div class="e_pc">
+									<h3 class="tit-line-left">ESG 산업별 고려사항</h3>
+									<h3 class="sutTit">
+										산업별 특성에 따라 평가 가중치 항목에 차이가 있으며, 평가기관에 따라서도 기준이 상이합니다. 산업 특성을 고려하여 일반적으로 각 산업에서 중점적으로 고려해야 할 이슈들을 정리하여 제공합니다.
+										( <span class="borCircle"></span> : 매우중요 
+										<span class="deCircle"></span> : 중요 )
+									</h3>
+									
+									<div class="tableImg mar_t30"><img src="/assets/img/common/sampleImg.png"></div>
+								</div>
+								<div class="e_mo">
+									<h3 class="tit-line-left">ESG 산업별 고려사항</h3>
+									<h3 class="sutTit">
+										산업별 특성에 따라 평가 가중치 항목에 차이가 있으며, 평가기관에 따라서도 기준이 상이합니다. 산업 특성을 고려하여 일반적으로 각 산업에서 중점적으로 고려해야 할 이슈들을 정리하여 제공합니다.
+										<p>
+										( <span class="borCircle"></span> : 매우중요 <span class="deCircle"></span> : 중요 )</p>
+									</h3>
+									<div class="tableImg js-img-extension"><img src="/assets/img/common/sampleImg.png"></div>
+								</div>
+                       		 </div>
+
+                	    </section>
+                	</div>
+                </div>
+                 <!-- //esg04-wrap -->
+            </section>
+            <!-- //content -->
+            <div class="floating-wrap">
+
+                <button type="button"><span>온라인 문의</span></button>
+            </div>
+
+
+</div>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+
+    <fieldset> 
+        <legend>통합검색</legend>
+        <div class="total-search">
+              <!-- 20230826 디자인 재반영 -->
+            <div class="select-box-wrap">
+                <button id="select_b" type="button">통합검색</button>
+                <div class="select-list">
+					
+                    <ul>
+                        <li><a href="javascript:void(0);" id="all" class="">통합검색</span></a></li>
+                        <li><a href="javascript:void(0);" id="title" class="">자료명</a></li>
+                        <li><a href="javascript:void(0);" id="content" class="">자료명 + 본문</a></li>
+                        <li><a href="javascript:void(0);" id="src" class="">출처</a></li>
+                        <li><a href="javascript:void(0);" id="choose_kwd" class="">키워드</a></li>
+                    </ul>
+                    
+					<!--                    
+                    <ul>
+                        <li><a href="javascript:void(0);" class="checked">통합검색</span></a></li>
+                        <li><a href="javascript:void(0);" class="">제목</a></li>
+                        <li><a href="javascript:void(0);" class="">내용</a></li>
+                        <li><a href="javascript:void(0);" class="">출처</a></li>
+                        <li><a href="javascript:void(0);" class="">키워드 선택</a></li>
+                    </ul>
+                    -->
+                </div>
+            </div>
+            <input type="text" class="txt" id="search_kwd" name="search_kwd" th:value="${params.kwd}" placeholder="검색어를 입력하세요">
+            <button type="button" class="btn-total-del"><span class="blind">삭제</span></button>
+            <button type="button" class="btn-total-search" onclick="submitMain();"><span class="blind">검색</span></button>
+        </div>
+    </fieldset>
+
+
+</body>
+</html>

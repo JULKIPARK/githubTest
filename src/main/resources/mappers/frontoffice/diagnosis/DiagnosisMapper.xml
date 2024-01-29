@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.diagnosis.mapper.DiagnosisMapper">
+
+    <!-- 사용자 정보 조회 -->
+    <select id="selectMbMbrInfo" parameterType="camelcasemap" resultType="com.pwc.pwcesg.config.SessionData">
+        /* selectMbMbrInfo */
+		SELECT
+			MBR_UID					/* 회원채번 */
+			, MBR_UNO				/* 회원고유번호 */
+			, MBR_ID				/* 회원아이디 */
+			, MBR_PWD				/* 회원암호 */
+			, MBR_GB_CD				/* 회원구분코드  */
+			, MBR_NM				/* 회원명 */
+			, MBR_ST_CD				/* 회원상태코드 */
+			, JOIN_DT				/* 가입일 */
+			, WHDWL_APLY_DT			/* 탈퇴신청일 */
+			, WHDWL_APRV_DT			/* 탈퇴승인일 */
+			, DEPT_NM				/* 부서명 */
+			, POS_NM				/* 직급명 */
+			, COMP_MAIL				/* 회사이메일 */
+			, MAIL_CHK_YN			/* 이메일확인여부 */
+			, MAIL_CHK_DT			/* 이메일확인일 */
+			, PWD_FAIL_CNT			/* 암호실패건수 */
+			, PWD_RCTLY_CHNG_DT		/* 암호최근변경일 */
+			, MRKT_AGRE_YN			/* 마케팅동의여부 */
+			, MRKT_AGRE_DT			/* 마케팅동의일 */
+			, NSLT_AGRE_YN			/* 뉴스레터동의여부 */
+			, NSLT_AGRE_DT			/* 뉴스레터동의일 */
+			, INTR_CD_ARRY			/* 관심코드배열 */
+			, CPHON_NO				/* 휴대폰번호 */
+			, FAX_NO				/* 팩스번호 */
+			, COPR_UID				/* 소속채번 */
+			, FST_INS_DT			/* 최초등록일 */
+			, FST_INS_ID			/* 최초등록아이디 */
+			, LST_UPD_DT			/* 최종수정일 */
+			, LST_UPD_ID			/* 최종수정아이디 */
+		FROM ESG_DB.MB_MBR_INFO MBR	/* 회원정보 */
+		WHERE MBR_ID = #{mbrId}				/* 회원아이디 */
+          AND MBR.MBR_PWD = #{pwEncrypt}	/* 회원암호 */
+    </select>
+	<insert id="insertSave" parameterType="camelcasemap">
+		/* selectKey 구문의 위치는 INSERT 쿼리 위, 아래 상관 없이 위치할 수 있습니다. */
+		<selectKey keyProperty="actTgtResultUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'ACT_TGT_RESULT_UID'
+		</selectKey>
+
+		INSERT INTO ESG_DB.MB_ESG_TGT_ACT_RESULT
+		(
+			MBR_UID
+			, ACT_TGT_RESULT_UID
+			, INDSTY_LCLS_CD
+			, INDSTY_MCLS_CD
+			, INDSTY_SCLS_CD
+			, SALES
+			, FST_INS_ID
+			, LST_UPD_ID
+
+		)
+		VALUES (
+			#{mbrUid}
+			, #{actTgtResultUid}
+			, #{regIndstyLclsCd}
+			, #{regIndstyMclsCd}
+			, #{regIndstySclsCd}
+			, #{sales}
+			, #{mbrId}
+			, #{mbrId}
+		)
+	</insert>
+	<insert id="insertAwSave" parameterType="camelcasemap">
+		INSERT INTO ESG_DB.MB_ESG_TGT_ACT_RESULT_AW
+		(
+			 ACT_TGT_RESULT_UID
+			, ACT_TGT_RESULT_AW_CD
+			, AW_VAL
+			, AW_SUM
+			, AW_OPTION
+
+
+		)
+		VALUES
+		<foreach collection="list" item="element" index="index"  separator=",">
+		(
+			#{element.actTgtResultUid}
+			, #{element.actTgtResultAwCd}
+			, #{element.awVal}
+			, #{element.awSum}
+			, #{element.awOption}
+
+		)
+		</foreach>
+	</insert>
+
+    <select id="selectDiagnosisResult" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResult */
+		SELECT
+			ACT_TGT_RESULT_UID, MBR_UID, INDSTY_LCLS_CD, INDSTY_MCLS_CD, INDSTY_SCLS_CD, SALES,
+			 FORMAT(DATEADD(HOUR, 9, R.FST_INS_DT),'yyyy.MM.dd HH:mm') as  FST_INS_DT, CD.CD_NM AS INDSTY_SCLS_NM , REF_1_CD
+		FROM ESG_DB.MB_ESG_TGT_ACT_RESULT R
+		JOIN ESG_DB.CM_COMM_CD_INFO CD ON R.INDSTY_SCLS_CD = CD.CD AND CD.GRP_CD='INDSTY_SCLS_CD' AND CD.USE_YN='Y'
+		WHERE MBR_UID = #{mbrUid}
+        AND ACT_TGT_RESULT_UID = #{actTgtResultUid}
+    </select>
+
+    <select id="selectDiagnosisResultAw" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResultAw */
+		SELECT
+			 CD_NM
+			,ESG_DB.fnCommCdNm('CSRD_ACT_RESULT',CASE WHEN  SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) - SUM(AW_SUM) = 0 THEN 'A' WHEN SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) - SUM(AW_SUM) = SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) THEN 'C' ELSE 'B' END ) AS AW_RESULT
+			,CASE WHEN  SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) - SUM(AW_SUM) = 0 THEN 'A' WHEN SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) - SUM(AW_SUM) = SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) THEN 'C' ELSE 'B' END  AS AW_RESULT_CD
+		FROM ESG_DB.MB_ESG_TGT_ACT_RESULT_AW AW
+		JOIN ESG_DB.CM_COMM_CD_INFO CD ON AW.ACT_TGT_RESULT_AW_CD = CD.CD AND GRP_CD='CSRD_ACT' AND USE_YN='Y'
+		WHERE  ACT_TGT_RESULT_UID = #{actTgtResultUid}
+		AND AW.AW_VAL IS NOT NULL
+		GROUP BY CD_NM
+		ORDER BY MAX(CD.DP_SEQ) ASC
+
+    </select>
+    <select id="selectDiagnosisResultSum" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResultSum */
+		SELECT
+			  CD3.CD_NM   AS R_TYPE
+			,CASE WHEN  CD2.CD_NM = 'A' THEN 'very' ELSE 'important' END  AS R_VALUE
+		FROM ESG_DB.MB_ESG_TGT_ACT_RESULT R
+		JOIN ESG_DB.CM_COMM_CD_INFO CD ON R.INDSTY_SCLS_CD = CD.CD AND CD.GRP_CD='INDSTY_SCLS_CD' AND CD.USE_YN='Y'
+		JOIN ESG_DB.CM_COMM_CD_INFO CD2 ON CD2.REF_1_CD = CD.REF_1_CD AND CD2.GRP_CD='TOPIC_RESULT_CD' AND CD2.USE_YN='Y' AND CD2.CD_NM IN ('A','B')
+		JOIN ESG_DB.CM_COMM_CD_INFO CD3 ON CD2.REF_2_CD = CD3.CD AND CD3.GRP_CD='TOPIC_CD' AND CD3.USE_YN='Y'
+		WHERE MBR_UID = #{mbrUid}
+        AND ACT_TGT_RESULT_UID = #{actTgtResultUid}
+     	AND CD3.REF_1_CD=#{reultType}
+
+
+    </select>
+    <select id="selectDiagnosisResultSubSum" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResultSubSum */
+
+		SELECT
+			S.CD AS G_CD,
+			STRING_AGG(SS.CD_NM, ', ') AS G_NM,
+			MAX(G_SUM) AS  G_SUM
+		FROM (
+			SELECT  LEFT(CD,5) CD,  ROUND(SUM(AW_SUM)/SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) *100,0,1)   AS G_SUM
+			FROM ESG_DB.MB_ESG_TGT_ACT_RESULT_AW AW
+			JOIN ESG_DB.CM_COMM_CD_INFO CD ON AW.ACT_TGT_RESULT_AW_CD = CD.CD AND GRP_CD='CSRD_ACT' AND USE_YN='Y'
+	        WHERE ACT_TGT_RESULT_UID = #{actTgtResultUid}
+	        AND AW.AW_VAL IS NOT NULL
+	     	GROUP BY LEFT(CD,5)
+       )AS S
+       LEFT OUTER JOIN (
+       		SELECT
+	       		MAX(LEFT(CD,5)) AS CD,
+       			CD.CD_NM CD_NM
+			FROM ESG_DB.MB_ESG_TGT_ACT_RESULT_AW AW
+			JOIN ESG_DB.CM_COMM_CD_INFO CD ON AW.ACT_TGT_RESULT_AW_CD = CD.CD AND GRP_CD='CSRD_ACT' AND USE_YN='Y'
+	        WHERE ACT_TGT_RESULT_UID = #{actTgtResultUid}
+	        AND AW.AW_VAL IS NOT NULL
+	     	GROUP BY CD.CD_NM
+	     	HAVING SUM(AW_SUM) = 0
+       ) AS SS ON S.CD = SS.CD
+		GROUP BY S.CD
+
+
+
+    </select>
+
+    <select id="selectDiagnosisResultChart1" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResultChart1 */
+	        SELECT
+	        	ROUND(AVG(DE_SUM * 100),0,1) AS D_SUM
+	        FROM (
+			SELECT
+				LEFT(CD,5) AS CD ,
+				SUM(AW_SUM)/SUM(CAST(CD.REF_1_CD AS DECIMAL(2,1))) AS DE_SUM
+			FROM ESG_DB.MB_ESG_TGT_ACT_RESULT_AW AW
+			JOIN ESG_DB.CM_COMM_CD_INFO CD ON AW.ACT_TGT_RESULT_AW_CD = CD.CD AND GRP_CD='CSRD_ACT' AND USE_YN='Y'
+			WHERE AW.ACT_TGT_RESULT_UID = #{actTgtResultUid}
+	        AND AW.AW_VAL IS NOT NULL
+	        GROUP BY LEFT(CD,5)
+	        ) AS TT
+
+
+    </select>
+
+
+    <select id="selectDiagnosisResultChart2" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectDiagnosisResultChart2 */
+			SELECT
+				ROUND(SUM(case when LEFT(CD,5) ='csrdE' then AW_SUM ELSE 0 end) / SUM(CAST(case when LEFT(CD,5) ='csrdE' then CD.REF_1_CD ELSE '0' end AS DECIMAL(2,1))) *100,0,1)  E_SUM,
+				ROUND(SUM(case when LEFT(CD,5) ='csrdR' then AW_SUM ELSE 0 end) / SUM(CAST(case when LEFT(CD,5) ='csrdR' then CD.REF_1_CD ELSE '0' end AS DECIMAL(2,1))) *100,0,1)  R_SUM,
+				ROUND(SUM(case when LEFT(CD,5) ='csrdS' then AW_SUM ELSE 0 end) / SUM(CAST(case when LEFT(CD,5) ='csrdS' then CD.REF_1_CD ELSE '0' end AS DECIMAL(2,1))) *100,0,1)  S_SUM
+			FROM ESG_DB.MB_ESG_TGT_ACT_RESULT_AW AW
+			JOIN ESG_DB.CM_COMM_CD_INFO CD ON AW.ACT_TGT_RESULT_AW_CD = CD.CD AND GRP_CD='CSRD_ACT' AND USE_YN='Y'
+			WHERE AW.ACT_TGT_RESULT_UID = #{actTgtResultUid}
+	        AND AW.AW_VAL IS NOT NULL
+    </select>
+
+</mapper>

@@ -1,0 +1,138 @@
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+  <header th:fragment="headerFragment" id="header" class="header_sj">
+    <script type="text/javascript">
+      function goDisclosureView(tabId) {
+        var frm = $("<form></form>");
+        frm.attr("method", "get");
+        frm.attr("action", "/disclosure/disclosureView");
+        frm.append($("<input/>", { type: "hidden", name: "tabId", value: tabId })); //선택 할 탭
+        frm.appendTo("body");
+        frm.submit();
+      }
+    </script>
+
+    <div class="top">
+      <ul class="top-menu util">
+		<li th:unless="${session.FoMbrInfo == null}" style="font-size: 15px; color: #292929;">Welcome Back, <span th:text="${session.FoMbrInfo.mbrNm}" style="font-weight: bold;">OOO</span>님</li>
+        <li th:if="${session.FoMbrInfo == null}"><a href="/common/join">회원가입</a></li>
+        <li th:if="${session.FoMbrInfo == null}"><a href="/common/login">로그인</a></li>
+        <li th:unless="${session.FoMbrInfo == null}"><a href="/common/logout">로그아웃</a></li>
+        <li th:unless="${session.FoMbrInfo == null}"><a href="/mypage/mypageListView">마이페이지</a></li>
+        <li th:unless="${session.FoMbrInfo == null}"><a href="/qna/qnaListView">문의내역</a></li>
+        <li><a href="/footer/siteProvider">About Us</a></li>
+      </ul>
+    </div>
+ 
+    <div class="bottom">
+      <div class="logo">
+        <a href="/"><img src="/assets/img/common/logo_type2.svg" /></a>
+      </div>
+      <ul class="menu">
+        <li class="menu01">
+          <p></p>
+          <a href="/diagnosis/selfDiagnosisView">ESG 진단 &middot; 계획</a>
+        </li>
+        <li class="menu02">
+          <p></p>
+          <a href="/action/environmentView">ESG 실행</a>
+        </li>
+        <li class="menu03">
+          <p></p>
+          <a href="javascript:goDisclosureView(1)">ESG 공시 &middot; 인증</a>
+        </li>
+        <li class="menu04">
+          <p></p>
+          <a href="/trend/insightsList">ESG 자료 &middot; 동향</a>
+        </li>
+      </ul>
+
+      <div class="search-btn btn-search">
+        <div class="tx">Search</div>
+        <div class="icon"><img src="/assets/img/common/icon_search_wh.png" /></div>
+      </div>
+
+      <div class="m-rt-menu">
+        <button class="mo-search-btn">
+          <img src="/assets/img/common/ico_search_m.svg" class="btn-search" />
+          <img src="/assets/img/common/btn_close_40.png" class="btn-close total-btn-close" />
+        </button>
+        <button type="button" class="btn-menu">메뉴 열기</button>
+      </div>
+    </div>
+
+    <div class="dropmenu">
+      <div class="dropmenu-head">
+        <a href="/"><img src="/assets/img/common/logo_type2.svg" /></a>
+        <button type="button" class="btn-close">메뉴 닫기</button>
+      </div>
+      <dl class="dropmenuList">
+        <dd class="dropmenu1">
+          <button type="button" class="btn-m-toggle">ESG 진단 &middot; 계획</button>
+          <ul class="">
+            <li><a href="/diagnosis/selfDiagnosisView">ESG 자가진단</a></li>
+            <li><a href="/diagnosis/businessInfo">ESG 경영 가이드</a></li>
+          </ul>
+        </dd>
+
+        <dd class="dropmenu2">
+          <button type="button" class="btn-m-toggle">ESG 실행</button>
+          <ul class="">
+            <li><a href="/action/environmentView">환경</a></li>
+            <li><a href="/action/socialView">사회 </a></li>
+            <li><a href="/action/governanceView">거버넌스</a></li>
+            <li><a href="/action/financeView">금융</a></li>
+            <li><a href="/action/esgTaxView">ESG Tax</a></li>
+            <li><a href="/action/esgDealView">ESG Deal</a></li>
+          </ul>
+        </dd>
+
+        <dd class="dropmenu3">
+          <button type="button" class="btn-m-toggle">ESG 공시 &middot; 인증</button>
+          <ul class="">
+            <li><a href="javascript:goDisclosureView(1)">ESG 공시</a></li>
+            <li><a href="/disclosure/appraisalView">ESG 평가</a></li>
+            <li><a href="/disclosure/certificationView">ESG 인증</a></li>
+          </ul>
+        </dd>
+
+        <dd class="dropmenu4">
+          <button type="button" class="btn-m-toggle">ESG 자료 &middot; 동향</button>
+          <ul class="">
+            <li><a href="/trend/insightsList">삼일 인사이트</a></li>
+            <li><a href="/trend/bbsList">ESG 자료</a></li>
+            <li><a href="/trend/esgNewsList">ESG 뉴스</a></li>
+            <li><a href="/trend/educationList">ESG 교육</a></li>
+          </ul>
+        </dd>
+      </dl>
+
+      <div class="dropmenu-foot util">
+        <ul class="my-menu-list">
+          <!--로그인했을때-->
+          <li th:unless="${session.FoMbrInfo == null}" class="bor-btn left">
+            <a href="/qna/qnaListView"
+              >문의내역<span><img src="/assets/img/common/ico_arrow_24_2d.png" /></span
+            ></a>
+          </li>
+          <li th:unless="${session.FoMbrInfo == null}" class="back-btn left">
+            <a href="/mypage/mypageListView"
+              >마이페이지<span><img src="/assets/img/common/ico_arrow_right.png" /></span
+            ></a>
+          </li>
+
+          <!--로그인안했을떄-->
+          <li th:if="${session.FoMbrInfo == null}" class="back-btn"><a href="/common/login">로그인</a></li>
+        </ul>
+
+        <ul class="foot-menu">
+          <!--로그인안했을떄-->
+          <li><a href="/footer/siteProvider">About Us</a></li>
+          <li th:unless="${session.FoMbrInfo == null}"><a href="/common/logout">로그아웃</a></li>
+
+          <!--로그인안했을떄-->
+          <li th:if="${session.FoMbrInfo == null}"><a href="/common/join">회원가입</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+</html>

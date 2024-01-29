@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.ScheduleNewStoreMapper">
+
+    <select id="getLastKeywordDayCount" resultType="Integer">
+        /* ScheduleNewStoreMapper.getLastKeywordDayCount */
+        SELECT  MAX(nwskwd.DAY_COUNT)
+          FROM  ESG_DB.NWS_KEYWORD nwskwd
+         WHERE  1=1
+           AND  nwskwd.BASE_DATE = #{baseDate}
+    </select>
+
+    <insert id="addNwsKeyword" parameterType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsKeywordEntity">
+        /* ScheduleNewStoreMapper.addNwsKeyword */
+        <selectKey keyProperty="keywordUid" resultType="Long" order="BEFORE">
+            UPDATE ESG_DB.sequences
+            SET currval = sequences.CURRVAL + 1
+            OUTPUT inserted.currval
+            WHERE NAME = 'NWS_KEYWORD_SQ01'
+        </selectKey>
+        INSERT
+          INTO ESG_DB.NWS_KEYWORD
+             (
+                KEYWORD_UID
+                , BASE_DATE
+                , DAY_COUNT
+                , ORDER_NO
+                , ID
+                , NAME
+                , LEVEL
+                , WEIGHT
+                , REG_DT
+             )
+        VALUES
+             (
+                #{keywordUid}
+                , #{baseDate}
+                , #{dayCount}
+                , #{orderNo}
+                , #{id}
+                , #{name}
+                , #{level}
+                , #{weight}
+                , GETDATE()
+             )
+    </insert>
+
+    <insert id="addNwsNews" parameterType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsKeywordEntity">
+        <selectKey keyProperty="newsUid" resultType="Long" order="BEFORE">
+            UPDATE ESG_DB.sequences
+            SET currval = sequences.CURRVAL + 1
+            OUTPUT inserted.currval
+            WHERE NAME = 'NWS_NEWS_SQ01'
+        </selectKey>
+        /* ScheduleNewStoreMapper.addNwsNews */
+        INSERT
+          INTO  ESG_DB.NWS_NEWS
+             (
+                NEWS_UID
+                , KEYWORD_UID
+                , ORDER_NO
+                , NEWS_ID
+                , TITLE
+                , HILIGHT
+                , PUBLISHED_AT
+                , ENVELOPED_AT
+                , DATELINE
+                , PROVIDER
+                , CATEGORY
+                , CATEGORY_INCIDENT
+                , BYLINE
+                , PROVIDER_LINK_PAGE
+                , PRINTING_PAGE
+                , REG_DT
+             )
+        VALUES
+             (
+                #{newsUid}
+                , #{keywordUid}
+                , #{orderNo}
+                , #{newsId}
+                , #{title}
+                , #{hilight}
+                , #{publishedAt}
+                , #{envelopedAt}
+                , #{dateline}
+                , #{provider}
+                , #{category}
+                , #{categoryIncident}
+                , #{byline}
+                , #{providerLinkPage}
+                , #{printingPage}
+                , GETDATE()
+             )
+    </insert>
+
+    <insert id="addNwsTrend" parameterType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsTrendEntity">
+        <selectKey keyProperty="trendUid" resultType="Long" order="BEFORE">
+            UPDATE ESG_DB.sequences
+            SET currval = sequences.CURRVAL + 1
+            OUTPUT inserted.currval
+            WHERE NAME = 'NWS_TREND_SQ01'
+        </selectKey>
+        /* ScheduleNewStoreMapper.addNwsTrend */
+        INSERT
+          INTO  ESG_DB.NWS_TREND
+             (
+                TREND_UID
+                , KEYWORD_UID
+                , LABEL
+                , HITS
+                , REG_DT
+              )
+        VALUES
+             (
+                #{trendUid}
+                , #{keywordUid}
+                , #{label}
+                , #{hits}
+                , GETDATE()
+            )
+    </insert>
+
+    <select id="getNwsTopicList" parameterType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.dto.GetNwsTopicListParamsDto" resultType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.dto.GetNwsTopicListResultDto">
+        /* ScheduleNewStoreMapper.getNwsTopicList */
+        SELECT  nwstpc.TOPIC_UID            AS topicUid
+                , nwstpc.PARENT_TOPIC_UID   AS parentTopicUid
+                , nwstpc.TOPIC              AS topic
+                , nwstpc.ORDER_NO           AS orderNo
+                , nwstpc.USE_YN             AS useYn
+                , nwstpc.REG_DT             AS regDt
+          FROM  ESG_DB.NWS_TOPIC nwstpc
+         WHERE  1 = 1
+                <if test="parentTopicUid != null">
+                    AND  nwstpc.PARENT_TOPIC_UID = #{parentTopicUid}
+                </if>
+                <if test="useYn != null">
+                    AND  nwstpc.USE_YN = #{useYn}
+                </if>
+         ORDER BY nwstpc.PARENT_TOPIC_UID ASC, nwstpc.ORDER_NO ASC, nwstpc.TOPIC_UID ASC
+    </select>
+
+    <select id="getLastTopicTrendDayCount" resultType="Integer">
+        /* ScheduleNewStoreMapper.getLastTopicTrendDayCount */
+        SELECT  MAX(nwstpctrd.DAY_COUNT)
+          FROM  ESG_DB.NWS_TOPIC_TREND nwstpctrd
+         WHERE  1=1
+           AND  nwstpctrd.BASE_DATE = #{baseDate}
+    </select>
+
+    <insert id="addNwsTopicTrend" parameterType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsTopicTrendEntity">
+        <selectKey keyProperty="topicTrendUid" resultType="Long" order="BEFORE">
+            UPDATE ESG_DB.sequences
+            SET currval = sequences.CURRVAL + 1
+            OUTPUT inserted.currval
+            WHERE NAME = 'NWS_TOPIC_TREND_SQ01'
+        </selectKey>
+        /* ScheduleNewStoreMapper.addNwsTopicTrend */
+        INSERT
+          INTO  ESG_DB.NWS_TOPIC_TREND
+             (
+                TOPIC_TREND_UID
+                , TOPIC_UID
+                , BASE_DATE
+                , DAY_COUNT
+                , LABEL
+                , HITS
+                , REG_DT
+             )
+        VALUES
+            (
+                #{topicTrendUid}
+                , #{topicUid}
+                , #{baseDate}
+                , #{dayCount}
+                , #{label}
+                , #{hits}
+                , GETDATE()
+            )
+    </insert>
+
+</mapper>

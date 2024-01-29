@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.common.mapper.BoLoginMapper">
+
+	<!-- 사용자 정보 조회 -->
+	<select id="selectMbMbrInfo" parameterType="hashMap" resultType="com.pwc.pwcesg.config.SessionData">
+		/* selectMbMbrInfo */
+		SELECT
+			MBR_UID /* 회원채번 */
+			, MBR_UNO /* 회원고유번호 */
+			, MBR_ID /* 회원아이디 */
+			, MBR_PWD /* 회원암호 */
+			, MBR_GB_CD /* 회원구분코드  */
+			, MBR_NM /* 회원명 */
+			, MBR_ST_CD /* 회원상태코드 */
+			, JOIN_DT /* 가입일 */
+			, WHDWL_APLY_DT /* 탈퇴신청일 */
+			, WHDWL_APRV_DT /* 탈퇴승인일 */
+			, DEPT_NM /* 부서명 */
+			, POS_NM /* 직급명 */
+			, COMP_MAIL /* 회사이메일 */
+			, MAIL_CHK_YN /* 이메일확인여부 */
+			, MAIL_CHK_DT /* 이메일확인일 */
+			, PWD_FAIL_CNT /* 암호실패건수 */
+			, PWD_RCTLY_CHNG_DT /* 암호최근변경일 */
+			, MRKT_AGRE_YN /* 마케팅동의여부 */
+			, MRKT_AGRE_DT /* 마케팅동의일 */
+			, NSLT_AGRE_YN /* 뉴스레터동의여부 */
+			, NSLT_AGRE_DT /* 뉴스레터동의일 */
+			, INTR_CD_ARRY /* 관심코드배열 */
+			, CPHON_NO /* 휴대폰번호 */
+			, COPR_UID /* 소속채번 */
+			, FST_INS_DT /* 최초등록일 */
+			, FST_INS_ID /* 최초등록아이디 */
+			, LST_UPD_DT /* 최종수정일 */
+			, LST_UPD_ID /* 최종수정아이디 */
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			/* 그룹A, 그룹B만 로그인 가능 */
+			MBR.MBR_GB_CD IN ('10', '20')
+			AND MBR.MBR_ID = #{mbrId} /* 회원아이디 */
+			AND MBR.MBR_PWD = #{pwEncrypt} /* 회원암호 */
+	</select>
+
+	<!-- 사용자 정보 조회 -->
+	<select id="selectMyInfo" parameterType="camelcasemap" resultType="com.pwc.pwcesg.config.SessionData">
+		/* selectMyInfo */
+		SELECT
+			MBR_UID /* 회원채번 */
+			, MBR_ID /* 회원아이디 */
+			, MBR_UNO /* 회원고유번호 */
+			, MBR_NM /* 회원명 */
+			, COMP_MAIL /* 회사이메일 */
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			MBR_NM = #{mbrNm} /* 회원명 */
+			AND MBR.COMP_MAIL = #{compMail} /* 회사이메일 */
+			AND MBR.MBR_ST_CD = '10' /* 회원상태코드(10:가입, 20: 탈퇴신청, 30: 탈퇴) */
+	</select>
+
+	<!-- 회원탈퇴 -->
+	<update id="updatePwd" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MBR_PWD    = #{mbrPwd} /* 회원암호 */
+			, PWD_RCTLY_CHNG_DT = CURRENT_TIMESTAMP
+		WHERE
+			MBR_UID = #{mbrUid} /* 회원채번 */
+			AND COMP_MAIL = #{compMail} /* 회사이메일 */
+	</update>
+
+	<select id="updatePwdFailCnt" parameterType="com.pwc.pwcesg.config.SessionData" resultType="int">
+		UPDATE ESG_DB.MB_MBR_INFO
+		SET PWD_FAIL_CNT = PWD_FAIL_CNT + 1
+		OUTPUT inserted.PWD_FAIL_CNT
+		WHERE MBR_GB_CD IN ('10', '20') AND MBR_ID = #{mbrId} /* 회원아이디 */
+	</select>
+	<update id="updatePwdByFail" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MBR_PWD    = #{mbrPwd} /* 회원암호 */
+			, PWD_RCTLY_CHNG_DT = CURRENT_TIMESTAMP
+		WHERE
+			MBR_GB_CD IN ('10', '20') AND MBR_ID = #{mbrId} /* 회원아이디 */
+	</update>
+	<update id="updatePwdFailCntReset" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			PWD_FAIL_CNT = 0
+		WHERE
+			MBR_GB_CD IN ('10', '20') AND MBR_ID = #{mbrId} /* 회원아이디 */
+	</update>
+
+	<select id="selectMyRights" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			MNU_UID
+			, MNU_LV_1
+			, MNU_LV_2
+			, MNU_LV_3
+			, ACCS_URI
+			<if test="mbrGbCd != null and mbrGbCd.equals('10')">
+				, GRP_A AS RIGHTS
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('20')">
+				, GRP_B AS RIGHTS
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('30')">
+				, GRP_C AS RIGHTS
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('40')">
+				, GRP_D AS RIGHTS
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('99')">
+				, GRP_Z AS RIGHTS
+			</if>
+		FROM
+			ESG_DB.ST_MNU_AUTH_INFO
+		WHERE
+			ACCS_URI = #{accsUri}
+	</select>
+
+</mapper>

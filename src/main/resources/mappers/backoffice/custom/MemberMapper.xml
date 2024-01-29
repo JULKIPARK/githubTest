@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.custom.mapper.MemberMapper">
+
+	<!-- 회원정보 목록 조회 -->
+	<select id="selectMemberList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			MBR.MBR_UID /* 회원채번 */
+			, MBR.MBR_UNO /* 회원고유번호 */
+			, MBR.MBR_ID /* 회원아이디 */
+			, MBR.MBR_PWD /* 회원암호 */
+			, MBR.MBR_GB_CD /* 회원구분코드 */
+			, ESG_DB.fnCommCdNm('MBR_GB_CD', MBR.MBR_GB_CD) MBR_GB_NM /* 회원구분명 */
+			, MBR.MBR_NM /* 회원명 */
+			, MBR.MBR_ST_CD /* 회원상태코드 */
+			, ESG_DB.fnCommCdNm('MBR_ST_CD', MBR.MBR_ST_CD) MBR_ST_NM /* 회원상태명 */
+			, FORMAT(DATEADD(HOUR, 9, MBR.JOIN_DT), 'yyyy.MM.dd hh:mm') JOIN_DT /* 가입일 */
+			, MBR.WHDWL_APLY_DT /* 탈퇴신청일 */
+			, MBR.WHDWL_APRV_DT /* 탈퇴승인일 */
+			, MBR.DEPT_NM /* 부서명 */
+			, MBR.POS_NM /* 직급명 */
+			, MBR.COMP_MAIL /* 회사이메일 */
+		    , MBR.COPR_PHON_NO
+			, MBR.MAIL_CHK_YN /* 이메일확인여부 */
+			, MBR.MAIL_CHK_DT /* 이메일확인일 */
+			, MBR.PWD_FAIL_CNT /* 암호실패건수 */
+			, MBR.PWD_RCTLY_CHNG_DT /* 암호최근변경일 */
+			, MBR.MRKT_AGRE_YN /* 마케팅동의여부 */
+			, MBR.MRKT_AGRE_DT /* 마케팅동의일 */
+			, MBR.NSLT_AGRE_YN /* 뉴스레터동의여부 */
+			, MBR.NSLT_AGRE_DT /* 뉴스레터동의일 */
+			, MBR.INTR_CD_ARRY /* 관심코드배열 */
+			, ESG_DB.fnGetCdNmArry2('INTR_CD', MBR.INTR_CD_ARRY, MBR.MBR_UID) AS INTR_CD_NM_ARRY
+			, MBR.CPHON_NO /* 휴대폰번호 */
+			, MBR.COPR_UID /* 소속채번 */
+			, MBR.FST_INS_DT /* 최초등록일 */
+			, MBR.FST_INS_ID /* 최초등록아이디 */
+			, MBR.LST_UPD_DT /* 최종수정일 */
+			, MBR.LST_UPD_ID /* 최종수정아이디 */
+			, MBR.COPR_NM /* 소속명 */
+			, ISNULL((SELECT TOP 1 MEMO_DESC FROM ESG_DB.MB_MEMO_INFO WHERE MBR_UID = MBR.MBR_UID ORDER BY SEQ_NO), '') MEMO_DESC
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		<where>
+			<!-- 검색조건 : 가입일/탈퇴일 -->
+			<choose>
+				<!-- 검색조건 : 탈퇴일 -->
+				<when test="schJoinType.equals('W')">
+					<if test="schStrtDate != null and !schStrtDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, MBR.WHDWL_APLY_DT), 'yyyy.MM.dd') <![CDATA[>=]]> #{schStrtDate} /* 탈퇴승인일: 조회시작일 */
+					</if>
+					<if test="schEndDate != null and !schEndDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, MBR.WHDWL_APLY_DT), 'yyyy.MM.dd') <![CDATA[<=]]> #{schEndDate} /* 탈퇴승인일: 조회종료일 */
+					</if>
+				</when>
+				<!-- 검색조건 : 가입일 -->
+				<otherwise>
+					<if test="schStrtDate != null and !schStrtDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, MBR.JOIN_DT), 'yyyy.MM.dd') <![CDATA[>=]]> #{schStrtDate} /* 가입일: 조회시작일 */
+					</if>
+					<if test="schEndDate != null and !schEndDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, MBR.JOIN_DT), 'yyyy.MM.dd') <![CDATA[<=]]> #{schEndDate} /* 가입일: 조회종료일 */
+					</if>
+				</otherwise>
+			</choose>
+
+			<!-- 검색조건 : 회원구분코드 -->
+			<if test="schMbrGbCd != null and !schMbrGbCd.equalsIgnoreCase('ALL')">
+				AND MBR.MBR_GB_CD = #{schMbrGbCd} /* 회원구분코드 */
+			</if>
+
+			<!-- 검색조건 : 소속 -->
+			<if test="schCoprNm != null and !schCoprNm.equals('')">
+				AND MBR.COPR_NM LIKE CONCAT('%', #{schCoprNm}, '%')
+			</if>
+
+			<!-- 검색조건 : 회원상태코드 -->
+			<if test="schMbrStCd != null and !schMbrStCd.equalsIgnoreCase('ALL')">
+				AND MBR.MBR_ST_CD = #{schMbrStCd} /* 회원상태코드 */
+			</if>
+
+			<!-- 검색조건 : 개인정보 제3자 제공 동의 -->
+			<if test="schMrkTAgreYn != null and !schMrkTAgreYn.equalsIgnoreCase('ALL')">
+				AND MBR.MRKT_AGRE_YN = #{schMrkTAgreYn} /* 마케팅동의여부 */
+			</if>
+
+			<!-- 검색조건 : 뉴스레터동의여부 -->
+			<if test="schNsltAgreYn != null and !schNsltAgreYn.equalsIgnoreCase('ALL')">
+				AND MBR.NSLT_AGRE_YN = #{schNsltAgreYn} /* 뉴스레터동의여부 */
+			</if>
+
+			<!-- 검색조건 : ESG 관심영역 -->
+			<if test="schIntrCd != null and !schIntrCd.equals('') and !schIntrCd.equalsIgnoreCase('ALL')">
+				<foreach item="intrCd" index="index" collection="intrCdList" separator="" open="" close="">
+					AND CHARINDEX(#{intrCd}, MBR.INTR_CD_ARRY) > 0
+				</foreach>
+			</if>
+
+			<!-- 검색조건 : 회원아이디 -->
+			<if test="schType.equals('ID') and schText != null and !schText.equals('')">
+				AND MBR.MBR_ID LIKE CONCAT(#{schText}, '%') /* 회원아이디 */
+			</if>
+
+			<!-- 검색조건 : 회원명 -->
+			<if test="schType.equals('NAME') and schText != null and !schText.equals('')">
+				AND MBR.MBR_NM LIKE CONCAT(#{schText}, '%') /* 회원아이디 */
+			</if>
+
+			<!-- 검색조건 : 회원고유번호 -->
+			<if test="schType.equals('NUM') and schText != null and !schText.equals('')">
+				AND MBR.MBR_UNO LIKE CONCAT(#{schText}, '%') /* 회원아이디 */
+			</if>
+		</where>
+		ORDER BY
+			MBR.MBR_UID DESC
+	</select>
+
+	<!-- 회원정보 상세 조회 -->
+	<select id="selectMemberView" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			MBR.MBR_UID /* 회원채번 */
+			, MBR.MBR_UNO /* 회원고유번호 */
+			, MBR.MBR_ID /* 회원아이디 */
+			, MBR.MBR_PWD /* 회원암호 */
+			, MBR.MBR_GB_CD /* 회원구분코드 */
+			, ESG_DB.FNCOMMCDNM('MBR_GB_CD', MBR.MBR_GB_CD) MBR_GB_NM /* 회원구분명 */
+			, MBR.MBR_NM /* 회원명 */
+			, MBR.MBR_ST_CD /* 회원상태코드 */
+			, ESG_DB.FNCOMMCDNM('MBR_ST_CD', MBR.MBR_ST_CD) MBR_ST_NM /* 회원상태명 */
+			, FORMAT(DATEADD(HOUR, 9, MBR.JOIN_DT), 'yyyy.MM.dd') JOIN_DT /* 가입일 */
+			, FORMAT(DATEADD(HOUR, 9, MBR.WHDWL_APLY_DT), 'yyyy.MM.dd') AS WHDWL_APRV_DT /* 탈퇴승인일 */
+			, MBR.DEPT_NM /* 부서명 */
+			, MBR.POS_NM /* 직급명 */
+			, MBR.COMP_MAIL /* 회사이메일 */
+			, MBR.MAIL_CHK_YN /* 이메일확인여부 */
+			, MBR.MAIL_CHK_DT /* 이메일확인일 */
+			, MBR.PWD_FAIL_CNT /* 암호실패건수 */
+			, MBR.PWD_RCTLY_CHNG_DT /* 암호최근변경일 */
+			, MBR.MRKT_AGRE_YN /* 마케팅동의여부 */
+			, MBR.MRKT_AGRE_DT /* 마케팅동의일 */
+			, MBR.NSLT_AGRE_YN /* 뉴스레터동의여부 */
+			, MBR.NSLT_AGRE_DT /* 뉴스레터동의일 */
+			, MBR.INTR_CD_ARRY /* 관심코드배열 */
+			, ESG_DB.fnGetCdNmArry2('INTR_CD', MBR.INTR_CD_ARRY, MBR.MBR_UID) AS INTR_CD_NM_ARRY
+			, MBR.CPHON_NO /* 휴대폰번호 */
+		    , MBR.COPR_PHON_NO
+			, MBR.COPR_NM /* 소속명 */
+			, MBR.FST_INS_DT /* 최초등록일 */
+			, MBR.FST_INS_ID /* 최초등록아이디 */
+			, FORMAT(DATEADD(HOUR, 9, MBR.LST_UPD_DT), 'yyyy.MM.dd') AS LST_UPD_DT	/* 최종수정일 */
+			, MBR.LST_UPD_ID /* 최종수정아이디 */
+			, (SELECT TOP 1 MEMO_DESC FROM ESG_DB.MB_MEMO_INFO WHERE MBR_UID = #{mbrUid} ORDER BY SEQ_NO DESC) AS MEMO
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			MBR.MBR_UID = #{mbrUid} /* 회원채번 */
+	</select>
+
+	<insert id="insertMemberMemo" parameterType="camelcasemap">
+		INSERT INTO ESG_DB.MB_MEMO_INFO (
+			MBR_UID
+			, SEQ_NO
+			, MEMO_DESC
+			, FST_INS_ID
+			, LST_UPD_ID
+		) VALUES (
+			#{mbrUid}
+			, (SELECT ISNULL(MAX(SEQ_NO), 0) + 1 FROM ESG_DB.MB_MEMO_INFO WHERE MBR_UID = #{mbrUid})
+			, #{memo}
+			, #{fstInsId}
+			, #{lstUpdId}
+			)
+	</insert>
+
+	<!-- 자가진단 내역 조회 -->
+	<select id="selectMemberSelfCheckHstList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			ACT_TGT_RESULT_UID
+			, FORMAT(DATEADD(HOUR, 9, FST_INS_DT),'yyyy.MM.dd HH:mm')  as FST_INS_DT
+			, ESG_DB.fnCommCdNm('INDSTY_LCLS_CD', INDSTY_LCLS_CD) INDSTY_LCLS_CD_NM
+			, ESG_DB.fnCommCdNm('INDSTY_MCLS_CD', INDSTY_MCLS_CD) INDSTY_MCLS_CD_NM
+			, ESG_DB.fnCommCdNm('INDSTY_SCLS_CD', INDSTY_SCLS_CD) INDSTY_SCLS_CD_NM
+		FROM ESG_DB.MB_ESG_TGT_ACT_RESULT
+		WHERE  MBR_UID = #{mbrUid}
+		ORDER BY FST_INS_DT DESC
+	</select>
+
+	<!-- CSRD 내역 조회 -->
+	<select id="selectMemberCsrdHstList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			R.CSRD_TGT_RESULT_UID
+			, FORMAT(DATEADD(HOUR, 9, R.FST_INS_DT),'yyyy.MM.dd HH:mm') as FST_INS_DT
+		FROM ESG_DB.MB_CSRD_TGT_ACT_RESULT R
+		JOIN ESG_DB.CM_CSRD_INFO C
+				ON ISNULL(R.CSRD_ST1_CD,'') = C.CSRD_INFO_ST1_CD
+				AND ISNULL(R.CSRD_ST2_CD,'') = C.CSRD_INFO_ST2_CD
+				AND ISNULL(R.CSRD_ST3_CD,'') = C.CSRD_INFO_ST3_CD
+				AND ISNULL(R.CSRD_ST4_CD,'') = C.CSRD_INFO_ST4_CD
+				AND ISNULL(R.CSRD_ST5_CD,'') = C.CSRD_INFO_ST5_CD
+		WHERE MBR_UID = #{mbrUid}
+		ORDER BY FST_INS_DT DESC
+	</select>
+
+	<select id="selectMemberAskCntList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			ASK_ST_CD
+			, ESG_DB.fnCommCdNm('ASK_ST_CD', ASK_ST_CD) ASK_ST_CD_NM
+			, COUNT(ASK_ST_CD) ASK_ST_CD_CNT
+		FROM
+			ESG_DB.CS_ASK_INFO
+		WHERE
+			MBR_ID=(SELECT MBR_ID FROM ESG_DB.MB_MBR_INFO WHERE MBR_UID=#{mbrUid})
+		GROUP BY
+			ASK_ST_CD
+	</select>
+
+	<select id="selectMemberStateByOneMonth" resultType="camelcasemap">
+		WITH
+		DATES AS (
+			SELECT
+				DATEADD(DAY, 1, DATEADD(MONTH, -1, CONVERT(DATE, DATEADD(HOUR, 9, GETDATE())))) AS DATE
+
+			UNION ALL
+
+			SELECT
+				DATEADD(DAY, 1, DATE)
+			FROM
+				DATES
+			WHERE
+				DATE <![CDATA[<]]> CONVERT(DATE, DATEADD(HOUR, 9, GETDATE()))
+		)
+
+		SELECT
+			FORMAT(DATE, 'yyyy.MM.dd') AS DATE
+			, (/* 방문수 */
+				SELECT
+					COUNT(1)
+				FROM (
+					SELECT
+						SESN_ID
+					FROM
+						ESG_DB.ST_ACCS_LOG
+					WHERE
+						ACCS_URI NOT LIKE '/sems%'
+						AND FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+					GROUP BY
+						SESN_ID
+				) AS T1
+			) AS VISIT_CNT
+			, (/* 가입수 */
+				SELECT
+					COUNT(1)
+				FROM
+					ESG_DB.MB_MBR_INFO
+				WHERE
+					FORMAT(DATEADD(HOUR, 9, JOIN_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+			) AS JOIN_CNT
+			, (/* 문의수 */
+				SELECT
+					COUNT(1)
+				FROM
+					ESG_DB.CS_ASK_INFO
+				WHERE
+					FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+			) AS ASK_CNT
+		FROM
+			DATES
+		ORDER BY
+			DATE DESC
+		OPTION (MAXRECURSION 0)
+	</select>
+
+	<select id="selectMemberAvgStateByOneYear" resultType="camelcasemap">
+		SELECT
+			(
+				SELECT AVG(VisitorCount)
+				FROM (
+						 SELECT DATEPART(YYYY, FST_INS_DT) AS Year, DATEPART(MM, FST_INS_DT) AS Month, COUNT(DISTINCT SESN_ID) as VisitorCount
+						 FROM ESG_DB.ST_ACCS_LOG
+						 WHERE ACCS_URI NOT LIKE '/sems%' AND (DATEADD(HOUR, 9, FST_INS_DT)) >= DATEADD(YY, -1, GETDATE())
+						 GROUP BY DATEPART(YYYY, FST_INS_DT), DATEPART(MM, FST_INS_DT)
+					 ) as MonthlyVisitors
+			) AS AvgVisitors
+			, (
+				  SELECT COUNT(1)
+				  FROM ESG_DB.MB_MBR_INFO
+				  WHERE WHDWL_APLY_DT IS NULL
+			  ) AS AvgMembers
+			, (
+				  SELECT AVG(QnaCount)
+				  FROM (
+						   SELECT DATEPART(YYYY, FST_INS_DT) AS Year, DATEPART(MM, FST_INS_DT) AS Month, COUNT(1) as QnaCount
+						   FROM ESG_DB.CS_ASK_INFO
+						   WHERE (DATEADD(HOUR, 9, FST_INS_DT)) >= DATEADD(YY, -1, GETDATE())
+						   GROUP BY DATEPART(YYYY, FST_INS_DT), DATEPART(MM, FST_INS_DT)
+					   ) as MonthlyQna
+			  ) AS AvgQna
+	</select>
+
+	<select id="selectEsgTgtActResult" resultType="camelcasemap">
+		SELECT
+			CCCI.CD
+			, CCCI.CD_NM
+			, ISNULL(METAR.CNT, 0) CNT
+			, (
+				  SELECT COUNT(1)
+				  FROM ESG_DB.MB_ESG_TGT_ACT_RESULT METAR2
+				  WHERE METAR2.INDSTY_LCLS_CD = CCCI.CD AND FORMAT(DATEADD(HOUR, 9, METAR2.FST_INS_DT), 'yyyyMMdd') = FORMAT(GETDATE(), 'yyyyMMdd')
+			  ) TODAY_CNT
+		FROM
+			ESG_DB.CM_COMM_CD_INFO CCCI
+			LEFT JOIN (
+						  SELECT
+							  METAR.INDSTY_LCLS_CD
+							  , COUNT(1) CNT
+						  FROM
+							  ESG_DB.MB_ESG_TGT_ACT_RESULT METAR
+						  GROUP BY
+							  METAR.INDSTY_LCLS_CD
+					  ) METAR
+				ON CCCI.CD = METAR.INDSTY_LCLS_CD
+		WHERE
+			CCCI.GRP_CD='INDSTY_LCLS_CD'
+		ORDER BY
+			CCCI.DP_SEQ
+	</select>
+
+</mapper>

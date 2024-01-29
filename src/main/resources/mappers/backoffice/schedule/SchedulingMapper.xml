@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.schedule.mapper.SchedulingMapper">
+
+	<!-- RSS 기준정보 목록 조회 -->
+	<select id="selectRssBaseInfoList" resultType="camelcasemap">
+		SELECT
+			SPLY_BZENTY_CD /* 제공업체코드 */
+			, SEQ_NO /* 순번 */
+			, SECTN_NM /* 섹션명 */
+			, SECTN_URL /* 섹션URL */
+			, LST_BUILD_DT /* RSS 최종작성일 */
+		FROM
+			ESG_DB.CM_RSS_BASE_INFO
+	</select>
+
+	<!-- 신규 뉴스 등록 -->
+	<insert id="registNews" parameterType="java.util.List">
+		MERGE INTO ESG_DB.BT_RSS_INFO AS Target
+		USING (VALUES
+		<foreach item="item" index="index" collection="list" separator=",">
+			(
+			<![CDATA[#{item.linkUrl}]]>            /* 링크경로 */
+			, <![CDATA[#{item.pblcnDt}]]>        /* 발행일 */
+			, <![CDATA[#{item.imgUrl}]]>        /* 이미지경로 */
+			, <![CDATA[#{item.splyBzentyCd}]]>    /* 제공업체코드 */
+			, <![CDATA[#{item.wrtrNm}]]>        /* 작성자명 */
+			, <![CDATA[#{item.ttl}]]>            /* 제목 */
+			, <![CDATA[#{item.sumry}]]>            /* 요약 */
+			, <![CDATA[#{item.cn}]]>            /* 내용 */
+			)
+		</foreach>
+		) AS Source (
+		LINK_URL /* 링크경로 */
+		, PBLCN_DT /* 발행일 */
+		, IMG_URL /* 이미지경로 */
+		, SPLY_BZENTY_CD /* 제공업체코드 */
+		, WRTR_NM /* 작성자명 */
+		, TTL /* 제목 */
+		, SUMRY /* 요약 */
+		, CN /* 내용 */
+		)
+		ON Target.LINK_URL = Source.LINK_URL
+		WHEN MATCHED THEN
+		UPDATE SET
+		PBLCN_DT = Source.PBLCN_DT /* 발행일 */
+		, IMG_URL = Source.IMG_URL /* 이미지경로 */
+		, WRTR_NM = Source.WRTR_NM /* 작성자명 */
+		, TTL = Source.TTL /* 제목 */
+		, SUMRY = Source.SUMRY /* 요약 */
+		, CN = Source.CN /* 내용 */
+		WHEN NOT MATCHED THEN
+		INSERT (
+		LINK_URL /* 링크경로 */
+		, PBLCN_DT /* 발행일 */
+		, IMG_URL /* 이미지경로 */
+		, SPLY_BZENTY_CD /* 제공업체코드 */
+		, WRTR_NM /* 작성자명 */
+		, TTL /* 제목 */
+		, SUMRY /* 요약 */
+		, CN /* 내용 */
+		) VALUES (
+		Source.LINK_URL /* 링크경로 */
+		, Source.PBLCN_DT /* 발행일 */
+		, Source.IMG_URL /* 이미지경로 */
+		, Source.SPLY_BZENTY_CD /* 제공업체코드 */
+		, Source.WRTR_NM /* 작성자명 */
+		, Source.TTL /* 제목 */
+		, Source.SUMRY /* 요약 */
+		, Source.CN /* 내용 */
+		);
+	</insert>
+
+	<!-- RSS 최종작성일 수정 -->
+	<update id="updateBaseInfo" parameterType="camelcasemap">
+		UPDATE ESG_DB.CM_RSS_BASE_INFO
+		SET LST_BUILD_DT = #{lstBuildDt} /* RSS 최종작성일 */
+		WHERE
+			SPLY_BZENTY_CD = #{splyBzentyCd} /* 제공업체코드 */
+			AND SEQ_NO = #{seqNo} /* 순번 */
+	</update>
+
+	<!--	<insert id="insertBtDteGrpAggr">-->
+	<!--		INSERT INTO ESG_DB.BT_DTE_GRP_AGGR-->
+	<!--		(-->
+	<!--			DAILY_DTE	/* 집계일자 */-->
+	<!--			, ASK_CNT	/* 문의건수 */-->
+	<!--			, NEWS_CNT	/* 뉴스건수 */-->
+	<!--			, JOIN_CNT	/* 가입건수 */-->
+	<!--			, PV_CNT	/* Page View 건수 */-->
+	<!--			, UV_CNT	/* Unique Visitor 건수 */-->
+	<!--		)VALUES(-->
+	<!--			(-->
+	<!--				/* 집계일자 */-->
+	<!--				SELECT FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyyMMdd')-->
+	<!--			),(-->
+	<!--				/* 문의건수 */-->
+	<!--				SELECT -->
+	<!--					COUNT(ASK_UID)	/* 문의채번 */-->
+	<!--				FROM ESG_DB.CS_ASK_INFO-->
+	<!--				WHERE FORMAT(FST_INS_DT, 'yyyy-MM-dd') = FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyy-MM-dd')-->
+	<!--			),(-->
+	<!--				/* 신규뉴스 건수 */-->
+	<!--				SELECT -->
+	<!--					COUNT(LINK_URL)	/* 링크주소 */-->
+	<!--				FROM ESG_DB.BT_RSS_INFO-->
+	<!--				WHERE FORMAT(FST_INS_DT, 'yyyy-MM-dd') = FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyy-MM-dd')-->
+	<!--			),(-->
+	<!--				/* 신규뉴스 건수 */-->
+	<!--				SELECT -->
+	<!--					COUNT(MBR_UID)	/* 링크주소 */-->
+	<!--				FROM ESG_DB.MB_MBR_INFO-->
+	<!--				WHERE FORMAT(JOIN_DT, 'yyyy-MM-dd') = FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyy-MM-dd')-->
+	<!--			),(-->
+	<!--				/* Page View 건수 */-->
+	<!--				SELECT -->
+	<!--					COUNT(ACCS_URI)	/* 링크주소 */-->
+	<!--				FROM ESG_DB.ST_ACCS_LOG-->
+	<!--				WHERE FORMAT(FST_INS_DT, 'yyyy-MM-dd') = FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyy-MM-dd')-->
+	<!--			),(-->
+	<!--				/* Unique Visitor 건수 */-->
+	<!--				SELECT COUNT(*) FROM(-->
+	<!--					SELECT -->
+	<!--						 MBR_ID	/* 회원아이디 */-->
+	<!--					FROM ESG_DB.ST_ACCS_LOG-->
+	<!--					WHERE FORMAT(FST_INS_DT, 'yyyy-MM-dd') = FORMAT(DATEADD(DAY, -1, GETDATE()), 'yyyy-MM-dd')-->
+	<!--					AND MBR_ID != ''-->
+	<!--					GROUP BY MBR_ID-->
+	<!--				) A-->
+	<!--			)-->
+	<!--		)-->
+	<!--	</insert>-->
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.custom.mapper.RoleGroupMapper">
+
+	<select id="selectRoleGroupList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CD AS GROUP_CD /* 그룹코드 */
+			, CD_NM AS GROUP_NM /* 그룹명 */
+			, CD_COMT AS GROUP_COMT /* 그룹 설명 */
+		    , (SELECT COUNT(0) FROM ESG_DB.MB_MBR_INFO WHERE MBR_ST_CD = '10' AND MBR_GB_CD = CD) GROUP_MBR_CNT /* 그룹 인원수 */
+			, FORMAT(DATEADD(HOUR, 9, LST_UPD_DT), 'yyyy.MM.dd') LST_UPD_DTE /* 최종수정일 */
+		FROM
+			ESG_DB.CM_COMM_CD_INFO
+		WHERE
+			GRP_CD = 'MBR_GB_CD'
+		ORDER BY
+			CD
+	</select>
+
+	<select id="selectAppListByRoleGroupCd" parameterType="camelcasemap" resultType="camelcasemap">
+
+	</select>
+
+	<select id="selectMemberListByMbrGbCd" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			MBR.MBR_UID /* 회원채번 */
+			, MBR.MBR_UNO /* 회원고유번호 */
+			, MBR.MBR_ID /* 회원아이디 */
+			, MBR.MBR_NM /* 회원명 */
+		    , MBR.COPR_NM
+			, MBR.DEPT_NM /* 부서명 */
+			, MBR.POS_NM /* 직급명 */
+			, MBR.MBR_GB_CD /* 회원구분코드 */
+			, ESG_DB.FNCOMMCDNM('MBR_GB_CD', MBR.MBR_GB_CD) MBR_GB_NM /* 회원구분명 */
+			, CASE
+				WHEN MBR.LST_MBR_GB_UPD_DT IS NULL THEN FORMAT(DATEADD(HOUR, 9, MBR.LST_UPD_DT), 'yyyy.MM.dd')
+				ELSE FORMAT(DATEADD(HOUR, 9, MBR.LST_MBR_GB_UPD_DT), 'yyyy.MM.dd')
+			END LST_UPD_DTE /* 최종수정일자 */
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			MBR.MBR_ST_CD = '10'
+			AND MBR.MBR_GB_CD = #{mbrGbCd} /* 회원회원구분코드 */
+		<if test="orderCondition != null and !orderCondition.equals('')">
+		ORDER BY
+			${orderCondition}
+		</if>
+	</select>
+
+	<select id="selectMemberRightByMbrGbCd" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			MNU_UID
+			, MNU_LV_1
+			, MNU_LV_2
+			, MNU_LV_3
+			, ACCS_URI
+			, CRUD_TYPE
+			, GRP_A
+			, GRP_B
+			, GRP_C
+			, GRP_D
+			, GRP_Z
+		FROM
+			ESG_DB.ST_MNU_AUTH_INFO
+		ORDER BY
+			MNU_UID
+	</select>
+
+	<update id="updateMemberRoleGroup" parameterType="hashMap">
+		UPDATE ESG_DB.MB_MBR_INFO
+		SET
+			MBR_GB_CD       = #{groupmove}
+			, LST_MBR_GB_UPD_DT = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_MBR_GB_UPD_ID = #{lstUpdId} /* 최종수정아이디 lstUpdId */
+		WHERE
+			MBR_UID IN
+			<foreach item="mbrUid" index="index" collection="mbrUidList" separator="," open="(" close=")">
+				#{mbrUid}
+			</foreach>
+	</update>
+
+	<update id="updateMemberGroupRight" parameterType="hashMap">
+		UPDATE ESG_DB.ST_MNU_AUTH_INFO
+		SET
+			LST_UPD_DT = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_UPD_ID = #{lstUpdId} /* 최종수정아이디 lstUpdId */
+			<if test="mbrGbCd != null and mbrGbCd.equals('10')">
+				, GRP_A = #{rights}
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('20')">
+				, GRP_B = #{rights}
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('30')">
+				, GRP_C = #{rights}
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('40')">
+				, GRP_D = #{rights}
+			</if>
+			<if test="mbrGbCd != null and mbrGbCd.equals('99')">
+				, GRP_Z = #{rights}
+			</if>
+		WHERE
+			MNU_UID = #{mnuUid}
+	</update>
+
+</mapper>

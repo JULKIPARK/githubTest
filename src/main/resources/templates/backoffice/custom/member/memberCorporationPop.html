@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="memberCorporationPop">
+    <script th:inline="javascript" type="text/javascript">
+        //목록조회
+        function fnSelectCorporationList() {
+            var formData, param = {};
+            formData = _formLib.getFormData("coprListFrm");
+            param = {
+                "url": "/sems/custom/selectCorporationList"
+                , "type": "post"
+                , "data": formData
+                , "async": false
+                , "callback": function (fragment) {
+                    $("#coprListDiv").replaceWith(fragment);
+
+                    //페이징처리
+                    var currPage = $('#coprPageNum').val();//현재 선택된 페이지
+                    $('#coprPageNum').empty();//페이지 option 삭제
+                    for (var count = 1; count <= $("#coprTotalPage").val(); count++) {
+                        var selTxt = "";
+                        if (count == currPage) {
+                            selTxt = "selected='selected'";//현재 페이지 선택
+                        }
+                        var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#coprTotalPage").val() + "</option>");
+                        $('#coprPageNum').append(option);
+                    }
+
+                    $("#CorporationPop").addClass("show");
+                }
+            };
+            _comLib.callAjax(param);
+        }
+
+        //입력
+        function setCoprUid() {
+            var coprInto = $("#radioCopr").val().split(",");//(소속정보:id,name)
+
+            if (coprInto == null || coprInto.length < 2) {
+                alert('소속정보가 올바르지 않습니다.');
+                return;
+            }
+
+            $("#schCoprUid").val(coprInto[0]);	//소속정보(id) parent에 노출
+            $("#schCoprUNm").val(coprInto[1]);	//소속정보(name) parent에 노출
+            $("#CorporationPop").removeClass("show");	//팝업닫기
+        }
+
+    </script>
+
+    <!-- //wrap -->
+    <div id="CorporationPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area small">
+                <div class="modal-head">
+                    <h2 class="tit">소속 조회</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <form id="coprListFrm">
+                        <fieldset>
+                            <legend>소속 검색</legend>
+                            <div class="srch-head">
+                                <label for="srch" class="lable">소속</label>
+                                <input type="text" id="schCoprNm" name="schCoprNm" placeholder="소속 검색">
+                            </div>
+                            <div class="result-wrap">
+                                <!-- total -->
+                                <div class="sorting-wrap inner-lable">
+                                    <p class="label">조회 결과</p>
+                                    <select id="coprPageSize" name="coprPageSize" class="select" title="데이터 건수">
+                                        <option value="10" selected="selected">10개</option>
+                                        <option value="50">50개</option>
+                                        <option value="100">100개</option>
+                                    </select>
+                                    <select id="coprPageNum" name="coprPageNum" class="select"
+                                            title="페이지 이동선택"> </select>
+                                    <div class="btn-ctl">
+                                        <button type="button" th:onclick="fnSelectCorporationList();"
+                                                class="btn-default">조회
+                                        </button>
+                                        <button type="button" th:onclick="$('#schCoprNm').val('');" class="btn-default">
+                                            초기화
+                                        </button>
+                                        <button type="button" th:onclick="setCoprUid();" class="btn-default">입력</button>
+                                    </div>
+                                </div>
+                                <!-- //sorting-wrap -->
+                                <div id="coprListDiv" class="table-wrap">
+                                    <!-- 페이징 정보 -->
+                                    <th:block th:unless="${#lists.isEmpty(list)}">
+                                        <input type="hidden" id="coprTotalCount" th:value="${PageInfo.totalCount}"/>
+                                        <input type="hidden" id="coprPageNumber" th:value="${PageInfo.pageNumber}"/>
+                                        <input type="hidden" id="coprTotalPage" th:value="${PageInfo.totalPage}"/>
+                                    </th:block>
+                                    <table>
+                                        <caption>소속 리스트</caption>
+                                        <colgroup>
+                                            <col style="width: 10%;">
+                                            <col style="width: 45%;">
+                                            <col style="width: 45%;">
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th>선택</th>
+                                            <th>소속
+                                                <button type="button" class="btn-sort"><span class="blind">정렬</span>
+                                                </button>
+                                            </th>
+                                            <th>사업자등록번호</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="item, stat : ${list}">
+                                            <td><input type="radio" id="radioCopr"
+                                                       th:value="|${item.coprUid},${item.coprNm}|" title="선택"></td>
+                                            <td th:text="${item.coprNm}">(주)마이크로컨텍솔루션</td>
+                                            <td th:text="${item.brno}">###-##-####</td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(list)}">
+                                            <td class="nodata" colspan="3">데이터가 존재하지 않습니다.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                            </div>
+                            <!-- //result-list -->
+                        </fieldset>
+                    </form>
+                </section>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+</th:block>
+</html>

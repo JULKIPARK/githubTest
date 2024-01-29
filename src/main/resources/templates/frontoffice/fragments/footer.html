@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+	<!-- footerFragment -->
+	<footer id="footer" th:fragment="footerFragment">
+		<div class="floating-wrap">
+                <button type="button" class="onlineBtn"><span>온라인 문의</span></button>
+            </div>
+
+
+
+		<div class="container">
+			<!--<a href="javascript:void(0);" class="foot-logo"><span class="blind">로고</span></a>
+			<p class="copyright">&copy; 2015 - 2023 PwC. Samil PricewaterhouseCoopers. All rights reserved.</p>
+			<nav class="fnb">
+				<ul>
+					<li><a href="javascript:$('#agressPop').addClass('show')">개인정보처리방침</a></li>
+					<li><a href="/footer/cookiePolicy">Cookie policy</a></li>
+					<li><a href="javascript:$('#popDisclaimerView').addClass('show')">Legal disclaimer</a></li>
+					<li><a href="/footer/siteProvider">About site provider</a></li>
+					<li><a href="javascript:goSiteProvider('consist');">Site map</a></li>
+					<li><a href="/common/withdrawalView" class="line">회원 탈퇴</a></li>
+				</ul>
+			</nav>-->
+
+			<div class="footLogo">
+				<img src="/assets/img/common/logo_wh.svg">
+			</div>
+
+			<div class="copyA">
+				<div class="copy">&copy; 2015 - 2024 PwC. Samil PricewaterhouseCoopers. All rights reserved.</div>
+				<ul class="footMenu">
+					<li><a href="javascript:$('#agressPop').addClass('show'); $('html').css('overflow-y','hidden')">이용약관</a></li>
+					<li><a href="javascript:$('#polishPop').addClass('show'); $('html').css('overflow-y','hidden')"><b>개인정보처리방침</b></a></li>
+					<li><a href="javascript:$('#popDisclaimerView').addClass('show'); $('html').css('overflow-y','hidden')">Legal Disclaimer</a></li>
+					<li><a href="/common/withdrawalView" class="line">회원탈퇴</a></li>
+				</ul>
+			</div>
+		</div>
+
+
+
+		<div class="searchSlideA">
+			<div class="searchSlide"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            	<div class="dimmed" style="display:none;"></div>
+            	<div class="rightA">
+            	    <section class="modal-area">
+            	        <div class="modal-cont">
+            	        	<div class="tit-a">
+            	           		 <h2 class="tit">통합검색</h2>
+            	           		 <button type="button" class="total-btn-close btn-close"><i class="blind">닫기</i></button>
+            	           	</div>
+
+            	            <div class="layer-total-search">
+            	                <div class="total-search-inner">
+
+            	                        <fieldset>
+            	                            <legend>통합검색</legend>
+            	                            <div class="total-search">
+            	                                <div class="select-box-wrap">
+            	                                    <button type="button">통합검색</button>
+            	                                    <div class="select-list">
+            	                                        <ul>
+            	                                            <li><a href="javascript:void(0);" class="checked">통합검색</span></a></li><!--선택시 checked-->
+            	                                            <li><a href="javascript:void(0);">제목</a></li>
+            	                                            <li><a href="javascript:void(0);">내용</a></li>
+            	                                            <li><a href="javascript:void(0);">출처</a></li>
+            	                                            <li><a href="javascript:void(0);">키워드</a></li>
+            	                                        </ul>
+            	                                    </div>
+            	                                </div>
+            	                                <!-- //select-wrap -->
+            	                                <input type="text" class="txt leftSearch" placeholder="검색어를 입력하세요">
+            	                                <button type="button" class="btn-total-search"><span class="blind">검색</span></button>
+            	                            </div>
+            	                        </fieldset>
+
+
+            	                </div>
+            	            </div>
+
+
+							<ul class="m-tab">
+								<li class="searcg-tab msTitle_1" onclick="msChg(1)" style="border-bottom:3px solid #D04A02">최근검색어</li>
+								<li class="searcg-tab msTitle_2" onclick="msChg(2)">인기검색어</li>
+							</ul>
+
+            	            <div class="word-list-wrap">
+            	                <div class="word-list msView_1">
+            	                	<div class="titA">
+            	                   		 <h3 class="tit">최근검색어</h3>
+            	                   		 <button type="button" class="btn-all-del line"><span>전체삭제</span></button>
+            	                   	</div>
+
+            	                    <div class="auot-list">
+            	                        <ul>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="word ellipsis">ESG</span>
+            	                                    <span class="date">10.03</span>
+            	                                </a>
+            	                                <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="word ellipsis">ESG 공시</span>
+            	                                    <span class="date">10.03</span>
+            	                                </a>
+            	                                <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="word ellipsis">공급망 관리</span>
+            	                                    <span class="date">10.03</span>
+            	                                </a>
+            	                                <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="word ellipsis">공급망 실사</span>
+            	                                    <span class="date">10.03</span>
+            	                                </a>
+            	                                <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="word ellipsis">공급망 실사 관리 지침</span>
+            	                                    <span class="date">10.03</span>
+            	                                </a>
+            	                                <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+            	                            </li>
+
+            	                        </ul>
+            	                    </div>
+
+            	                    <button type="button" class="btn-history-off"><span>최근 검색어 <strong class="line">끄기</strong></span></button>
+            	                </div>
+
+            	                <div class="word-list msView_2">
+            	                    <h3 class="tit">인기 검색어</h3>
+            	                    <p class="date-txt">10.03 10:00 기준</p>
+            	                    <div class="auot-list">
+            	                        <ul>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">1</span>
+            	                                    <span class="word ellipsis">ESG</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">2</span>
+            	                                    <span class="word ellipsis">ESG 공시</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">3</span>
+            	                                    <span class="word ellipsis">ESG 보고서</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">4</span>
+            	                                    <span class="word ellipsis">ESG 경영</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">5</span>
+            	                                    <span class="word ellipsis">ESG 투자</span>
+            	                                </a>
+
+            	                            </li>
+
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">9</span>
+            	                                    <span class="word ellipsis">공급망 실사</span>
+            	                                </a>
+
+            	                            </li>
+
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">6</span>
+            	                                    <span class="word ellipsis">탄소세</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">7</span>
+            	                                    <span class="word ellipsis">지속가능경영</span>
+            	                                </a>
+
+            	                            </li>
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">8</span>
+            	                                    <span class="word ellipsis">ESG 개념</span>
+            	                                </a>
+
+            	                            </li>
+
+            	                            <li>
+            	                                <a href="javascript:void(0);">
+            	                                    <span class="num">10</span>
+            	                                    <span class="word ellipsis">넷제로</span>
+            	                                </a>
+
+            	                            </li>
+            	                        </ul>
+            	                    </div>
+            	                </div>
+            	            </div>
+            	        </div>
+            	        <!-- //modal-cont -->
+            	    </section>
+            	    <!--//modal-area-->
+            	</div>
+       		 </div>
+       	 </div>
+
+
+		<div class="popup alertPopup">
+			<div class="layerBack"></div>
+			<div class="alert-cont">
+				<div class="msg-a">
+					현재 준비중 입니다.
+				</div>
+
+				<div class="submit pop-close-btn">확인</div>
+			</div>
+		</div>
+
+
+		<div id="popStayEmailSendView" class="popup alertPopup">
+			<div class="layerBack"></div>
+			<div class="alert-cont">
+				<div class="msg-a">
+					<span class="mar_b10 loading" style=""><img src="/assets/img/common/loding.gif"></span>
+					인증번호 전송중입니다.<br/>잠시만 기다려주세요
+				</div>
+
+<!--				<div class="submit pop-close-btn">확인</div>-->
+			</div>
+		</div>
+
+
+		<div class="popup alertPopup">
+			<div class="layerBack"></div>
+			<div class="alert-cont">
+				<div class="msg-a">
+					김삼일님, samil31!pwc.com(으)로
+					인증메일을 전송하였습니다.<br/><br/>
+
+					메일을 받지 못하셨다면 스팸함을 확인해보세요
+				</div>
+
+				<div class="submit pop-close-btn">확인</div>
+			</div>
+		</div>
+
+
+		<section class="popup questionPop">
+			<div class="layerBack"></div>
+			<div class="ct">
+				<div class="modal-head left">
+				    <h2 class="tit">문의 &middot; 요청 상세 등록</h2>
+				    <button type="button" class="pop-close-btn close-btn"><img src="/assets/img/common/popup-close.png"></button>
+				</div>
+				<div class="modal-cont">
+				    <form id="qregFrm">
+				    <section class="ask-gray-box scroll-area">
+				        <div class="info">
+				            <h3 class="tit">기본정보</h3>
+				            <ul class="info-list">
+				                <li>
+				                    <div>
+				                        <div class="label">이름</div>
+				                        <div class="desc" th:if="${session.FoMbrInfo != null}" th:text="${session.FoMbrInfo.mbrNm}">홍길동</div>
+				                    </div>
+				                </li>
+				               <!--<li>
+				                    <div>
+				                        <div class="label">소속</div>
+				                        <div class="desc" th:if="${session.FoMbrInfo != null}" th:text="${session.FoMbrInfo.coprNm}">OO화학</div>
+				                    </div>
+				                </li>-->
+				                <li>
+				                    <div>
+				                        <div class="label">이메일</div>
+				                        <div class="desc" th:if="${session.FoMbrInfo != null}" th:text="${session.FoMbrInfo.compMail}">hong123@chem.com</div>
+				                    </div>
+				                </li>
+				            </ul>
+				        </div>
+				        <!-- //info -->
+				        <div class="info">
+				            <h3 class="tit">문의 및 질의</h3>
+				            <ul class="list">
+				                <li class="grid6">
+				                    <div>
+				                        <label for="info04">제목</label>
+				                        <input type="text"  id="regAskTtl" name="regAskTtl" placeholder="제목을 입력하세요" maxlength="100">
+				                    </div>
+				                </li>
+				                <li class="grid4">
+				                    <div>
+				                        <label for="info05">문의유형</label>
+				                        <select name="regAskTpCdSelect" id="regAskTpCdSelect" class="select"  >
+				                            <option value="10">삼일 서비스 제공 문의</option>
+				                            <option value="20">시스템 기능·오류 문의</option>
+				                            <option value="30">회원 가입·해지 문의</option>
+				                            <option value="40">게시자료 문의</option>
+				                            <option value="50">추가자료 요청</option>
+				                            <option value="60">서비스 제휴 문의</option>
+				                            <option value="70">기타</option>
+				                        </select>
+				                    </div>
+				                </li>
+				                <li class="wide">
+				                    <div>
+				                        <label for="info06">내용</label>
+				                        <!--20230901 class="pop-txtarea04" 추가-->
+				                        <textarea id="regAskCn" name="regAskCn" style="height:200px" class="pop-txtarea04"></textarea>
+				                    </div>
+				                </li>
+				            </ul>
+				        </div>
+				        <!-- //info -->
+				    </section>
+				    <!-- //gray-box -->
+				    <div class="foot-agree-wrap">
+				        <!--20230901 엑셀수정 radio 적용요청-->
+				        <div class="radio-wrap">
+				            <input type="radio" id="qagress" name="qagress">
+				            <label for="qagress"><span>개인정보 수집 및 이용방침에 동의합니다.</span></label>
+				        </div>
+				        <a href="javascript:$('#polishPop').addClass('show');">자세히 보기</a><!--20230901 a 태그변경-->
+
+				    </div>
+				    <div class="btn-wrap pos-r">
+				        <button type="button" id="btnQReg" class="btn-primary small"><span>등록</span></button>
+				    </div>
+				    </form>
+				</div>
+			</div>
+		</section>
+
+
+    <!--//modal-wrap-->
+    <div id="popEmailView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">이메일 수신 동의(선택)</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            <h1 class="tit">제1조 (목적)</h1>
+                            <p class="txt">삼일회계법인은 고객님들에게 보다 다양한 정보를 제공하고, 서비스의 질을 향상시키기 위하여 삼일회계법인 제휴/관계사에게 「개인정보보호법」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률 」 및 「신용정보의 이용 및 보호에 관한 법률」의 규정을 준수하여 회원님의 개인(신용)정보를 제3자에게 상품소개 및 홍보 등 영업목적으로 제공할 수 있습니다.
+                            </p>
+                            <div class="divider-line"></div>
+                            <h1 class="tit">제2조 (수집 및 활용 관련 정보)</h1>
+                            <p class="txt">개인정보가 제공되는 삼일회계법인 제휴/관계사와  제공된 정보의 이용목적은 아래와 같습니다. 회원님들 중 이 개인정보의 제3자 마케팅 활용동의서 등에 동의하신 회원님들의 정보만이 제공되며, 제공된 정보는 명시된 이용목적을 벗어나 이용되지 않고, 개인정보 유출 등 사고가 일어나지 않도록 더욱 철저한 보안이 이루어지도록 노력하고 있습니다. </p>
+                            <div class="divider-line"></div>
+                            <p class="txt">제공받는 자: 삼일회계법인 제휴/관계사(삼일아카데미, 삼일인포마인)</p>
+                            <p class="txt">제공 항목 : 성명, 소속, 직급, 이메일</p>
+                            <p class="txt">제공 목적 : 뉴스레터, 발간물 제공 및 서비스 홍보</p>
+                            <p class="txt">제공 기간 : 제공받는 자의 개인정보취급방침에 따름</p>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('#popEmailView').removeClass('show');" class="btn-primary small w170 pop-close-btn"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+
+    <!-- 이메일 발송 -->
+    <div id="popEmailSendView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">인증메일 발송</h2>
+                    <p class="main-txt"><data dt="nm"></data>님.<br><strong class="line"><data dt="email"></data></strong>(으)로 인증메일을 전송하였습니다.</p>
+                    <p class="txt">메일을 받지 못하셨다면 스팸함을 확인해보세요.</p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap">
+                    <button type="button" onclick="$('#popEmailSendView').removeClass('show');" class="btn-primary pop-close-btn"><span>확인</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+
+
+		<!-- 원포인트레슨 상세 -->
+		<div id="popLessonView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w761">
+					<div class="modal-head left">
+						<h2 class="tit"></h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+					</div>
+					<div class="modal-cont">
+						<div class="data-detail-wrap">
+
+						</div>
+						<div class="btn-wrap flex">
+							<button type="button" class="btn-primary small"><span>뷰어보기</span></button>
+							<button type="button" class="btn-primary small"><span>다운로드</span></button>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+		<!-- 링크연결 상세 -->
+		<div id="_contentPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+
+		</div>
+		<!--//modal-wrap-->
+
+		<div id="popDisclaimerView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">Legal Disclaimer</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+					</div>
+					<div class="modal-cont">
+					   <section class="policy-wrap scroll-area">
+							<div class="policy-cont">
+								<p class="txt">
+									본 Website에 게시된 내용은 이용자의 관심사에 대한 일반적인 정보를 제공하는 것으로 전문적인 ESG 진단, 평가 인증 및 기타 전문 자문 서비스를 제공하는 것이 아닙니다. <br/>
+									이에 본 Website에 게시된 자료 등을 이용하여 ESG 관련 업무에 대한 의사결정을 하는 경우 사전에 반드시 전문가와 상의하시기 바랍니다. 본 Website에 게시된 자료 등의 작성자 또는 발행자들은 ESG 관련 정보제공에 대하여 어떠한 책임이 없으며,
+									본 Website 운영자는 본 Website에서 제공하는 모든 자료 등의 완성도, 정확도에 대하여 어떠한 보증도 하지 않습니다. 따라서 이용자가 본 Website의 정보를 사용하여 발생한 결과에 대하여 본 Website 운영자에게는 어떠한 책임도 없습니다. <br/><br/>
+
+									또한 본 Website와 연동된 다른 Website에서 제공하는 정보, 또는 본 Website에 게시된 제3자의 저작물에 대하여 본 Website 운영자는 어떠한 보증도 하지 않으며, 어떠한 책임도 없습니다. <br/>
+								</p>
+								
+							</div>
+					   </section>
+					   <!-- //policy-wrap -->
+						<div class="btn-wrap">
+							<button type="button" onclick="$('#popDisclaimerView').removeClass('show')" class="btn-primary small w170 pop-close-btn"><span>확인</span></button>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+		<div class="modal-wrap" id="agressPop"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		     <div class="dimmed"></div>
+		     <div class="center">
+		         <section class="modal-area w1024">
+		             <div class="modal-head left">
+		                 <h2 class="tit">Samil ESG 이용약관</h2>
+		                 <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+		             </div>
+		             <div class="modal-cont">
+		                <section class="policy-wrap scroll-area">
+		                     <div class="policy-cont">
+								<h3><b>제1조 (목적)</b></h3><br/>
+								본 약관은 Samil ESG(이하 ‘본 사이트’라 한다)을 운영하는 삼일회계법인 (이하 ‘당사’라 한다)에서 ‘본 사이트’를 통하여 제공하는 서비스(이하 ‘서비스’라 하며 접속 가능한 유, 무선 단말기의 종류와 상관없이 이용 가능한 사이트가 제공하는 모든 서비스를 의미합니다)를 이용함에 있어 회원의 권리•의무 및 책임사항을 규정함을 목적으로 합니다.
+								<br/><br/>		
+
+								<h3><b>제2조 (정의)</b></h3><br/>
+								1. ‘당사’가 운영하는 ‘본 사이트’는 “ESG서비스 제공 플랫폼”이며, 모바일 웹 서비스를 포함합니다.<br/>
+								2. ‘회원’이라 함은 ‘본 사이트’에 개인정보를 제공하여 회원등록을 한 자로서, ‘본 사이트’에 정해진 회원 가입 방침에 따라 ‘본 사이트’의 정보를 지속적으로 제공받으며, ‘본 사이트’가 제공하는 ‘서비스’를 계속적으로 이용할 수 있는 자를 말합니다.<br/>
+								3. ‘비밀번호’라 함은 회원의 동일성 확인과 회원의 권익 및 비밀보호를 위하여 회원 스스로가 설정하여 ‘본 사이트’에 등록한 영문과 숫자의 조합을 말합니다.<br/>
+								4. 본 약관에서 정의되지 않은 용어는 관계법령이 정하는 바에 따르며 그 외에는 일반적인 상관례에 의합니다.<br/><br/>
+																
+								<h3><b>제3조 (약관의 명시와 설명 및 개정)</b></h3><br/>
+								1. ‘당사’는 이 약관의 내용과 상호를 회원이 쉽게 알 수 있도록 ‘본 사이트’의 초기 ‘서비스’ 화면에 게시합니다. 다만, 약관의 구체적 내용은 회원이 연결화면을 통하여 볼 수 있습니다.<br/>
+								2. ‘당사’는 『전자상거래 등에서의 소비자보호에 관한 법률』, 『약관의 규제 등에 관한 법률』, 『전자거래기본법』, 『전자서명법』, 『정보통신망 이용촉진 등에 관한 법률』, 『소비자기본법』 등 관계법령을 위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.<br/>
+								3. ‘당사’가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 현행 약관과 함께 ‘본 사이트’의 초기화면에 그 적용일자 7일 이전부터 적용일자 전일까지 공지합니다.<br/>
+								4. 회원은 변경된 약관에 대해 동의하지 않을 권리가 있으며, 시행일로부터 10일(회원에게 불리하거나 중대한 사항의 변경인 경우에는 30일)내에 변경된 약관에 대해 거절의 의사를 표시하지 않았을 때에는 본 약관의 변경에 동의한 것으로 간주합니다.<br/>
+								5. 회원이 개정약관의 적용에 동의하지 않는 경우 ‘당사’는 개정 약관의 내용을 적용할 수 없으며, 이 경우 회원은 이용계약을 해지할 수 있습니다. 다만, 동의하지 않는 회원에 대하여 기존 약관을 적용할 수 없는 특별한 사정이 있는 경우에는 ‘당사’는 이용계약을 해지할 수 있습니다.<br/><br/>
+																
+																
+								<h3><b>제4조 (약관 외 준칙)</b></h3><br/>
+								이 약관에서 정하지 아니한 사항과 이 약관의 해석에 관하여는 『전자상거래 등에서의 소비자 보호에 관한 법률』 등 관련법령의 규정과 일반 상관례에 따릅니다.<br/><br/>
+																
+								<h3><b>제5조 (이용계약의 성립)</b></h3><br/>
+								1. 이용계약은 회원이 되고자 하는 자(이하 ‘가입신청자’)가 약관의 내용에 동의를 하고 ‘당사’가 정한 가입양식에 따라 회원정보(전자우편주소, 비밀번호, 전화번호, 회원가입 정보 등)를 기입하여 회원가입신청을 하고 ‘당사’가 이러한 신청에 대하여 승인함으로써 체결됩니다.<br/>
+								2. ‘당사’는 다음 각 호에 해당하는 신청에 대하여는 승인을 하지 않거나 사후에 이용계약을 해지할 수 있습니다.<br/>
+								가. ‘가입신청자’가 이 약관에 의하여 이전에 회원자격을 상실한 적이 있는 경우. 다만 회원자격 상실 후 3개월이 경과한 자로서 ‘당사’의 회원 재가입 승낙을 얻은 경우에는 예외로 함<br/>
+								나. 등록내용에 허위의 정보를 기재하거나, 기재누락, 오기가 있는 경우<br/>
+								다. 회원가입일 현재 만 14세 미만인 경우<br/>
+								라. 이미 가입된 회원과 이름 및 전자우편주소가 동일한 경우<br/>
+								마. 부정한 용도 또는 영리를 추구할 목적으로 본 ‘서비스’를 이용하고자 하는 경우<br/>
+								바. 회원의 귀책사유로 인하여 승인이 불가능하거나 기타 규정한 제반 사항을 위반하며 신청하는 경우<br/>
+								사. 기타 이 약관에 위배되거나 위법 또는 부당한 이용신청임이 확인된 경우 및 ‘당사’가 합리적인 판단에 의하여 필요하다고 인정하는 경우<br/>
+								3. ‘당사’는 ‘서비스’ 관련 설비의 여유가 없거나, 기술상 또는 업무상 문제가 있는 경우에는 승낙을 유보할 수 있습니다.<br/>
+								4. 제2항에 따라 회원가입신청의 승낙을 하지 아니하거나 유보한 경우, 이 경우 ‘당사’는 원칙적으로 이를 ‘가입신청자’에게 알리도록 합니다.<br/>
+								5. 이용계약의 성립시기는 ‘당사’가 가입완료를 신청절차상에서 표시한 시점으로 합니다.<br/>
+								6. ‘당사’는 회원에 대해 ‘당사’정책에 따라 등급별로 구분하여 이용시간, 이용횟수, ‘서비스’ 메뉴 등을 세분하여 이용에 차등을 둘 수 있습니다.<br/><br/>
+																
+								<h3><b>제6조 (서비스의 내용)</b></h3><br/>
+								‘본 사이트’에서는 아래와 같은 ‘서비스’를 제공합니다.<br/>
+								1.	ESG 주요 이슈별 핵심개념 및 전문가 의견, 추천 콘텐츠<br/>
+								2.	ESG 과제 실행을 돕는 정보 큐레이션<br/>
+								3.	ESG 공시&평가 대응 해설과 참고 자료<br/>
+								4.	최신 뉴스, 주요 일정 안내<br/>
+								5.	ESG 교육 커리큘럼, 교육 영상 / 자료<br/><br/>
+																
+								<h3><b>제7조 (개인정보의 변경)</b></h3><br/>
+								회원은 개인정보관리화면을 통하여 언제든지 본인의 개인정보를 열람하고 수정할 수 있습니다.<br/><br/>
+																
+								<h3><b>제8조 (개인정보의 보호)</b></h3><br/>
+								1. ‘당사’는 회원의 개인정보를 보호하기 위하여 『개인정보보호법』등 관계법령에서 정하는 바를 준수합니다.<br/>
+								2. ‘당사’는 회원의 개인정보를 보호하기 위하여 개인정보처리방침을 제정, ‘서비스’ 초기화면에 게시합니다. 다만, 개인정보처리방침의 구체적 내용은 연결화면을 통하여 볼 수 있습니다.<br/>
+								3. ‘당사’는 개인정보처리방침에 따라 회원의 개인정보를 최대한 보호하기 위하여 노력합니다.<br/>
+								4. ‘당사’의 공식 ‘본 사이트’ 이외의 링크된 사이트에서는 ‘당사’의 개인정보처리방침이 적용되지 않습니다. 링크된 사이트 및 ‘서비스’를 제공하는 제3자의 개인정보 처리와 관련하여는 해당 ‘링크된 사이트’ 및 제3자의 개인정보처리방침을 확인할 책임이 회원에게 있으며, ‘당사’는 이에 대하여 책임을 부담하지 않습니다. <br/>
+								5. ‘당사’는 다음과 같은 경우를 포함하여 법이 허용하는 범위 내에서 회원의 개인정보를 제3자에게 제공할 수 있습니다. <br/>
+								가. 수사기관이나 기타 정부기관으로부터 정보제공을 요청받은 경우<br/>
+								나. 회원의 법령 또는 약관의 위반을 포함하여 부정행위확인 등의 정보보호업무를 위해 필요한 경우<br/>
+								다. 기타 법률에 의해 요구되거나 이에 준하는 경우<br/><br/>
+																
+								<h3><b>제9조 (회원에 의한 이용계약의 종료)</b></h3><br/>
+								1.  회원은 언제든지 ‘당사’에게 해지의사를 통지함으로써 이용계약을 해지할 수 있습니다.<br/>
+								2. 이용계약은 회원의 해지의사가 ‘당사’에 도달한 때에 종료됩니다.<br/>
+								3. 본 항에 따라 해지를 한 회원은 이 약관이 정하는 회원가입절차와 관련조항에 따라 회원으로 다시 가입할 수 있습니다.<br/><br/>
+																
+								<h3><b>제10조 (당사에 의한 이용계약 종료, 회원탈퇴) </b></h3><br/>
+								1. ‘당사’는 다음과 같은 사유가 있는 경우, 이용계약을 해지할 수 있으며, 해지 조치 7일전까지 그 뜻을 회원에게 통지하고 의견 진술할 기회를 주어야 합니다. 단, 긴급한 경우 사전 통보 없이 계약을 해지할 수 있습니다. <br/>
+								가. 제5조 제2항에서 정하고 있는 이용계약의 승낙거부사유가 있음이 확인된 경우<br/>
+								나. 본 이용약관을 위반한 경우<br/>
+								다. 회원이 ‘당사’나 다른 회원 기타 타인의 권리나 명예, 신용 기타 정당한 이익(지식재산권을 포함한다)을 침해하는 행위를 한 경우<br/>
+								라. 다른 사람의 ‘본 사이트’ 이용을 방해하거나 그 정보를 도용하는 등 전자상거래질서를 위협하는 경우<br/>
+								마. 기타 다음과 같은 행위 등으로 ‘본 사이트’의 건전한 운영을 해하거나 ‘본 사이트’의 업무를 방해하는 경우<br/>
+								①본 사이트’의 운영과 관련하여 근거 없는 사실 또는 허위의 사실을 적시하거나 유포하여 ‘당사’의 명예를 실추시키거나 ‘본 사이트’의 신뢰성을 해하는 경우<br/>
+								②‘본 사이트’의 이용과정에서 직원에게 폭언, 협박 또는 음란한 언행 등으로 ‘본 사이트’의 운영을 방해하는 경우<br/>
+								③‘본 사이트’를 통해 ‘서비스’에 특별한 문제가 없는데도 불구하고 정당한 이유 없이 상습 또는 반복적으로 항의, 문의, 요청하여 ‘당사’의 업무를 방해하는 경우<br/>
+								2.  이용계약이 종료되는 경우 회원의 혜택이 소멸합니다.<br/>
+								3.  이용계약의 종료와 관련하여 발생한 손해는 이용계약이 종료된 해당 회원이 책임을 부담하고 ‘당사’는 일체의 책임을 지지 않습니다.<br/>
+																
+								<h3><b>제11조 (회원의 ID 및 비밀번호에 대한 의무)</b></h3><br/>
+								1. ID(전자우편번호 및 소셜네트워크 연동으로 인한 ID)와 비밀번호에 관한 관리책임은 회원에게 있으며, 이를 소홀히 하여 발생한 모든 민∙형사상의 책임은 회원 자신에게 있습니다.<br/>
+								2. 회원은 자신의 ID 및 비밀번호를 제3자에게 이용하게 해서는 안 됩니다.<br/>
+								3. 회원이 자신의 ID 및 비밀번호를 도난 당하거나 제3자가 사용하고 있음을 인지한 경우에는 즉시 ‘당사’에 통보하고 ‘당사’의 조치가 있는 경우에는 그에 따라야 합니다.<br/>
+								4. 회원이 제3항에 따른 통지를 하지 않거나 ‘당사’의 조치에 응하지 아니하여 발생하는 모든 불이익에 대한 책임은 회원에게 있습니다.<br/><br/>
+																
+								<h3><b>제12조 (회원의 의무)</b></h3><br/>
+								1. 회원은 관계법령, 이 약관의 규정, 이용안내 등 ‘당사’가 통지하는 사항을 준수하여야 하며, 기타 ‘당사’ 업무에 방해되는 행위를 하여서는 안 됩니다.<br/>
+								2. 회원은 ‘서비스’ 이용과 관련하여 다음 각 호의 행위를 하여서는 안 됩니다.<br/>
+								가. ‘서비스’ 신청 또는 변경 시 허위내용의 등록<br/>
+								나. 타인의 정보도용<br/>
+								다. ‘본 사이트’에 게시된 정보의 허가 받지 않은 변경<br/>
+								라. ‘당사’가 정한 정보 이외의 정보(컴퓨터 프로그램 등)의 송신 또는 게시<br/>
+								마. ‘당사’ 및 기타 제3자의 저작권 등 지식재산권에 대한 침해<br/>
+								바. ‘당사’ 및 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위<br/>
+								사. 외설 또는 폭력적인 메시지∙화상∙음성 기타 공서양속에 반하는 정보를 ‘당사’에 공개 또는 게시하는 행위<br/>
+								아. ‘당사’의 동의 없이 영리를 목적으로 ‘서비스’를 사용하는 행위<br/>
+								자. 기타 관계법령이나 ‘당사’에서 정한 규정에 위배되는 행위<br/><br/>
+																
+								<h3><b>제13조 (회원에 대한 통지)</b></h3><br/>
+								1. ‘당사’가 회원에 대한 통지를 하는 경우, 회원이 가입신청 시 ‘당사’에 제출한 전자우편주소나 SMS, PUSH 등으로 할 수 있습니다.<br/>
+								2. ‘당사’는 불특정다수 회원에 대한 통지의 경우, 1주일 이상 ‘본 사이트’에 게시함으로써 개별 통지에 갈음할 수 있습니다. 다만, 회원 본인의 거래에 관하여 중대한 영향을 미치는 사항에 대하여는 개별 통지합니다.<br/><br/>
+																
+								<h3><b>제14조 (‘당사’의 의무)</b></h3><br/>
+								1. ‘당사’는 관계법령과 이 약관이 금지하거나 공서양속에 반하는 행위를 하지 않으며 이 약관이 정하는 바에 따라 지속적이고, 안정적으로 ‘서비스’를 제공하는데 최선을 다하여야 합니다.<br/>
+								2. ‘당사’는 회원이 안전하게 ‘서비스’를 이용할 수 있도록 회원의 개인정보 보호를 위한 보안시스템을 갖추어야 하며 개인정보처리방침을 공시하고 준수합니다.<br/>
+								3. ‘당사’는 회원으로부터 제기되는 의견이나 불만이 정당하고 객관적으로 인정될 경우에는 적절한 절차를 거쳐 즉시 처리하여야 합니다. 다만, 즉시 처리가 곤란한 경우에는 회원에게 그 사유와 처리일정을 통보하여야 합니다.<br/><br/>
+																
+								<h3><b>제15조 (개별 서비스에 대한 약관 및 이용조건)</b></h3><br/>
+								‘당사’는 제공하는 ‘서비스’ 내 개별 서비스에 대한 별도의 약관 및 이용조건을 둘 수 있으며 개별 서비스에서 별도로 적용되는 약관에 대한 동의는 회원이 개별 서비스를 최초로 이용할 경우 별도의 동의절차를 거치게 됩니다. 이 경우 개별 서비스에 대한 이용약관 등이 본 약관에 우선합니다.<br/><br/>
+																
+								<h3><b>제16조 (‘서비스’ 이용시간)</b></h3><br/>
+								‘서비스’의 이용은 ‘당사’의 업무상 또는 기술상 특별한 지장이 없는 한 연중무휴 1일 24시간을 원칙으로 합니다. 다만 정기점검 등의 필요로 ‘당사’가 정한 날이나 시간은 제외됩니다. 정기점검시간은 ‘서비스’ 제공화면에 공지한 바에 따릅니다.<br/><br/>
+																
+								<h3><b>제17조 (게시물에 대한 저작권)</b></h3><br/>
+								1.	 본 사이트에서 제공하는 자료 중 입법, 사법, 행정부 등 정부공공기관에서 발표한 원문은 공공의 자료입니다. 그러나 이 자료를 요약, 분류, 편집, 가공한 내용과 동 자료에 첨가한 해설, 요지, 편자주, 기타 주석 등은 삼일회계법인의 저작물로써 저작권법에 의해 보호받고 있습니다.<br/>
+								2.	‘당사’의 ‘서비스’ 내용을 인용하거나 비영리적 목적으로 사용하실 경우에도 '당사’와의 서면 계약을 통하여 ‘당사’의 출처를 밝힌 후 사용하실 수 있습니다. 허가없이 전재, 변조, 복사, 양도, 배포, 출판, 전시, 판매하거나 상품제작, 인터넷 및 데이터 베이스를 비롯한 각종 정보서비스 등에 사용하는 것을 금지합니다.<br/>
+								3.	‘당사’의 ‘서비스’를 별도의 서면 계약에 의해서 이용하는 경우에도 계약 당사자 이외의 계약 당사자와 관련이 있는 제3자에 대한 서비스 제공은 별도의 구체적인 언급이 없는 한 불가하며 이에 대한 손해의 배상책임은 계약 당사자가 부담합니다.<br/>
+								4.	본 사이트와 연동된 다른 사이트에서 제공하는 정보 등에 대하여는 관련법령 및 다른 사이트의 저작권 관련 규정을 준수하여 주시기 바라며, 이에 대한 책임은 회원에게 있습니다. <br/><br/>
+																
+								<h3><b>제18조 (서비스 이용책임)</b></h3><br/>
+								1.	회원은 자기 책임하에 ‘서비스’를 이용하며, ‘서비스’ 자료의 취사 선택 또는 ‘서비스’ 이용으로 불이익이 발생하더라도 이에 대한 책임은 회원에게 있습니다.<br/>
+								2.	회원이 ‘서비스’를 이용하여 게시 또는 전송한 자료의 내용에 관하여 발생되는 책임은 회원에게 있습니다.<br/>
+								3.	회원에게 통보된 회원ID와 비밀번호의 관리 및 이용상의 부주의로 인하여 발생되는 과실 또는 제3자에 의한 부정사용 등에 대한 책임은 회원에게 있습니다. 다만, ‘당사’의 관리상 중과실이 있는 경우에는 그러하지 아니합니다. <br/><br/>
+																
+								<h3><b>제19조 (‘서비스’ 제공의 중지)</b></h3> <br/>
+								1. ‘당사’는 다음 각 호에 해당하는 경우 ‘서비스’ 제공을 중지할 수 있습니다.<br/>
+								가. 컴퓨터 등 정보통신설비의 보수점검∙교체 및 고장, 통신의 두절 등의 사유가 발생한 경우<br/>
+								나. 『전기통신사업법』에 규정된 기간통신사업자가 전기통신 ‘서비스’를 중지했을 경우<br/>
+								다. 기타 불가항력적 사유가 있는 경우<br/>
+								2. ‘당사’는 국가비상사태, 정전, ‘서비스’ 설비의 장애 또는 ‘서비스’ 이용의 폭주 등으로 정상적인 ‘서비스’ 이용에 지장이 있는 때에는 ‘서비스’의 전부 또는 일부를 제한하거나 정지할 수 있습니다.<br/>
+								3. ‘당사’가 ‘서비스’ 제공을 일시적으로 중단할 경우 서비스 일시 중단사실과 그 사유를 ‘본 사이트’ 초기화면에 통지합니다.<br/><br/>
+																
+								<h3><b>제20조 (정보의 제공 및 광고의 게재)</b></h3> <br/>
+								1. ‘당사’는 회원이 ‘서비스’ 이용 중 필요하다고 인정되는 다양한 정보를 관련 법령을 준수하는 범위내에서 공지사항 또는 전자우편이나, SMS, 전화 등의 방법으로 회원에게 제공할 수 있습니다. 다만, 회원은 관련법령에 따른 거래관련정보 및 고객문의 등에 대한 답변 등을 제외하고는 언제든지 전자우편 등에 대해서 수신 거절을 할 수 있습니다.<br/>
+								2. ‘당사’는 ‘서비스’의 운영과 관련하여 ‘서비스’ 화면, 홈페이지, 전자우편 등에 광고를 게재할 수 있습니다. 광고가 게재된 전자우편 등을 수신한 회원은 수신거절을 ‘당사’에게 할 수 있습니다.<br/><br/>
+																
+								<h3><b>제21조 (면책조항)</b></h3><br/>
+								1. ‘당사’는 천재지변 또는 이에 준하는 불가항력으로 인하여 ‘서비스’를 제공할 수 없는 경우에는 ‘서비스’ 제공에 관한 책임이 면제됩니다.<br/>
+								2. ‘당사’는 회원의 귀책사유로 인한 ‘서비스’ 이용의 장애에 대하여 책임을 부담하지 않습니다.<br/>
+								3. ‘본 사이트’에 포함된 내용은 일반적인 안내를 위한 것이며 ESG 진단, 평가 인증 및 기타 전문적인 자문 서비스가 아닌 바 이와 같이 ‘본 사이트’를 통하여 제공되는 ‘서비스’ 특성상 ‘당사’는 ‘본 사이트’에서 제공되는 모든 내용 및 ‘본 사이트’를 통한 ‘서비스’를 사용하여 발생하는 결과에 대하여 어떠한 책임도 부담하지 않습니다. <br/>
+								4. ‘본 사이트’에서 연동된 다른 사이트에서 제공하는 정보, 또는 ‘본 사이트’에 게시된 제3자의 저작물에 대하여 ‘당사’는 어떠한 보증도 하지 않으며, 어떠한 책임도 부담하지 않습니다. <br/>
+								5. ‘당사’는 회원이 ‘당사’ 또는 제3자의 지식재산권 등 권리를 침해하여 발생하는 손해에 대하여 책임을 부담하지 않습니다.<br/>
+								6. 회원이 발송한 메일 내용에 대한 법적인 책임은 회원에게 있습니다.<br/>
+								7. ‘당사’는 회원간 또는 회원과 제3자 상호간에 ‘서비스’를 매개로 하여 거래 등을 한 경우에 대하여 책임을 부담하지 않습니다.<br/>
+								8. ‘당사’는 무료로 제공되는 ‘서비스’ 이용과 관련하여 관련법에 특별한 규정이 없는 한 책임을 부담하지 않습니다.<br/><br/>
+																
+								<h3><b>제22조 (분쟁해결)</b></h3> <br/>
+								'당사’는 회원으로부터 제출되는 불만사항 및 의견은 우선적으로 그 사항을 처리합니다. 다만 신속한 처리가 곤란한 경우에는 회원에게 그 사유와 처리일정을 즉시 통보합니다.<br/><br/>
+																
+								<h3><b>제23조 (준거법 및 관할법원)</b></h3><br/>
+								1. 이 약관의 해석 및 ‘당사’와 회원 간의 분쟁에 대하여는 대한민국의 법을 적용합니다.<br/>
+								2. ‘서비스’ 이용 중 발생한 회원과 ‘당사’ 간의 소송은 서울중앙지방법원에 제소합니다.<br/>
+																
+																
+							 </div>
+		                </section>
+		                <!-- //policy-wrap -->
+		                 <div class="btn-wrap">
+		                     <button type="button" class="btn-primary small w170 btn-close"><span>확인</span></button>
+		                 </div>
+		             </div>
+		             <!--//modal-cont-->
+		         </section>
+		         <!--//modal-area-->
+		     </div>
+		     <!-- //xycenter -->
+		</div>
+
+		<div class="modal-wrap" id="polishPop"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		     <div class="dimmed"></div>
+			     <div class="center">
+			        <section class="modal-area w1024">
+						<div class="modal-head left">
+						    <h2 class="tit">Samil ESG 개인정보처리방침</h2>
+						    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+						</div>
+						<div class="modal-cont">
+						   <section class="policy-wrap scroll-area">
+						        <div class="policy-cont">
+						            <p class="txt">삼일회계법인은 개인정보보호법 제30조 및 관계법령에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 www.samilesg.com 이용 시 적용되는  개인정보 처리방침을 수립·공개합니다.</p>
+						            <h1 class="tit">제1조 (수집하는 개인정보의 항목)</h1>
+						            <p class="txt">① 회원가입 시 이용자로부터 수집하는 개인정보는 아래와 같습니다. 하기 항목 이외에 서비스 이용 과정에서 추가 정보를 수집할 경우, 수집 시점에 이용자로부터 별도의 개인정보 수집 동의를 받습니다.</p>
+						            <ul class="list">
+						                <li>-	필수항목: 아이디, 비밀번호, 이름, 소속(회사/기관), 소속 이메일</li>
+						                <li>-	선택항목: 개인 전화번호, 소속 부서, 소속 직급, 소속 전화번호, ESG 관심분야</li>
+						            </ul>
+						            <p class="txt">PC웹, 모바일 웹/앱 이용 과정에서 단말기정보(OS, 화면사이즈, 디바이스 아이디, 폰기종, 단말기 모델명), IP주소, 쿠키, 방문일시, 부정이용기록, 서비스 이용 기록 등의 정보가 자동으로 생성되어 수집될 수 있습니다.</p>
+
+									<h1 class="tit">제2조 (개인정보의 이용목적)</h1>
+						            <p class="txt">처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보 보호법 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다</p>
+						                <ul class="list">
+						                <li>- 회원 가입 의사와 확인, 이용자의 본인 확인, 이용자 식별, 회원탈퇴 의사 확인, 서비스 오류 및 부정이용 방지 등 회원관리 </li>
+						                <li>- 컨텐츠 등 기존 서비스 제공, 서비스 방문 및 이용기록의 분석, 관심사 등에 기반한 맞춤형 서비스 제공 등 신규 서비스 요소의 발굴 및 기존 서비스 개선 </li>
+						                <li>- 서비스 이용기록과 접속빈도 분석, 서비스 이용에 대한 통계, 서비스 분석 및 통계에 따른 맞춤 서비스 및 광고/홍보 개발 등 </li>
+						            </ul>
+
+									<h1 class="tit">제3조 (개인정보의 처리 및 보유기간)</h1>
+						            <p class="txt">삼일회계법인은 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</p>
+						            <p class="txt">개인정보 처리 및 보유 기간은 다음과 같습니다.</p>
+						            <ul class="list">
+						                <li>
+											1. 필수항목 및 선택항목: 회원탈퇴 시 또는 개인정보 수집 및 이용의 목적 달성 시까지<br/>
+											-	단, 정보주체의 요청이 있는 경우 본 방침 제7조에 따라 개인정보를 파기합니다.
+										</li>
+						            </ul>
+
+
+									<h1 class="tit">제4조 (개인정보의 제3자 제공)</h1>
+						            <p class="txt">가. 삼일회계법인은 정보주체의 개인정보를 제2조(개인정보의 이용목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조 및 제18조에 해당하는 경우에만 개인정보를 제3자에게 제공합니다. 다만, 사전에 동의한 경우 및 기타 법에 의해 요구되는 경우 (예: 관련법령에 의거 적법한 절차에 의한 정부/수사기관의 요청이 있는 경우 등)은 예외로 합니다.</p>
+						            <p class="txt">나. 삼일회계법인은 뉴스레터, 발간물 제공 및 서비스 홍보를 목적으로 정보주체의 동의를 받은 경우에 한하여 하기와 같이 제3자에게 개인정보를 제공할 수 있습니다</p>
+						                
+									<table cellspacing="0" cellpadding="0">
+										<thead>
+											<tr>
+												<th>제공받는 자</th>
+												<th>제공 목적</th>
+												<th>제공 항목</th>
+												<th>보유 및 이용기간</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+												<td>삼일아카데미</td>
+												<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>
+												<td>성명, 소속(회사/기관), 소속 이메일</td>
+												<td>회원탈퇴 시까지</td>
+											</tr>
+
+<!--											<tr>-->
+<!--												<td>프라이스워터파우스쿠퍼스컨설팅</td>-->
+<!--												<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>-->
+<!--												<td>성명, 소속(회사/기관), 소속 이메일</td>-->
+<!--												<td>회원탈퇴 시까지</td>-->
+<!--											</tr>-->
+
+											<tr>
+												<td>삼일인포마인</td>
+												<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>
+												<td>성명, 소속(회사/기관), 소속 이메일</td>
+												<td>회원탈퇴 시까지</td>
+											</tr>
+										</tbody>
+									</table>
+
+
+
+
+									<h1 class="tit">제5조 (개인정보처리의 위탁)</h1>
+						            <p class="txt">① 삼일회계법인은 수집된 개인정보를 “제2조”에서 고지한 범위 내에서 사용하며, 제3자에게는 원칙적으로 위탁하지 않습니다. 다만, 계약의 성실한 이행을 위하여 아래와 같이 개인정보를 위탁하고 있으며, 관계 법령에 따라 위탁 시 개인정보가 안전하게 관리될 수 있도록 필요한 사항을 철저히 준수하고 있습니다</p>
+						            
+									<table cellspacing="0" cellpadding="0">
+										<thead>
+											<tr>
+												<th>수탁자</th>
+												<th>업무 내용</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+												<td>(주)클루커스</td>
+												<td>클라우드 서비스 </td>
+											</tr>
+
+											<tr>
+												<td>한국마이크로소프트(유) </td>
+												<td>클라우드 서비스 </td>
+											</tr>
+										</tbody>
+									</table>
+
+									<p class="txt">② 삼일회계법인은 위탁계약 체결시 개인정보 보호법 제26조에 따라 위탁업무 수행목적 외 개인정보 처리금지, 기술적·관리적 보호조치, 재위탁 제한, 수탁자에 대한 관리·감독, 손해배상 등 책임에 관한 사항을 계약서등 문서에 명시하고, 수탁자가 개인정보를 안전하게 처리하는지를 감독하고 있습니다</p>
+									<p class="txt">③ 위탁업무의 내용이나 수탁자가 변경될 경우에는 지체없이 본 개인정보 처리방침을 통하여 공개하도록 하겠습니다</p>
+						            
+
+
+
+									<h1 class="tit">제6조 (정보주체의 권리·의무 및 행사방법)</h1>
+						            <p class="txt">① 정보주체는 삼일회계법인에 대해 언제든지 다음 각 호의 개인정보 보호 관련 권리를 행사할 수 있습니다</p>
+						            <ul class="list">
+						                <li>1. 개인정보 열람요구</li>
+						                <li>2. 오류 등이 있을 경우 정정 요구</li>
+						                <li>3. 삭제요구</li>
+						                <li>4. 처리정지 요구</li>
+						            </ul>
+									<p class="txt">제1항에 따른 권리 행사는 삼일회계법인에 대해 개인정보 처리 방법에 관한 고시 별지 제8호 및 제10호 서식에 따라 서면, 전자우편, 모사전송(FAX) 등을 통하여 하실 수 있으며 삼일회계법인은 이에 대해 조치하겠습니다.</p>
+									<p class="txt">③ 정보주체가 개인정보의 오류 등에 대한 정정 또는 삭제를 요구한 경우에는 삼일회계법인은 정정 또는 삭제를 완료할 때까지 당해 개인정보를 이용하거나 제공하지 않습니다.</p>
+									<p class="txt">④ 제1항에 따른 권리 행사는 정보주체의 법정대리인이나 위임을 받은 자 등 대리인을 통하여 하실 수 있습니다. 이 경우 개인정보 처리 방법에 관한 고시 별지 제11호 서식에 따른 위임장을 제출하여야 합니다.</p>
+
+
+
+									<h1 class="tit">제7조 (개인정보의 파기)</h1>
+						            <p class="txt">① 삼일회계법인은 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 해당 개인정보를 파기합니다.</p>
+						            <p class="txt">② 정보주체로부터 동의 받은 개인정보 보유기간이 경과하거나 처리목적이 달성되었음에도 불구하고 다른 법령에 따라 개인정보를 계속 보존하여야 하는 경우에는, 해당 개인정보를 별도의 데이터베이스(DB)로 옮기거나 보관장소를 달리하여 보존합니다.</p>
+						            <p class="txt">③ 삼일회계법인은 전자적 파일 형태로 기록․저장된 개인정보는 기록을 재생할 수 없도록 파기하며, 종이 문서에 기록․저장된 개인정보는 분쇄기로 분쇄하거나 소각하여 파기합니다</p>
+
+									<h1 class="tit">제8조 (개인정보의 안전성 확보조치)</h1>
+						            <p class="txt">삼일회계법인은 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다.</p>
+						            <p class="txt">
+										관리적 조치: 내부관리계획 수립․시행, 정기적 직원 교육 등
+										기술적 조치: 개인정보처리시스템 등의 접근권한 관리, 접근통제시스템 설치, 고유식별정보 등의 암호화, 보안프로그램 설치 등
+										물리적 조치: 전산실 등의 접근통제 등
+									</p>
+
+									<h1 class="tit">제9조 (개인정보 자동 수집 장치의 설치/운영 및 거부에 관한 사항)</h1>
+						            <p class="txt">삼일회계법인은 이용자의 정보를 수시로 저장하고 불러오는 ‘쿠키(cookie)’ 등을 운용하는 경우도 있습니다. 쿠키는 웹사이트를 운영하는데 이용되는 서버가 이용자의 브라우저에게 보내는 아주 작은 텍스트 파일로서 이용자의 컴퓨터에 저장되기도 합니다.</p>
+						            <p class="txt">
+										① 쿠키의 사용 목적<br/>
+										쿠키는 이용자에게 최적화된 정보를 제공하기 위해 사용됩니다.
+									</p>
+
+									<p class="txt">
+										② 쿠키의 설치/운영 및 거부<br/>
+										이용자는 쿠키 설치에 대한 선택권을 가지고 있습니다. 따라서, 이용자는 웹 브라우저에서 옵션을 설정함으로써 모든 쿠키를 허용하거나, 쿠키가 저장될 때마다 확인을 거치거나, 아니면 모든 쿠키의 저장을 거부할 수도 있습니다.<br/>
+										(설정방법 : 웹 브라우저 상단의 도구 > 인터넷 옵션 > 개인정보)
+									</p>
+
+									<h1 class="tit">제10조 (개인정보 보호책임자)</h1>
+						            <p class="txt">① 삼일회계법인은 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다. </p>
+						            <p class="txt">
+										개인정보보호책임자 : 정보보호위원장<br/>
+										개인정보보호 담당부서 : 정보보호위원회<br/>
+										전화번호 02-3781-3111, 이메일 kr_privacy@pwc.com<br/>
+									</p>
+
+									<p class="txt">② 정보주체는 삼일회계법인의 서비스를 이용하면서 발생한 모든 개인정보 보호 관련 문의, 불만처리, 피해구제 등에 관한 사항을 개인정보 보호책임자 및 개인정보 보호담당자로 문의하실 수 있습니다. 삼일회계법인은 정보주체의 문의에 대해 답변 및 처리해 드릴 것입니다.</p>
+
+
+
+									<h1 class="tit">제11조 (권익침해 구제방법)</h1>
+						            <p class="txt">① 정보주체는 개인정보침해로 인한 구제를 받기 위하여 개인정보분쟁조정위원회, 한국인터넷진흥원 개인정보침해신고센터 등에 분쟁해결이나 상담 등을 신청할 수 있습니다. 이 밖에 기타 개인정보침해의 신고, 상담에 대하여는 아래의 기관에 문의하시기 바랍니다</p>
+						            <p class="txt">
+										1.	개인정보분쟁조정위원회: (국번없이) 1833-6972 (www.kopico.go.kr) <br/>
+										2.	개인정보침해신고센터: (국번없이) 118 (privacy.kisa.or.kr) <br/>
+										3.	대검찰청: (국번없이) 1301 (www.spo.go.kr) <br/>
+										4.	경찰청: (국번없이) 182 (ecrm.cyber.go.kr) <br/>
+									</p>
+									<p class="txt">②「개인정보 보호법」 제35조(개인정보의 열람), 제36조(개인정보의 정정·삭제), 제37조(개인정보의 처리정지 등)의 규정에 의한 요구에 대 하여 공공기관의 장이 행한 처분 또는 부작위로 인하여 권리 또는 이익의 침해를 받은 자는 행정심판법이 정하는 바에 따라 행정심판을 청구할 수 있습니다. </p>
+
+									<p class="txt">
+										중앙행정심판위원회: (국번없이) 110 (www.simpan.go.kr)
+									</p>
+
+
+									<h1 class="tit">제12조 (개인정보 처리방침 변경)</h1>
+									<p class="txt">
+										① 이 개인정보 처리방침은 2023년 10월 12일 최종 변경되었습니다.<br/>
+										② 개인정보 처리방침에 변경이 있는 경우에는 홈페이지를 통해 고지되며, 기존 개인정보 처리방침은 하기 링크를 통해 확인할 수 있습니다.
+									</p>
+
+						        </div>
+						   </section>
+						   <!-- //policy-wrap -->
+						    <div class="btn-wrap">
+						        <button type="button" class="btn-primary small w170 btn-close"><span>확인</span></button>
+						    </div>
+						</div>
+					</section>
+				</div>
+			</div>
+
+
+			
+
+			<!--news pop-->
+
+			<div class="modal-wrap" id="newsPop"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+
+
+			</div>
+
+			<!-- 영상팝 -->
+			<div id="popMovieView" class="modal-wrap" style="z-index:999999;">
+				<div class="dimmed"></div>
+				<div class="center">
+					<section class="modal-area w1024">
+						<div class="modal-head left">
+							<h2 class="tit"></h2>
+							<button type="button" class="btn-close bf" ><span class="blind">닫기</span></button>
+						</div>
+						<div class="modal-cont">
+						   <section class="policy-wrap scroll-area">
+								<div class="video-cont">
+
+								</div>
+								
+						   </section>
+						   <!-- //policy-wrap -->
+							<div class="btn-wrap disclaimer">
+								<div class="notice" style="line-height: 20px;text-align: left;"></div>
+								<button type="button" class="btn-primary small w170 pop-close-btn"><span>확인</span></button>
+							</div>
+						</div>
+						<!--//modal-cont-->
+					</section>
+					<!--//modal-area-->
+				</div>
+				<!-- //xycenter -->
+			</div>
+
+
+			<!-- 영상팝 2 -->
+			<div id="popMovieMView" class="modal-wrap">
+							
+			</div>
+
+
+
+
+    <!-- 개인정보처리방침 (필수) 팝업 -->
+    <div id="popEssentialView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">[개인정보 수집 및 이용 동의서] – 필수 </h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            
+                            
+                            <p class="txt">
+								삼일회계법인은 Samil ESG의 서비스를 제공하기 위하여 개인정보보호법에 따라 아래와 같이 회원의 개인정보를 수집 및 이용하고자 합니다.
+							</p>
+
+							<h1 class="tit">제1조 (수집 및 이용 개인정보 항목)</h1>
+                            <p class="txt">
+								아이디, 비밀번호, 이름, 소속(회사/기관), 소속 이메일 
+							</p>
+
+							<h1 class="tit">제2조 (수집 및 이용 목적)</h1>
+                            <p class="txt">
+								삼일회계법인은 하기 목적을 위하여 제1조의 개인정보 항목을 수집 및 이용합니다
+							</p>
+                            <ul class="list">
+                                <li>- 회원 가입 의사와 확인, 이용자의 본인 확인, 이용자 식별, 회원탈퇴 의사 확인, 서비스 오류 및 부정이용 방지 등 회원관리</li>
+                                <li>- 컨텐츠 등 기존 서비스 제공, 서비스 방문 및 이용기록의 분석, 관심사 등에 기반한 맞춤형 서비스 제공 등 신규 서비스 요소의 발굴 및 기존 서비스 개선</li>
+                                <li>-서비스 이용기록과 접속빈도 분석, 서비스 이용에 대한 통계, 서비스 분석 및 통계에 따른 맞춤 서비스 및 광고/홍보 개발 등</li>
+                            </ul>
+
+
+							<h1 class="tit">제3조 (보유 및 이용기간)</h1>
+                            <p class="txt">
+								회원탈퇴 시 또는 개인정보 수집 및 이용의 목적 달성 시까지 (단, 정보주체의 요청이 있는 경우 위 기간 이내라도 파기합니다).
+							</p>
+
+                            <h5 class="txt mar_t20">※ 위 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 그러나 동의를 거부할 경우 회원가입 및 본 사이트의 서비스 이용이 제한될 수 있습니다.  </h5>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+
+
+
+    <!-- SamilESG 개인정보처리방침 (선택) -->
+    <div id="popOptionsView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">[개인정보 수집 및 이용 동의서] – 선택 </h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                           
+                            
+                            <p class="txt">삼일회계법인은 Samil ESG의 서비스와 관련하여, 뉴스레터 발송, 세미나 안내, 서비스 소개 등 각종 유·무료 서비스 제공을 위하여 개인정보보호법에 따라 아래와 같이 회원의 개인정보를 수집 및 이용하고자 합니다</p>
+                           
+                            <h1 class="tit">제1조 (수집 및 이용 개인정보 항목)</h1>
+							<p class="txt">- 아이디, 비밀번호, 이름, 소속(회사/기관), 소속 이메일 , 개인 전화번호, 소속 부서, 소속 직급, 소속 전화번호, ESG 관심 분야 </p>
+
+							<h1 class="tit">제2조 (수집 및 이용 목적)</h1>
+							<p class="txt">- 
+								삼일회계법인은 하기 목적을 위하여 제1조의 개인정보 항목을 수집 및 이용합니다<br/>
+								-	뉴스레터 발송, 세미나 안내, 서비스 광고 등 각종 유무료 서비스 제공
+							</p>
+
+							<h1 class="tit">제3조 (보유 및 이용기간)</h1>
+							<p class="txt">회원탈퇴 시 또는 개인정보 수집 및 이용의 목적 달성 시까지 (단, 정보주체의 요청이 있는 경우 위 기간 이내라도 파기합니다).</p>
+
+							<h5 class="txt mar_t20">※ 위 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 그러나 동의를 거부할 경우 각종 유무료 서비스 제공이 제한될 수 있습니다.</h5>
+
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+
+
+
+
+<!-- 개인정보 3자 제공 동의 -->
+	<div id="popMarketingView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">개인정보 제3자 제공 동의</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            
+                            <h1 class="tit">[개인정보 제3자 제공 동의서]</h1>
+                            <p class="txt">
+								삼일회계법인은 회원의 개인정보를 원칙적으로 제3자에게 제공하지 않습니다. 다만, 「개인정보보호법」 등 관련규정을 준수하는 범위 내에서 회원의 동의를 얻어 회원의 개인정보를 삼일회계법인 제휴사 및 관계사에게 제공할 수 있습니다
+							</p>
+
+							<h1 class="tit">1. 개인정보 제3자 제공 관련 사항</h1>
+                            <p class="txt">
+								회원으로부터 수집한 개인정보를 제공받는 자와 제공받는 자의 이용목적, 제공받는 정보 및 보유 및 이용기간은 아래와 같습니다. 
+							</p>
+
+							<table cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<th>제공받는 자</th>
+										<th>제공 목적</th>
+										<th>제공 항목</th>
+										<th>보유 및 이용기간</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr>
+										<td>삼일아카데미</td>
+										<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>
+										<td>성명, 소속(회사/기관), 소속 이메일</td>
+										<td>회원탈퇴 시까지</td>
+									</tr>
+
+<!--									<tr>-->
+<!--										<td>프라이스워터파우스쿠퍼스컨설팅</td>-->
+<!--										<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>-->
+<!--										<td>성명, 소속(회사/기관), 소속 이메일</td>-->
+<!--										<td>회원탈퇴 시까지</td>-->
+<!--									</tr>-->
+
+									<tr>
+										<td>삼일인포마인</td>
+										<td>뉴스레터 발송, 발간물 제공, 세미나 안내 및 서비스 소개, 온라인 문의사항 처리</td>
+										<td>성명, 소속(회사/기관), 소속 이메일</td>
+										<td>회원탈퇴 시까지</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							<p class="txt">
+								※ 위 개인정보 제3자 제공에 대한 동의를 거부할 권리가 있습니다. 그러나 동의를 거부할 경우 뉴스레터, 발간물 제공 등 상기 기재된 서비스 이용이 제한될 수 있습니다.
+							</p>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('#popMarketingView.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+
+	</footer>
+</html>

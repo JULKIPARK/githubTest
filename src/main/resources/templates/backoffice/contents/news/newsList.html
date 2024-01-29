@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function (_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var param = {
+					"url": "/sems/contents/documentCommonDataList"
+					, "type": "post"
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setData = function () {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+
+				getData(function (data) {
+					var items = data.tpicList;
+
+					// 검색조건::ES토픽
+					items.forEach(item => {
+						$("#searchListFrm SELECT[name=schTpicNmOpt]").append(
+							`<option class="tpicMnu${item.tpicMnuCd}" value="${item.tpicUid}">${item.tpicNm}</option>`);
+					})
+
+					// ESG토픽
+					items = data.tpicMnuList;
+					items.forEach(item => {
+						$("#docForm #esgTopic .topicMenuTitle").append(`<th>${item.cdNm}</th>`);
+						var tmpl = '';
+						item.tpiclist.forEach(item2 => {
+							tmpl += `
+									<li>
+										<input type="checkbox" name="tpicUid" id="ck04-${item2.tpicUid}" value="${item2.tpicUid}">
+										<label for="ck04-${item2.tpicUid}">${item2.tpicNm}</label>
+									</li>
+								`;
+						})
+						$("#docForm #esgTopic .topicList").append(
+							`<td><ul class="ck-list">${tmpl}</ul></td>`);
+					})
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				$("input:hidden[name='docPageSize']").val($("#docPageSize").val());
+				$("input:hidden[name='docPageNum']").val($("#docPageNum").val());
+				formData = _formLib.getFormData("searchListFrm");
+
+				param = {
+					"url": "/sems/contents/selectNewsList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#docListDiv").replaceWith(fragment);
+						$("#docTotalCountView").text(
+							"총 " + _formLib.addComma($("#docTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#docPageNum').val();//현재 선택된 페이지
+						$('#docPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#docTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $(
+								"<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+									"#docTotalPage").val() + "</option>");
+							$('#docPageNum').append(option);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let stopData = function () {
+				console.log(`[MODULE] ${moduleNm} -> stopData`);
+
+				var lists = [];
+				$("input[name=chkContList]:checked").each(function (i) {
+					lists.push($(this).val());
+				});
+				$.post(
+					"/sems/contents/updateContSt"
+					, {contUids: lists}
+					, function (data) {
+						alert(data.deleteCnt + '건의 컨텐츠가 처리되었습니다.');
+
+						getData();
+					}
+				);
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 뉴스발간일/등록일/수정일
+				$("#searchListFrm SELECT[name=schJoinType]").on("change", function () {
+					$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").prop(
+						"disabled", ($(this).val() === "N"));
+					if ($(this).val() !== "N") {
+						_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+						var stDay = _comLib.preMonth(1);
+						$("#schStrtDate").val(stDay);
+						$("#schEndDate").val(_comLib.toDay());
+					} else {
+						$("#schStrtDate").val("");
+						$("#schEndDate").val("");
+					}
+				}).trigger("change");
+
+				// 전시여부
+				$("#searchListFrm INPUT[name=schDpTpRdo]").on("change", function () {
+					$("#searchListFrm INPUT[name=schRlsTgtChk]").prop("disabled",
+						($(this).val() !== "20"));
+					if ($(this).val() !== "20") {
+						$("#searchListFrm INPUT[name=schRlsTgtChk]").prop("checked", false);
+					}
+				}).trigger("change");
+
+				// ESG 토픽
+				$("#searchListFrm SELECT[name=schTpicMnuOpt]").on("change", function () {
+					$("#searchListFrm SELECT[name=schTpicNmOpt]").prop("disabled",
+						($(this).val() === "ALL"));
+					$("#searchListFrm SELECT[name=schTpicNmOpt] OPTION:not([value=ALL])").hide();
+					$("#searchListFrm SELECT[name=schTpicNmOpt]").val("ALL");
+					$("#searchListFrm SELECT[name=schTpicNmOpt] OPTION.tpicMnu" + $(
+						this).val()).show();
+				}).trigger("change");
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+					$("#docPageNum").val('1');
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+				});
+
+				// 데이터 페이징갯수
+				$("#docPageSize").on("change", function () {
+					$("#docPageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#docPageNum").on("change", function () {
+					getData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#docListDiv TBODY TD.contUnoTr A', function () {
+					view.openPop($(this).data('id'));
+				});
+
+				// 엑셀 다운로드
+				$("#btnExcelDown").on('click', function () {
+					if (!confirm("다운로드 하시겠습니까?")) {
+						return;
+					}
+
+					var data = "";
+					var formObj = $('<form></form>');
+					var formData = _formLib.getFormData("searchListFrm");
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/contents/selectNewsListExcelDown");
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schJoinType', value: formData.schJoinType}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schStrtDate', value: formData.schStrtDate}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schEndDate', value: formData.schEndDate}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schOprtOpt', value: formData.schOprtOpt}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schOprtWrd', value: formData.schOprtWrd}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schContentOpt', value: formData.schContentOpt}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schContentWrd', value: formData.schContentWrd}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schContentUno', value: formData.schContentUno}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schTaskClsfOpt', value: formData.schTaskClsfOpt}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schTopicOpt', value: formData.schTopicOpt}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schDpTpRdo', value: formData.schDpTpRdo}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schRlsTgtChk', value: formData.schRlsTgtChk}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schTpicMnuOpt', value: formData.schTpicMnuOpt}));
+					formObj.append($('<input/>',
+						{type: 'hidden', name: 'schTpicNmOpt', value: formData.schTpicNmOpt}));
+					formObj.append($('<input/>', {
+						type: 'hidden',
+						name: 'schSrchPsbltyRdo',
+						value: formData.schSrchPsbltyRdo
+					}));
+					formObj.append(
+						$('<input/>', {type: 'hidden', name: 'schKwrd', value: formData.schKwrd}));
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+
+				// 사용중지
+				$("BUTTON[name=doUseStop]").on('click', function () {
+					if (!$("input[name=chkContList]:checked").length) {
+						alert('선택된 컨텐츠가 없습니다.');
+						return;
+					}
+
+					if (!confirm("체크된 컨텐츠의 모든내용이 사용중지됩니다. \n계속 하시겠습니까?")) {
+						return;
+					}
+
+					stopData();
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function () {
+			let moduleNm = "view";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function (_contUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_contUid})`);
+
+				setData(_contUid, function () {
+					$("#newsViewPop").addClass("show");
+				})
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 숫자입력
+				$("#registContFrm INPUT[type=text].inputNumber").on("input", function () {
+					this.value = this.value.replace(/[^0-9]/g, "");
+				});
+
+				// 전시여부
+				$("#registContFrm INPUT[name=dpTpCd]").on("change", function () {
+					$("#registContFrm INPUT[name=rlsTgtCd]").prop("disabled",
+						($(this).val() !== "20"));
+					if ($(this).val() !== "20") {
+						$("#registContFrm INPUT[name=rlsTgtCd]").prop("checked", false);
+					}
+				}).trigger("change");
+
+				// 기간설정사용
+				$("#registContFrm INPUT[name=pirdStngUseYn]").on("change", function() {
+					$("#registContFrm INPUT[name=dpSttDte], #registContFrm INPUT[name=dpSttHh], #registContFrm INPUT[name=dpSttMi], #registContFrm INPUT[name=dpEndDte], #registContFrm INPUT[name=dpEndHh], #registContFrm INPUT[name=dpEndMi]").prop("disabled", !$(this).prop("checked"));
+				});
+
+				// 자장버튼
+				$("#registContFrm BUTTON[name=doSave]").unbind('click').on("click", function () {
+						saveData();
+					});
+			};
+
+			let setData = function (_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_contUid})`);
+
+				$("#registContFrm").resetForm();
+				getData(_contUid, function (data) {
+					var info = data.item;
+
+					$("#registContFrm INPUT[name=contUid]").val(info.contUid);
+					$("#registContFrm TD.contKindNmTd").empty().append(info.contKindCdNm);
+					$("#registContFrm TD.contUnoTd").empty().append(info.contUno);
+					$("#registContFrm SELECT[name=contStCd]").val(info.contStCd);
+					$("#registContFrm TEXTAREA[name=contNm]").val(info.ttl);
+					$("#registContFrm INPUT[name=pblcnDte]").val(info.pblcnDt);
+					$("#registContFrm #regSplyBzentyNm").val(info.srcNm);
+					$("#registContFrm #regWrtrNm").val(info.wrtrNm);
+					$("#registContFrm #regImgUrl").attr('src', info.imgUrl);
+					$("#registContFrm #regSumry").val(info.sumry);
+					$("#registContFrm #regCn").val(info.cn);
+					$("#registContFrm TD.taskClsfCdNmTd").empty().append(info.taskClsfCdNm);
+					$("#registContFrm TD.sbjtGbCdNmTd").empty().append(info.sbjtGbCdNm);
+					$("#registContFrm INPUT[name=dpTpCd][value=" + info.dpTpCd + "]").prop('checked', true).trigger('change');
+					$("#registContFrm INPUT[name=pirdStngUseYn][value=" + info.pirdStngUseYn + "]").prop('checked', true).trigger('change');
+					// ToDo : 기간설정 날짜 처리
+					if (info.rlsTgtCdArry) {
+						$.each(info.rlsTgtCdArry.split(','), function (i, val) {
+							$("#registContFrm INPUT[name=rlsTgtCd][value=" + val + "]").prop('checked', true)
+						});
+					}
+					$("#registContFrm INPUT[name=srchPsbltyYn][value=" + info.srchPsbltyYn + "]").prop('checked', true);
+					$("#registContFrm INPUT[name=kwrdArry]").val(info.kwrdArry);
+					$("#registContFrm INPUT:checkbox[name=tpicUid]").prop('checked', false);
+					if (info.conttpiclist) {
+						info.conttpiclist.forEach((item, idx) => {
+							$("#registContFrm INPUT[name=tpicUid][value=" + item.tpicUid + "]").prop('checked', true);
+						})
+					}
+
+					_callback();
+				});
+			};
+
+			let getData = function (_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_contUid})`);
+
+				var param = {
+					"url": "/sems/contents/selectNewsView"
+					, "type": "post"
+					, "data": {"contUid": _contUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function () {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#registContFrm")[0]);
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/contents/updateNewsInfo"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("저장에 성공하였습니다.");
+						$("#newsViewPop").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function () {
+			page.init();
+			list.init();
+			view.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<!-- container -->
+	<section id="cont-section" class="content">
+		<div class="location">
+			<h3>등록 뉴스 조회</h3>
+			<ul class="breadcrumb">
+				<li>컨텐츠 관리</li>
+				<li>등록 뉴스 관리</li>
+				<li>등록 뉴스 조회</li>
+			</ul>
+		</div>
+		<!-- //location -->
+		<div class="search-wrap">
+			<form id="searchListFrm">
+				<input type="hidden" name="docPageSize" value="">
+				<input type="hidden" name="docPageNum" value="">
+				<fieldset>
+					<legend>뉴스 조회</legend>
+					<div class="table-wrap">
+						<table class="inner-input">
+							<caption>뉴스 조회</caption>
+							<colgroup>
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>뉴스발간일/등록일/수정일</th>
+									<td>
+										<div class="date-select flex">
+											<select name="schJoinType" id="schJoinType" class="select" title="기간설정 선택">
+												<option value="N">기간설정 안함</option>
+												<option value="03">발간일</option>
+												<option value="01">등록일</option>
+												<option value="02">수정일</option>
+											</select>
+											<div class="datepicker-wrap">
+												<input type="text" name="schStrtDate" id="schStrtDate" class="datepicker">
+												<span class="separator"> - </span>
+												<input type="text" name="schEndDate" id="schEndDate" class="datepicker">
+											</div>
+										</div>
+									</td>
+									<th>등록자/수정자</th>
+									<td>
+										<div class="selectinput-wrap">
+											<select name="schOprtOpt" id="schOprtOpt" class="select" title="구분 선택">
+												<option value="01">등록자</option>
+												<option value="02">수정자</option>
+											</select>
+											<input type="text" name="schOprtWrd" id="schOprtWrd" title="이름입력">
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>뉴스 제목/내용</th>
+									<td>
+										<div class="selectinput-wrap">
+											<select name="schContentOpt" class="select" title="컨텐츠명">
+												<option value="01">제목</option>
+												<option value="02">제목+내용</option>
+											</select>
+											<input type="text" name="schContentWrd" placeholder="" title="컨텐츠 입력">
+										</div>
+									</td>
+									<th><label for="number">컨텐츠 번호</label></th>
+									<td>
+										<input type="text" id="number" name="schContentUno" placeholder="" title="컨텐츠 번호">
+									</td>
+								</tr>
+								<tr>
+									<th><label for="class01">업무 분류</label></th>
+									<td>
+										<select name="schTaskClsfOpt" id="class01" class="select">
+											<option value="ALL">전체</option>
+											<option value="10">ESG경영관리</option>
+											<option value="20">실행</option>
+											<option value="30">전략/계획</option>
+											<option value="40">공시</option>
+											<option value="50">평가</option>
+										</select>
+									</td>
+									<th><label for="class02">주제 분류</label></th>
+									<td>
+										<select name="schTopicOpt" id="class02" class="select">
+											<option value="ALL">전체</option>
+											<option value="10">ESG일반</option>
+											<option value="20">환경</option>
+											<option value="30">사회</option>
+											<option value="40">거버넌스</option>
+											<option value="50">금융</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>전시 여부</th>
+									<td>
+										<ul class="flex ck-list">
+											<li>
+												<input type="radio" name="schDpTpRdo" value="ALL" id="radio07" checked="checked">
+												<label for="radio07">전체</label>
+											</li>
+											<li>
+												<input type="radio" name="schDpTpRdo" value="40" id="radio11">
+												<label for="radio11">전체열람허용</label>
+											</li>
+											<li>
+												<input type="radio" name="schDpTpRdo" value="10" id="radio08">
+												<label for="radio08">전체공개</label>
+											</li>
+											<li>
+												<input type="radio" name="schDpTpRdo" value="20" id="radio09">
+												<label for="radio09">일부공개</label>
+											</li>
+											<li>
+												<input type="radio" name="schDpTpRdo" value="30" id="radio10">
+												<label for="radio10">비전시</label>
+											</li>
+										</ul>
+									</td>
+									<th>일부 공개 대상</th>
+									<td>
+										<ul class="flex ck-list">
+											<li>
+												<input type="checkbox" name="schRlsTgtChk" value="10" id="ck01">
+												<label for="ck01">그룹 A</label>
+											</li>
+											<li>
+												<input type="checkbox" name="schRlsTgtChk" value="20" id="ck02">
+												<label for="ck02">그룹 B</label>
+											</li>
+											<li>
+												<input type="checkbox" name="schRlsTgtChk" value="30" id="ck03">
+												<label for="ck03">그룹 C</label>
+											</li>
+											<li>
+												<input type="checkbox" name="schRlsTgtChk" value="40" id="ck04">
+												<label for="ck04">그룹 D</label>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<th>ESG 토픽</th>
+									<td>
+										<div class="select-group">
+											<select name="schTpicMnuOpt" id="schTpicMnuOpt" class="select" title="ESG 토픽 선택">
+												<option value="ALL">전체</option>
+												<option value="10">E(환경)</option>
+												<option value="20">S(사회)</option>
+												<option value="30">G(거버넌스)</option>
+												<option value="40">F(금융)</option>
+												<option value="50">ESG TAX</option>
+												<option value="60">ESG Deal</option>
+												<option value="70">ESG 공시</option>
+											</select>
+											<select name="schTpicNmOpt" id="schTpicNmOpt" class="select" title="키워드 선택">
+												<option value="ALL">전체</option>
+											</select>
+										</div>
+									</td>
+									<th>검색 가능 여부</th>
+									<td>
+										<ul class="flex ck-list">
+											<li>
+												<input type="radio" name="schSrchPsbltyRdo" value="ALL" id="radio9" checked="checked">
+												<label for="radio9">전체</label>
+											</li>
+											<li>
+												<input type="radio" name="schSrchPsbltyRdo" value="Y" id="radi10">
+												<label for="radi10">가능</label>
+											</li>
+											<li>
+												<input type="radio" name="schSrchPsbltyRdo" value="N" id="radi11">
+												<label for="radi11">불가 </label>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<th><label for="txt01">태그 키워드</label></th>
+									<td colspan="3">
+										<input type="text" name="schKwrd" id="txt01" class="w100p">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+					<div class="btn-wrap">
+						<button type="button" name="doSearch" class="btn-primary">조회</button>
+						<button type="button" name="doInit" class="btn-sub">초기화</button>
+					</div>
+					<!-- //btn-wrap -->
+				</fieldset>
+			</form>
+		</div>
+		<!-- //search-wrap -->
+		<div class="result-wrap">
+			<div class="total">
+				<span class="lable">컨텐츠 리스트</span> - <strong id="docTotalCountView">총 0건</strong>
+				<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+				<button type="button" name="doUseStop" class="btn-del"><span>사용중지</span></button>
+				</th:block>
+			</div>
+			<!-- total -->
+			<div class="sorting-wrap">
+				<select id="docPageSize" class="select" title="데이터 건수">
+					<option value="20">20개</option>
+					<option value="50">50개</option>
+					<option value="100">100개</option>
+					<option value="500">500개</option>
+					<option value="1000">1000개</option>
+				</select>
+				<select id="docPageNum" class="select" title="페이지 이동선택"> </select>
+				<div class="btn-ctl">
+					<button type="button" id="btnExcelDown" class="btn-download">다운로드</button>
+				</div>
+			</div>
+			<!-- //sorting-wrap -->
+			<div id="docListDiv" class="table-wrap xscroll-wrap">
+				<!-- 페이징 정보 -->
+				<th:block th:unless="${#lists.isEmpty(list)}">
+					<input type="hidden" id="docTotalCount" th:value="${PageInfo.totalCount}"/>
+					<input type="hidden" id="docPageNumber" th:value="${PageInfo.pageNumber}"/>
+					<input type="hidden" id="docTotalPage" th:value="${PageInfo.totalPage}"/>
+				</th:block>
+				<table class="w2300">
+					<caption>컨텐츠 리스트</caption>
+					<colgroup>
+						<col style="width: 2%;">
+						<col style="width: 3%;">
+						<col style="width: 3%;">
+						<col style="width: 4%;">
+						<col style="width: 5%;">
+						<col style="width: *;">
+						<col style="width: 7%;">
+						<col style="width: 5%;">
+						<col style="width: 5%;">
+						<col style="width: 4%;">
+						<col style="width: 4%;">
+						<col style="width: 4%;">
+						<col style="width: 5%;">
+						<col style="width: 4%;">
+						<col style="width: 8%;">
+						<col style="width: 5%;">
+						<col style="width: 4%;">
+						<col style="width: 5%;">
+						<col style="width: 4%;">
+					</colgroup>
+					<thead>
+					<tr>
+						<th></th>
+						<th>NO</th>
+						<th>종류</th>
+						<th>등록상태</th>
+						<th>컨텐츠 번호</th>
+						<th>뉴스제목</th>
+						<th>뉴스 발간일자</th>
+						<th>출처</th>
+						<th>작성자</th>
+						<th>업무분류</th>
+						<th>주제분류</th>
+						<th>전시여부</th>
+						<th>일부공개대상</th>
+						<th>검색여부</th>
+						<th>토픽분류</th>
+						<th>등록일</th>
+						<th>등록자</th>
+						<th>수정일</th>
+						<th>수정자</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="dataListTr" th:each="item, stat : ${list}">
+						<td>
+							<input type="checkbox" name="chkContList" th:value="${item.contUid}" title="선택">
+						</td>
+						<td th:text="${stat.count}">1</td>
+						<td th:text="${item.contKindCdNm}">문서</td>
+						<td th:text="${item.contStCdNm}">등록</td>
+						<td class="contUnoTr">
+							<a th:text="${item.contUno}" th:attr="data-id=${item.contUid}" class="link">CDIA00012</a>
+						</td>
+						<td class="left" th:text="${item.contNm}">GRI 1: Foundation 2021</td>
+						<td th:text="${item.pblcnDt}">발간일자</td>
+						<td th:text="${item.srcNm}">출처</td>
+						<td th:text="${item.wrtrNm}">작성자</td>
+						<td th:text="${item.taskClsfCdNm}">공시</td>
+						<td th:text="${item.sbjtGbCdNm}">ESG일반</td>
+						<td th:text="${item.dpTpCdNm}">전시</td>
+						<td th:text="${item.rlsTgtCdNmArry}"></td>
+						<td th:text="${item.srchPsbltyYnNm}">가능</td>
+						<td th:text="${item.tpicNmArry}">공시, GRI, 지속가능</td>
+						<td th:text="${item.fstInsDt}">2023-09-20</td>
+						<td th:text="${item.fstInsMbrNm}">정승은</td>
+						<td th:text="${item.lstUpdDt}"></td>
+						<td th:text="${item.lstUpdMbrNm}"></td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(list)}">
+						<td style="text-align: center;" colspan="19">데이터가 존재하지 않습니다.</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- //table-wrap -->
+		</div>
+		<!-- //result-list -->
+	</section>
+	<!-- //content -->
+
+	<!-- 컨텐츠 조회 팝업 -->
+	<th:block th:replace="/backoffice/contents/news/newsViewPop :: newsViewPop"></th:block>
+	<!--//modal-wrap-->
+</div>
+</html>

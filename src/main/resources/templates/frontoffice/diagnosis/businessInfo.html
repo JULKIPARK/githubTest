@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+			// 이벤트 설정
+			$("#dtnDiagnosis").bind("click", fnDiagnosis);	//진단 시작하기
+		});
+		
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'post');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'post');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'post');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+			$('.submenu01').addClass("on");
+		});
+		
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+	<form id="frm">
+          <section class="sub">
+			<div class="sub-title-a">
+				<div class="ct">
+					<div class="tit">ESG 경영활동 가이드</div>
+					<div class="subs">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영활동에 도움이 될 수 있는 참고 자료를 추천합니다.</div>
+				</div>
+				<div class="bgBack"></div>
+				<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+			</div>
+
+			<div class="mo_dropmenu">
+				<div class="nav">ESG 경영활동 가이드 개요<span><img src="/assets/img/common/ico_selectdesign.png"></span></div>
+				<ul class="dropmenu-list">
+					<li><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요</a></li>
+					<li><strong>ESG 전략 · 계획</strong></li>
+					<li><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립</a></li>
+					<li><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립</a></li>
+					<li><strong>ESG 과제 이행</strong></li>
+					<li><a href="/diagnosis/environmentView?tabId=1">환경 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=2">사회 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=4">지속가능 금융</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영</a></li>
+					<li><strong>ESG 공시 · 인증</strong></li>
+					<li><a href="/diagnosis/certifiedView?tabId=1">ESG 공시</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=2">ESG 평가</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=3">ESG 인증</a></li>
+				</ul>
+			</div> 
+			
+			<div class="esg-guide default-width">
+				<dl class="leftMenu">
+					<dd>
+						<div class="depth-1"></div>
+						<ul class="depth-2-menulist">
+							<li class="submenu01"><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+					
+					<dd>
+						<div class="depth-1">ESG 전략 · 계획</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu02_01"><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu02_02"><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+					
+					<dd>
+						<div class="depth-1">ESG 과제 이행</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu03_01"><a href="/diagnosis/environmentView?tabId=1">환경 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_02"><a href="/diagnosis/environmentView?tabId=2">사회 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_03"><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_04"><a href="/diagnosis/environmentView?tabId=4">지속가능 금융<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_05"><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_06"><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+					
+					<dd>
+						<div class="depth-1">ESG 공시 ・ 인증</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu04_01"><a href="/diagnosis/certifiedView?tabId=1">ESG 공시<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_02"><a href="/diagnosis/certifiedView?tabId=2">ESG 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_03"><a href="/diagnosis/certifiedView?tabId=3">ESG 인증<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+				</dl>
+				
+				<div class="content">
+					<div class="border-txbox-a">
+						<div class="sub-common-tit">ESG 경영의 개념</div>
+						<div class="border-box">
+							ESG란 기업의 비재무적 요소인 환경(Environmental), 사회(Social), 지배구조(Governance)의 약자로 기업의 지속가능성 및 가치의 평가에 재무적 요소뿐 아니라 ESG 요소가 함께 반영되어야 한다는 개념으로 활용되고 있습니다.<br/>
+							ESG 경영은 기업의 지속가능한 발전을 위해 경영활동에 ESG 요소를 반영하는 것, 즉, 환경보호, 사회적 책임, 지배구조 개선을 위한 활동을 수행하는 것을 의미합니다.
+						</div>
+					</div>
+					
+					<div class="guide-goal">
+						<div class="sub-common-tit">ESG 경영활동 가이드의 목적</div>
+						<dl class="goal-list">
+							<dd>
+								<div class="num">1</div>
+								<div class="tx">
+									ESG 경영 체계 내의 개별 활동들을 정의하고, 세부 활동 및 필요 역량을 규정하여 기업이 어떤 활동을 수행해야 하는지를 확인할 수 있도록 합니다.
+								</div>
+							</dd>
+							
+							<dd>
+								<div class="num">2</div>
+								<div class="tx">
+									ESG 경영활동의 수행에 도움이 될 수 있는 참고 자료를 큐레이팅 하여 제공하며, 삼일 PwC의 지원 가능 분야를 안내해 드립니다.
+								</div>
+							</dd>
+						</dl>
+					</div>
+					
+					
+					<div class="guide-m-list">
+						<div class="sub-common-tit">ESG 경영활동 가이드의 목차</div>
+						<dl class="m-list">
+							<dd>
+								<div class="tit-box">
+									<div class="tit">01. ESG 전략 · 계획</div>
+									<div class="num">01</div>
+								</div>
+								
+								<div class="tx-l-box">
+									<div class="substance">전사 경영활동에의 ESG 핵심요소 내재화를 위해 ESG 경영 전략 및 이를 실행하기 위한 경영체계 수립이 선행되어야 합니다.</div>
+									<ul class="tx-l-list">
+										<li class="w100">ESG 경영전략 수립</li>
+										<li class="w100">ESG 경영체계 수립</li>
+									</ul>
+								</div>
+							</dd>
+							
+							
+							<dd>
+								<div class="tit-box">
+									<div class="tit">02. ESG 과제 이행</div>
+									<div class="num">02</div>
+								</div>
+								
+								<div class="tx-l-box">
+									<div class="substance">ESG 경영 과제의 이행을 위해 각 ESG 과제별로 정책 및 프로그램을 기획하여 운영하고, 운영 현황을 모니터링하고 성과를 측정하여야 합니다.</div>
+									<ul class="tx-l-list">
+										<li>환경 과제</li>
+										<li>지속가능 금융</li>
+										<li>사회 과제</li>
+										<li>ESG 영향 평가</li>
+										<li>거버넌스 과제</li>
+										<li>ESG 시스템 운영</li>
+									</ul>
+								</div>
+							</dd>
+							
+							<dd>
+								<div class="tit-box">
+									<div class="tit">03. ESG 공시 · 인증</div>
+									<div class="num">03</div>
+								</div>
+								
+								<div class="tx-l-box">
+									<div class="substance">이해관계자의 지지 및 투자를 확보하기 위해 투명한 ESG 정보 공시, 객관적인 등급 평가, 공시 자료의 신뢰성 확보를 위한 인증이 중요합니다.</div>
+									<ul class="tx-l-list">
+										<li>ESG 공시</li>
+										<li>ESG 인증</li>
+										<li>ESG 평가</li>
+									</ul>
+								</div>
+							</dd>
+						</dl>
+					</div>
+					
+				</div>
+			</div>
+			
+			 
+		</section>
+		<!-- //content -->  
+		
+	</form>
+</div>
+</html>

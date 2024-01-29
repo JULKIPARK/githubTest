@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/defaultLayout}">
+<th:block layout:fragment="css">
+    <style>
+        .btn-schedule0 {
+            background: #42D2AB !important;
+        }
+
+        .btn-schedule1 {
+            background: #93C822 !important;
+        }
+
+        .btn-schedule2 {
+            background: #FFC433 !important;
+        }
+
+        .btn-schedule3 {
+            background: #E4533E !important;
+        }
+
+        .btn-schedule4 {
+            background: #B03EED !important;
+        }
+
+        .btn-schedule5 {
+            background: #4F8BFF !important;
+        }
+    </style>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:src="@{/assets/js/jquery.tmpl.js}"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            //tab();
+            var $doc = $(document);
+
+            $doc.on("click", ".newsletter,.mo_newsletter", function (e) {
+                e.preventDefault();
+                if (_session_id == null) {
+                    $(".newsletter_nlogin").addClass("show");
+                    $("html").css("overflow-y",'hidden');
+                    return;
+                } else if (_session_agress == "Y") {
+                    $(".newsletter_is .txt data").html(_session_nm);
+                    $(".newsletter_is .main-txt .line").html(_session_email);
+                    $(".newsletter_is").addClass("show");
+                } else {
+                    $.ajax({
+                        url: '/common/newsletter',
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            start: moment(st_date).format('YYYY-MM-DD'),
+                            end: moment(st_date2).format('YYYY-MM-31')
+                        },
+                        success: function (data) {
+                            if (data.msg == "Y") {
+                                $(".newsletter_login .main-txt data").html(_session_nm);
+                                $(".newsletter_login .main-txt .line").html(_session_email);
+                                $(".newsletter_login").addClass("show");
+                            } else {
+                                $(".newsletter_agree .main-txt data").html(_session_nm);
+                                $(".newsletter_agree .main-txt .line").html(_session_email);
+                                $(".newsletter_agree").addClass("show");
+                            }
+
+                        }
+                    });
+
+
+                }
+
+
+            });
+            $doc.on("click", "#newsletter_save", function (e) {
+                e.preventDefault();
+                var formData, param = {};
+                param = {
+                    "url": "/common/saveNewsletter"
+                    , "type": "post"
+                    , "data": {}
+                    , "async": false
+                    , "callback": function (data) {
+                        if (data.msg == "success") {
+                            $(".newsletter_login").removeClass("show");
+                            $(".newsletter_ok .main-txt data").html(_session_nm);
+                            $(".newsletter_ok .main-txt .line").html(_session_email);
+                            $(".newsletter_ok").addClass("show");
+                            _session_agress = "Y";
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                };
+                _comLib.callAjax(param);
+            })
+            $doc.on("click", "#newsletter_agree_save", function (e) {
+                e.preventDefault();
+
+                if (!$("#marketAgree").is(":checked")) {
+                    $(".newsletter_no").addClass("show");
+                    return;
+                }
+                // if(!$("#emailAgree").is(":checked"))
+                // {
+                // 	$(".newsletter_no").addClass("show");
+                // 	return;
+                // }
+                var formData, param = {};
+                param = {
+                    "url": "/common/saveNewsletter"
+                    , "type": "post"
+                    , "data": {}
+                    , "async": false
+                    , "callback": function (data) {
+                        if (data.msg == "success") {
+                            $(".newsletter_agree").removeClass("show");
+                            $(".newsletter_ok .main-txt data").html(_session_nm);
+                            $(".newsletter_ok .main-txt .line").html(_session_email);
+                            $(".newsletter_ok").addClass("show");
+                            _session_agress = "Y";
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                };
+                _comLib.callAjax(param);
+            })
+            $doc.on("click", ".schedulePop", function (e) {
+                e.preventDefault();
+                $("#calendarPopup").addClass("show");
+                $("#calendarPopup [dt='title']").html($(this).data("title"));
+                $("#calendarPopup [dt='content'] PRE").html($(this).data("content"));
+                $("#calendarPopup [dt='date']").html($(this).data("etcstart"));
+				let linkUrl = $(this).data("link");
+				$("#calendarPopup BUTTON._linkUrl").unbind('click').bind('click', function() {
+					window.open(linkUrl);
+				});
+                $("html").css("overflow-y",'hidden');
+            });
+
+            // 탭
+            $doc.on("click", ".tab-wrap .tabList li", function (e) {
+                e.preventDefault();
+                var num = $(this).closest("li").index();
+                var group = $(this).closest(".tab-wrap");
+
+                group.find(".current").removeClass("current");
+                $(this).addClass("current");
+
+                group.find(".tab-cont").hide();
+
+                group.find(".tab-cont").eq(num).show();
+
+                var fnc = group.data("fnc")
+                if (fnc != undefined) {
+                    $.isFunction(fnc) && fnc.call(null, num);
+                }
+
+
+            });
+
+            $(".keyword-wrap li button").on('click', function () {
+                var num = $(this).closest("li").index();
+                $(".keyword-wrap li button").removeClass("current");
+                $(this).addClass("current");
+                $(".tab-cont .contMain").hide();
+                $(".tab-cont .contMain").eq(num).show();
+            })
+
+            var st_date = moment().format('YYYY.MM.01');
+            var st_date1 = moment(moment().format('YYYY/MM/01')).subtract(1, "months").format('YYYY.MM.DD');
+            var st_date2 = moment(moment().format('YYYY/MM/01')).add(1, "months").format('YYYY.MM.DD');
+            var set_date2 = st_date.substring(0, 7);
+            var set_date1 = st_date1.substring(0, 7);
+            var set_date3 = st_date2.substring(0, 7);
+            $(".calendar .tabList li ").eq(0).html(set_date1);
+            $(".calendar .tabList li").eq(1).html(set_date2);
+            $(".calendar .tabList li").eq(2).html(set_date3);
+
+            $(".mo_schedule .tabList li ").eq(0).html(set_date1);
+            $(".mo_schedule .tabList li").eq(1).html(set_date2);
+            $(".mo_schedule .tabList li").eq(2).html(set_date3);
+
+            $.ajax({
+				url: '/calendar/selectCalendarList',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    start: moment(st_date1.split('.').join('/')).format('YYYY-MM-DD'),
+                    end: moment(st_date2.split('.').join('/')).format('YYYY-MM-31')
+                },
+                success: function (data) {
+					var list = data.list;
+
+                    var dataArr1 = [];
+                    var dataArr2 = [];
+                    var dataArr3 = [];
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].start) {
+							list[i].startDay = moment(list[i].start).format('DD');
+
+                            if (moment(list[i].start).format('YYYY.MM') == set_date1) {
+                                dataArr1.push(list[i]);
+                            } else if (moment(list[i].start).format('YYYY.MM') == set_date2) {
+
+                                dataArr2.push(list[i]);
+                            } else if (moment(list[i].start).format('YYYY.MM') == set_date3) {
+
+                                dataArr3.push(list[i]);
+                            }
+                        }
+
+                    }
+                    dataArr1.sort(function (comp1, comp2) {
+                        var comp1UC = comp1.startDay;
+                        var comp2UC = comp2.startDay;
+                        if (comp1UC < comp2UC) {
+                            return -1;
+                        } else if (comp1UC > comp2UC) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    dataArr2.sort(function (comp1, comp2) {
+                        var comp1UC = comp1.startDay;
+                        var comp2UC = comp2.startDay;
+                        if (comp1UC < comp2UC) {
+                            return -1;
+                        } else if (comp1UC > comp2UC) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    dataArr3.sort(function (comp1, comp2) {
+                        var comp1UC = comp1.startDay;
+                        var comp2UC = comp2.startDay;
+                        if (comp1UC < comp2UC) {
+                            return -1;
+                        } else if (comp1UC > comp2UC) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
+					$("#tmpl_date").tmpl(dataArr1).appendTo("#cdate1,#mcdate1");
+					$("#tmpl_date").tmpl(dataArr2).appendTo("#cdate2,#mcdate2");
+					$("#tmpl_date").tmpl(dataArr3).appendTo("#cdate3,#mcdate3");
+                }
+            });
+            $.post("/main/selectContList", {}, function (data) {
+                var pwcInsightsList1 = data.pwcInsightsList1;	//삼일 인사이트 목록
+                var pwcInsightsList2 = data.pwcInsightsList2;	//삼일 인사이트 목록
+                var trendList = data.trendList;				//최신동향 목록
+                var standardList = data.standardList;		//ESG 자료모음 >> 기준/가이드 라인 목록
+                var researchList = data.researchList;		//ESG 자료모음 >> 연구/보고 목록
+                var lawList = data.lawList;					//ESG 자료모음 >> 법/제도 목록
+
+                //삼일 인사이트
+
+                $("#tmpl_insight").tmpl(pwcInsightsList1).appendTo("#pwcInsightsList1");
+                $("#tmpl_insight").tmpl(pwcInsightsList2).appendTo("#pwcInsightsList2");
+                //최신동향
+                $("#tmpl_news").tmpl(trendList[0]).appendTo("#new1");
+                $("#tmpl_news2").tmpl(trendList[1]).appendTo("#new2");
+                $("#tmpl_news2").tmpl(trendList[2]).appendTo("#new3");
+
+
+                $("#tmpl_etc1").tmpl(data).appendTo("#standardList");
+                $("#tmpl_etc2").tmpl(data).appendTo("#researchList");
+                $("#tmpl_etc3").tmpl(data).appendTo("#lawList");
+
+            });
+            $.post("/news-trend/getKeywords", {}, function (data) {
+                var list = data.keywords;
+
+                $("#tmpl_keyword").tmpl(list).appendTo(".keywordVisual");
+                $(".keywordVisual").slick({
+                    autoplay: true,
+                    arrows: true,
+                    dots: false,
+                    infinite: true,
+                    cssEase: "linear",
+                    speed: 300,
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    responsive: [
+                        {
+                            breakpoint: 1180,
+                            settings: {
+                                slidesToShow: 2,
+                                pauseOnHover: true,
+                                arrows: true,
+                                dots: true,
+                                customPaging: function (slider, i) {
+                                    //FYI just have a look at the object to find available information
+                                    //press f12 to access the console in most browsers
+                                    //you could also debug or look in the source
+                                    console.log(slider);
+                                    return i + 1 + "/" + slider.slideCount;
+                                },
+                            },
+                        },
+                        {
+                            breakpoint: 767,
+                            settings: {
+                                slidesToShow: 1,
+                                pauseOnHover: true,
+                                arrows: true,
+                                dots: true,
+                                customPaging: function (slider, i) {
+                                    //FYI just have a look at the object to find available information
+                                    //press f12 to access the console in most browsers
+                                    //you could also debug or look in the source
+                                    console.log(slider);
+                                    return i + 1 + "/" + slider.slideCount;
+                                },
+                            },
+                        },
+                    ],
+                });
+            });
+
+        });
+    </script>
+</th:block>
+
+<!-- container -->
+<div class="main" layout:fragment="content">
+    <div class="mobile-search-bar">
+        <div class="container">
+            <div class="searchIco" id="msearchIco"><img src="/assets/img/common/mobile-search-ico.png"></div>
+            <form style="width: 100%;"><input type="text" placeholder="필요한 정보가 있으신가요?"/></form>
+        </div>
+    </div>
+
+    <div class="mainVisual"><img src="/assets/img/common/visual_main.png" alt=""></div>
+
+    <div class="search-bar">
+        <div class="ct">
+            <div class="subj">필요한 정보가 있으신가요?</div>
+
+            <div class="inputA">
+                <div class="selectA">
+                    <data data-val="">통합검색</data>
+                    <span><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    <ul class="selectToggle">
+                        <li data-val="">통합검색</li>
+                        <li data-val="title">자료명</li>
+                        <li data-val="til_cont">자료명 + 본문</li>
+                        <li data-val="src">출처</li>
+                        <li data-val="choose_kwd">키워드</li>
+                    </ul>
+                </div>
+
+                <input type="text" class="historyBtn" placeholder="검색어를 입력하세요."/>
+
+                <button class="submit-btn"><img src="/assets/img/common/search-ico.png"></button>
+
+                <div class="search-history">
+                    <ul class="history-list">
+                        <li>
+                            <div class="h-keyword">ESG</div>
+                            <div class="date">10.03</div>
+                            <div class="delete"><img src="/assets/img/common/btn_del.png"></div>
+                        </li>
+
+                        <li>
+                            <div class="h-keyword">ESG 공시</div>
+                            <div class="date">10.03</div>
+                            <div class="delete"><img src="/assets/img/common/btn_del.png"></div>
+                        </li>
+
+                        <li>
+                            <div class="h-keyword">공급망 관리</div>
+                            <div class="date">10.03</div>
+                            <div class="delete"><img src="/assets/img/common/btn_del.png"></div>
+                        </li>
+
+                        <li>
+                            <div class="h-keyword">공급망 실사</div>
+                            <div class="date">10.03</div>
+                            <div class="delete"><img src="/assets/img/common/btn_del.png"></div>
+                        </li>
+
+                        <li>
+                            <div class="h-keyword">공급망 실사 관리 지침</div>
+                            <div class="date">10.03</div>
+                            <div class="delete"><img src="/assets/img/common/btn_del.png"></div>
+                        </li>
+                    </ul>
+
+                    <div class="opL">
+                        <div class="underline delall">전체 삭제</div>
+                        <div>최근 검색어 <span class="underline onoff">끄기</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="keyword-box">
+                <ul class="listVisual">
+                    <li>
+                        <span class="num">1</span>
+                        <span class="txt">ISSB</span>
+                        <span class="arrow"><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    </li>
+                    <li>
+                        <span class="num">2</span>
+                        <span class="txt">ESG 공시</span>
+                        <span class="arrow"><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    </li>
+                    <li>
+                        <span class="num">3</span>
+                        <span class="txt">GRI</span>
+                        <span class="arrow"><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    </li>
+                    <li>
+                        <span class="num">4</span>
+                        <span class="txt">EU Taxonomy</span>
+                        <span class="arrow"><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    </li>
+                    <li>
+                        <span class="num">5</span>
+                        <span class="txt">공급망 관리</span>
+                        <span class="arrow"><img src="/assets/img/common/ico_selectdesign.png"></span>
+                    </li>
+                </ul>
+
+                <ul class="keyword-drop">
+                    <li>
+                        <a href="#">
+                            <span class="num">1</span>
+                            <span class="txt">ISSB</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            <span class="num">2</span>
+                            <span class="txt">ESG 공시</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            <span class="num">3</span>
+                            <span class="txt">GRI</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            <span class="num">4</span>
+                            <span class="txt">EU Taxonomy</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            <span class="num">5</span>
+                            <span class="txt">공급망 관리</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="shortcutA">
+        <ul class="shortcutList">
+            <li>
+                <a href="/footer/siteProvider">
+                    <div class="icon"><img src="/assets/img/common/icon_quick01.png"></div>
+                    <div class="tx">삼일 ESG<br/>플랫폼 소개</div>
+                    <div class="arrow"><img src="/assets/img/common/Outline-v2.png"></div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/diagnosis/selfDiagnosisView">
+                    <div class="icon"><img src="/assets/img/common/icon_quick02.png"></div>
+                    <div class="tx">ESG<br/>경영자가진단</div>
+                    <div class="arrow"><img src="/assets/img/common/Outline-v2.png"></div>
+                </a>
+            </li>
+
+            <li>
+                <a href="javascript:goDisclosureView(2);">
+                    <div class="icon"><img src="/assets/img/common/icon_quick03.png"></div>
+                    <div class="tx">GRI<br/>해설 및 사례</div>
+                    <div class="arrow"><img src="/assets/img/common/Outline-v2.png"></div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/trend/educationList">
+                    <div class="icon"><img src="/assets/img/common/icon_quick04.png"></div>
+                    <div class="tx">삼일 ESG<br/>세미나 & 교육</div>
+                    <div class="arrow"><img src="/assets/img/common/Outline-v2.png"></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="keyword">
+        <div class="tit-line">
+            <div class="tit">ESG 뉴스 키워드 <span>(최근 7일 기준)</span></div>
+            <div class="more">
+                <a href="/news-trend/page"><img src="/assets/img/common/morePlus.png"></a>
+            </div>
+        </div>
+
+        <ul class="keywordVisual">
+
+        </ul>
+
+        <div class="mo-btn">
+            <button type="button" class="btn_pause"><img src="/assets/img/common/btn_rolling_s_stop.png"></button>
+            <button type="button" class="btn_play"><img src="/assets/img/common/btn_rolling_s_play.png"></button>
+        </div>
+    </div>
+
+    <div class="scheduleA">
+        <div class="esgNews">
+            <div class="main-commonTitA">
+                <div class="tit">ESG News</div>
+                <div class="more"><a href="/trend/esgNewsList"><img src="/assets/img/common/morePlus.png"></a></div>
+            </div>
+
+            <dl class="news-list">
+                <dd class="single" id="new1">
+
+                </dd>
+
+                <dd class="double">
+                    <ul class="news-sm">
+                        <li id="new2">
+
+                        </li>
+
+                        <li id="new3">
+
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="calendar tab-wrap" data-fnc="">
+            <div class="main-commonTitA">
+                <div class="tit">ESG Calendar</div>
+                <div class="more"><a href="/calendar/calendarView"><img src="/assets/img/common/morePlus.png"></a></div>
+            </div>
+
+            <ul class="tabList">
+                <li class="tabTit_1 btn-rd-wh">2023.09</li>
+                <li class="tabTit_2 btn-rd-wh current">2023.10</li>
+                <li class="tabTit_3 btn-rd-wh">2023.11</li>
+            </ul>
+            <div class="scroll-area" style="background:transparent;">
+                <ul class="schedule-list tab-cont " style="display:none;" id="cdate1">
+
+                </ul>
+                <ul class="schedule-list tab-cont " id="cdate2">
+
+                </ul>
+                <ul class="schedule-list tab-cont " style="display:none" id="cdate3">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="insightA">
+        <div class="insight tab-wrap">
+            <div class="main-commonTitA">
+                <div class="tit">삼일 인사이트</span></div>
+                <div class="more">
+                    <a href="/trend/insightsList"><img src="/assets/img/common/morePlus.png"></a>
+                </div>
+            </div>
+            <ul class="tabList">
+                <li class="tabTit_1 btn-rd-wh current">인사이트 리포트</li>
+                <li class="tabTit_2 btn-rd-wh ">미디어</li>
+            </ul>
+            <ul class="insightList tab-cont" id="pwcInsightsList1">
+            </ul>
+            <ul class="insightList tab-cont" style="display:none;" id="pwcInsightsList2">
+
+            </ul>
+        </div>
+
+        <div class="case">
+            <div class="main-commonTitA">
+                <div class="tit">ESG 공시 기준서 해설 / 사례</span></div>
+                <div class="more">
+                    <a href="/disclosure/disclosureView?tabId=1"><img src="/assets/img/common/morePlus.png"></a>
+                </div>
+            </div>
+
+            <ul class="caseVisual">
+                <li>
+                    <a href="javascript:goDisclosureView(2);">
+                        <div class="thum"><img src="/assets/img/temp/img_18.png" alt=""></div>
+                        <div class="subj">GRI Standards</div>
+                        <div class="subs">지속가능성 관련 공시기준 GRI의 국문 번역본 및 삼일 ESG 전문가의 해설·사례를 확인해보세요</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(3);">
+                        <div class="thum"><img src="/assets/img/temp/img_19.png" alt=""></div>
+                        <div class="subj">ISSB</div>
+                        <div class="subs">IFRS 재단 산하 국제 지속가능성 기준 위원회 (ISSB)의 지속가능성 공시 기준을 확인해보세요.</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(4);">
+                        <div class="thum"><img src="/assets/img/temp/img_20.png" alt=""></div>
+                        <div class="subj">CSRD/ESRS</div>
+                        <div class="subs">기존 EU NFRD에서 개정 • 확대된 지속가능성 보고지침(CSRD)과 공시 기준서(ESRS)입니다.</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(7);">
+                        <div class="thum"><img src="/assets/img/temp/img_21.png" alt=""></div>
+                        <div class="subj">TNFD</div>
+                        <div class="subs">자연자본 관련 위험을 효과적으로 평가하고 관리하기 위한 공시 프레임워크입니다. (23.09.발표)</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="main-commonTitA">
+            <div class="tit">ESG 토픽</span></div>
+            <div class="more">
+                <a href="/action/environmentView"><img src="/assets/img/common/morePlus.png"></a>
+            </div>
+        </div>
+
+        <ul class="topicVisual">
+            <li>
+                <a href="/action/environmentView?tabId=1">
+                    <div class="bad red">환경</div>
+                    <div class="subj">온실가스</div>
+                    <div class="sus">온실가스란 지구를 둘러싸고 있는 기체로 열을 흡수하거나 재방출해 지구에 온실효과를 유발하는 대기 중 가스입니다. 2001년, 국제적으로 인정된
+                        온실가스 배출량 산정 및 회계처리와 공시 기준을 제공하는 GHG 프로토콜 (Greenhouse Gas Protocol)에서 다양한 유형의 온실가스 배출을 분류 및 산정하는
+                        방법을 제시하였습니
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/environmentView?tabId=4">
+                    <div class="bad orange">환경</div>
+                    <div class="subj">자원 및 순환경제</div>
+                    <div class="sus">순환경제란 「순환경제사회 전환 촉진법」 제2조에 따르면 제품의 지속가능성을 높이고 버려지는 자원의 순환망을 구축하여 투입되는 자원과 에너지를
+                        최소화하는 친환경 경제 체계로 정의됩니다. 지금까지 사회는 대부분 자원을 사용하여 제품을 생산하고, 소비된 제품을 폐기하는 ‘선형 경제(Linear Economy)’
+                        구조였습니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/socialView?tabId=1">
+                    <div class="bad pink">사회</div>
+                    <div class="subj">공급망 관리</div>
+                    <div class="sus">지속가능한 공급망이란 기업이 제품 또는 서비스를 생산하고 처분하기까지의 전 과정에서 경제, 사회, 환경에 미치는 부정적인 영향을 최소화한
+                        공급망입니다. 글로벌 ESG 공시 기준인 GRI(Global Reporting Initiative)에 따르면 기업의 공급망(가치사슬)은 기업이 고객들에게 가치를 제공하는
+                        모든 직간접적인 활동이라고 정의하고 있습니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/socialView?tabId=3">
+                    <div class="bad yellow">사회</div>
+                    <div class="subj">인적자원 관리</div>
+                    <div class="sus">주주 중심의 자본주의에서 이해관계자 자본주의로 전환하며 임직원도 단순한 피고용인이 아닌 기업의 중요한 이해관계자로 대두하였습니다. 2019년 미국에서
+                        200대 기업의 CEO가 모인 비즈니스라운드테이블(BRT)에서도 핵심 5대 아젠다로 ‘임직원에 대한 투자’를 선정하여 직원의 역량강화를 위해 투자하고, 공정한 보상과 혜택을
+                        제공하며, 다양하고 평등하며 포용적인 고용환경을 만드는 것에 대한 중요성을 확인했습니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/financeView?tabId=4">
+                    <div class="bad red">금융</div>
+                    <div class="subj">금융배출량</div>
+                    <div class="sus">금융배출량은 금융회사의 투자 및 대출 활동으로 인해 발생하는 온실가스 배출량을 의미합니다. GHG Protocol에서 규정한 Scope 3의 카테고리
+                        15 (투자;
+                        Investment)가 이에 해당합니다. 금융회사는 실물경제에 유동성을 제공함으로써 온실가스 배출에 일조하게 되며, 이는 반대로 금융회사가 온실가스 배출량 감축 목
+                        적의 투자∙대출 활동을 통해 실물경제의 온실가스 배출량 감축을 촉진할 수 있는 역할을 가지고 있음을 의미합니다. 따라서 금융회사에 있어서 금융배출량은 내부배
+                        출량(즉, Scope 1∙2 온실가스 배출량) 못지 않게 중요한 개념입니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/esgTaxView?tabId=1">
+                    <div class="bad orange">ESG Tax</div>
+                    <div class="subj">탄소국경세</div>
+                    <div class="sus">EU 탄소국경조정제도(Carbon Border Adjustment Mechanism, CBAM)는 온실가스 배출 규제가 느슨한 국가(非 EU)에서
+                        규제가 엄격한 국가(EU)로 물품을 수출할 때 발생하는 가격 차이를 보전하기 위해 온실가스 감축 비용을 수입품에 부과하는 일종의 무역 관세입니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/esgDealView?tabId=1">
+                    <div class="bad pink">ESG Deal</div>
+                    <div class="subj">책임투자</div>
+                    <div class="sus">책임투자란 기업에 대한 투자의사결정시 환경·사회·지배구조를 투자 의사 결정에 반영함으로써 위험 관리와 지속가능한 장기 수익을 달성하는 것을
+                        의미합니다. 지
+                        속가능한 기업에 투자함으로서 장기적인 관점에서 투자위험을 감소시키고 안정적인 수익률 제고를 추구하는 종합적인 투자 전략입니다.
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="/action/esgDealView?tabId=2">
+                    <div class="bad yellow">ESG Deal</div>
+                    <div class="subj">ESG 실사</div>
+                    <div class="sus">ESG 실사(Due Diligence)란 지분인수, 투자, 전략적 제휴 등에 있어 거래에 중요한 영향을 미칠 수 있는 기업의 ESG 경영 실태와
+                        기업의 장기적인 성과와 가치평
+                        가에 영향을 미치는 환경, 사회, 거버넌스 요소를 분석하고 검토하는 과정입니다. 지속가능성에 대한 투자자들의 요구 증대, 정부 주도 규제 강화, 주주행동주의 및
+                        NGO 활동 증가에 따라 ESG 실사의 중요성이 점차 증대되고 있습니다.
+                    </div>
+                </a>
+            </li>
+        </ul>
+
+        <!--<div class="mo-btn">
+            <button type="button" class="btn_pause"><img src="/assets/img/common/btn_rolling_s_stop.png"></button>
+            <button type="button" class="btn_play"><img src="/assets/img/common/btn_rolling_s_play.png"></button>
+        </div>-->
+    </div>
+
+
+    <div class="dataA">
+        <div class="data tab-wrap">
+            <div class="main-commonTitA">
+                <div class="tit">ESG 자료실</span></div>
+                <div class="more">
+                    <a href="/trend/bbsList"><img src="/assets/img/common/morePlus.png"></a>
+                </div>
+            </div>
+
+            <ul class="tabList">
+                <li class="tabTit_1 btn-rd-wh current">기준・가이드 라인</li>
+                <li class="tabTit_2 btn-rd-wh">법 ∙ 제도</li>
+                <li class="tabTit_3 btn-rd-wh">연구 ∙ 보고</li>
+            </ul>
+
+            <ul class="data-list tab-cont tabView_1" id="standardList">
+
+            </ul>
+			<ul class="data-list tab-cont tabView_2" style="display:none;" id="lawList">
+
+			</ul>
+            <ul class="data-list tab-cont tabView_3" style="display:none;" id="researchList">
+
+            </ul>
+        </div>
+
+        <dl class="banner-list">
+            <dd class="bn1">
+                <a href="https://www.pwc.com/kr/ko/services/governance-center.html" target="_blank">
+                    <div class="subj">삼일PwC 거버넌스 센터</div>
+                    <div class="subs">최적의 기업지배구조를 향한<br/>기업의 여정에 함께 합니다.</div>
+                </a>
+            </dd>
+
+            
+
+            <dd class="bn2">
+                <a href="https://www.samilacademy.com/main/main.do" target="_blank">
+                    <div class="subj">Samil Link</div>
+                    <div class="subs">삼일 아카데미 통합플랫폼의 새이름!<br/>강사와 수강생이 함께 성장하는<br/>Collaboration Learning 플랫폼</div>
+                </a>
+            </dd>
+
+
+            <dd class="bn3">
+                <a href="https://www.pwc.com/kr/ko/career/experienced/r210203.html" target="_blank">
+                    <div class="subj">삼일 ESG 컨설턴트 채용</div>
+                    <div class="subs">인재제일을 추구하는 삼일과 함께 자신의<br/>역량을 펼쳐나갈 분들의 많은 지원 바랍니다.</div>
+                </a>
+            </dd>
+
+            <dd class="newsletter">
+                <div class="tx-a">뉴스레터 <br/>구독 신청</div>
+                <div class="btn">
+                    <a>
+                        <div class="tx">구독신청</div>
+                        <div class="arrow"><img src="/assets/img/common/letter-arrow.png"></div>
+                    </a>
+                </div>
+            </dd>
+        </dl>
+    </div>
+
+
+    <div class="mo_schedule">
+        <div class="calendar tab-wrap" data-fnc="">
+            <div class="main-commonTitA">
+                <div class="tit">ESG Calendar...</div>
+                <div class="more"><a href="/calendar/calendarView"><img src="/assets/img/common/morePlus.png"></a></div>
+            </div>
+
+            <ul class="tabList">
+                <li class="tabTit_1 btn-rd-wh"></li>
+                <li class="tabTit_2 btn-rd-wh current"></li>
+                <li class="tabTit_3 btn-rd-wh"></li>
+            </ul>
+
+            <ul class="schedule-list tab-cont" style="display:none;" id="mcdate1">
+
+
+            </ul>
+
+            <ul class="schedule-list tab-cont" id="mcdate2">
+
+
+            </ul>
+
+            <ul class="schedule-list tab-cont" style="display:none;" id="mcdate3">
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="mo_insightA">
+
+        <div class="case">
+            <div class="main-commonTitA">
+                <div class="tit">ESG 공시 기준서 해설 / 사례</span></div>
+                <div class="more">
+                    <a href="/disclosure/disclosureView?tabId=1"><img src="/assets/img/common/morePlus.png"></a>
+                </div>
+            </div>
+
+            <ul class="caseVisual">
+                <li>
+                    <a href="javascript:goDisclosureView(2);">
+                        <div class="thum"><img src="/assets/img/temp/img_18.png" alt=""></div>
+                        <div class="subj">GRI Standards</div>
+                        <div class="subs">세계적으로 통용되는 지속가능성 보고 가이드라인인 GRI에 대한 국문 번역본 및 삼일에서 작성한 해설과 사례를 확인해보세요</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(3);">
+                        <div class="thum"><img src="/assets/img/temp/img_19.png" alt=""></div>
+                        <div class="subj">ISSB</div>
+                        <div class="subs">IFRS 재단 산하의 국제 지속가능성 기준 위원회(ISSB)에서 발표한 지속가능성 공시 기준을 확인해보세요.</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(4);">
+                        <div class="thum"><img src="/assets/img/temp/img_20.png" alt=""></div>
+                        <div class="subj">CSRD/ESRS</div>
+                        <div class="subs">기존 EU 비재무 보고지침(NFRD)에서 개정 • 확대된 EU의 지속가능성 보고지침(CSRD)과 공시 기준서(ESRS)입니다.</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:goDisclosureView(7);">
+                        <div class="thum"><img src="/assets/img/temp/img_21.png" alt=""></div>
+                        <div class="subj">TNFD</div>
+                        <div class="subs">2023년 9월, 자연자본 관련 위험을 효과적으로 평가하고 관리하기 위해 발표된 자연자본 관련 공시 프레임워크입니다.</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="mo_newsletter">
+        <div class="container">
+            <div class="tx-a">뉴스레터 <br/>구독 신청</div>
+            <div class="btn">
+                <a>
+                    <div class="tx">구독신청</div>
+                    <div class="arrow"><img src="/assets/img/common/letter-arrow.png"></div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="modal-wrap modal-calendar-detail" id="calendarPopup"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">ESG 일정 정보</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                    <section class="ask-gray-box scroll-area" style="border-bottom: none">
+                        <div class="info">
+                            <ul class="list">
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">일정제목</div>
+                                        <div class="desc" dt="title"></div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">일정</div>
+                                        <div class="desc" dt="date"></div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">상세내용</div>
+                                        <div class="desc">
+                                            <div class="txtarea h412" dt="content">
+												<pre style="text-wrap: wrap;"></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label _linkUrl">URL</div>
+                                        <div class="desc">
+<!--											<a href="javascript:vodi(0);" class="line" dt="link"-->
+<!--                                                             target="_blank"></a>-->
+											<div class="btn-wrap flex _linkUrl">
+												<button type="button" class="btn-primary small _linkUrl" data-link=""><span>링크연결</span></button>
+											</div>
+										</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- //info -->
+                    </section>
+                    <!-- //gray-box -->
+                    <div class="btn-wrap ask-btn" style="border-top: 2px solid #D04A02; padding-top: 20px;">
+                        <button type="button" class="btn-primary small w170"
+                                onclick='$("#calendarPopup").removeClass("show")'><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+    <div class="modal-wrap newsletter_nlogin"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="txt">로그인 회원에 한해 뉴스레터 구독 신청이 가능합니다.</p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap flex">
+                    <button type="button" class="btn-white"><span>취소</span>
+                    </button>
+                    <button type="button" class="btn-primary" onclick="location.href='/common/join'"><span>회원가입</span>
+                    </button>
+                    <button type="button" class="btn-white" onclick="location.href='/common/login'"><span>로그인</span>
+                    </button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <div class="modal-wrap newsletter_login "><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="main-txt small">
+                        <data></data>
+                        님.<br><strong class="line"></strong>(으)로<br> 뉴스레터 구독을 신청 하시겠습니까?
+                    </p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap flex">
+                    <button type="button" class="btn-white" onclick="$('.newsletter_login').removeClass('show')"><span>취소</span>
+                    </button>
+                    <button type="button" class="btn-primary" id="newsletter_save"><span>신청</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <div class="modal-wrap newsletter_ok"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="main-txt small">
+                        <data></data>
+                        님.<br><strong class="line"></strong>(으)로 <br>뉴스레터 구독이 신청되었습니다.
+                    </p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap">
+                    <button type="button" class="btn-primary" onclick="$('.newsletter_ok').removeClass('show')">
+                        <span>확인</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <div class="modal-wrap newsletter_agree"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont agreepop">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="main-txt small">
+                        <data></data>
+                        님.<br><strong class="line"></strong>(으)로 <br>뉴스레터 구독을 신청 하시겠습니까?
+                    </p>
+                    <p class="guide-txt">뉴스레터 구독 신청을 위해서는 <br>개인정보 제3자 제공동의가 필요합니다.</p>
+                    <ul class="agree-list">
+                        <li>
+                            <div class="checkbox-wrap">
+                                <input type="checkbox" id="marketAgree">
+                                <label for="marketAgree"><span>개인정보 제3자 제공동의</span></label>
+                            </div>
+                            <a href="#" onclick="$('#popMarketingView').addClass('show');">내용보기</a>
+                        </li>
+                        <!--                        <li>-->
+                        <!--                            <div class="checkbox-wrap">-->
+                        <!--                                <input type="checkbox" id="emailAgree">-->
+                        <!--                                <label for="emailAgree"><span>이메일 수신 동의</span></label>-->
+                        <!--                            </div>-->
+                        <!--                            -->
+                        <!--                        </li>-->
+                    </ul>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap flex">
+                    <button type="button" class="btn-white" onclick="$('.newsletter_agree').removeClass('show')"><span>취소</span>
+                    </button>
+                    <button type="button" class="btn-primary" id="newsletter_agree_save"><span>신청</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <div class="modal-wrap newsletter_is"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="txt">
+                        <data></data>
+                        님은 이미 뉴스레터를 구독중인 회원입니다. 뉴스레터를 못 받고 계신 경우, 스팸함을 확인해보세요.
+                    </p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap">
+                    <button type="button" class="btn-primary" onclick="$('.newsletter_is').removeClass('show')">
+                        <span>확인</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <div class="modal-wrap newsletter_no"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">뉴스레터 구독 신청</h2>
+                    <p class="txt">개인정보 제3자 제공동의에 동의하셔야 뉴스레터 구독 신청이 가능합니다.</p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap flex">
+                    <button type="button" class="btn-primary" onclick="$('.newsletter_no').removeClass('show')">
+                        <span>확인</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <script id="tmpl_keyword" type="text/x-jquery-tmpl">
+        <li  onclick="location.href='/news-trend/page?tabId=${orderNo}'">
+            <div class="rank mar_t-8">${orderNo}위</div>
+            <div class="subj" >${name}</div>
+            <div class="graphA">
+                <div class="subject">중요도</div>
+                <div class="graphbar">
+                    <div class="graph " style="width:${pos}%;"></div>
+                </div>
+            </div>
+            <div class="subs">
+               ${title}
+            </div>
+        </li>
+    </script>
+    <script id="tmpl_date" type="text/x-jquery-tmpl">
+        <li>
+            <a href="" class="schedulePop" data-title="${title}" data-content="${constraint}" data-link="${allow}" data-etcStart="${start} {{if end}}~ ${end}{{/if}}">
+                <div class="date">${startDay}일</div>
+                <div class="subjLine">
+                    <div class="bad btn-schedule${classIdx}">${cata}</div>
+                    <div class="subj">${title}</div>
+                </div>
+            </a>
+        </li>
+    </script>
+    <script id="tmpl_insight" type="text/x-jquery-tmpl">
+        <li>
+                <a href="${linkUrl}" class="content_pop" data-kind="${contKindCd}" data-uid="${contUid}"  data-cd="${contRmthdCd}">
+                    <div class="thum"><img src="{{if imgUrl }}{{if contKindCd != "40" }}https://samilesg.blob.core.windows.net{{/if}}${imgUrl}{{else}}/assets/img/common/noimage.png{{/if}}" style="width:100%;"></div>
+                    <div class="subj">${contNm}</div>
+                    <div class="tag">
+                        <div># ${taskClsfNm}</div>
+                        {{if sbjtGbNm }}<div># ${sbjtGbNm}</div>{{/if}}
+                     {{each(i, sub) kwrdInfo}}
+                          <div># ${sub.tagKwrd}</div>
+                     {{/each}}
+                    </div>
+                </a>
+            </li>
+    </script>
+    <script id="tmpl_news" type="text/x-jquery-tmpl">
+        <a href="${linkUrl}"   class="content_pop" data-kind="${contKindCd}" data-uid="${contUid}" >
+            <div class="thum"><img src="{{if imgUrl }}{{if contKindCd != "40" }}https://samilesg.blob.core.windows.net{{/if}}${imgUrl}{{else}}/assets/img/common/noimage.png{{/if}}" style="width:100%;"></div>
+            <div class="txA">
+                <div class="subj">${contNm}</div>
+                <div class="subs">${sumry}</div>
+                <div class="date">${pblcnYy}{{if pblcnMm != ''}}.${pblcnMm}.${pblcnDd}{{/if}}</div>
+            </div>
+        </a>
+    </script>
+    <script id="tmpl_news2" type="text/x-jquery-tmpl">
+        <a href="${linkUrl}"   class="content_pop" data-kind="${contKindCd}" data-uid="${contUid}"  >
+            <div class="thum"><img src="{{if imgUrl }}{{if contKindCd != "40" }}https://samilesg.blob.core.windows.net{{/if}}${imgUrl}{{else}}/assets/img/common/noimage.png{{/if}}" style="width:100%;"></div>
+            <div class="txA">
+                <div class="subj">${contNm}</div>
+                <div class="date">${pblcnYy}{{if pblcnMm != ''}}.${pblcnMm}.${pblcnDd}{{/if}}</div>
+            </div>
+        </a>
+    </script>
+    <script id="tmpl_etc1" type="text/x-jquery-tmpl">
+        {{each(i, sub) standardList}}
+            <li><a href="${sub.linkUrl}" class="content_pop" data-kind="${sub.contKindCd}" data-uid="${sub.contUid}" data-cd="${sub.contRmthdCd}" ><span class="num">${i+1}</span>${sub.contNm}</a></li>
+        {{/each}}
+    </script>
+    <script id="tmpl_etc2" type="text/x-jquery-tmpl">
+        {{each(i, sub) researchList}}
+             <li><a href="${sub.linkUrl}" class="content_pop" data-kind="${sub.contKindCd}" data-uid="${sub.contUid}"  data-cd="${sub.contRmthdCd}"><span class="num">${i+1}</span>${sub.contNm}</a></li>
+        {{/each}}
+    </script>
+    <script id="tmpl_etc3" type="text/x-jquery-tmpl">
+        {{each(i, sub) lawList}}
+             <li><a href="${sub.linkUrl}" class="content_pop" data-kind="${sub.contKindCd}" data-uid="${sub.contUid}"  data-cd="${sub.contRmthdCd}"><span class="num">${i+1}</span>${sub.contNm}</a></li>
+        {{/each}}
+    </script>
+
+</div>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+

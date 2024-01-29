@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.intro.mapper.IntroMapper">
+
+    <!-- 접속로그 기록 -->
+    <insert id="insertAccsLog" parameterType="camelcasemap">
+        /* insertAccsLog */
+		INSERT INTO ESG_DB.ST_ACCS_LOG(
+			ACCS_URI		/* 접속URI */
+			, MBR_ID		/* 회원아이디 */
+			, SESN_ID		/* 세션아이디 */
+			, DEVICE_TP_CD	/* 디바이스유형코드 */
+			, INFLW_CHNL_CD	/* 유입채널코드 */
+			, USR_AGNT		/* 사용자에이젼트 */
+			, DEVICE_IP		/* 디바이스아이피 */
+		)VALUES(
+			#{accsUri}
+			, #{mbrId}
+			, #{sesnId}
+			, #{deviceTpCd}
+			, #{inflwChnlCd}
+			, #{usrAgnt}
+			, #{deviceIp}
+		)
+    </insert>
+
+    <!-- 세션접속로그 로그인 기록 -->
+    <insert id="insertSesnAccsLog" parameterType="camelcasemap">
+        /* insertSesnAccsLog */
+		INSERT INTO ESG_DB.ST_SESN_ACCS_LOG	<!-- 세션접속로그 -->
+		(
+			SESN_ID				<!-- 세션아이디 -->
+			, MBR_ID			<!-- 회원아이디 -->
+		)
+		VALUES(
+			#{sesnId}
+			, #{mbrId}
+		)
+    </insert>
+    
+    <!-- 세션접속로그 로그아웃 기록 -->
+    <update id="updateSesnAccsLog" parameterType="camelcasemap">
+        /* "updateSesnAccsLog" */
+	    UPDATE 
+	    	ST_SESN_ACCS_LOG			<!-- 세션접속로그 -->
+		SET 
+			LOGOUT_DT=CURRENT_TIMESTAMP	<!-- 로그아웃일 -->
+		WHERE SESN_ID=#{sesnId}			<!-- 세션아이디 -->
+		AND MBR_ID=#{mbrId}				<!-- 회원아이디 -->
+    </update>
+	
+</mapper>

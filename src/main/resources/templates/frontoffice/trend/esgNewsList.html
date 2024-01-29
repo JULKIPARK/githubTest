@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{frontoffice/layout/subwrapLayout}">
+  <th:block layout:fragment="script">
+    <script type="text/javascript">
+      $(window).on('load', function(){
+        sortVal();
+      });
+      $(function () {
+        // 화면 초기화
+        fnInitView();
+        periodEvent();
+		
+			
+	
+		// 시작 날짜와 종료 날짜를 설정하는 함수
+		function setStartDateAndEndDate(startDate, endDate) {
+			// 날짜 형식을 "YYYYMMDD"로 변환
+			var formattedStartDate = formatDate(startDate);
+			var formattedEndDate = formatDate(endDate);
+			
+			// 시작 날짜와 종료 날짜 설정
+			$('#startDate').val(formattedStartDate);
+			$('#endDate').val(formattedEndDate);
+		}
+	
+		// formatDate 함수 정의
+		function formatDate(date) {
+		    var parsedDate = new Date(date); // 문자열을 Date 객체로 변환
+		    var month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+		    var day = String(parsedDate.getDate()).padStart(2, '0');
+		    return year + month + day;
+		}
+
+
+        fnSetNewsList(0);        
+      });
+
+      function fnSetNewsList(_gbn) {
+          $.post("/trend/educationList/selectContList", {tpicMnuCd : _gbn}, function(data){
+              var trendList = data.trendList;				//최신동향 목록
+
+              $("#trendList").html("");
+              $("#tmpl_news").tmpl(trendList).appendTo("#trendList");
+          });
+      }
+
+      // 화면 초기화
+      function fnInitView() {
+      }
+
+
+      function periodEvent() {
+        $('.btn-period').daterangepicker({
+          opens: "left",
+          autoApply: true,
+          autoUpdateInput: false,
+          locale: {
+            format: "YYYY-MM-DD",
+            daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+          }
+        }, function(start, end) {
+          // 기간 선택 후 Event
+          $(".btn-period").closest('.keyword-wrap').find('button').removeClass('current');
+          // start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD")
+          $(".btn-period").addClass('current');      
+          		  
+          
+          var startDate = start.format("YYYYMMDD");
+          var endDate = end.format("YYYYMMDD");
+
+          if(startDate !== null && endDate !== null) { //시작 날짜, 종료 날짜가 반드시 있을 시 동작		  
+			  $('#startDate').val(startDate);
+			  $('#endDate').val(endDate);
+			  
+			  $('#date').val('esgpick');
+			  
+			  $('#historyForm').submit();
+		  }
+          
+              
+        });
+      }
+
+      function sortVal() {
+        const urlSearch = new URLSearchParams(location.search);
+        const sort = urlSearch.get('sort');
+
+        switch (sort) {
+			case "rd":
+				$('.sort-news-val').text('등록일 최신순');
+				break;
+          // case "pd":
+          // $('.sort-news-val').text('발간일 최신순');
+          // break;
+          case "c":
+          $('.sort-news-val').text('조회순');
+          break;
+          case "r":
+          $('.sort-news-val').text('정확도순');
+          break;        
+          default:
+          $('.sort-news-val').text('발간일 최신순');
+          break;
+        }
+      }
+    </script>
+    
+    
+<!-- konan js  -->
+<script type="text/javascript" src="/assets/js/search/search.js"></script><!-- KS Events -->
+    
+  
+  </th:block>
+
+  <div layout:fragment="content">
+    <!-- content -->
+    <section class="content btmgap content-esg-news">
+      <div class="tit-head">
+        <div class="group">
+          <h3>ESG 뉴스</h3>
+          <p class="txt">ESG 관련 최신동향 정보를 확인하실 수 있습니다.</p>
+        </div>
+        <span class="square"></span>
+      </div>
+      <div class="esg04-wrap">
+        <div class="section default-width pt60 m-hide">
+          <!--20230901 mt24 pt60으로 수정-->
+          <h4 class="tit noline">최신 뉴스</h4>
+          <div class="ctg-list current-wrap">
+            <ul class="">
+              <li><a href="javascript:fnSetNewsList(0);" class="current">전체</a></li>
+              <li><a href="javascript:fnSetNewsList(10);">환경</a></li>
+              <li><a href="javascript:fnSetNewsList(20);">사회</a></li>
+              <li><a href="javascript:fnSetNewsList(30);">거버넌스</a></li>
+              <li><a href="javascript:fnSetNewsList(40);">금융</a></li>
+              <li><a href="javascript:fnSetNewsList(999);">공시</a></li>
+            </ul>
+          </div>
+          <div class="news-wrap">
+              <ul id="trendList">
+
+              </ul>
+          </div>
+        </div>
+        
+        
+        <div class="gray-bg-wrap">
+          <div class="serch-wrap default-width">
+            <div class="total-search-inner w530">
+              <!--<form action="">-->
+			  <form id="historyForm" action="esgNewsList" method="get">
+                <!-- konan form -->
+                <input type="hidden" id="category" name="category" th:value="${params.category}" />
+				<input type="hidden" id="kwd" name="kwd" th:value="${params.kwd}" />
+				<input type="hidden" id="preKwd" name="preKwd" th:value="${params.preKwd}" />
+				<input type="hidden" id="date" name="date" th:value="${params.date}" />
+				<input type="hidden" id="startDate" name="startDate" th:value="${params.startDate}" />
+				<input type="hidden" id="endDate" name="endDate" th:value="${params.endDate}" />
+				<input type="hidden" id="originalQuery" name="originalQuery" th:value="${params.originalQuery}" />
+				<input type="hidden" id="previousQuery" name="previousQuery" th:value="${params.previousQuery}" />
+				<input type="hidden" id="categorize" name="categorize" value="true" />
+				<input type="hidden" id="page" name="page" value="0" />
+				<input type="hidden" id="pagfnInitData eSize" name="pageSize" value="${params.pageSize}" />
+				<input type="hidden" id="pageNum" name="pageNum" th:value="${params.pageNum}" />
+				<input type="hidden" id="offSet" name="offSet" th:value="${params.offSet}" />
+				<input type="hidden" id="sort" name="sort" th:value="${params.sort}" />
+				<input type="hidden" id="fields" name="fields" th:value="${params.fields}" />
+				<input type="hidden" id="nowDate" name="nowDate" th:value="${params.nowDate}" />				
+				<!--필터 -->
+				<input type="hidden" id="dmstc_yn" name="dmstc_yn" th:value="${params.dmstc_yn}" />
+				<input type="hidden" id="sply_lang_cd" name="sply_lang_cd" th:value="${params.sply_lang_cd}" />
+				<input type="hidden" id="pblcn_yy" name="pblcn_yy" th:value="${params.pblcn_yy}" />
+				<input type="hidden" id="vod_qunty_mi" name="vod_qunty_mi" th:value="${params.vod_qunty_mi}" />
+				<input type="hidden" id="sbjt_gb_nm" name="sbjt_gb_nm" th:value="${params.sbjt_gb_nm}" />
+				<input type="hidden" id="task_clsf_nm" name="task_clsf_nm" th:value="${params.task_clsf_nm}" />
+                
+                <input type="hidden" id="env" name="env" th:value="${params.env}" />
+				<input type="hidden" id="esgKwdList" name="esgKwdList" th:value="${params.esgKwdList}" />
+
+                
+                
+                
+                
+                <fieldset>
+                  <legend>통합검색</legend>
+                  <div class="total-search">
+                    <!-- 20230826 디자인 재반영 -->
+                    <div class="select-box-wrap">
+                      <button id="select_b" type="button">통합검색</button>
+                      <div class="select-list">
+                        <ul>
+                          <li><a href="javascript:void(0);" id="all" class="">통합검색</a></li>
+                          <li><a href="javascript:void(0);" id="title" class="">제목</a></li>
+                          <li><a href="javascript:void(0);" id="content" class="">내용</a></li>
+                          <li><a href="javascript:void(0);" id="src" class="">출처</a></li>
+                          <li><a href="javascript:void(0);" id="choose_kwd" class="">키워드 선택</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <!--
+                    <select>
+                      <option>통합검색</option>
+                      <option>제목</option>
+                      <option>내용</option>
+                      <option>출시</option>
+                      <option>키워드 선책</option>
+                    </select>
+                    -->
+                    <input type="text" class="txt" id="search_kwd" name="search_kwd" th:value="${params.kwd}" placeholder="검색어를 입력하세요" />
+                    <button type="button" class="btn-total-search" onclick="submitOther();"><span class="blind">검색</span></button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="period-wrap">
+              <ul class="keyword-wrap current-wrap">
+                <li><button type="button" class="btn-rd-wh" id="esg_1w" onclick="click_date(this);"><span>최근 1주일</span></button></li>
+                <li><button type="button" class="btn-rd-wh" id="esg_1m" onclick="click_date(this);"><span>1개월</span></button></li>
+                <li><button type="button" class="btn-rd-wh" id="esg_3m" onclick="click_date(this);"><span>3개월</span></button></li>
+                <li><button type="button" class="btn-rd-wh" id="esg_6m" onclick="click_date(this);"><span>6개월</span></button></li>
+                <!-- <li><input type="text" id="esgpick" placeholder="직접입력" class="datepicker btn-rd-wh" th:value="${params.endDate}" readonly="readonly" /></li> -->
+                <li><button type="button" id="esgpick" class="btn-period">직접입력</button></li>                
+              </ul>
+            </div>
+            <!-- //total-search -->
+          </div>
+          <!-- serch-wrap -->
+        </div>
+        <!-- gray-bg-wrap-->
+        <div class="result-list-wrap default-width">
+          <section class="filter-wrap" th:include="frontoffice/trend/news/esg_news_filter"></section>
+          <!-- //filter-wrap -->
+          <div class="result-list news-list">
+            <div class="result-head">
+              <div class="total">총<strong class="text-orange" th:text="${newsTotal}"></strong>건</div>
+              <div class="sorting">
+                <div class="btn-m-sort sort-news-val"></div>
+                <ul class="sorting-wrap current-wrap" style="left: 50%;">
+                  <li><button type="button" id="sort_rd" onclick="sorting('rd')"><span>등록일 최신순</span></button></li>
+                  <li><button type="button" id="sort_pd" onclick="sorting('pd')"><span>발간일 최신순</span></button></li>
+                  <li><button type="button" id="sort_c" onclick="sorting('c')"><span>조회순</span></button></li>
+                  <li id="sort_rLabel" style="display: none;"><button type="button" id="sort_r" onclick="sorting('r')"><span>정확도순</span></button></li>
+                </ul>
+              </div>
+              <button type="button" class="btn-filter">필터<img src="/assets/img/common/ico_filter.svg" alt="" /></button>
+            </div>
+            
+            <div class="thumbnail-wrap">
+              <ul class="row-list trendList">
+                <li th:each="result, status : ${newsList}">
+                  <a th:href="@{${result.link_url}}" class="content_pop" th:data-kind="${result.cont_kind_cd}" th:data-uid="${result.cont_uid}">
+                    <div class="img-wrap">
+                      <span class="thumbnail"><img th:src="${result.img_url}"/></span>
+                    </div>
+                    <div class="info-wrap">
+                      <p class="subject" th:utext="${result.cont_nm}"></p>
+                      <div class="desc" th:utext="${result.cn}"></div>
+                      <div class="info-area">
+                        <span class="writer" th:utext="${result.src_nm}"></span>
+                        
+                        <!-- 발간일 -->
+						<span class="date"
+								th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 4 }"
+								th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}"
+	          					th:text="${year}">
+						</span>
+						<span class="date"
+								th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 6 }"
+								th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+	          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}"
+																		
+	          					th:text="${year + '.' + month}">
+						</span>
+						<span class="date"
+								th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 8 }"
+								th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+	          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}, 
+	          					 		day=${#strings.substring(result.pblcn_dte, 6, 8)}"
+	          					th:text="${year + '.' + month + '.' + day}">
+						</span>
+						
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="nodata" th:if="${newsTotal == 0}">데이터가 존재하지 않습니다.</li>
+              </ul>
+            </div>
+            
+            
+			<div class="paging" th:if="${newsTotal > 0}">
+				<ul class="pagination">
+					<li class="btn first"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateFirstPage} + '); return false;'" class="page-link"><span class="blind"
+								style="display:inline;">처음</span></a></li>
+					<li class="btn prev"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.prePage-1} + '); return false;'" class="page-link"><span class="blind"
+								style="display:inline;">이전</span></a></li>				
+					<li th:each="page: ${PageInfo.navigatepageNums}" th:class="${page == PageInfo.pageNumber ? 'page-item on' : 'page-item'}">
+	                	<a th:text="${page}" href="#" th:onclick="'javascript:gotopage(' + ${page-1} + '); return false;'" class="page-link"></a>
+	            	</li>
+	
+					<li class="btn next"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.nextPage-1} + '); return false;'" class="page-link"><span class="blind"
+								style="display:inline;">다음</span></a></li>
+					<li class="btn last"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateLastPage-1} + '); return false;'" class="page-link"><span class="blind"
+								style="display:inline;">마지막</span></a></li>
+				</ul>
+			</div>
+			
+			
+			
+		
+          </div>
+          <!-- //result-list -->
+        </div>
+      </div>
+      <!-- //esg04-wrap -->
+    </section>
+    <!-- //content -->
+  </div>
+</html>

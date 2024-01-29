@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function() {
+			let moduleNm = "page";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function() {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function() {
+			let moduleNm = "list";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				var stDay = _comLib.preDay(7);
+				$("#schStrtDate").val(stDay);
+				$("#schEndDate").val(_comLib.toDay());
+
+				setEvent();
+			};
+
+			let getData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/custom/selectCsList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#csListDiv").replaceWith(fragment);
+						$("#csTotalCountView").text(
+							"총 " + _formLib.addComma($("#csTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#csPageNum').val();//현재 선택된 페이지
+						$('#csPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#csTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $(
+								"<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+									"#csTotalPage").val() + "</option>");
+							$('#csPageNum').append(option);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록일자
+				$("#searchListFrm #btnOneMonth").on("click", function() {
+					_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+					var stDay = _comLib.preMonth(1);
+					$("#schStrtDate").val(stDay);
+					$("#schEndDate").val(_comLib.toDay());
+				});
+				$("#searchListFrm #btnThreeMonth").on("click", function() {
+					_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+					var stDay = _comLib.preMonth(3);
+					$("#schStrtDate").val(stDay);
+					$("#schEndDate").val(_comLib.toDay());
+				});
+
+				// 문의유형
+				$("#searchListFrm input[name=schAskTpChk]").on("change", function() {
+					if ($(this).is(":checked")) {
+						if ($(this).val() === 'ALL') {
+							$("#searchListFrm input[name=schAskTpChk]:not([value=ALL])").prop("checked", false);
+						} else {
+							$("#searchListFrm input[name=schAskTpChk][value=ALL]").prop("checked", false);
+						}
+					}
+				}).trigger('change');
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function() {
+					// 파라메터로 넘어온 조건 값 적용
+					var params = new URLSearchParams(window.location.search);
+					var initTodayCs = params.get('initTodayCs');
+					if (initTodayCs === 'Y') {
+						// 등록일 조건을 오늘 날짜로 설정
+						$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").val(_comLib.toDay());
+					}
+					//
+					var initDetailId = params.get('initDetailId');
+					if (initDetailId) {
+						view.openPop(initDetailId);
+					}
+
+					$("#csPageNum").val('1');
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function() {
+					$("#searchListFrm").resetForm();
+					$("#searchListFrm #btnOneMonth").trigger("click");
+				});
+
+				// 데이터 페이징갯수
+				$("#csPageSize").on("change", function() {
+					$("#csPageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#csPageNum").on("change", function() {
+					getData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#csListDiv TBODY TD.askUidTd A', function() {
+					view.openPop($(this).data('id'));
+				});
+
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function() {
+			let moduleNm = "view";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function(_askUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_askUid})`);
+
+				$('#csDetailEditPopFrm').resetForm();
+
+				setData(_askUid, function() {
+					$('#csDetailEditPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				})
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 컨텐츠업로드
+				$("#csDetailEditPopFrm").on('change', 'INPUT[name=uploadFile]', function(e) {
+					var file = e.target.files[0];
+					$('#csDetailEditPopFrm INPUT[name=uploadFileName]').val(file.name);
+				});
+
+				// 저장버튼
+				$("#csDetailEditPopFrm BUTTON[name=doSave]").unbind('click').on("click", function() {
+					$(this).prop('disabled', true);
+					saveData(function() {
+						$("#csDetailEditPopFrm BUTTON[name=doSave]").prop('disabled', false);
+					});
+				});
+			};
+
+			let setData = function(_askUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_askUid})`);
+
+				getData(_askUid, function(data) {
+					var info = data.item;
+					console.log(info);
+
+					$('#askUid').val(info.askUid);		//문의채번
+					$('#ansrUid').val(info.ansrUid);	//답변채번
+					$('#askTpNm').val(info.askTpNm);
+					$('#prevAskStCd').val(info.askStCd);	//이전문의상태코드
+					if (info.askStCd === "50") {
+						$('#csDetailEditPopFrm DIV.statChgDiv').hide();
+					} else {
+						$('#csDetailEditPopFrm DIV.statChgDiv').show();
+						if (info.askStCd === "10" && info.askTpCd === "20") {
+							$('#askStCd').val("20");
+						}
+						if (info.askStCd === "10" && info.askTpCd !== "20") {
+							$('#askStCd').val("30");
+						}
+						if (info.askStCd === "20" || info.askStCd === "30" || info.askStCd === "40") {
+							$('#askStCd').val("50");
+						}
+					}
+					$('#csDetailEditPopFrm SPAN.askStNmTd')[0].innerHTML = info.askStNm;	//문의상태
+					$('#fstInsDt').val(info.fstInsDt);	//등록일
+					$('#fstInsMbrNm').val(info.fstInsMbrNm);	//등록아이디
+					$('#compNm').val(info.compNm);	//회사명
+					$('#askMail').val(info.askMail);	//문의이메일
+					$('#askTtl').val(info.askTtl);	//문의제목
+					$('#askCn').val(info.askCn);	//문의내용
+					$('#ansrCn').val(info.ansrCn);	//답변내용
+					$('#uploadFileName').val(info.atacFileFpath);
+
+					$('#ansrMemo').val(info.ansrMemo);	//답변메모
+
+					_callback();
+				});
+			};
+
+			let getData = function(_askUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_askUid})`);
+
+				var param = {
+					"url": "/sems/custom/selectViewByCsDetailEditPop"
+					, "type": "post"
+					, "data": {"askUid": _askUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#csDetailEditPopFrm")[0]);
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/custom/upsertAnsrInfoToAskUid"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						if ($('#askStCd').val() === "50") {
+							alert("저장 및 답변메일 발송에 성공하였습니다.");
+						} else {
+							alert("저장에 성공하였습니다.");
+						}
+						$("#csDetailEditPop").removeClass("show");
+						list.getData();
+						if (_callback !== undefined) _callback();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+						if (_callback !== undefined) _callback();
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function() {
+			page.init();
+			list.init();
+			view.init();
+			// regist.init();
+		});
+	</script>
+
+	<script type="text/javascript">
+
+		$(function () {
+			// 화면 초기화
+			// fnInitView();
+
+			// 이벤트 설정
+			// fnInitEvent();
+
+			// 기본 데이터 조회
+			// fnInitData();
+		});
+
+		// 화면 초기화
+		function fnInitView() {
+			_comLib.setDatePicker("schStrtDate", "schEndDate", "yy-mm-dd");
+			_comLib.setDatePicker("schEndDate", null, "yy-mm-dd");
+			setSchDate();
+		}
+
+		// 조회기간 설정
+		function setSchDate() {
+			var stDay = _comLib.preMonth($('input:radio[name=period]:checked').val());
+			$("#schStrtDate").val(stDay);
+			$("#schEndDate").val(_comLib.toDay());
+		}
+
+		// 이벤트 설정
+		function fnInitEvent() {
+			$("#btnSearch").bind("click", fnSelectCsList);	//조회
+			$("#btnReset").bind("click", fnResetSearch);		//초기화
+			$('input:radio[name=period]').bind("click", setSchDate);//조회기간변경
+
+			//페이지 사이즈 변경
+			$("#csPageSize").bind("change", function () {
+				$('#csPageNum').find('option:first').attr('selected', 'selected');//선택된 페이지 초기화
+				fnSelectCsList();	//페이지 사이즈변경
+			});
+
+			//페이지 번호 변경
+			$("#csPageNum").bind("change", fnSelectCsList);
+
+			//날짜조건 자동 생성
+			$('#btnOneMonth').bind('click', function () {
+				//todo 유틸 확인 후 작업
+			});
+			$('#btnThreeMonth').bind('click', function () {
+				//todo 유틸 확인 후 작업
+			});
+		}
+
+		// 기본 데이터 조회
+		function fnInitData() {
+			fnSelectCsList();
+		}
+
+		//목록조회
+		function fnSelectCsList() {
+			var formData, param = {};
+			formData = _formLib.getFormData("searchListFrm");
+			param = {
+				"url": "/sems/custom/selectCsList"
+				, "type": "post"
+				, "data": formData
+				, "async": false
+				, "callback": function (fragment) {
+					$("#csListDiv").replaceWith(fragment);
+					$("#csTotalCountView").text(
+						"총 " + _formLib.addComma($("#csTotalCount").val()) + "건");
+
+					//페이징처리
+					var currPage = $('#csPageNum').val();//현재 선택된 페이지
+					$('#csPageNum').empty();//페이지 option 삭제
+					for (var count = 1; count <= $("#csTotalPage").val(); count++) {
+						var selTxt = "";
+						if (count == currPage) {
+							selTxt = "selected='selected'";//현재 페이지 선택
+						}
+
+						var option = $(
+							"<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+								"#csTotalPage").val() + "</option>");
+						$('#csPageNum').append(option);
+					}
+				}
+			};
+			_comLib.callAjax(param);
+		}
+
+		//조회조건 초기화
+		function fnResetSearch() {
+			fnInitView();
+		}
+
+		//문의 검색 팝업 open
+		function fnCsDetail() {
+			alert('문의 정보 상세 open');
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+	<form id="searchListFrm">
+
+		<!-- content -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>문의 &middot; 요청 조회</h3>
+				<ul class="breadcrumb">
+					<li>고객 관리</li>
+					<li>문의사항 관리</li>
+					<li>문의 &middot; 요청 조회</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<div class="search-wrap">
+				<fieldset>
+					<legend>상세 검색</legend>
+					<div class="table-wrap">
+						<table class="inner-input">
+							<caption>문의사항 조회</caption>
+							<colgroup>
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>등록 일자</th>
+								<td>
+									<div class="date-select flex">
+										<div class="datepicker-wrap">
+											<input type="text" name="schStrtDate" id="schStrtDate" class="datepicker">
+											<span class="separator"> - </span>
+											<input type="text" name="schEndDate" id="schEndDate" class="datepicker">
+										</div>
+										<button type="button" id="btnOneMonth" class="btn_date" value="1">
+											<span>1개월</span></button>
+										<button type="button" id="btnThreeMonth" class="btn_date" value="3">
+											<span>3개월</span></button>
+									</div>
+								</td>
+								<th>처리 상태</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskStAll" value="ALL" checked="checked">
+											<label for="schAskStAll">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskSt10" value="10">
+											<label for="schAskSt10">미확인</label>
+										</li>
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskSt20" value="20">
+											<label for="schAskSt20">처리중(IT)</label>
+										</li>
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskSt30" value="30">
+											<label for="schAskSt30">처리중(Biz)</label>
+										</li>
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskSt40" value="40">
+											<label for="schAskSt40">부서전달</label>
+										</li>
+										<li>
+											<input type="radio" name="schAskStRdo" id="schAskSt50" value="50">
+											<label for="schAskSt50">완료</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>문의 유형</th>
+								<td colspan="4">
+									<ul class="flex ck-list">
+										<li>
+											<input type='checkbox' id="esgall" name='schAskTpChk' value='ALL' checked>
+											<label for='esgall'>전체</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg0" value="10">
+											<label for="esg0">삼일 서비스 제공 문의</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg1" value="20">
+											<label for="esg1">시스템 기능 &middot; 오류 문의</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg2" value="30">
+											<label for="esg2">회원 가입 &middot; 해지 문의</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg3" value="40">
+											<label for="esg3">게시 자료 문의</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg4" value="50">
+											<label for="esg4">추가 자료 요청</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg5" value="60">
+											<label for="esg5">서비스 제휴 문의</label>
+										</li>
+										<li>
+											<input type="checkbox" name="schAskTpChk" id="esg6" value="70">
+											<label for="esg6">기타</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>검색</th>
+								<td colspan="4">
+									<div class="selectinput-wrap">
+										<select name="schSrcOpt" id="schSrcOpt" class="select" title="검색기준">
+											<option value="01">제목</option>
+											<option value="02">등록자</option>
+											<option value="03">소속</option>
+										</select>
+										<input type="text" name="schSrcWrd" id="schSrcWrd" placeholder="검색 내용 입력" title="검색기준 입력">
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+					<div class="btn-wrap">
+						<button id="btnSearch" type="button" name="doSearch" class="btn-primary">조회</button>
+						<button id="btnReset" type="button" name="doInit" class="btn-sub">초기화</button>
+					</div>
+					<!-- //btn-wrap -->
+				</fieldset>
+			</div>
+			<!-- //search-wrap -->
+			<div class="result-wrap">
+				<div class="total">
+					<span class="lable">문의사항 목록</span> - <strong id="csTotalCountView">총
+					123건</strong>
+				</div>
+				<!-- total -->
+				<div class="sorting-wrap">
+					<select name="csPageSize" id="csPageSize" class="select" title="데이터 건수">
+						<option value="50">50개</option>
+						<option value="100" selected="selected">100개</option>
+					</select>
+					<select name="csPageNum" id="csPageNum" class="select" title="페이지 이동선택"> </select>
+				</div>
+				<!-- //sorting-wrap -->
+				<div id="csListDiv" class="table-wrap">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="csTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="csPageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="csTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table>
+						<caption>문의 리스트</caption>
+						<colgroup>
+							<col style="width: 10%;">
+							<col style="width: 15%;">
+							<col style="width: *;">
+							<col style="width: 10%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>등록일자</th>
+							<th>문의유형</th>
+							<th>문의 &middot; 질의 제목</th>
+							<th>등록자</th>
+							<th>소속</th>
+							<th>처리상태</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td th:text="${item.fstInsDt}">2023.07.25</td>
+							<td th:text="${item.askTpNm}" class="left">삼일 서비스 제공 문의</td>
+							<td class="left askUidTd">
+								<a th:text="${item.askTtl}" th:attr="data-id=${item.askUid}" class="link">ESG
+									경영전략 및 중장기 계획 수립 문의</a>
+							</td>
+							<td>
+								<a th:text="${item.fstInsMbrNm}" href="javascript:void(0);" class="link">홍길동</a></td>
+							<td th:text="${item.compNm}">OO 화학</td>
+							<td th:text="${item.askStNm}">미확인</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td style="text-align: center;" colspan="6">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+	</form>
+
+	<!-- 문의/답변 상세조회 popup fragment-->
+	<th:block th:replace="/backoffice/custom/cs/csDetailEditPop :: fragmentByCsDetailEditPop"></th:block>
+
+</div>
+</html>

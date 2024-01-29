@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.management.mapper.CurationMapper">
+
+	<select id="selectTpicList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			DPI.TPIC_UID
+			, DPI.TPIC_NM
+			, DPI.TPIC_GB_CD
+		    , ESG_DB.fnCommCdNm('TPIC_GB_CD', DPI.TPIC_GB_CD) AS TPIC_GB_CD_NM
+			, DPI.TPIC_MNU_CD
+			, ESG_DB.fnCommCdNm('TPIC_MNU_CD', DPI.TPIC_MNU_CD) AS TPIC_MNU_CD_NM
+			, DPI.DP_YN
+			, DPI.DP_SEQ
+		FROM
+			ESG_DB.DP_TPIC_INFO DPI
+		<where>
+			DPI.USE_YN = 'Y'
+			<!-- 검색조건 : 구분 -->
+			<if test="tpicGbCd != null and !tpicGbCd.equals('')">
+				AND DPI.TPIC_GB_CD = #{tpicGbCd}
+			</if>
+
+			<!-- 검색조건 : 메뉴 -->
+			<if test="tpicMnuCd != null and !tpicMnuCd.equals('')">
+				AND DPI.TPIC_MNU_CD = #{tpicMnuCd}
+			</if>
+		</where>
+		ORDER BY
+			DPI.DP_SEQ
+			, DPI.TPIC_NM
+	</select>
+
+	<select id="selectTpicInfo" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			DPI.TPIC_UID
+			, DPI.TPIC_GB_CD
+			, ESG_DB.fnCommCdNm('TPIC_GB_CD', DPI.TPIC_GB_CD) AS TPIC_GB_CD_NM
+			, DPI.TPIC_MNU_CD
+			, ESG_DB.fnCommCdNm('TPIC_MNU_CD', DPI.TPIC_MNU_CD) AS TPIC_MNU_CD_NM
+			, DPI.TPIC_NM
+			, DPI.DP_YN
+			, DPI.DP_SEQ
+			, FORMAT(DPI.DP_STT_DT, 'yyyy.MM.dd HH:mm') AS DP_STT_DT
+			, FORMAT(DPI.DP_END_DT, 'yyyy.MM.dd HH:mm') AS DP_END_DT
+			, DPI.PIRD_STNG_USE_YN
+			, (
+				SELECT
+					COUNT(0)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					JOIN ESG_DB.ST_CONT_INFO SCI
+						ON SCI.USE_YN = 'Y'
+						AND SCI.CONT_UID = DCTI.CONT_UID
+						AND SCI.CONT_KIND_CD IN ('10', '20', '40')
+				WHERE
+					DCTI.TPIC_UID = DPI.TPIC_UID
+			) AS CONT_TOT_CNT
+			, (
+				SELECT
+					COUNT(0)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					JOIN ESG_DB.ST_CONT_INFO SCI
+						ON SCI.USE_YN = 'Y'
+						AND SCI.CONT_UID = DCTI.CONT_UID
+						AND SCI.CONT_KIND_CD IN ('10', '20')
+						AND SCI.CONT_TP_LCLSF_CD = '10'
+				WHERE
+					DCTI.TPIC_UID = DPI.TPIC_UID
+			) AS CONT_1_CNT	/* 삼일인사이트 */
+			, (
+				SELECT
+					COUNT(0)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					JOIN ESG_DB.ST_CONT_INFO SCI
+						ON SCI.USE_YN = 'Y'
+						AND SCI.CONT_UID = DCTI.CONT_UID
+						AND SCI.CONT_KIND_CD = '40'
+						AND SCI.CONT_TP_LCLSF_CD = '60'
+				WHERE
+					DCTI.TPIC_UID = DPI.TPIC_UID
+			) AS CONT_2_CNT	/* 최신동향 */
+			, (
+				SELECT
+					COUNT(0)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					JOIN ESG_DB.ST_CONT_INFO SCI
+						ON SCI.USE_YN = 'Y'
+						AND SCI.CONT_UID = DCTI.CONT_UID
+						AND SCI.CONT_KIND_CD = '20'
+						AND SCI.CONT_TP_LCLSF_CD <![CDATA[<>]]> '10'
+				WHERE
+					DCTI.TPIC_UID = DPI.TPIC_UID
+			) AS CONT_3_CNT	/* 추천영상 */
+			, (
+				SELECT
+					COUNT(0)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					JOIN ESG_DB.ST_CONT_INFO SCI
+						ON SCI.USE_YN = 'Y'
+						AND SCI.CONT_UID = DCTI.CONT_UID
+						AND SCI.CONT_KIND_CD = '10'
+						AND SCI.CONT_TP_LCLSF_CD <![CDATA[<>]]> '10'
+				WHERE
+					DCTI.TPIC_UID = DPI.TPIC_UID
+			) AS CONT_4_CNT	/* 자료모음 */
+		FROM
+			ESG_DB.DP_TPIC_INFO DPI
+		WHERE
+			TPIC_UID = #{tpicUid}
+	</select>
+
+	<select id="selectTpicApndList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			DPAI.TPIC_UID
+			, DPAI.TPIC_TP_CD
+			, ESG_DB.fnCommCdNm('TPIC_TP_CD', DPAI.TPIC_TP_CD) AS TPIC_TP_CD_NM
+			, DPAI.SEQ_NO
+		    , DPAI.SUB_SEQ_NO
+			, DPAI.SUMRY_COMNT
+			, DPAI.APND_TTL
+			, DPAI.APND_CN
+			, DPAI.SPCAL_UID
+		FROM
+			ESG_DB.DP_TPIC_APND_INFO DPAI
+		WHERE
+			DPAI.TPIC_UID = #{tpicUid}
+		ORDER BY
+			DPAI.TPIC_TP_CD
+			, DPAI.SEQ_NO
+			, DPAI.SUB_SEQ_NO
+	</select>
+
+	<select id="selectContTpicList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			DCTI.CONT_UID
+			, DCTI.DP_YN
+			, DCTI.DP_FIX_YN
+		    , (CASE
+		        WHEN DCTI.DP_FIX_YN = 'Y' THEN N'최우선배치'
+		        ELSE N'최신순'
+			END) AS DP_FIX_YN_NM
+			, DCTI.DP_SEQ
+			, SCI.CONT_KIND_CD
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD', SCI.CONT_KIND_CD) AS CONT_KIND_CD_NM
+			, SCI.CONT_UNO
+			, SCI.CONT_NM
+			, SCI.SRC_UID
+			, SSI.SRC_NM
+		    , SCI.SPLY_LANG_CD
+			, ESG_DB.fnCommCdNm('SPLY_LANG_CD', SCI.SPLY_LANG_CD) AS SPLY_LANG_CD_NM
+			, SCI.CONT_TP_LCLSF_CD
+			, ESG_DB.fnCommCdNm('CONT_TP_LCLSF_CD', SCI.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_CD_NM
+			, SCI.CONT_TP_MCLSF_CD
+			, ESG_DB.fnCommCdNm('CONT_TP_MCLSF_CD', SCI.CONT_TP_MCLSF_CD) AS CONT_TP_MCLSF_CD_NM
+			, SCI.TASK_CLSF_CD
+			, ESG_DB.fnCommCdNm('TASK_CLSF_CD', SCI.TASK_CLSF_CD) AS TASK_CLSF_CD_NM
+			, SCI.SBJT_GB_CD
+			, ESG_DB.fnCommCdNm('SBJT_GB_CD', SCI.SBJT_GB_CD) AS SBJT_GB_CD_NM
+			, SCI.CONT_RMTHD_CD
+			, ESG_DB.fnCommCdNm('CONT_RMTHD_CD', SCI.CONT_RMTHD_CD) AS CONT_RMTHD_CD_NM
+			, SCAI.CONT_SPLY_TP_CD
+			, ESG_DB.fnCommCdNm('CONT_SPLY_TP_CD', SCAI.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_CD_NM
+		    , FORMAT(DATEADD(HOUR, 9, SCI.FST_INS_DT), 'yyyy.MM.dd') AS FST_INS_DT
+		    , FORMAT(DATEADD(HOUR, 9, SCI.LST_UPD_DT), 'yyyy.MM.dd') AS LST_UPD_DT
+			, (CASE
+				WHEN DCTI.DP_FIX_YN = 'Y' THEN DCTI.DP_SEQ
+				ELSE 9999
+			END) AS ORDER_SEQ
+		FROM
+			ESG_DB.DP_CONT_TPIC_INFO DCTI
+			JOIN ESG_DB.ST_CONT_INFO SCI
+				ON SCI.USE_YN = 'Y'
+				AND SCI.CONT_UID = DCTI.CONT_UID
+				<if test="listFilter != null and listFilter.equals('')">
+					AND SCI.CONT_KIND_CD IN ('10', '20', '40')
+				</if>
+				<if test="listFilter != null and listFilter.equals('01')">
+					AND SCI.CONT_KIND_CD IN ('10', '20')
+					AND SCI.CONT_TP_LCLSF_CD = '10'
+				</if>
+				<if test="listFilter != null and listFilter.equals('02')">
+					AND SCI.CONT_KIND_CD = '40'
+					AND SCI.CONT_TP_LCLSF_CD = '60'
+				</if>
+				<if test="listFilter != null and listFilter.equals('03')">
+					AND SCI.CONT_KIND_CD = '20'
+					AND SCI.CONT_TP_LCLSF_CD <![CDATA[<>]]> '10'
+				</if>
+				<if test="listFilter != null and listFilter.equals('04')">
+					AND SCI.CONT_KIND_CD = '10'
+					AND SCI.CONT_TP_LCLSF_CD = '20'
+				</if>
+				<if test="listFilter != null and listFilter.equals('05')">
+					AND SCI.CONT_KIND_CD = '10'
+					AND SCI.CONT_TP_LCLSF_CD = '40'
+				</if>
+				<if test="listFilter != null and listFilter.equals('06')">
+					AND SCI.CONT_KIND_CD = '10'
+					AND SCI.CONT_TP_LCLSF_CD = '30'
+				</if>
+			JOIN ESG_DB.ST_CONT_APND_INFO SCAI
+				ON SCAI.CONT_UID = SCI.CONT_UID
+			LEFT JOIN ESG_DB.ST_SRC_INFO SSI
+				ON SSI.SRC_UID = SCI.SRC_UID
+		WHERE
+			DCTI.TPIC_UID = #{tpicUid}
+		ORDER BY
+			ORDER_SEQ
+			, LST_UPD_DT DESC
+			, FST_INS_DT DESC
+	</select>
+
+	<select id="selectTpicSpecialistList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CSI.SPCAL_UID
+			, CSI.SPCAL_NM
+			, CSI.SPCAL_POS_NM
+			, CSI.SPCAL_CORP_NM
+			, CSI.SPCAL_PART_NM
+			, CSI.SPCAL_PHOTO
+		FROM
+			ESG_DB.DP_TPIC_APND_INFO DTAI
+			JOIN ESG_DB.CM_SPCAL_INFO CSI
+				ON CSI.SPCAL_UID = DTAI.SPCAL_UID
+		WHERE
+			DTAI.TPIC_TP_CD = '40'
+			AND DTAI.TPIC_UID = #{tpicUid}
+		ORDER BY
+			DTAI.SEQ_NO
+	</select>
+
+	<select id="selectTpicSpecialistAll" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CSI.SPCAL_UID
+			, CSI.SPCAL_NM
+			, CSI.SPCAL_POS_NM
+			, CSI.SPCAL_CORP_NM
+			, CSI.SPCAL_PART_NM
+			, CSI.SPCAL_PHOTO
+		FROM
+			ESG_DB.CM_SPCAL_INFO CSI
+		ORDER BY
+			CSI.SPCAL_UID DESC
+	</select>
+
+	<insert id="insertTpicInfo" parameterType="hashMap">
+		<selectKey keyProperty="tpicUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'DP_TPIC_INFO_SQ01'
+		</selectKey>
+
+		INSERT INTO ESG_DB.DP_TPIC_INFO (
+			TPIC_UID
+			, TPIC_NM
+			, TPIC_GB_CD
+			, TPIC_MNU_CD
+			, USE_YN
+			, DP_YN
+			, DP_SEQ
+			, PIRD_STNG_USE_YN
+			, FST_INS_DT
+			, FST_INS_ID
+			, LST_UPD_DT
+			, LST_UPD_ID
+		) VALUES (
+		    #{tpicUid}
+			, #{tpicNm}
+			, #{tpicGbCd}
+			, #{tpicMnuCd}
+			, 'Y'
+			, #{dpYn}
+			, #{dpSeq}
+			, 'N'
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<update id="updateTpicInfo" parameterType="hashMap">
+		UPDATE ESG_DB.DP_TPIC_INFO
+		SET
+			LST_UPD_DT = CURRENT_TIMESTAMP
+			, LST_UPD_ID = #{lstUpdId}
+			<if test="dpYn != null and !dpYn.equals('')">
+				, DP_YN = #{dpYn}
+			</if>
+			<if test="dpSeq != null and !dpSeq.equals('')">
+				, DP_SEQ = #{dpSeq}
+			</if>
+			<if test="tpicNm != null and !tpicNm.equals('')">
+				, TPIC_NM = #{tpicNm}
+			</if>
+			<if test="dpSttDt != null and !dpSttDt.equals('')">
+				, DP_STT_DT = #{dpSttDt}
+			</if>
+			<if test="dpEndDt != null and !dpEndDt.equals('')">
+				, DP_END_DT = #{dpEndDt}
+			</if>
+			<if test="pirdStngUseYn != null and !pirdStngUseYn.equals('')">
+				, PIRD_STNG_USE_YN = #{pirdStngUseYn}
+			</if>
+		WHERE
+			TPIC_UID = #{tpicUid}
+	</update>
+
+	<insert id="insertTpicApndInfo" parameterType="hashMap">
+		INSERT INTO ESG_DB.DP_TPIC_APND_INFO (
+			TPIC_UID
+			, TPIC_TP_CD
+			, SEQ_NO
+			, SUB_SEQ_NO
+			, APND_TTL
+			, APND_CN
+			, SPCAL_UID
+			, FST_INS_DT
+			, FST_INS_ID
+			, LST_UPD_DT
+			, LST_UPD_ID
+		) VALUES (
+			#{tpicUid}
+			, #{tpicTpCd}
+			, #{seqNo}
+			, #{subSeqNo}
+			, #{apndTtl}
+			, #{apndCn}
+			, #{spcalUid}
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<update id="updateTpicApndInfo" parameterType="hashMap">
+		UPDATE ESG_DB.DP_TPIC_APND_INFO
+		SET
+			LST_UPD_DT = CURRENT_TIMESTAMP
+			, LST_UPD_ID = #{lstUpdId}
+			<if test="apndTtl != null and !apndTtl.equals('')">
+				, APND_TTL = #{apndTtl}
+			</if>
+			<if test="apndCn != null and !apndCn.equals('')">
+				, APND_CN = #{apndCn}
+			</if>
+			<if test="spcalUid != null and !spcalUid.equals('')">
+				, SPCAL_UID = #{spcalUid}
+			</if>
+		WHERE
+			TPIC_UID = #{tpicUid}
+			AND TPIC_TP_CD = #{tpicTpCd}
+			AND SEQ_NO = #{seqNo}
+			AND SUB_SEQ_NO = #{subSeqNo}
+	</update>
+
+	<insert id="insertContTpicInfo" parameterType="hashMap">
+		INSERT INTO ESG_DB.DP_CONT_TPIC_INFO (
+			CONT_UID
+			, TPIC_UID
+			, DP_YN
+			, DP_SEQ
+			, DP_FIX_YN
+			, FST_INS_DT
+			, FST_INS_ID
+			, LST_UPD_DT
+			, LST_UPD_ID
+			<if test="contTpLclsfCd != null and !contTpLclsfCd.equals('')">
+			, CONT_TP_LCLSF_CD
+			</if>
+		) VALUES (
+			#{contUid}
+			, #{tpicUid}
+			, 'Y'
+			, 999
+			, 'N'
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+			<if test="contTpLclsfCd != null and !contTpLclsfCd.equals('')">
+			, #{contTpLclsfCd}
+			</if>
+		)
+	</insert>
+
+	<update id="updateContTpicInfo" parameterType="hashMap">
+		UPDATE ESG_DB.DP_CONT_TPIC_INFO
+		SET
+			LST_UPD_DT = CURRENT_TIMESTAMP
+			, LST_UPD_ID = #{lstUpdId}
+			, DP_YN = #{dpYn}
+			, DP_FIX_YN = #{dpFixYn}
+			, DP_SEQ = #{dpSeq}
+		WHERE
+			TPIC_UID = #{tpicUid}
+			AND CONT_UID = #{contUid}
+	</update>
+
+	<delete id="deleteContTpicInfo" parameterType="hashMap">
+		DELETE FROM ESG_DB.DP_CONT_TPIC_INFO
+		WHERE
+			TPIC_UID = #{tpicUid}
+			AND CONT_UID = #{contUid}
+	</delete>
+
+	<delete id="deleteTpicSpecialistInfo" parameterType="hashMap">
+		DELETE FROM ESG_DB.DP_TPIC_APND_INFO
+		WHERE
+			TPIC_UID = #{tpicUid}
+			AND TPIC_TP_CD = '40'
+	</delete>
+
+	<insert id="insertTpicSpecialistInfo" parameterType="hashMap">
+		INSERT INTO ESG_DB.DP_TPIC_APND_INFO (
+			 TPIC_UID
+			 , TPIC_TP_CD
+			 , SEQ_NO
+			 , SUB_SEQ_NO
+			 , APND_TTL
+			 , APND_CN
+			 , SPCAL_UID
+			 , FST_INS_DT
+			 , FST_INS_ID
+			 , LST_UPD_DT
+			 , LST_UPD_ID
+		) VALUES (
+			#{tpicUid}
+			, '40'
+			, (SELECT ISNULL(MAX(SEQ_NO), 0) + 1 FROM ESG_DB.DP_TPIC_APND_INFO WHERE TPIC_UID = #{tpicUid} AND TPIC_TP_CD = '40')
+			, 0
+			, ''
+			, ''
+			, #{spcalUid}
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<insert id="insertSpecialistInfo" parameterType="hashMap">
+		INSERT INTO ESG_DB.CM_SPCAL_INFO (
+			SPCAL_UID
+			, SPCAL_NM
+			, SPCAL_POS_NM
+			, SPCAL_CORP_NM
+			, SPCAL_PART_NM
+			, SPCAL_PHOTO
+			, FST_INS_DT
+			, FST_INS_ID
+			, LST_UPD_DT
+			, LST_UPD_ID
+		) VALUES (
+			(SELECT ISNULL(MAX(SPCAL_UID), 0) + 1 FROM ESG_DB.CM_SPCAL_INFO)
+			, #{spcalNm}
+			, #{spcalPosNm}
+			, #{spcalCorpNm}
+			, #{spcalPartNm}
+			, #{spcalPhoto}
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<update id="updateSpecialistInfo" parameterType="hashMap">
+		UPDATE ESG_DB.CM_SPCAL_INFO
+		SET
+			LST_UPD_DT = CURRENT_TIMESTAMP
+			, LST_UPD_ID = #{lstUpdId}
+			, SPCAL_NM = #{spcalNm}
+			, SPCAL_POS_NM = #{spcalPosNm}
+			, SPCAL_CORP_NM = #{spcalCorpNm}
+			, SPCAL_PART_NM = #{spcalPartNm}
+			<if test="spcalPhoto != null and !spcalPhoto.equals('')">
+				, SPCAL_PHOTO = #{spcalPhoto}
+			</if>
+		WHERE
+			SPCAL_UID = #{spcalUid}
+	</update>
+
+</mapper>

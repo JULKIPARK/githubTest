@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 컨텐츠 관리 > 등록 뉴스 관리 > 등록 뉴스 조회</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <div class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);" class="current">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->            
+            <!-- container -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>등록 뉴스 조회</h3>
+                    <ul class="breadcrumb">
+                        <li>컨텐츠 관리</li>
+                        <li>등록 뉴스 관리</li>
+                        <li>등록 뉴스 조회</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>컨텐츠 조회</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>회원 조회</caption>
+                                    <colgroup>
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>뉴스발간일/등록일/수정일</th>
+                                            <td>
+                                                <div class="date-select flex">
+                                                    <select name="" class="select" title="기간설정 선택">
+                                                        <option value="">기간설정 안함</option>
+                                                        <option value="">발간일</option>
+                                                        <option value="">등록일</option>
+                                                        <option value="">수정일</option>
+                                                    </select>
+                                                    <div class="datepicker-wrap">
+                                                        <input type="text" class="datepicker" disabled="disabled">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" class="datepicker" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <th>등록자/수정자</th>
+                                            <td>
+                                                <div class="selectinput-wrap">
+                                                    <select name="" class="select" title="구분 선택">
+                                                        <option value="">등록자</option>
+                                                        <option value="">수정자</option>
+                                                    </select>
+                                                    <input type="text" title="이름입력">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>뉴스 제목/내용</th>
+                                            <td>
+                                                <div class="selectinput-wrap">
+                                                    <select name="" class="select" title="뉴스 제목/내용 선택">
+                                                        <option value="">제목</option>
+                                                        <option value="">제목+내용</option>
+                                                    </select>
+                                                    <input type="text" placeholder="" title="뉴스 제목/내용">
+                                                </div>
+                                            </td>
+                                            <th><label for="number">컨텐츠 번호</label></th>
+                                            <td>
+                                                <input type="text" id="number" placeholder="" title="컨텐츠 번호">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th><label for="class01">업무 분류</label></th>
+                                            <td>
+                                                <select name="" id="class01" class="select">
+                                                    <option value="">전체</option>
+                                                    <option value="">ESG경영관리</option>
+                                                    <option value="">전략/계획</option>
+                                                    <option value="">실행</option>
+                                                    <option value="">공시</option>
+                                                    <option value="">평가</option>
+                                                </select>
+                                            </td>
+                                            <th><label for="class02">주제 분류</label></th>
+                                            <td>
+                                                <select name="" id="class02" class="select">
+                                                    <option value="">전체</option>
+                                                    <option value="">ESG일반</option>
+                                                    <option value="">환경</option>
+                                                    <option value="">사회</option>
+                                                    <option value="">거버넌스</option>
+                                                    <option value="">금융</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>                                            
+                                            <th>전시 여부</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="view" id="radio07">
+                                                        <label for="radio07">전체공개</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="view" id="radio08">
+                                                        <label for="radio08">전체공개</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="view" id="radio09">
+                                                        <label for="radio09">일부공개</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="view" id="radio10">
+                                                        <label for="radio10">비전시</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <th>일부 공개 대상</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="checkbox" name="open" id="ck01">
+                                                        <label for="ck01">그룹 A</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="open" id="ck02">
+                                                        <label for="ck02">그룹 B</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="open" id="ck03">
+                                                        <label for="ck03">그룹 C</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ESG 토픽</th>
+                                            <td>
+                                                <div class="select-group">
+                                                    <select name="" class="select" title="ESG 토픽 선택">
+                                                        <option value="">전체</option>
+                                                        <option value="">E(환경)</option>
+                                                        <option value="">S(사회)</option>
+                                                        <option value="">G(거버넌스)</option>
+                                                        <option value="">F(금융)</option>
+                                                        <option value="">공시</option>
+                                                    </select>
+                                                    <select name="" class="select" title="키워드 선택" disabled="disabled">
+                                                        <option value="">전체</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <th>검색 가능 여부</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="search" id="radio9">
+                                                        <label for="radio9">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="search" id="radi10">
+                                                        <label for="radi10">가능</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="search" id="radi11">
+                                                        <label for="radi11">불가 </label>
+                                                    </li>
+                                                </ul>
+                                            </td>                                            
+                                        </tr>
+                                        <tr>
+                                            <th><label for="txt01">태그 키워드</label></th>
+                                            <td colspan="3">
+                                                <input type="text" id="txt01" class="w100p">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="result-wrap">
+                    <div class="total">
+                        <span class="lable">컨텐츠 리스트</span> - <strong>총 123건</strong>
+                        <button type="button" class="btn-del"><span>사용중지</span></button>
+                    </div>
+                    <!-- total -->
+                    <div class="sorting-wrap">
+                        <select name="" class="select" title="데이터 건수">
+                            <option value="">20개</option>
+                            <option value="">50개</option>
+                            <option value="" selected="selected">100개</option>
+                            <option value="">500개</option>
+                            <option value="">1000개</option>
+                        </select>
+                        <select name="" class="select" title="페이지 이동선택">
+                            <option value="">1/2</option>
+                        </select>
+                        <div class="btn-ctl">
+                            <button type="button" class="btn-download">다운로드</button>
+                        </div>
+                    </div>
+                    <!-- //sorting-wrap -->
+                    <div class="table-wrap xscroll-wrap">
+                        <table class="w2300">
+                            <caption>컨텐츠 리스트</caption>
+                            <colgroup>
+                                <col style="width: 2%;">
+                                <col style="width: 3%;">
+                                <col style="width: 3%;">
+                                <col style="width: 4%;">
+                                <col style="width: 5%;">
+                                <col style="width: *;">
+                                <col style="width: 7%;">
+                                <col style="width: 5%;">
+                                <col style="width: 5%;">
+                                <col style="width: 4%;">
+                                <col style="width: 4%;">
+                                <col style="width: 4%;">
+                                <col style="width: 5%;">
+                                <col style="width: 4%;">
+                                <col style="width: 8%;">
+                                <col style="width: 5%;">
+                                <col style="width: 4%;">
+                                <col style="width: 5%;">
+                                <col style="width: 4%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>NO</th>
+                                    <th>종류</th>
+                                    <th>등록상태</th>
+                                    <th>컨텐츠 번호</th>
+                                    <th>뉴스제목</th>
+                                    <th>뉴스 발간일자</th>
+                                    <th>출처</th>
+                                    <th>작성자</th>
+                                    <th>주제분류</th>
+                                    <th>업무분류</th>
+                                    <th>전시여부</th>
+                                    <th>일부공개대상</th>
+                                    <th>검색여부</th>
+                                    <th>토픽분류</th>
+                                    <th>등록일</th>
+                                    <th>등록자</th>
+                                    <th>수정일</th>
+                                    <th>수정자</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" title="선택"></td>
+                                    <td>1</td>
+                                    <td>뉴스</td>
+                                    <td>사용중</td>
+                                    <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                    <td class="left">대한상의 ESG경영 포럼, 애그테크 관심 급부상 인증 문제 해결이 과제</td>
+                                    <td>2023-07-03 15:19:49</td>
+                                    <td>임팩트온</td>
+                                    <td>김환이</td>
+                                    <td>ESG일반</td>
+                                    <td>실행</td>
+                                    <td>일부공개</td>
+                                    <td>그룹A, 그룹B</td>
+                                    <td>가능</td>
+                                    <td>공시, 보고, EU, 지속가능</td>
+                                    <td>2023-09-20</td>
+                                    <td>정승은</td>
+                                    <td>2023-11-25</td>
+                                    <td>라리사</td>
+                                </tr>
+                                <tr>
+                                    <td class="nodata" colspan="19">nodata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+</body>
+</html>

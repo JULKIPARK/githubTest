@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function() {
+			let moduleNm = "page";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function() {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function() {
+			let moduleNm = "list";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+				getData();
+			};
+
+			let getData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var param = {};
+				param = {
+					"url": "/sems/custom/selectRoleGroupList"
+					, "type": "post"
+					, "data": {}
+					, "async": false
+					, "callback": function (fragment) {
+						const prevChecked = $('INPUT[name=roleGroupCd]:checked').val();
+						$("#roleGroupListDiv").replaceWith(fragment);
+						if (prevChecked) {
+							$('INPUT[name=roleGroupCd][value='+prevChecked+']').prop('checked', true);
+						} else {
+							$($('INPUT[name=roleGroupCd]')[0]).prop('checked', true);
+						}
+						$("#btnAppListByRoleGroupCd").trigger('click');
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let getMemberData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getMemberData`);
+
+				// #memberListDiv TABLE THEAD BUTTON.btn-sort
+				let orderCondition = "";
+				$("#memberListDiv0 TABLE THEAD BUTTON.btn-sort:not(.disabled)").each(function(idx, item) {
+					orderCondition += ((orderCondition) ? ", " : "") + $(this).data("field") + (($(this).hasClass("up")) ? " DESC" : " ASC");
+				});
+				console.log(`orderCondition = ${orderCondition}`);
+
+				var param = {};
+				param = {
+					"url": "/sems/custom/selectMemberListByMbrGbCd"
+					, "type": "post"
+					, "data": {
+						"mbrGbCd" : $('INPUT[name=roleGroupCd]:checked').val(),
+						"orderCondition" : orderCondition
+					}
+					, "async": false
+					, "callback": function (fragment) {
+						$("#memberListDiv").replaceWith(fragment);
+						$('#memberListDiv INPUT[name=curRoleGroupCd]').val($('INPUT[name=roleGroupCd]:checked').val());
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let getMemberRightData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getMemberRightData`);
+
+				var param = {};
+				param = {
+					"url": "/sems/custom/selectMemberRightByMbrGbCd"
+					, "type": "post"
+					, "data": {"mbrGbCd" : $('INPUT[name=roleGroupCd]:checked').val()}
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+
+						$("BODY TABLE.group-right.fo TBODY").empty();
+						$("BODY TABLE.group-right.bo TBODY").empty();
+						list.forEach(function(item, idx) {
+							let rights = '';
+							if ($('INPUT[name=roleGroupCd]:checked').val() === '10') {
+								rights = item.grpA;
+							} else if ($('INPUT[name=roleGroupCd]:checked').val() === '20') {
+								rights = item.grpB;
+							} else if ($('INPUT[name=roleGroupCd]:checked').val() === '30') {
+								rights = item.grpC;
+							} else if ($('INPUT[name=roleGroupCd]:checked').val() === '40') {
+								rights = item.grpD;
+							} else if ($('INPUT[name=roleGroupCd]:checked').val() === '99') {
+								rights = item.grpZ;
+							}
+
+							let apndHtml = '';
+							if (item.mnuUid.startsWith('1')) { // FO
+								apndHtml = `<td class="left"><input type="hidden" name="mnuUid" value="${item.mnuUid}">${item.mnuLv1}</td>`;
+								apndHtml += `<td class="left">${(item.mnuLv2) ? item.mnuLv2 : ''}</td>`;
+								apndHtml += `<td class="left">${(item.mnuLv3) ? item.mnuLv3 : ''}</td>`;
+								apndHtml += `<td class="center"><input type="checkbox" name="right" value="R"></td>`;
+								apndHtml = `<tr>${apndHtml}</tr>`;
+								$("BODY TABLE.group-right.fo TBODY").append(apndHtml);
+								if (rights && rights.indexOf('R') > -1) {
+									$("BODY TABLE.group-right.fo TBODY TR:last INPUT[name=right][value=R]").prop('checked', true);
+								}
+							} else if (item.mnuUid.startsWith('2')) { // BO
+								apndHtml = `<td class="left"><input type="hidden" name="mnuUid" value="${item.mnuUid}">${item.mnuLv1}</td>`;
+								apndHtml += `<td class="left">${(item.mnuLv2) ? item.mnuLv2 : ''}</td>`;
+								apndHtml += `<td class="center"><input type="checkbox" name="right" value="C"${(item.crudType.indexOf('C') == -1) ? " style='display:none'" : ""}></td>`;
+								apndHtml += `<td class="center"><input type="checkbox" name="right" value="R"${(item.crudType.indexOf('R') == -1) ? " style='display:none'" : ""}></td>`;
+								apndHtml += `<td class="center"><input type="checkbox" name="right" value="U"${(item.crudType.indexOf('U') == -1) ? " style='display:none'" : ""}></td>`;
+								apndHtml += `<td class="center"><input type="checkbox" name="right" value="D"${(item.crudType.indexOf('D') == -1) ? " style='display:none'" : ""}></td>`;
+								apndHtml = `<tr>${apndHtml}</tr>`;
+								$("BODY TABLE.group-right.bo TBODY").append(apndHtml);
+								if (rights && rights.indexOf('C') > -1) {
+									$("BODY TABLE.group-right.bo TBODY TR:last INPUT[name=right][value=C]").prop('checked', true);
+								}
+								if (rights && rights.indexOf('R') > -1) {
+									$("BODY TABLE.group-right.bo TBODY TR:last INPUT[name=right][value=R]").prop('checked', true);
+								}
+								if (rights && rights.indexOf('U') > -1) {
+									$("BODY TABLE.group-right.bo TBODY TR:last INPUT[name=right][value=U]").prop('checked', true);
+								}
+								if (rights && rights.indexOf('D') > -1) {
+									$("BODY TABLE.group-right.bo TBODY TR:last INPUT[name=right][value=D]").prop('checked', true);
+								}
+							}
+
+						})
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveMemberRightData = function(_formData) {
+				console.log(`[MODULE] ${moduleNm} -> saveMemberRightData`);
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/custom/updateMemberGroupRight"
+					, data : _formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						// alert("저장에 성공하였습니다.");
+						// $("#mainByMemberRoleChangePop").removeClass("show");
+						// list.getData();
+						// list.getMemberData();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 조회버튼
+				$("#btnAppListByRoleGroupCd").on("click", function() {
+					getMemberRightData();
+
+					$("#memberListDiv0 TABLE THEAD BUTTON.btn-sort").removeClass("up").addClass("disabled");
+					$("#memberListDiv0 TABLE THEAD BUTTON.btn-sort:eq(0)").removeClass("disabled").addClass("up");
+					getMemberData();
+
+					let curMbrGrp = $('INPUT[name=roleGroupCd]:checked').val();
+					if (curMbrGrp === '30' || curMbrGrp === '40' || curMbrGrp === '99') {
+						$("BODY INPUT[name=bofoType][value=bo]").prop('disabled', true);
+						$("BODY INPUT[name=bofoType][value=fo]").prop('checked', true).trigger('change');
+					} else {
+						$("BODY INPUT[name=bofoType][value=bo]").prop('disabled', false);
+						$("BODY INPUT[name=bofoType][value=bo]").prop('checked', true).trigger('change');
+					}
+				});
+
+				// 이동버튼
+				$("#btnMemberRoleChange").on("click", function() {
+					if ($('INPUT[name=chkItem]:checked').length === 0) {
+						alert('선택된 대상 데이터가 없습니다.');
+						return;
+					}
+					apply.openPop();
+				});
+
+				// 정렬버튼
+				$("BODY").on("click", '#memberListDiv0 TABLE THEAD BUTTON.btn-sort', function() {
+					let setS = "";
+					if ($(this).hasClass("up")) {
+						setS = "";
+					} else if ($(this).hasClass("disabled")) {
+						setS = "up";
+					} else {
+						setS = "disabled";
+					}
+					$("#memberListDiv0 TABLE THEAD BUTTON.btn-sort").removeClass("up").addClass("disabled");
+					console.log(`setS = ${setS}`);
+					$(this).removeClass("disabled").addClass(setS);
+					getMemberData();
+				});
+
+				// 회원전체선택
+				$("BODY").on('change', '#memberListDiv0 #chkAll', function() {
+					$('#memberListDiv INPUT[name=chkItem]').prop("checked", $(this).is(":checked"));
+				});
+
+				// 회원선택
+				$("BODY").on('change', '#memberListDiv INPUT[name=chkItem]', function() {
+					$('#memberListDiv #chkAll').prop('checked', ($('#memberListDiv INPUT[name=chkItem]').length == $('#memberListDiv INPUT[name=chkItem]:checked').length));
+				});
+
+				// FO/BO 타입 선택
+				$("BODY INPUT[name=bofoType]").on('change', function() {
+					$("BODY TABLE.group-right.fo").hide();
+					$("BODY TABLE.group-right.bo").hide();
+					$(`BODY TABLE.group-right.${$(this).val()}`).show();
+				});
+
+				// 권한저장
+				$("BODY").on('change', 'INPUT[name=right]', function() {
+					let mbrGbCd = $('INPUT[name=roleGroupCd]:checked').val();
+					let mnuUid = $(this).parent().parent().find('INPUT[name=mnuUid]').val();
+					let rights = '';
+					$(this).parent().parent().find('INPUT[name=right]:checked').each(function() {
+						rights += $(this).val();
+					});
+
+					var formData = new FormData();
+					formData.append("mbrGbCd", mbrGbCd);
+					formData.append("mnuUid", mnuUid);
+					formData.append("rights", rights);
+
+					let test = ""
+					saveMemberRightData(formData);
+				});
+			};
+
+			return {
+				init
+				, getData
+				, getMemberData
+			};
+		})();
+
+		/* 데이터 적용 모듈 */
+		let apply = (function() {
+			let moduleNm = "apply";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function() {
+				console.log(`[MODULE] ${moduleNm} -> openPop`);
+
+				// 현재권한그룹 Disable 처리
+				const roleGroupCd = $('#memberListDiv INPUT[name=curRoleGroupCd]').val();
+				$('#mainByMemberRoleChangePop TBODY TR').removeClass('disabled');
+				$('#mainByMemberRoleChangePop TBODY TR INPUT').prop('disabled', false);
+				$('#mainByMemberRoleChangePop TR[data-rolecd='+roleGroupCd+']').addClass('disabled');
+				$('#mainByMemberRoleChangePop TR[data-rolecd='+roleGroupCd+'] INPUT').prop('disabled', true);
+
+				const checkedValues = [];
+				$('#memberListDiv INPUT[name=chkItem]:checked').each(function() {
+					checkedValues.push($(this).val());
+				});
+				$("#mainByMemberRoleChangePopFrm INPUT[name=mbrUids]").val(checkedValues.join(","));
+
+				$('#mainByMemberRoleChangePop').addClass('show');
+				$('.dimmed').removeAttr('style');
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 저장버튼
+				$("#mainByMemberRoleChangePopFrm BUTTON[name=doSave]").unbind('click').on("click", function() {
+					if (!$('#mainByMemberRoleChangePopFrm INPUT[name=groupmove]:checked').val()) {
+						alert('이동할 대상 권한그룹을 선택해 주세요.');
+						return
+					}
+
+					saveData();
+				});
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#mainByMemberRoleChangePopFrm")[0]);
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/custom/updateMemberRoleGroup"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#mainByMemberRoleChangePop").removeClass("show");
+						list.getData();
+						list.getMemberData();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function() {
+			page.init();
+			list.init();
+			apply.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+
+	<!-- content -->
+	<section id="cont-section" class="content">
+		<div class="location">
+			<h3>권한그룹관리</h3>
+			<ul class="breadcrumb">
+				<li>고객 관리</li>
+				<li>회원 관리</li>
+				<li>권한그룹관리</li>
+			</ul>
+		</div>
+		<!-- //location -->
+		<div class="section-wrap flex">
+			<div class="section-wrap-left">
+				<section>
+					<h4 class="tit">권한 그룹 선택</h4>
+					<div class="result-wrap">
+						<!-- <div class="result-wrap"> --><!-- 20230727 중복오류로 제거-->
+						<div class="sorting-wrap">
+							<div class="btn-ctl-right">
+								<button type="button" id="btnAppListByRoleGroupCd" name="doInquiry" class="btn-default">
+									조회
+								</button>
+							</div>
+						</div>
+						<!-- //sorting-wrap -->
+						<!-- </div> --><!-- 20230727 중복오류로 제거-->
+						<div id="roleGroupListDiv" class="table-wrap">
+							<table>
+								<caption>권한 그룹 선택</caption>
+								<colgroup>
+									<col style="width: 10%;">
+									<col style="width: 12%;">
+									<col style="width: 16%;">
+									<col style="width: *;">
+									<col style="width: 18%;">
+									<col style="width: 18%;">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>선택</th>
+									<th>그룹코드</th>
+									<th>그룹명</th>
+									<th>설명</th>
+									<th>인원</th>
+									<th>수정일</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr th:each="item, stat : ${list}">
+									<!-- 선택시 class 추가 "current"  checked="checked" -->
+									<td>
+										<input type="radio" id="roleGroupCd" name="roleGroupCd" title="선택" th:value="${item.groupCd}">
+									</td>
+									<td th:text="${item.groupCd}">001</td>
+									<td th:text="${item.groupNm}">그룹 A</td>
+									<td th:text="${item.groupComt}">운영관리자</td>
+									<td th:text="${item.groupMbrCnt}">4</td>
+									<td th:text="${item.lstUpdDte}">23.09.28</td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(list)}">
+									<td class="nodata" colspan="6">데이터가 존재하지 않습니다.</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+				</section>
+				<section>
+					<h4 class="tit">그룹별 권한 조회</h4>
+					<div class="type-select">
+						<ul class="flex ck-list">
+							<li>
+								<input type="radio" id="fotype" name="bofoType" value="fo"><label for="fotype">FO화면</label>
+							</li>
+							<li>
+								<input type="radio" id="botype" name="bofoType" value="bo" checked="checked"><label for="botype">BO화면</label>
+							</li>
+						</ul>
+					</div>
+					<div class="result-wrap">
+						<form action="" style="height: 40px">
+							<fieldset>
+<!--								<legend>화면번호/명 검색</legend>-->
+<!--								<div class="sorting-wrap flex">-->
+<!--									<select name="" id="" class="select" title="메뉴lv1">-->
+<!--										<option value="">lv1전체</option>-->
+<!--									</select> <select name="" id="" class="select" title="메뉴lv2">-->
+<!--									<option value="">lv2전체</option>-->
+<!--								</select>-->
+<!--									<div class="inputbtn-wrap">-->
+<!--										<input type="text" id="affiliation" placeholder="화면번호/명 검색">-->
+<!--										<button type="button" class="btn-srch"><span class="blind">검색</span>-->
+<!--										</button>-->
+<!--									</div>-->
+<!--									<button type="button" class="btn-default">초기화</button>-->
+<!--								</div>-->
+								<!-- //sorting-wrap -->
+							</fieldset>
+						</form>
+						<div class="table-wrap">
+							<table class="group-right fo" style="display: none">
+								<caption>그룹별 권한 조회</caption>
+								<colgroup>
+									<col style="width: 20%;">
+									<col style="width: 20%;">
+									<col style="width: *;">
+									<col style="width: 20%;">
+								</colgroup>
+								<thead>
+								<tr>
+									<th rowspan="2">메뉴 lv1</th>
+									<th rowspan="2">메뉴 lv2</th>
+									<th rowspan="2">화면명</th>
+									<th>권한 유형</th>
+								</tr>
+								<tr>
+									<th>Access</th>
+								</tr>
+								</thead>
+							</table>
+							<table class="group-right bo">
+								<caption>그룹별 권한 조회</caption>
+								<colgroup>
+									<col style="width: 20%;">
+									<col style="width: *;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+								</colgroup>
+								<thead>
+								<tr>
+									<th rowspan="2">메뉴 lv1</th>
+									<th rowspan="2">메뉴 lv2</th>
+									<th colspan="4">권한 유형</th>
+								</tr>
+								<tr>
+									<th>C</th>
+									<th>R</th>
+									<th>U</th>
+									<th>D</th>
+								</tr>
+								</thead>
+							</table>
+							<div class="scroll-y1">
+								<table class="group-right fo" style="display: none">
+									<caption>그룹별 권한 조회</caption>
+									<colgroup>
+										<col style="width: 20%;">
+										<col style="width: 20%;">
+										<col style="width: *;">
+										<col style="width: 20%;">
+									</colgroup>
+									<tbody class="">
+									<tr>
+										<td class="left">화면/메뉴 관리</td>
+										<td class="left">홈화면 관리</td>
+										<td class="left">홈화면/메뉴 관리</td>
+										<td><input type="checkbox" name="right" value="R"></td>
+									</tr>
+									<tr>
+										<td class="left">화면/메뉴 관리</td>
+										<td class="left">홈화면 관리</td>
+										<td class="left">홈화면/메뉴 관리</td>
+										<td><input type="checkbox" name="right" value="R"></td>
+									</tr>
+									</tbody>
+								</table>
+								<table class="group-right bo">
+									<caption>그룹별 권한 조회</caption>
+									<colgroup>
+										<col style="width: 20%;">
+										<col style="width: *;">
+										<col style="width: 10%;">
+										<col style="width: 10%;">
+										<col style="width: 10%;">
+										<col style="width: 10%;">
+									</colgroup>
+									<tbody class="">
+									<tr>
+										<td class="left">화면/메뉴 관리</td>
+										<td class="left">홈화면 관리</td>
+										<td class="left">홈화면/메뉴 관리</td>
+										<td><input type="checkbox" name="right" value="C"></td>
+										<td><input type="checkbox" name="right" value="R"></td>
+										<td><input type="checkbox" name="right" value="U"></td>
+										<td><input type="checkbox" name="right" value="D"></td>
+									</tr>
+									<tr>
+										<td class="left">화면/메뉴 관리</td>
+										<td class="left">홈화면 관리</td>
+										<td class="left">홈화면/메뉴 관리</td>
+										<td><input type="checkbox" name="right" value="C"></td>
+										<td><input type="checkbox" name="right" value="R"></td>
+										<td><input type="checkbox" name="right" value="U"></td>
+										<td><input type="checkbox" name="right" value="D"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+				</section>
+			</div>
+			<div class="section-wrap-right">
+				<section>
+					<h4 class="tit">그룹별 회원 리스트</h4>
+					<div class="result-wrap">
+						<div class="sorting-wrap">
+							<div class="btn-ctl-right">
+								<button type="button" id="btnMemberRoleChange" class="btn-default">
+									이동
+								</button>
+							</div>
+						</div>
+						<!-- //sorting-wrap -->
+						<div id="memberListDiv0" class="table-wrap">
+							<input type="hidden" name="curRoleGroupCd" />
+							<table>
+								<caption>그룹별 회원 리스트</caption>
+								<colgroup>
+									<col style="width: 6%;">
+									<col style="width: 8%;">
+									<col style="width: *;">
+									<col style="width: 10%;">
+									<col style="width: 10%;">
+									<col style="width: 15%;">
+									<col style="width: 15%;">
+									<col style="width: 10%;">
+									<col style="width: 15%;">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>
+										<input type="checkbox" id="chkAll" name="chkAll" value="전체선택" title="선택">
+									</th>
+									<th>NO</th>
+									<th>회원번호
+										<button type="button" class="btn-sort up" data-field="MBR_UNO">
+											<span class="blind">정렬</span></button>
+									</th>
+									<th>ID</th>
+									<th>회원명</th>
+									<th>소속
+										<button type="button" class="btn-sort disabled" data-field="COPR_NM"><span class="blind">정렬</span>
+										</button>
+									</th>
+									<th>부서명
+										<button type="button" class="btn-sort disabled" data-field="DEPT_NM"><span class="blind">정렬</span>
+										</button>
+									</th>
+									<th>직급</th>
+									<th>그룹등록일
+										<button type="button" class="btn-sort disabled" data-field="LST_UPD_DTE"><span class="blind">정렬</span>
+										</button>
+									</th>
+								</tr>
+								</thead>
+							</table>
+							<div id="memberListDiv" class="scroll-y">
+								<table>
+									<caption>그룹별 회원 리스트</caption>
+									<colgroup>
+										<col style="width: 6%;">
+										<col style="width: 8%;">
+										<col style="width: *;">
+										<col style="width: 10%;">
+										<col style="width: 10%;">
+										<col style="width: 15%;">
+										<col style="width: 15%;">
+										<col style="width: 10%;">
+										<col style="width: 15%;">
+									</colgroup>
+									<tbody class="">
+									<tr th:each="item, stat : ${list}" class="">
+										<td>
+											<input type="checkbox" name="chkItem" th:value="${item.mbrUid}" title="선택">
+										</td>
+										<td th:text="${stat.count}">1</td>
+										<td th:text="${item.mbrUno}">23A000001</td>
+										<td th:text="${item.mbrId}">pesg</td>
+										<td th:text="${item.mbrNm}">김삼일</td>
+										<td th:text="${item.coprNm}">삼일PwC</td>
+										<td th:text="${item.deptNm}">ESG 플랫폼</td>
+										<td th:text="${item.posNm}">A</td>
+										<td th:text="${item.lstUpdDte}">23.09.28</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(list)}">
+										<td class="nodata" colspan="9">데이터가 존재하지 않습니다.</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+	<!-- //content -->
+
+	<!-- 권한 그룹 이동 popup fragment-->
+	<th:block th:replace="/backoffice/custom/roleGroup/memberRoleChangePop :: fragmentByMemberRoleChangePop"></th:block>
+
+</div>
+</html>

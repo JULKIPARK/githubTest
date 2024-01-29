@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+
+</th:block>
+			
+<div layout:fragment="content">
+<!-- content -->
+            <section class="content btmgap">
+                <h3 class="blind">통합검색</h3>
+                <div class="total-wrap default-width">
+                    <div class="total-search-inner">
+                        <form action="" class="">
+                            <fieldset>
+                                <legend>통합검색</legend>
+                                <div class="total-search"><!--- 20230831 수정 엑셀2. 통합검색바 내 'X'는 데이터가 입력되었을 때만 노출 수정반영 데이터 입력서 class="auto" 추가-->
+                                      <!-- 20230826 디자인 재반영 -->
+                                    <div class="select-box-wrap">
+                                        <button type="button">통합검색</button>
+                                        <div class="select-list">
+                                            <ul>
+                                                <li><a href="javascript:void(0);" class="checked">통합검색</span></a></li><!--선택시 checked-->
+                                                <li><a href="javascript:void(0);">제목</a></li>
+                                                <li><a href="javascript:void(0);">내용</a></li>
+                                                <li><a href="javascript:void(0);">출처</a></li>
+                                                <li><a href="javascript:void(0);">키워드 선택</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="txt" placeholder="검색어를 입력하세요">
+                                    <button type="button" class="btn-total-del"><span class="blind">삭제</span></button>
+                                    <button type="button" class="btn-total-search"><span class="blind">검색</span></button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <!-- //total-search -->
+                    <div class="organic-keyword">
+                        <strong class="tit">연관 검색어</strong>
+                        <ul>
+                            <li><button><span>탄소국경세</span></button></li>
+                            <li><button><span>넷제로</span></button></li>
+                            <li><button><span>기후리스크</span></button></li>
+                            <li><button><span>TCFD</span></button></li>
+                            <li><button><span>SCOPE2</span></button></li>
+                        </ul>
+                    </div>
+                    <!-- //organic-keyword -->
+                    <div class="tab-wrap default-width gap-top">
+                        <ul class="tab-list under">
+                            <li><button type="button" class="current"><span>전체 (1,234)</span></button></li>
+                            <li><button type="button" class=""><span>웹 컨텐츠 (15)</span></button></li>
+                            <li><button type="button" class=""><span>문서 (33)</span></button></li>
+                            <li><button type="button" class=""><span>뉴스 (25)</span></button></li>
+                            <li><button type="button" class=""><span>미디어 (9)</span></button></li>
+                        </ul>
+                        <div class="tab-cont">
+                            <div class="cont current">
+                                <section class="section-group">
+                                    <div class="tit-line-wrap"><h4 class="tit-line-left">웹컨텐츠</h4><span class="data">15건</span></div>
+                                    <ul class="list total-search-list">
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">ESG 실행</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="btn-more-wrap">
+                                        <button type="button" class="btn-white arrow-after"><span>관련 웹컨테츠 더보기</span></button>
+                                    </div>
+                                </section>
+                                <section class="section-group">
+                                    <div class="tit-line-wrap"><h4 class="tit-line-left">문서</h4><span class="data">15건</span></div>
+                                    <ul class="list total-search-list">
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">공시/ESG일반/GRI</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <div class="info-area">
+                                                        <span class="writer">임팩트온</span>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                    <ul class="hashtag">
+                                                        <li><span class="beage"># 공시</span></li>
+                                                        <li><span class="beage"># ESG일반</span></li>
+                                                        <li><span class="beage"># 지속가능경영</span></li>
+                                                        <li><span class="beage"># GRI</span></li>
+                                                    </ul>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">공시/ESG일반/GRI</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <div class="info-area">
+                                                        <span class="writer">임팩트온</span>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                    <ul class="hashtag">
+                                                        <li><span class="beage"># 공시</span></li>
+                                                        <li><span class="beage"># ESG일반</span></li>
+                                                        <li><span class="beage"># 지속가능경영</span></li>
+                                                        <li><span class="beage"># GRI</span></li>
+                                                    </ul>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="btn-more-wrap">
+                                        <button type="button" class="btn-white arrow-after"><span>관련 자료 더보기</span></button>
+                                    </div>
+                                </section>
+                                <section class="section-group">
+                                    <div class="tit-line-wrap"><h4 class="tit-line-left">뉴스</h4><span class="data">15건</span></div>
+                                    <div class="thumbnail-wrap">
+                                        <ul class="row-list total-search-list">     
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_10.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                    </div>
+                                                    <div class="info-wrap ">
+                                                        <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <div class="info-area">
+                                                            <span class="writer">임팩트온</span>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                        <div class="desc">국제지속가능성기준위원회(ISSB)에서 지속가능회계기준위원회(SASB) 표준을 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 </div>
+                                                    </div>
+                                                </a>
+                                            </li>     
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_10.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                    </div>
+                                                    <div class="info-wrap ">
+                                                        <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <div class="info-area">
+                                                            <span class="writer">임팩트온</span>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                        <div class="desc">국제지속가능성기준위원회(ISSB)에서 지속가능회계기준위원회(SASB) 표준을 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 </div>
+                                                    </div>
+                                                </a>
+                                            </li> 
+                                        </ul>
+                                    </div>
+                                    <div class="btn-more-wrap">
+                                        <button type="button" class="btn-white arrow-after"><span>관련 뉴스 더보기</span></button>
+                                    </div>
+                                </section>
+                                <section class="section-group">
+                                    <div class="tit-line-wrap"><h4 class="tit-line-left">미디어</h4><span class="data">15건</span></div>
+                                    <div class="thumbnail-wrap">
+                                        <ul class="list grid4">     
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                        <span class="time">01 : 20 : 24</span>
+                                                        <span class="ico-play"><i class="blind">play</i></span>
+                                                        <ul class="flag">
+                                                            <li class="newsletter">Report</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="info-wrap">
+                                                        <ul class="ctg-txt">
+                                                            <li>공시</li>
+                                                            <li>ESG 일반</li>
+                                                            <li>GRI</li>
+                                                        </ul>
+                                                        <p class="subject ellipsis">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                </a>
+                                            </li>      
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                        <span class="time">01 : 20 : 24</span>
+                                                        <span class="ico-play"><i class="blind">play</i></span>
+                                                        <ul class="flag">
+                                                            <li class="report">삼일 Pick</li>
+                                                            <li class="newsletter">Report</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="info-wrap">
+                                                        <ul class="ctg-txt">
+                                                            <li>공시</li>
+                                                            <li>ESG 일반</li>
+                                                            <li>GRI</li>
+                                                        </ul>
+                                                        <p class="subject ellipsis">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                </a>
+                                            </li>  
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                        <span class="time">01 : 20 : 24</span>
+                                                        <span class="ico-play"><i class="blind">play</i></span>
+                                                        <ul class="flag">
+                                                            <li class="Media">Media</li>
+                                                            <li class="Lesson">Lesson</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="info-wrap">
+                                                        <ul class="ctg-txt">
+                                                            <li>공시</li>
+                                                            <li>ESG 일반</li>
+                                                            <li>GRI</li>
+                                                        </ul>
+                                                        <p class="subject ellipsis">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                </a>
+                                            </li>   
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                        <span class="time">01 : 20 : 24</span>
+                                                        <span class="ico-play"><i class="blind">play</i></span>
+                                                        <ul class="flag">
+                                                            <li class="Media">Media</li>
+                                                            <li class="Lesson">Lesson</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="info-wrap">
+                                                        <ul class="ctg-txt">
+                                                            <li>공시</li>
+                                                            <li>ESG 일반</li>
+                                                            <li>GRI</li>
+                                                        </ul>
+                                                        <p class="subject ellipsis">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                        <span class="date">2023-06-30</span>
+                                                    </div>
+                                                </a>
+                                            </li>                      
+                                        </ul>
+                                    </div>
+                                    <div class="btn-more-wrap">
+                                        <button type="button" class="btn-white arrow-after"><span>관련 미디어 영상 더보기</span></button>
+                                    </div>  
+                                </section>  
+                            </div>
+                            <div class="cont">
+                                <section class="section-group">
+                                    <div class="tit-line-wrap"><h4 class="tit-line-left">웹컨텐츠</h4><span class="data">15건</span></div>
+                                    <ul class="list total-search-list">
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">ESG 실행</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">ESG 실행</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">ESG 실행</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>    
+                                            <a href="javascript:void(0);">
+                                                <div class="info-wrap">
+                                                    <p class="bul-square">ESG 실행</p>
+                                                    <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                    <p class="desc">온실가스 배출량 측정 및 개선, “온실가스 배출량” 국가 온실가스 목표관리제 및 온실가스 배출권 거래제 대응, 보고 경계와 측정 범위(Scope)의 설정 및 온실가스 배출량 측정 (Scope 1&2), Scope 3 스크리닝 및 온실가스 배출량 측정 (Scope 3)</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="paging">
+                                        <ul class="pagination">
+                                            <li class="btn first"><a href="#" class="page-link"><span class="blind" style="display:inline;">처음</span></a></li>
+                                            <li class="btn prev"><a href="#" class="page-link"><span class="blind" style="display:inline;">이전</span></a></li>
+                                            <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">4</a></li>
+                                            <li class="page-item on"><a href="#" class="page-link">5</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">6</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">7</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">8</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">9</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">10</a></li>
+                                            <li class="btn next"><a href="#" class="page-link"><span class="blind" style="display:inline;">다음</span></a></li>
+                                            <li class="btn last"><a href="#" class="page-link"><span class="blind" style="display:inline;">마지막</span></a></li>
+                                        </ul>
+                                    </div>    
+                                    <!-- //paging -->
+                                </section>
+                            </div>
+                            <div class="cont">
+                                <div class="result-list-wrap">
+                                    <section class="filter-wrap">
+                                        <h4 class="tit">필터</h4>
+                                        <button type="button" class="btn-reset"><span>초기화</span></button>                                                                         
+                                        <!-- 자료출처// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">자료출처</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck099">
+                                                                <label for="ck099">
+                                                                    <span>국내</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck100">
+                                                                <label for="ck100">
+                                                                    <span>해외</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //자료출처 -->
+                                        <!-- 언어// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">언어</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck09">
+                                                                <label for="ck09">
+                                                                    <span>국문</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck10">
+                                                                <label for="ck10">
+                                                                    <span>영문</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //언어 -->
+                                        <!-- 발간연도// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">발간연도</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck091">
+                                                                <label for="ck091">
+                                                                    <span>2023년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck101">
+                                                                <label for="ck101">
+                                                                    <span>2022년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck111">
+                                                                <label for="ck111">
+                                                                    <span>2021년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck121">
+                                                                <label for="ck121">
+                                                                    <span>2021년 이전</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //발간연도 -->                                                                           
+                                    </section>
+                                    <!-- //filter-wrap -->
+                                    <div class="result-list">
+                                        <div class="result-head">
+                                            <div class="total">문서자료<strong>100</strong>건</div>
+                                            <ul class="sorting-wrap current-wrap">
+                                                <li><button type="button" class="current"><span>등록일 최신순</span></button></li>
+                                                <li><button type="button"><span>발간일 최신순</span></button></li>
+                                                <li><button type="button"><span>조회순</span></button></li>
+                                                <li><button type="button"><span>정확도순</span></button></li>
+                                            </ul>
+                                        </div>                                    
+                                        <div class="table-wrap">
+                                            <table>
+                                                <caption>뉴스레터</caption>
+                                                <colgroup>
+                                                    <col style="width: 15%;">
+                                                    <col style="width: 50%;">
+                                                    <col style="width: 15%">
+                                                    <col style="width: 20%">
+                                                    <col style="width: 20%">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>제목</th>
+                                                        <th>출처</th>
+                                                        <th>발간일</th>
+                                                        <th>등록일</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>   
+                                                    <tr>
+                                                        <td>6</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>   
+                                                    <tr>
+                                                        <td>7</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>8</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>9</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>  
+                                                    <tr>
+                                                        <td>10</td>
+                                                        <td class="subject"><a href="javascript:void(0);" class="link ellipsis">[10월 2주차] ESG News Letter</a></td>
+                                                        <td>SASB</td>
+                                                        <td>2022.10.14</td>
+                                                        <td>2023.09.01</td>
+                                                    </tr>                                                                                                                                                                                                                                                                                          
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- paging -->
+                                        <div class="paging">
+                                            <ul class="pagination">
+                                                <li class="btn first"><a href="#" class="page-link"><span class="blind" style="display:inline;">처음</span></a></li>
+                                                <li class="btn prev"><a href="#" class="page-link"><span class="blind" style="display:inline;">이전</span></a></li>
+                                                <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">4</a></li>
+                                                <li class="page-item on"><a href="#" class="page-link">5</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">6</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">7</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">8</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">9</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">10</a></li>
+                                                <li class="btn next"><a href="#" class="page-link"><span class="blind" style="display:inline;">다음</span></a></li>
+                                                <li class="btn last"><a href="#" class="page-link"><span class="blind" style="display:inline;">마지막</span></a></li>
+                                            </ul>
+                                        </div>    
+                                        <!-- //paging -->  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cont">
+                                <div class="result-list">
+                                    <div class="result-head">
+                                        <div class="total">뉴스<strong>100</strong>건</div>
+                                        <div class="date-select">
+                                            <select name="" id="" class="select">
+                                                <option value="">모든 날짜</option>
+                                                <option value="">최근 1일</option>
+                                                <option value="">최근 1주일</option>
+                                                <option value="">최근 1개월</option>
+                                                <option value="">최근 6개월</option>
+                                                <option value="">직접설정</option>
+                                            </select>
+                                            <input type="text" placeholder="직접입력" class="datepicker" readonly="readonly">
+                                            <ul class="sorting-wrap current-wrap">
+                                                <li><button type="button" class="current"><span>등록일 최신순</span></button></li>
+                                                <li><button type="button"><span>발간일 최신순</span></button></li>
+                                                <li><button type="button"><span>조회순</span></button></li>
+                                                <li><button type="button"><span>정확도순</span></button></li>
+                                            </ul>
+                                        </div>
+                                    </div>                                    
+                                    <div class="thumbnail-wrap line">
+                                        <ul class="row-list total-search-list">     
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_10.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                    </div>
+                                                    <div class="info-wrap ">
+                                                        <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <div class="info-area">
+                                                            <span class="writer">임팩트온</span>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                        <div class="desc">국제지속가능성기준위원회(ISSB)에서 지속가능회계기준위원회(SASB) 표준을 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 </div>
+                                                    </div>
+                                                </a>
+                                            </li>     
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                    <div class="img-wrap">
+                                                        <span class="thumbnail"><img src="/assets/img/temp/img_10.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                    </div>
+                                                    <div class="info-wrap ">
+                                                        <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                        <div class="info-area">
+                                                            <span class="writer">임팩트온</span>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                        <div class="desc">국제지속가능성기준위원회(ISSB)에서 지속가능회계기준위원회(SASB) 표준을 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 국제적으로 적용하기 쉽게 개선하겠다고 지난 11일 (현지시각) 발표했다. ISSB, S3와 S4 공시기준의 우선순위 정한다ISSB는 오는 8월 9일까지 의견을 수렴해, 향후 </div>
+                                                    </div>
+                                                </a>
+                                            </li> 
+                                        </ul>
+                                    </div>
+                                    <!-- paging -->
+                                    <div class="paging">
+                                        <ul class="pagination">
+                                            <li class="btn first"><a href="#" class="page-link"><span class="blind" style="display:inline;">처음</span></a></li>
+                                            <li class="btn prev"><a href="#" class="page-link"><span class="blind" style="display:inline;">이전</span></a></li>
+                                            <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">4</a></li>
+                                            <li class="page-item on"><a href="#" class="page-link">5</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">6</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">7</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">8</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">9</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">10</a></li>
+                                            <li class="btn next"><a href="#" class="page-link"><span class="blind" style="display:inline;">다음</span></a></li>
+                                            <li class="btn last"><a href="#" class="page-link"><span class="blind" style="display:inline;">마지막</span></a></li>
+                                        </ul>
+                                    </div>    
+                                    <!-- //paging -->  
+                                </div>
+                            </div>
+                            <div class="cont">
+                                <div class="result-list-wrap">
+                                    <section class="filter-wrap">
+                                        <h4 class="tit">필터</h4>
+                                        <button type="button" class="btn-reset"><span>초기화</span></button>                                                           
+                                        <!-- 자료출처// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">자료출처</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck099">
+                                                                <label for="ck099">
+                                                                    <span>국내</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck100">
+                                                                <label for="ck100">
+                                                                    <span>해외</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //자료출처 -->
+                                        <!-- 언어// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">언어</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck09">
+                                                                <label for="ck09">
+                                                                    <span>국문</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck10">
+                                                                <label for="ck10">
+                                                                    <span>영문</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //언어 -->
+                                        <!-- 발간연도// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">발간연도</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck091">
+                                                                <label for="ck091">
+                                                                    <span>2023년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck101">
+                                                                <label for="ck101">
+                                                                    <span>2022년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck111">
+                                                                <label for="ck111">
+                                                                    <span>2021년</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck121">
+                                                                <label for="ck121">
+                                                                    <span>2021년 이전</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //발간연도 -->                                        
+                                        <!-- 영상분량// -->
+                                        <div class="filter-toggle current">
+                                            <button type="button" class="btn-ctl">영상분량</button>
+                                            <div class="filter-area">
+                                                <div class="filter-list">
+                                                    <ul class="list">
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck13a">
+                                                                <label for="ck13a">
+                                                                        <span>10분 미만</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck14a">
+                                                                <label for="ck14a">
+                                                                    <span>10분 ~ 30분</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck15a">
+                                                                <label for="ck15a">
+                                                                    <span>30분 초과</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="checkbox-wrap">
+                                                                <input type="checkbox" id="ck16a">
+                                                                <label for="ck16a">
+                                                                    <span>2021년 이전</span>
+                                                                    <span class="count">123</span>
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <!-- //ilter-list -->
+                                            </div>
+                                            <!-- //filter-area -->
+                                        </div>
+                                        <!-- //영상분량 -->                                        
+                                    </section>
+                                    <!-- //filter-wrap -->
+                                    <div class="result-list">
+                                        <div class="result-head">
+                                            <div class="total">미디어영상<strong>100</strong>건</div>
+                                            <ul class="sorting-wrap current-wrap">
+                                                <li><button type="button" class="current"><span>등록일 최신순</span></button></li>
+                                                <li><button type="button"><span>발간일 최신순</span></button></li>
+                                                <li><button type="button"><span>조회순</span></button></li>
+                                                <li><button type="button"><span>정확도순</span></button></li>
+                                            </ul>
+                                        </div>                                    
+                                        <div class="thumbnail-wrap">
+                                            <ul class="list">     
+                                                <li>
+                                                    <a href="javascript:void(0);">
+                                                        <div class="img-wrap">
+                                                            <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                            <span class="time">01 : 20 : 24</span>
+                                                            <span class="ico-play"><i class="blind">play</i></span>
+                                                            <ul class="flag">
+                                                                <li class="newsletter">Report</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="info-wrap">
+                                                            <ul class="ctg-txt">
+                                                                <li>공시</li>
+                                                                <li>ESG 일반</li>
+                                                                <li>GRI</li>
+                                                            </ul>
+                                                            <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                            <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                    </a>
+                                                </li>      
+                                                <li>
+                                                    <a href="javascript:void(0);">
+                                                        <div class="img-wrap">
+                                                            <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                            <span class="time">01 : 20 : 24</span>
+                                                            <span class="ico-play"><i class="blind">play</i></span>
+                                                            <ul class="flag">
+                                                                <li class="report">삼일 Pick</li>
+                                                                <li class="newsletter">Report</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="info-wrap">
+                                                            <ul class="ctg-txt">
+                                                                <li>공시</li>
+                                                                <li>ESG 일반</li>
+                                                                <li>GRI</li>
+                                                            </ul>
+                                                            <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                            <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                    </a>
+                                                </li>  
+                                                <li>
+                                                    <a href="javascript:void(0);">
+                                                        <div class="img-wrap">
+                                                            <span class="thumbnail"><img src="/assets/img/temp/img_09.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                                                            <span class="time">01 : 20 : 24</span>
+                                                            <span class="ico-play"><i class="blind">play</i></span>
+                                                            <ul class="flag">
+                                                                <li class="Media">Media</li>
+                                                                <li class="Lesson">Lesson</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="info-wrap">
+                                                            <ul class="ctg-txt">
+                                                                <li>공시</li>
+                                                                <li>ESG 일반</li>
+                                                                <li>GRI</li>
+                                                            </ul>
+                                                            <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                                                            <p class="n-hashtag"># GRI # 지속가능경영 # EU # 공시기준</p>
+                                                            <span class="date">2023-06-30</span>
+                                                        </div>
+                                                    </a>
+                                                </li>                        
+                                            </ul>
+                                        </div> 
+                                        <!-- paging -->
+                                        <div class="paging">
+                                            <ul class="pagination">
+                                                <li class="btn first"><a href="#" class="page-link"><span class="blind" style="display:inline;">처음</span></a></li>
+                                                <li class="btn prev"><a href="#" class="page-link"><span class="blind" style="display:inline;">이전</span></a></li>
+                                                <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">4</a></li>
+                                                <li class="page-item on"><a href="#" class="page-link">5</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">6</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">7</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">8</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">9</a></li>
+                                                <li class="page-item"><a href="#" class="page-link">10</a></li>
+                                                <li class="btn next"><a href="#" class="page-link"><span class="blind" style="display:inline;">다음</span></a></li>
+                                                <li class="btn last"><a href="#" class="page-link"><span class="blind" style="display:inline;">마지막</span></a></li>
+                                            </ul>
+                                        </div>    
+                                        <!-- //paging -->  
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <!-- //tab-cont -->
+                    </div>
+                    <!-- //tab-wrap -->
+                </div>
+            </section>
+</div>
+</html>

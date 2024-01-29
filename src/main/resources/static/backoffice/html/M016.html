@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 회원통계(고객 현황 대시보드) </title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+    <script type="text/javascript" src="../js/chart.js"></script>
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <!-- container -->
+        <section class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1 current">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- content -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>고객현황 대시보드</h3>
+                    <ul class="breadcrumb">
+                        <li>고객 관리</li>
+                        <li>회원통계</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="section-wrap flex half-wrap">
+                    <section class="section-wrap-left">
+                        <div class="tit-wrap">
+                            <h4 class="tit">회원 현황</h4>
+                            <p class="date">기준일시: 2023-08-24 목요일 ##:## </p>
+                        </div>
+                        <ul class="statistical">
+                            <li>
+                                <div>
+                                    <span class="label">월평균 방문자</span>
+                                    <span class="small">(최근1년)</span>
+                                </div>
+                                <div class="data-wrap">
+                                    <strong>2,312</strong><span class="unit">명</span>
+                                    <span class="up"><i class="blind">증가</i>415</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="label">누적 가입자</span>
+                                </div>
+                                <div class="data-wrap">
+                                    <strong>3,312</strong><span class="unit">명</span>
+                                    <span class="down"><i class="blind">감소</i>15</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="label">월평균 문의 건</span>
+                                    <span>(최근1년)</span>
+                                </div>
+                                <div class="data-wrap">
+                                    <strong>125</strong><span class="unit">건</span>
+                                    <span class="up"><i class="blind">증가</i>45</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <p class="data-info">※ 산업분류는 GICS 기준 참고. (<span class="direction">▲</span>숫자) 금일 증가 수량 </p>
+                        <div class="table-wrap black-table">
+                            <table>
+                                <caption>회원 현황 리스트</caption>
+                                <colgroup>
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>일자</th>
+                                        <th>방문</th>
+                                        <th>가입</th>
+                                        <th>문의</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="scroll-y">
+                                <table>
+                                    <caption>회원 현황 리스트</caption>
+                                    <colgroup>
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr class="main">
+                                            <td class="date">최근 1개월</td>
+                                            <td>2,312</td>
+                                            <td>1,045</td>
+                                            <td>65</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="date">23-10-10</td>
+                                            <td>193</td>
+                                            <td>45</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="date">23-10-10</td>
+                                            <td>193</td>
+                                            <td>45</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="date">23-10-10</td>
+                                            <td>193</td>
+                                            <td>45</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="date">23-10-10</td>
+                                            <td>193</td>
+                                            <td>45</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="date">23-10-10</td>
+                                            <td>193</td>
+                                            <td>45</td>
+                                            <td>6</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- //table-wrap -->
+                    </section>
+                    <section class="section-wrap-right">
+                        <div class="tit-wrap">
+                            <h4 class="tit">산업별 회원</h4>
+                            <p class="date">기준일시: 2023-08-24 목요일 ##:##</p>
+                        </div>
+                        <ol class="ranking">
+                            <li>
+                                <strong> 1위. 유통</strong>
+                                <div class="data-wrap">
+                                    <strong>2,312</strong><span class="unit">명</span>
+                                    <span class="up"><i class="blind">증가</i>415</span>
+                                </div>
+                            </li>
+                            <li>
+                                <strong> 2위. 제조 </strong>
+                                <div class="data-wrap">
+                                    <strong>2,312</strong><span class="unit">명</span>
+                                    <span class="up"><i class="blind">증가</i>415</span>
+                                </div>
+                            </li>
+                            <li>
+                                <strong> 3위. 금융</strong>
+                                <div class="data-wrap">
+                                    <strong>2,312</strong><span class="unit">명</span>
+                                    <span class="up"><i class="blind">증가</i>415</span>
+                                </div>
+                            </li>
+                        </ol>
+                        <p class="data-info">※ 산업분류는 GICS 기준 참고. (<span class="direction">▲</span>숫자) 금일 증가 수량 </p>
+                        <div class="chart-wrap">
+                            <p class="chart-label">※ 진단수행: 총 #,###명</p>
+                            <div class="chart-wrap">
+                                <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+    <script>
+        const xValues = ["유통", "제조", "금융", "에너지", "석유", "화학","의료", "공공", "서비스", "IT", "자동차"];
+        const yValues = [10, 10, 10, 10, 10, 10, 10, 10, 10, 5, 5];
+        const barColors = [
+          "#d04a02",
+          "#ffb600",
+          "#e0301e",
+          "#eb8c00",
+          "#db536a",
+          "#464646",
+          "#7d2c01",
+          "#996d00",
+          "#861d12",
+          "#8d5400",
+          "#961f33",
+        ];
+        
+        new Chart("myChart", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+                }]
+            } 
+        });
+        </script>
+</body>
+</html>

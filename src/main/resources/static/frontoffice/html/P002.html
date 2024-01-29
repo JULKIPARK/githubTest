@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG - ESG 경영 자가진단 개요</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-a pp-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/pwc.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#container">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">ESG 경영 자가진단</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                    <div class="esg01-wrap">
+                        <div class="progress-wrap">
+                            <ol>
+                                <li class="current"><strong><i></i>01. 기본 정보 입력</strong></li><!-- 해당 단계에 current -->
+                                <li><strong><i></i>02. ESG 전략 계획</strong></li>
+                                <li><strong><i></i>03. ESG 과제 이행</strong></li>
+                                <li><strong><i></i>04. 공시・인증</strong></li>
+                            </ol>
+                        </div>
+                        <!-- //progress-wrap --> 
+                        <!-- 기본 정보 입력 -->
+                        <div class="question-wrap">
+                            <div class="head">
+                                안녕하세요, [삼일전기] ESG 담당자님,<br> ESG 경영 자가진단에 앞서, 보다 상세한 진단 결과의 제공을 위해 아래의 기본 정보를 입력해주세요.
+                            </div>
+                            <ol class="list-wrap">
+                                <li class="question-list">
+                                    <p class="question">01. 귀사의 업종은 무엇입니까? (매출의 가장 많은 비중을 차지하는 활동을 기준으로 응답해주세요.)</p>
+                                    <label for="question01" class="label">업종 분류 선택</label>
+                                    <div class="select-flex"><!-- 20230821 추가 -->
+                                        <select name="" id="question01" class="select">
+                                            <option value="">대분류 선택</option>
+                                        </select>
+                                        <select name="" id="" class="select">
+                                            <option value="">중분류 선택</option>
+                                        </select>
+                                        <select name="" id="" class="select">
+                                            <option value="">소분류 선택</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li class="question-list">
+                                    <p class="question">02. 귀사의 규모는 어느 정도 입니까? (매출액 기준)</p>
+                                    <label for="question02" class="label">매출액</label>
+                                    <div class="select-flex"> <!-- 20230821 추가 -->
+                                        <select name="question02" id="" class="select">
+                                            <option value="">선택</option>
+                                        </select>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                        <!-- 전략계획 -->
+                        <div class="question-wrap hide"><!-- 노출시 hide 제거 -->
+                            <ul class="category ">
+                                <li>ESG 진단 ∙ 계획</li>
+                                <li>ESG 경영 자가진단</li>
+                            </ul>
+                            <ol class="list-wrap">
+                                <li class="question-list">
+                                    <p class="question">01. 귀사는 ESG 경영에 대한 전사 비전과 전략 방향성을 수립하였습니까?</p>
+                                    <ul class="box-radio-wrap">
+                                        <li>
+                                            <input type="radio" id="ck01"  name="ck1" checked="checked">
+                                            <label for="ck01"><span>예</span></label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="ck02"  name="ck1">
+                                            <label for="ck02"><span>아니오</span></label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-list">
+                                    <p class="question">02. 귀사는 전사 ESG 비전과 전략 방향성을 구체화하기 위해 단계별 목표 및 세부 계획을 수립하여 공개하고 있습니까?</p>
+                                    <ul class="box-radio-wrap">
+                                        <li>
+                                            <input type="radio" id="ck03" name="ck2" checked="checked">
+                                            <label for="ck03"><span>예</span></label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="ck04"  name="ck2">
+                                            <label for="ck04"><span>아니오</span></label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-list">
+                                    <p class="question">03. 귀사는 중대성평가를 시행하여 ESG 기회와 위기요인을 바탕으로 주요 이슈 영역을 선정하고, 이에 대한 실행 과제 및 계획을 수립하고 있습니까?
+                                    </p>
+                                    <ul class="box-radio-wrap">
+                                        <li>
+                                            <input type="radio" id="ck05" name="ck3" checked="checked">
+                                            <label for="ck05"><span>예</span></label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="ck06"  name="ck3">
+                                            <label for="ck06"><span>아니오</span></label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-list">
+                                    <p class="question">04. 귀사는 주요 ESG 이슈 또는 관리 영역별 ESG 정책과 지침을 수립하였습니까?</p>
+                                    <ul class="box-radio-wrap">
+                                        <li>
+                                            <input type="radio" id="ck07" name="ck4" checked="checked">
+                                            <label for="ck07"><span>예</span></label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="ck08"  name="ck4">
+                                            <label for="ck08"><span>아니오</span></label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-list">
+                                    <p class="question">05. 귀사는 ESG 위험을 인식, 측정, 평가, 모니터링, 경감, 보고하기 위한 관리체계(정책, 프로세스, 역할과 책임 등) 를 수립하고 있습니까?</p>
+                                    <ul class="box-radio-wrap">
+                                        <li>
+                                            <input type="radio" id="ck09" name="ck5" checked="checked">
+                                            <label for="ck09"><span>예</span></label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="ck10"  name="ck5">
+                                            <label for="ck10"><span>아니오</span></label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>                        
+                        <div class="btn-wrap ">
+                            <!-- <button type="button" class="btn-white small arrow"><span>이전</span></button> --> <!-- 전략계획일때 주석제거 버튼노출 -->
+                            <button type="button" class="btn-primary small arrow disabled"><span>다음</span></button> <!-- 전략계획일때 disabled 제거 -->
+                        </div>
+                        <!-- 전략계획일때// -->
+                        <!-- <div class="btn-wrap ">
+                            <button type="button" class="btn-white small arrow"><span>이전</span></button>
+                            <button type="button" class="btn-primary small arrow"><span>다음</span></button>
+                        </div> -->
+                        <!-- //전략계획일때 -->
+                    </div>
+                     <!-- //esg01-wrap -->
+                </div>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->     
+</body>
+</html>

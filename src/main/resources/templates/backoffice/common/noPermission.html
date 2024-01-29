@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/blankLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		alert('사용 권한이 없습니다.');
+		history.back();
+	</script>
+</th:block>
+
+</html>

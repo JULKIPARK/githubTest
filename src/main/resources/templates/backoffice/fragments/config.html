@@ -1,0 +1,41 @@
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<!--configFragment 선언-->
+<th:block th:fragment="configFragment">
+    <!-- common css -->
+    <link rel="stylesheet" th:href="@{/sems/assets/css/fonts.css}"/>
+    <link rel="stylesheet" th:href="@{/sems/assets/css/common.css}"/>
+    <link rel="stylesheet" th:href="@{/sems/assets/css/jquery-ui.datepicker.min.css}"/>
+    <link rel="stylesheet" th:href="@{/sems/assets/css/pwcadmin.css}"/>
+
+    <!-- common script -->
+    <script th:src="@{/sems/assets/js/jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/sems/assets/js/jquery.form.js}"></script>
+    <script th:src="@{/sems/assets/js/jquery-ui.datepicker.min.js}"></script>
+    <script th:src="@{/sems/assets/js/common.js}"></script>
+    <script th:src="@{/sems/assets/js/jquery.twbsPagination.min.js}"></script>
+    <script th:src="@{/sems/assets/js/com.js}"></script>
+    <script th:src="@{/sems/assets/js/form.js}"></script>
+	<script th:src="@{/sems/assets/js/jquery.tmpl.js}"></script>
+	<script th:src="@{/sems/assets/js/chart.js}"></script>
+
+	<!-- code mirror -->
+	<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ace.min.js'></script>
+	<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+
+    <!-- content page css fragment -->
+    <th:block layout:fragment="css"></th:block>
+
+    <!-- content page script fragment-->
+    <th:block layout:fragment="script">
+    </th:block>
+    <script>
+        $(function () {
+            // URL 경로를 기준으로 현재 메뉴를 Highlight
+            var _path = window.location.pathname;
+            $("#nav a[href='" + _path + "']").addClass('current');
+        });
+    </script>
+</th:block>
+</html>

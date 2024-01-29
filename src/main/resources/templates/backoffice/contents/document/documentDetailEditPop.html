@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<!-- detail form -->
+<th:block th:fragment="documentDetailEditPopFragment">
+	<script type="text/javascript">
+		/* 출처 리스트 모듈 */
+		let srcList = (function() {
+			let moduleNm = "srcList";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 검색버튼
+				$('#mainBySrcSearchPop BUTTON[name=doSearch]').on('click', function() {
+					setData(true, function() {});
+				});
+
+				// 컨텐츠등록 버튼
+				$("#mainBySrcSearchPop BUTTON[name=doAddSrc]").on('click', function() {
+					srcRegist.openPop();
+				});
+
+				// 페이징사이즈
+				$('#mainBySrcSearchPop SELECT[name=optPageSizeSrcSearchPop]').on('change', function() {
+					setData(true, function() {});
+				});
+
+				// 페이지변경
+				$('#mainBySrcSearchPop SELECT[name=optPageNumSrcSearchPop]').on('change', function() {
+					setData(false, function() {});
+				});
+
+				// 데이터 선택
+				$('#mainBySrcSearchPop').on('click', '#divSrcSearchPopList TBODY TD.srcTd A', function() {
+					$('#docForm INPUT[name=srcUid]').val($(this).data('srcuid'));
+					$('#docForm INPUT[name=srcNm]').val($(this).data('srcnm'));
+					$('#docForm INPUT[name=dmstcYn]').val($(this).data('dmstcyn'));
+					$('#docForm INPUT[name=dmstcYnNm]').val($(this).data('dmstcynnm'));
+
+					$('#mainBySrcSearchPop').removeClass('show');
+				});
+			};
+
+			let openPop = function() {
+				console.log(`[MODULE] ${moduleNm} -> openPop`);
+
+				$('#mainBySrcSearchPop #frmBySrcSearchPop').resetForm();
+
+				setData(true, function() {
+					$("#mainBySrcSearchPop").css("zIndex", 901);
+					$('#mainBySrcSearchPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				});
+			};
+
+			let setData = function(_isInit, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+
+				getData(_isInit, function(fragment) {
+					$("#mainBySrcSearchPop #divSrcSearchPopList").replaceWith(fragment);
+
+					// 초기실행일 경우
+					if (_isInit) {
+						var currPage = 1;//현재 선택된 페이지
+						for (var count = 1; count <= $("#totalPageSrcSearchPop").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#totalPageSrcSearchPop").val() + "</option>");
+							$('#optPageNumSrcSearchPop').append(option);
+						}
+					} else {
+
+					}
+
+					_callback();
+				});
+			};
+
+			let getData = function(_isInit, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				if (_isInit) {
+					$('#mainBySrcSearchPop #optPageNumSrcSearchPop').empty();	//페이지 option 삭제
+				}
+				formData = _formLib.getFormData("frmBySrcSearchPop");
+
+				$("#mainBySrcSearchPop DIV.result-wrap").LoadingOverlay("show");
+				var param = {
+					"url": "/sems/contents/selectSrcSearchPopList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						_callback(fragment);
+						$("#mainBySrcSearchPop DIV.result-wrap").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			return {
+				init
+				, openPop
+				, setData
+			};
+		})();
+
+		/* 데이터 입력 모듈 */
+		let srcRegist = (function() {
+			let moduleNm = "srcRegist";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록버튼
+				$("#frmBySrcUpsertPopBySrcList BUTTON[name=doRegist]").on("click", function() {
+					// 출처명
+					if ($('#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]').val() === '') {
+						alert('출처명을 입력해 주세요.');
+						$('#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]').focus();
+						return;
+					}
+
+					saveData();
+				});
+			};
+
+			let openPop = function() {
+				console.log(`[MODULE] ${moduleNm} -> openPop`);
+
+				$("#frmBySrcUpsertPopBySrcList").resetForm();
+				$("#mainBySrcUpsertPopBySrcList").addClass("show");
+				$("#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]").focus();
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#frmBySrcUpsertPopBySrcList")[0]);
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/contents/insertSrcView"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#mainBySrcUpsertPopBySrcList").removeClass("show");
+						$("#optPageNumSrcSearchPop").val('1');
+						srcList.setData(true, function() {});
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function() {
+			srcList.init();
+			srcRegist.init();
+		});
+	</script>
+
+	<!-- modal-wrap -->
+	<div id="viewPopContents" class="modal-wrap">
+		<div class="dimmed"></div>
+		<!-- Template -->
+		<template id="docContHtml">
+			<th>
+				컨텐츠 업로드<span class='required'><i class='blind'>필수입력</i></span>
+			</th>
+			<td>
+				<div class='fileUpload'>
+					<input type='text' name="uploadFileName" class='url' placeholder='컨텐츠 파일' readonly style="background-color: #fff;">
+					<label for='uploadFile'>파일 선택</label>
+					<input type='file' name='uploadFile' id='uploadFile' class='upload' accept="application/pdf, application/epub+zip, application/zip">
+				</div>
+				<div class='fileUpload pdf' style="margin-top: 5px; display: none">
+					<input type='text' name="uploadPdfFileName" class='url' placeholder='PDF 파일' readonly style="background-color: #fff;">
+					<label for='uploadPdfFile'>파일 선택</label>
+					<input type='file' name='uploadPdfFile' id='uploadPdfFile' class='upload' accept="application/pdf">
+				</div>
+			</td>
+			<th><label for='txt01'>제공형태</label></th>
+			<td>
+				<input type='hidden' name='contSplyTpCd'>
+				<input type='text' name='contSplyTpCdNm' readonly>
+			</td>
+			<th><label for='txt02'>페이지 수</label></th>
+			<td>
+				<input type='text' name='pageCnt' id='txt02' readonly>
+			</td>
+		</template>
+		<template id="docLinkHtml">
+			<th>
+				<label for='txt03'>링크(URL)<span class='required'><i class='blind'>필수입력</i></span></label>
+			</th>
+			<td colspan='5'>
+				<input type='text' name='linkUrl' id='txt03' class='w100p'>
+			</td>
+		</template>
+		<template id="vodContHtml">
+			<th>
+				컨텐츠 업로드<span class='required'><i class='blind'>필수입력</i></span>
+			</th>
+			<td>
+				<div class='fileUpload'>
+					<input type='text' name="uploadFileName" class='url' placeholder='' readonly style="background-color: #fff;">
+					<label for='uploadFile'>파일 선택</label>
+					<input type='file' name='uploadFile' id='uploadFile' class='upload' accept="video/mp4">
+				</div>
+			</td>
+			<th><label for='txt04'>제공형태</label></th>
+			<td>
+				<input type='hidden' name='contSplyTpCd'>
+				<input type='text' name='contSplyTpCdNm' readonly>
+			</td>
+			<th>영상분량</th>
+			<td>
+				<div class='time-wrap flex'>
+					<video id="videoPlayer" preload="metadata" style="display: none;"></video>
+					<input type='text' name='vodQuntyHh' placeholder='HH' class='time' title='시간' readonly>:
+					<input type='text' name='vodQuntyMi' placeholder='MM' class='time' title='분' readonly>:
+					<input type='text' name='vodQuntySec' placeholder='SS' class='time' title='초' readonly>
+				</div>
+			</td>
+		</template>
+		<template id="vodEmbedHtml">
+			<th>
+				<label for='txt05'>소스코드(URL)<span class='required'><i class='blind'>필수입력</i></span></label>
+			</th>
+			<td colspan='3'>
+				<div class='url-area flex'>
+					<input type='text' id='txt05' name='linkUrl'>
+					<button type='button' name="doPreview" class='btn-play'><span>미리보기</span></button>
+				</div>
+			</td>
+			<th>영상분량</th>
+			<td>
+				<div class='time-wrap flex'>
+					<input type='text' name='vodQuntyHh' value='HH' class='time' title='시간'>:
+					<input type='text' name='vodQuntyMi' value='MM' class='time' title='분'>:
+					<input type='text' name='vodQuntySec' value='SS' class='time' title='초'>
+				</div>
+			</td>
+		</template>
+		<template id="onePointLessonHtml">
+			<tr>
+				<td class=''>
+					<input type="hidden" name="seqNos">
+					<input type="text" name='lesnNms' title='레슨명'>
+				</td>
+				<td class=''>
+					<div>영상 파일 :</div>
+					<div class="fileUpload flex" style="align-items: center; margin-top: 5px;">
+						<input type="text" name="uploadFilesName" class="url" placeholder="" readonly="" style="background-color: #fff;">
+						<label class="uploadFiles">파일 선택</label>
+						<input type="file" name="uploadFiles" class="upload" accept="video/mp4">
+						<div class='time-wrap' style="margin-left: 10px">
+							<input type='text' name='vodQuntyHhs' placeholder='HH' class='time' title='시간' readonly>:
+							<input type='text' name='vodQuntyMis' placeholder='MM' class='time' title='분' readonly>:
+							<input type='text' name='vodQuntySecs' placeholder='SS' class='time' title='초' readonly>
+						</div>
+					</div>
+
+					<div style="margin-top: 20px">대표 이미지 :</div>
+					<div class="thum-upload-wrap flex" style=" margin-top: 5px;">
+						<div class="thumbnail" style="width: 230px; height: 130px">
+							<img class="previewImage" name="previewImages" src="/sems/assets/img/common/noimage.png" alt="대표 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+						</div>
+						<div class="btn-upload-wrap">
+							<button type="button" name="doUploadImages" class="btn-upload"><span>이미지 업로드</span></button>
+						</div>
+						<input type="file" name="uploadImages" accept="image/*" style="display:none;">
+					</div>
+				</td>
+				<td class=''>
+					<div class="wrap">
+						<input type="hidden" name="vodComnts">
+						<div class="select-group" style="margin-bottom: 5px">
+							<div style="text-align: center; line-height: 200%;">
+								<select name="depth" class="select">
+									<option value="1">Lv1</option>
+									<option value="2">Lv2</option>
+								</select>
+								<button name="doDelCont" style="color: darkred;">[삭제]</button>
+							</div>
+							<textarea name='vodComntsTmp' cols='' rows=''></textarea>
+						</div>
+					</div>
+					<div class='btn-add-wrap'>
+						<button type='button' name="doAddCont" style="padding: 0;"><span>내용 추가</span></button>
+					</div>
+				</td>
+				<td>
+					<button type="button" name="doDelRow" class="btn-del"><span>삭제</span></button>
+				</td>
+			</tr>
+		</template>
+		<!--// Template -->
+		<div class="xycenter body">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">컨텐츠 상세 조회</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="search-wrap">
+						<form id="docForm">
+							<input type="hidden" name="contUid">
+							<input type="hidden" name="contKindCd">
+							<input type="hidden" name="contRmthdCd">
+							<fieldset>
+								<legend>컨텐츠 상세 조회</legend>
+								<div class="table-wrap">
+									<table class="inner-input">
+										<caption>컨텐츠 상세 조회</caption>
+										<colgroup>
+											<col style="width: 10%;">
+											<col style="width: 33%;">
+											<col style="width: 9%;">
+											<col style="width: 19%;">
+											<col style="width: 9%;">
+											<col style="width: 20%;">
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>컨텐츠 종류</th>
+											<td id="cell_contKindCdNm">문서</td>
+											<th>등록방식</th>
+											<td id="cell_contRmthdCdNm">컨텐츠업로드</td>
+											<th>컨텐츠번호</th>
+											<td id="cell_contUno">CDIA00012</td>
+										</tr>
+										<tr>
+											<th>
+												<label for="txt01">컨텐츠명</label>
+											</th>
+											<td colspan="3">
+												<input type="text" name="contNm" id="contNm">
+											</td>
+											<th><label for="contStCd">등록상태</label></th>
+											<td>
+												<select name="contStCd" id="contStCd" class="select">
+													<option value="10">사용중</option>
+													<option value="20">사용중지</option>
+												</select>
+											</td>
+										</tr>
+										<tr id="docSourceTr">
+										</tr>
+										<tr>
+											<th><label for="srcNm">출처</label></th>
+											<td>
+												<div class="inputbtn-wrap">
+													<input type="hidden" name="srcUid" id="srcUid">
+													<input type="text" id="srcNm" name="srcNm" readonly="readonly">
+													<button type="button" name="doSrcSearch" class="btn-srch"><span class="blind">검색</span>
+													</button>
+												</div>
+											</td>
+											<th><label for="dmstcYnNm">국내/해외</label></th>
+											<td>
+												<input type="hidden" name="dmstcYn" id="dmstcYn">
+												<input type="text" name="dmstcYnNm" id="dmstcYnNm" value="" readonly>
+											</td>
+											<th><label for="splyLangCd">제공 언어</label>
+											</th>
+											<td>
+												<select name="splyLangCd" id="splyLangCd" class="select">
+													<option value="">선택</option>
+													<option value="10">국문</option>
+													<option value="20">영문</option>
+													<option value="30">기타</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th><label for="contTpLclsfCd">발간 일자</label>
+											</th>
+											<td>
+												<div class="flex date-publication">
+													<select name="pblcnGbCd" id="pblcnGbCd" class="type select">
+														<option value="10">연도</option>
+														<option value="20">월</option>
+														<option value="30">일자</option>
+													</select>
+													<input type="text" name="pblcnYy" id="pblcnYy" class="year inputNumber" value="" title="연도" placeholder="YYYY">
+													<input type="text" name="pblcnMm" id="pblcnMm" class="month inputNumber" minlength="2" maxlength="2" title="월" placeholder="MM" readonly="">
+													<input type="text" name="pblcnDd" id="pblcnDd" class="day inputNumber" minlength="2" maxlength="2" title="일자" placeholder="DD" readonly="">
+												</div>
+											</td>
+											<th>유형분류</label>
+											</th>
+											<td id="cell_contTpLclsfCdNm"></td>
+											<th>유형세분류</label>
+											</th>
+											<td id="cell_contTpMclsfCdNm"></td>
+										</tr>
+										<tr>
+											<th>업무 분류</th>
+											<td id="cell_taskClsfCdNm">공시</td>
+											<th>주제 분류</th>
+											<td id="cell_sbjtGbCdNm" colspan="3">ESG일반</td>
+										</tr>
+										<tr>
+											<th>전시 여부</th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd04" value="40">
+														<label for="dpTpCd04">전체열람허용</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd01" value="10">
+														<label for="dpTpCd01">전체공개</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd02" value="20">
+														<label for="dpTpCd02">일부공개</label>
+													</li>
+													<li>
+														<input type="radio" name="dpTpCd" id="dpTpCd03" value="30">
+														<label for="dpTpCd03">비전시</label>
+													</li>
+												</ul>
+											</td>
+											<th>전시 기간</th>
+											<td colspan="3">
+												<div class="date-select flex date-ck-mix">
+													<div class="datepicker-wrap flex">
+														<input type="text" name="dpSttDte" id="dpSttDte" class="datepicker" disabled>
+														<input type="text" name="dpSttHh" value="00" class="time inputNumber" disabled>:<input type="text" name="dpSttMi" class="time inputNumber" value="00" disabled>
+														<span class="separator"> - </span>
+														<input type="text" name="dpEndDte" id="dpEndDte" class="datepicker" disabled>
+														<input type="text" name="dpEndHh" value="23" class="time inputNumber" disabled>:<input type="text" name="dpEndMi" class="time inputNumber" value="59" disabled>
+													</div>
+													<input type="checkbox" id="pirdStngUseYn" name="pirdStngUseYn" value="Y"><label for="pirdStngUseYn">기간설정사용</label>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<th>일부 공개 대상</th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd01" value="10">
+														<label for="rlsTgtCd01">그룹 A</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd02" value="20">
+														<label for="rlsTgtCd02">그룹 B</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd03" value="30">
+														<label for="rlsTgtCd03">그룹 C</label>
+													</li>
+													<li>
+														<input type="checkbox" name="rlsTgtCd" id="rlsTgtCd04" value="40">
+														<label for="rlsTgtCd04">그룹 D</label>
+													</li>
+												</ul>
+											</td>
+											<th>다운로드 가능여부</th>
+											<td colspan="3">
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="dwnldPsbltyYn" id="dwnldPsbltyYn01" value="Y">
+														<label for="dwnldPsbltyYn01">가능</label>
+													</li>
+													<li>
+														<input type="radio" name="dwnldPsbltyYn" id="dwnldPsbltyYn02" value="N">
+														<label for="dwnldPsbltyYn02">불가 </label>
+													</li>
+												</ul>
+											</td>
+										</tr>
+										<tr>
+											<th>검색 가능 여부</th>
+											<td>
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="srchPsbltyYn" id="radio12" value="Y">
+														<label for="radio12">가능</label>
+													</li>
+													<li>
+														<input type="radio" name="srchPsbltyYn" id="radio13" value="N">
+														<label for="radio13">불가</label>
+													</li>
+												</ul>
+											</td>
+											<th>태그 키워드</th>
+											<td id="cell_kwrdArry" colspan="3">
+												<input type="text" name="tagKwrd" placeholder="우선순위에 따라 콤마로 구분하여 입력하세요 (최대 100자)">
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+
+								<!-- ESG토픽 -->
+								<div class="table-wrap">
+									<table id="esgTopic" class="table-type-mix line-gray">
+										<caption>ESG 토픽 선택</caption>
+										<colgroup>
+											<col style="width: 120px;">
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+											<col>
+										</colgroup>
+										<tbody>
+										<tr class="topicMenuTitle">
+											<th rowspan="2">ESG 토픽</th>
+										</tr>
+										<tr class="topicList">
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<!--// ESG토픽 -->
+
+								<!-- //table-wrap -->
+								<div class="table-wrap">
+									<table class="line-gray">
+										<caption>컨텐츠 등록</caption>
+										<colgroup>
+											<col style="width: 120px;">
+											<col>
+											<col style="width: 120px;">
+											<col>
+										</colgroup>
+										<tbody>
+										<tr>
+											<th>대표 이미지<br>(230*130)</th>
+											<td>
+												<div class="thum-upload-wrap flex">
+													<div class="thumbnail" style="width: 230px; height: 130px">
+														<img id="previewImage" class="previewImage" name="previewImage" src="/sems/assets/img/common/noimage.png" alt="대표 이미지" style="width: 100%; height: 100%; object-fit: cover;">
+													</div>
+													<div class="btn-upload-wrap">
+														<button type="button" class="btn-upload" onclick="$('#viewPopContents #uploadImage').click();"><span>이미지 업로드</span></button>
+													</div>
+													<input type="file" id="uploadImage" name="uploadImage" accept="image/*" style="display:none;">
+												</div>
+											</td>
+											<th>메모 (컨텐츠 요약)</th>
+											<td>
+												<textarea name="contSumry" id="contSumry" cols="" rows="" style="height: 130px"></textarea>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //table-wrap -->
+
+								<!-- 영상 원포인트레슨 선택시 노출 -->
+								<div id="onePointResson" class="table-wrap" style="display: none;">
+									<table class='lesson-table line-gray'>
+										<caption>컨텐츠 등록</caption>
+										<colgroup>
+											<col style='width: 25%;'>
+											<col style='width: 37%;'>
+											<col style='width: *;'>
+											<col style='width: 5%;'>
+										</colgroup>
+										<thead>
+										<tr>
+											<th colspan='4'>
+												<div class='inner-btn'>
+													영상 레슨 등록
+													<!--													<button type='button' class='btn_link'><span>미리보기</span></button>-->
+												</div>
+											</th>
+										</tr>
+										<tr>
+											<th>레슨명<span class="required"><i class="blind">필수입력</i></span></th>
+											<th>영상 파일 업로드<span class="required"><i class="blind">필수입력</i></span></th>
+											<th>영상 설명<span class="required"><i class="blind">필수입력</i></span></th>
+											<th></th>
+										</tr>
+										</thead>
+										<tbody class='lesson-list' id='lessonList'>
+										</tbody>
+									</table>
+									<div class='btn-add-wrap'>
+										<button type='button' name="doAddRow" class='btn-add'><span>영상 레슨 추가</span></button>
+									</div>
+								</div>
+								<!-- //영상 원포인트레슨 선택시 노출 -->
+
+								<div class="btn-wrap">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+									<button type="button" name="doSave" class="btn-primary">저장</button>
+									</th:block>
+									<!--									<button type="button" class="btn-isave">복사</button>-->
+									<button type="button" class="btn-sub btn-close ">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- //search-wrap -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!--//xycenter-->
+	</div>
+	<!--//modal-wrap-->
+
+	<!-- 출처 조회 팝업 -->
+	<div id="mainBySrcSearchPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area small">
+				<div class="modal-head">
+					<h2 class="tit">출처 검색</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="form-content">
+						<form id="frmBySrcSearchPop" onsubmit="srcList.setData(true, function() {}); return false;">
+							<fieldset>
+								<legend>출처 검색</legend>
+								<div class="search-wrap">
+									<div class="table-wrap">
+										<table class="inner-input align-left">
+											<caption>출처 검색</caption>
+											<colgroup>
+												<col style="width: 30%;">
+												<col style="width: *;">
+											</colgroup>
+											<tbody>
+											<tr>
+												<th>출처명</th>
+												<td>
+													<div class="selectinput-wrap">
+														<select name="schSrcOptBySrcSearchPop" id="schSrcOptBySrcSearchPop" class="select" title="출처명/번호선택">
+															<option value="01">출처명</option>
+															<option value="02">출처번호</option>
+														</select>
+														<input type="text" name="schSrcWrdBySrcSearchPop" id="schSrcWrdBySrcSearchPop" placeholder="" title="입력">
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<th>국내/해외</th>
+												<td>
+													<ul class="flex ck-list">
+														<li>
+															<input type="radio" name="schDmstcChkBySrcSearchPop" value="ALL" id="area04" checked>
+															<label for="area04">전체</label>
+														</li>
+														<li>
+															<input type="radio" name="schDmstcChkBySrcSearchPop" value="Y" id="area05">
+															<label for="area05">국내</label>
+														</li>
+														<li>
+															<input type="radio" name="schDmstcChkBySrcSearchPop" value="N" id="area06">
+															<label for="area06">해외</label>
+														</li>
+													</ul>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- //table-wrap -->
+								<div class="btn-wrap">
+									<button type="button" name="doSearch" class="btn-primary">검색</button>
+									<button type="button" name="doAddSrc" class="btn-sub">신규 출처 추가</button>
+								</div>
+								<!-- //btn-wrap -->
+								<div class="result-wrap">
+									<div class="sorting-wrap">
+										<select name="optPageSizeSrcSearchPop" id="optPageSizeSrcSearchPop" onchange="" class="select" title="데이터 건수">
+											<option value="20">20개</option>
+											<option value="50">50개</option>
+											<option value="100" selected="selected">100개</option>
+											<option value="500">500개</option>
+											<option value="1000">1000개</option>
+										</select>
+										<select name="optPageNumSrcSearchPop" id="optPageNumSrcSearchPop" class="select" title="페이지 이동선택"></select>
+									</div>
+									<!-- //sorting-wrap -->
+									<div id="divSrcSearchPopList" class="table-wrap ">
+										<!-- 페이징 정보 -->
+										<th:block th:unless="${#lists.isEmpty(list)}">
+											<input type="hidden" id="totalCountSrcSearchPop" th:value="${PageInfo.totalCount}"/>
+											<input type="hidden" id="pageNumberSrcSearchPop" th:value="${PageInfo.pageNumber}"/>
+											<input type="hidden" id="totalPageSrcSearchPop" th:value="${PageInfo.totalPage}"/>
+										</th:block>
+										<table>
+											<caption>출처 검색 리스트</caption>
+											<colgroup>
+												<col style="width: 10%;">
+												<col style="width: 25%;">
+												<col style="width: *;">
+												<col style="width: 20%;">
+											</colgroup>
+											<thead>
+											<tr>
+												<th>NO</th>
+												<th>출처번호</th>
+												<th>출처명</th>
+												<th>국내/해외</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr th:each="item, stat : ${list}">
+												<td th:text="${stat.count}">1</td>
+												<td class="srcTd"><a th:text="${item.srcUno}" th:attr="data-srcUid=${item.srcUid}, data-srcNm=${item.srcNm}, data-dmstcYn=${item.dmstcYn}, data-dmstcYnNm=${item.dmstcYnNm}"
+																	 class="link">SK12345</a></td>
+												<td th:text="${item.srcNm}" class="left">삼일회계법인</td>
+												<td th:text="${item.dmstcYnNm}">국내</td>
+											</tr>
+											<tr th:if="${#lists.isEmpty(list)}">
+												<td class="nodata" colspan="4">데이터가 존재하지 않습니다.</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //result-list -->
+								<div class="btn-wrap">
+									<button type="button" id="btnCloseBySrcSearchPop" class="btn-sub btn-close">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+
+	<!-- 출처등록 popup fragment-->
+	<th:block th:replace="/backoffice/contents/contentInfo/srcUpsertPopBySrcList :: fragmentBySrcUpsertPopBySrcList"></th:block>
+</th:block>
+</html>

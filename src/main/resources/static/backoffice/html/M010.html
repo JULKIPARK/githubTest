@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 컨텐츠 관리 > 컨텐츠 정보관리 > 출처 조회</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->   
+        <!-- wrap -->  
+        <div class="container"> 
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- container -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>출처 조회</h3>
+                    <ul class="breadcrumb">
+                        <li>컨텐츠 관리</li>
+                        <li>컨텐츠 정보관리</li>
+                        <li>출처 조회</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>상세 검색</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>출처 조회</caption>
+                                    <colgroup>
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>등록일/수정일</th>
+                                            <td>
+                                                <div class="date-select flex">
+                                                    <select name="" class="select" title="기간설정 선택">
+                                                        <option value="">기간설정 안함</option>
+                                                        <option value="">등록일</option>
+                                                        <option value="">수정일</option>
+                                                    </select>
+                                                    <div class="datepicker-wrap">
+                                                        <input type="text" name="" class="datepicker" disabled="disabled">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" name="" class="datepicker" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <th>등록자/수정자</th>
+                                            <td>
+                                                <div class="selectinput-wrap">
+                                                    <select name="" id="" class="select" title="검색기준">
+                                                        <option value="">등록자</option>
+                                                        <option value="">수정자</option>
+                                                    </select>
+                                                    <input type="text" placeholder="" title="이름 입력">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>출처명/번호</th>
+                                            <td>
+                                                <div class="selectinput-wrap">
+                                                    <select name="" id="" class="select" title="검색기준">
+                                                        <option value="">출처명</option>
+                                                        <option value="">출처번호</option>
+                                                    </select>
+                                                    <input type="text" placeholder="" title="이름 입력">
+                                                </div>
+                                            </td>
+                                            <th>국내/해외</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="area" id="area01" checked="checked">
+                                                        <label for="area01">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="area" id="area02">
+                                                        <label for="area02">국내</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="area" id="area03">
+                                                        <label for="area03">해외</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="result-wrap">
+                    <div class="total">
+                        <span class="lable">출처 리스트</span> - <strong>총 123건</strong>
+                        <button type="button" class="btn-del"><span>신규 출처 추가</span></button>
+                    </div>
+                    <!-- total -->
+                    <div class="sorting-wrap">
+                        <select name="" id="" class="select" title="데이터 건수">
+                            <option value="">20개</option>
+                            <option value="">50개</option>
+                            <option value="" selected="selected">100개</option>
+                            <option value="">500개</option>
+                            <option value="">1000개</option>
+                        </select>
+                        <select name="" id="" class="select" title="페이지 이동선택">
+                            <option value="">1/2</option>
+                        </select>
+                        <div class="btn-ctl">
+                            <button type="button" class="btn-download">다운로드</button>
+                        </div>
+                    </div>
+                    <!-- //sorting-wrap -->
+                    <div class="table-wrap ">
+                        <table>
+                            <caption>출처 리스트</caption>
+                            <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 15%;">
+                                <col style="width: *;">
+                                <col style="width: 10%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>출처번호</th>
+                                    <th>출처명</th>
+                                    <th>국내/해외</th>
+                                    <th>컨텐츠 수 합계</th>
+                                    <th>문서 컨텐츠 수</th>
+                                    <th>영상 컨텐츠 수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><a href="javascript:void(0);" class="link">SK12345</a></td>
+                                    <td class="left">삼일회계법인</td>
+                                    <td>국내</td>
+                                    <td>102</td>
+                                    <td>102</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><a href="javascript:void(0);" class="link">SK12356</a></td>
+                                    <td class="left">대한상공회의소</td>
+                                    <td>국내</td>
+                                    <td>210</td>
+                                    <td>6</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><a href="javascript:void(0);" class="link">SF00097</a></td>
+                                    <td class="left">GRI</td>
+                                    <td>해외</td>
+                                    <td>102</td>
+                                    <td>3</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><a href="javascript:void(0);" class="link">SF01239</a></td>
+                                    <td class="left">Carbon Trust Standard for Water</td>
+                                    <td>해외</td>
+                                    <td>3</td>
+                                    <td>0</td>
+                                    <td>40</td>
+                                </tr>
+                                <tr>
+                                    <td class="nodata" colspan="7">nodata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->                      
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area large">
+                <div class="modal-head">
+                    <h2 class="tit">출처 상세 조회</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <div class="form-content">
+                        <form action="">
+                            <fieldset>
+                                <legend>출처 상세 조회</legend>  
+                                <div class="search-wrap">
+                                    <div class="table-wrap">
+                                        <table class="inner-input align-left">
+                                            <caption>출처 상세 조회</caption>
+                                            <colgroup>
+                                                <col style="width: 15%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 15%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 15%;">
+                                                <col style="width: *;">
+                                            </colgroup>
+                                            <tbody>
+                                                <tr>
+                                                    <th><label for="name">출처명</label></th> 
+                                                    <td><input type="text" value="GRI" id="name"></td>
+                                                    <th>출처번호</th> 
+                                                    <td colspan="3">F00097</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>국내/해외</th> 
+                                                    <td colspan="5">국내</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>컨텐츠 수 합계</th> 
+                                                    <td>105개</td>
+                                                    <th>문서컨텐츠 수</th> 
+                                                    <td>55개</td>
+                                                    <th>영상컨텐츠 수</th> 
+                                                    <td>50개</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>                                                                                                                                                                                 
+                                <!-- //table-wrap -->
+                                <div class="result-wrap">
+                                    <div class="sorting-wrap">
+                                        <span class="count">50개</span>
+                                        <select name="" id="" class="select" title="페이지 이동선택">
+                                            <option value="">1/13</option>
+                                        </select>
+                                        <div class="btn-ctl">
+                                            <button type="button" class="btn-download">다운로드</button>
+                                        </div>
+                                    </div>
+                                    <!-- //sorting-wrap -->
+                                    <div class="table-wrap ">
+                                        <table>
+                                            <caption>출처 리스트</caption>
+                                            <colgroup>
+                                                <col style="width: 5%;">
+                                                <col style="width: 5%;">
+                                                <col style="width: 10%;">
+                                                <col style="width: *;">
+                                                <col style="width: 7%;">
+                                                <col style="width: 10%;">
+                                                <col style="width: 7%;">
+                                                <col style="width: 10%;">
+                                                <col style="width: 10%;">
+                                                <col style="width: 7%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>NO</th>
+                                                    <th>종류</th>
+                                                    <th>컨텐츠 번호</th>
+                                                    <th>컨텐츠명</th>
+                                                    <th>언어</th>
+                                                    <th>유형분류</th>
+                                                    <th>업무분류</th>
+                                                    <th>주제분류</th>
+                                                    <th>등록방식</th>
+                                                    <th>형태</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>문서</td>
+                                                    <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                    <td class="left">GRI 1: Foundation 2021</td>
+                                                    <td>영문</td>
+                                                    <td>기준/표준</td>
+                                                    <td>공시</td>
+                                                    <td>ESG일반</td>
+                                                    <td>컨텐츠업로드</td>
+                                                    <td>E-pub</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>문서</td>
+                                                    <td><a href="javascript:void(0);" class="link">CDIP00005</a></td>
+                                                    <td class="left">EU 지속가능성보고지침 주요 내용</td>
+                                                    <td>국문</td>
+                                                    <td>삼일발간물</td>
+                                                    <td>공시</td>
+                                                    <td>ESG일반</td>
+                                                    <td>컨텐츠업로드</td>
+                                                    <td>PDF</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>문서</td>
+                                                    <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                    <td class="left"><span class="ellipsis">GRI 1: Foundation 2021</span></td>
+                                                    <td>영문</td>
+                                                    <td>기준/표준</td>
+                                                    <td>전략계획</td>
+                                                    <td>환경</td>
+                                                    <td>아웃링크</td>
+                                                    <td>E-pub</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>영상</td>
+                                                    <td><a href="javascript:void(0);" class="link">CDIP00005</a></td>
+                                                    <td class="left"><span class="ellipsis">지속가능경영보고서 작성 지침지속가능경영보고서 작성 지침</span></td>
+                                                    <td>국문</td>
+                                                    <td>삼일발간물</td>
+                                                    <td>공시</td>
+                                                    <td>ESG일반</td>
+                                                    <td>컨텐츠업로드</td>
+                                                    <td>PDF</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="nodata" colspan="10">nodata</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- //table-wrap --> 
+                                </div>
+                                <!-- //result-list -->
+                                <div class="btn-wrap">
+                                    <button type="button" class="btn-primary">저장</button>
+                                    <button type="button" class="btn-sub btn-close">닫기</button>
+                                </div>
+                                <!-- //btn-wrap -->
+                            </fieldset>
+                        </form>
+                    </div>
+                    <!-- form-content -->
+                </section>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap--> 
+</body>
+</html>

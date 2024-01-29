@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block th:fragment="fragmentByMemberRoleChangePop">
+  <script type="text/javascript">
+    $(function () {
+
+    });
+
+    function fnShowByMemberRoleChangePop() {
+      $('#mainByMemberRoleChangePop').addClass('show');
+      $('.dimmed').removeAttr('style');
+    }
+  </script>
+
+  <!-- modal-wrap -->
+  <section id="cont-section" class="content">
+    <div id="mainByMemberRoleChangePop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+      <div class="dimmed"></div>
+      <div class="xycenter">
+        <section class="modal-area tiny">
+          <div class="modal-head">
+            <h2 class="tit">권한 그룹 이동</h2>
+            <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+          </div>
+          <section class="modal-cont">
+            <form id="mainByMemberRoleChangePopFrm">
+				<input type="hidden" name="mbrUids">
+              <fieldset>
+                <legend>권한 그룹 이동</legend>
+                <div class="result-wrap">
+                  <!-- total -->
+                  <div class="sorting-wrap inner-lable">
+                    <p class="label">이동 대상 그룹</p>
+                  </div>
+                  <!-- //sorting-wrap -->
+                  <div class="table-wrap">
+                    <table>
+                      <caption>이동 대상 그룹</caption>
+                      <colgroup>
+                        <col style="width: 30%;">
+                        <col style="width: 70%;">
+                      </colgroup>
+                      <thead>
+                      <tr>
+                        <th>선택</th>
+                        <th>그룹명</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr data-rolecd="10">
+                        <td><input type="radio" name="groupmove" title="선택" value="10"></td>
+                        <td>그룹 A</td>
+                      </tr>
+                      <tr data-rolecd="20">
+                        <td><input type="radio" name="groupmove" title="선택" value="20"></td>
+                        <td>그룹 B</td>
+                      </tr>
+                      <tr data-rolecd="30">
+                        <td><input type="radio" name="groupmove" title="선택" value="30"></td>
+                        <td>그룹 C</td>
+                      </tr>
+                      <tr data-rolecd="40">
+                        <td><input type="radio" name="groupmove" title="선택" value="40"></td>
+                        <td>그룹 D</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-wrap -->
+                </div>
+                <!-- //result-list -->
+				  <div class="board-btn-wrap flex statChgDiv">
+					  <button type="button" name="doSave" class="btn-primary"><span>저장</span></button>
+					  <button type="button" class="btn-sub btn-close">취소</button>
+				  </div>
+              </fieldset>
+            </form>
+          </section>
+          <!--//modal-cont-->
+        </section>
+        <!--//modal-area-->
+      </div>
+      <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+  </section>
+
+</th:block>
+
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		var TpicUid ;
+		$(function(){
+			// 이벤트 설정
+
+			/*<![CDATA[*/
+			TpicUid = [[${tpicUid}]];
+			/*]]>*/
+
+			$.post("/diagnosis/selectContList", {tpicUid : TpicUid}, function(data){
+
+				$("#tmpl_relation").tmpl(data.list).appendTo("#relation-list");
+				// 빈 카테고리 라인 제거
+				$('#relation-list .po').each((idx, item) => {
+					if (!$.trim($(item)[0].innerHTML)) {
+						$(item)[0].remove();
+					}
+				});
+				$(".relation-list").slick({
+			    autoplay: true,
+			    speed: 500,
+			    arrows: true,
+			    dots: false,
+			    infinite: true,
+			    cssEase: "linear",
+			    speed: 300,
+			    slidesToShow: 3,
+			    slidesToScroll: 1,
+			    responsive: [
+			      {
+			        breakpoint: 1180,
+			        settings: {
+			          slidesToShow: 2,
+			          dots: false,
+			          arrows: false,
+			        },
+			      },
+			      {
+			        breakpoint: 767,
+			        settings: {
+			          slidesToShow: 1,
+			          dots: false,
+			          arrows: true,
+			        },
+			      },
+			    ],
+			  });
+
+			});
+		});
+
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+			$('.submenu04_01').addClass("on");
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="frm">
+		<section class="sub">
+			<div class="sub-title-a">
+				<div class="ct">
+					<div class="tit">ESG 경영활동 가이드</div>
+					<div class="subs">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영활동에 도움이 될 수 있는 참고 자료를 추천합니다.</div>
+				</div>
+				<div class="bgBack"></div>
+				<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+			</div>
+
+			<div class="mo_dropmenu">
+				<div class="nav">ESG 공시<span><img src="/assets/img/common/ico_selectdesign.png"></span></div>
+				<ul class="dropmenu-list">
+					<li><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요</a></li>
+					<li><strong>ESG 전략 · 계획</strong></li>
+					<li><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립</a></li>
+					<li><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립</a></li>
+					<li><strong>ESG 과제 이행</strong></li>
+					<li><a href="/diagnosis/environmentView?tabId=1">환경 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=2">사회 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=4">지속가능 금융</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영</a></li>
+					<li><strong>ESG 공시 · 인증</strong></li>
+					<li><a href="/diagnosis/certifiedView?tabId=1">ESG 공시</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=2">ESG 평가</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=3">ESG 인증</a></li>
+				</ul>
+			</div>
+
+			<div class="esg-guide default-width">
+				<dl class="leftMenu">
+					<dd>
+						<div class="depth-1"></div>
+						<ul class="depth-2-menulist">
+							<li class="submenu01"><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 전략 · 계획</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu02_01"><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu02_02"><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 과제 이행</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu03_01"><a href="/diagnosis/environmentView?tabId=1">환경 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_02"><a href="/diagnosis/environmentView?tabId=2">사회 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_03"><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_04"><a href="/diagnosis/environmentView?tabId=4">지속가능 금융<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_05"><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_06"><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 공시 ・ 인증</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu04_01"><a href="/diagnosis/certifiedView?tabId=1">ESG 공시<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_02"><a href="/diagnosis/certifiedView?tabId=2">ESG 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_03"><a href="/diagnosis/certifiedView?tabId=3">ESG 인증<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+				</dl>
+
+				<div class="content">
+					<div class="border-txbox-a">
+						<div class="sub-common-tit">개요</div>
+						<div class="border-box">
+							ESG 공시는 기업의 지속가능성과 관련된 주요 사항을 이해관계자가 파악할 수 있도록 공개하는 활동으로, 이해관계자에게 정확하고 신뢰성 있는 정보를 적시에 제공하는 것이 중요합니다. 공시 위치와 방법은 기업이 자율적으로 선택 가능하고 우리나라 상장회사의 경우 대부분 지속가능경영보고서의 형식을 통해 지속가능성 공시를 하고 있습니다.<br/><br/>
+							현재 국내외 많은 기업들이 GRI, TCFD, SASB 등 다양한 공신력있는 글로벌 기준에 따라 정보를 공개하고 있으며 ISSB 지속가능성 공시 기준이 확정되고 2025년 의무화가 결정됨에 따라 ISSB 기준에 따른 공시가 확대될 예정입니다.
+						</div>
+					</div>
+
+					<div class="guide-work">
+						<div class="sub-common-tit">주요 실행 과제</div>
+						<dl class="work-list">
+							<dd>
+								<div class="subj-box"><span>ESG 공시 보고서 작성</span></div>
+								<ul class="work-detail-list">
+									<li>이해관계자의 니즈와 해당기업 및 동종업계 이슈를 반영하고 글로벌 작성 가이드라인 및 국제 기준에 따른 통합보고서 또는 지속가능경영보고서의 작성</li>
+
+									<li>
+										보고 대상 및 범위를 결정하고 이해관계자 및 기업의 사업 모델을 함께 고려하여 보고 중요성 평가를 거쳐 중요 보고 주제를 선정한 후 보고 내용을 기획하여 작성하는 단계로 진행
+										<span>보고 대상 및 범위</span>
+										<div class="whList">
+											<section>
+												<div class="s-subj">경제</div>
+												<div class="s-subs">고객, 주주, 투자자</div>
+											</section>
+
+											<section>
+												<div class="s-subj">환경</div>
+												<div class="s-subs">정부, 협력사, NGO</div>
+											</section>
+
+											<section>
+												<div class="s-subj">사회</div>
+												<div class="s-subs">지역사회, 언론, 종업원</div>
+											</section>
+										</div>
+
+
+
+										<span>보고 내용</span>
+										<div class="ar-list">
+											<section>
+												<div class="s-subj">전략과 프로필</div>
+												<div class="ar-detail-list">
+													<div>전략과 분석</div>
+													<div>조직의 프로필</div>
+													<div>보고서 파라미터</div>
+													<div>지배구조/위원회/이해관계자 참여</div>
+												</div>
+											</section>
+
+											<section>
+												<div class="s-subj">경영방식 공시</div>
+												<div class="ar-detail-list">
+													<div>성과 정보의 배경 설정을 위해 지표 범주 별로 정의된 측면에 대한 경영 방식을 간략하게 요약하여 제시(예: 정책, 목표 및 성과)</div>
+												</div>
+											</section>
+
+											<section>
+												<div class="s-subj">성과지표</div>
+												<div class="ar-detail-list">
+													<div>경제 : 경제가치, 시장지위, 간접 경제효과 등</div>
+													<div>환경 : 투입산출, 제품서비스, 생태계 등</div>
+													<div>사회 : 노동여건/관행, 인권, 제품책임 등</div>
+												</div>
+											</section>
+										</div>
+									</li>
+									<li class="more-btn">
+										<a href="/disclosure/disclosureView?tabId=1">
+											더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+										</a>
+								   </li>
+
+								</ul>
+							</dd>
+
+						</dl>
+					</div>
+
+
+					<div class="needs-work">
+						<div class="sub-common-tit">필요 업무역량</div>
+						<ul class="needs-list">
+							<li>ESG 공시 기준 및 기준별 요구사항에 대한 이해</li>
+							<li>공시 기준에 따라 공시에 필요한 자료를 판단하는 역량</li>
+							<li>공시 자료 수급을 위해 타 부서의 협조를 구하는 커뮤니케이션 역량</li>
+							<li>지속가능보고서를 이해관계자가 이해하기 쉽게 작성하는 글쓰기 역량</li>
+						</ul>
+					</div>
+
+					<div class="guide-relation">
+						<div class="sub-common-tit">관련 컨텐츠</div>
+
+						<ul class="relation-list" id="relation-list">
+
+						</ul>
+					</div>
+
+				</div>
+			</div>
+
+
+			<div class="guide-service">
+				<div class="container">
+					<div class="sub-common-tit">서비스 안내</div>
+
+					<dl class="service-list">
+						<dd>
+							<div class="subj">통합보고서/지속가능경영보고서 발간 지원 컨설팅</div>
+							<ul class="detail-list">
+								<li>통합보고서/지속가능경영보고서 작성 자문</li>
+								<li>보고서 지속 발간을 위한 내부 프로세스 정립과 작성 교육체계 수립 등</li>
+							</ul>    
+						</dd>
+						<dd>
+							<div class="subj">규제 변화에 따른 공시 대응 </div>
+							<ul class="detail-list">
+								<li>CSRD, ISSB 등 기관별 권고사항과 규제 변화를 고려한 공시 운영과 계획 </li>
+							</ul>    
+						</dd>
+
+					</dl>
+
+					<div class="back-btn onlineBtn">
+						삼일 서비스 문의하기 <span><img src="/assets/img/common/ico_arrow_right.png"></span>
+					</div>
+				</div>
+			</div>
+
+		</section>
+
+	</form>
+</div>
+</html>

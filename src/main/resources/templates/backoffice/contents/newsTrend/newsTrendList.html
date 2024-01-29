@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}" lang="ko">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/*<![CDATA[*/
+		var rights = "[[${session.BoMbrInfo.rights}]]";
+		/*]]>*/
+
+		$(function () {
+			// 화면 초기화
+			fnInitView();
+			// 기본 데이터 조회
+			fnInitData();
+			// 이벤트 설정
+			fnInitEvent();
+		});
+
+		// 화면 초기화
+		function fnInitView() {
+		}
+
+		// 기본 데이터 조회
+		function fnInitData() {
+			fnSelectNewsTrendKeywordList();
+		}
+
+		// 이벤트 설정
+		function fnInitEvent() {
+			// 선택등록
+			$("#btnRegBatch").on("click", () => {
+				const formData = {keywordUid: ""};
+				$("INPUT[name=keywordUid]").each((idx, frm) => {
+					formData.keywordUid += (formData.keywordUid ? ",":"") + $(frm).val() + '|' + ($(frm).prop("checked") ? "Y" : "N")
+				});
+
+				var param = {};
+				param = {
+					"url": "/sems/contents/updateNewsTrendKeyword"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						alert('전시여부 등록이 완료되었습니다.');
+					}
+				};
+				_comLib.callAjax(param);
+			});
+
+			$('INPUT[type=checkbox][name=keywordUid]').on('change', function() {
+				let state = $(this).prop('checked');
+				if (state) {
+					$(this).parent().parent().find('TD:eq(1) A').css('font-weight', 'bold').css('font-size', '18px').css('color', '#D93954');
+				} else {
+					$(this).parent().parent().find('TD:eq(1) A').css('font-weight', 'normal').css('font-size', '16px').css('color', '#484848');
+				}
+			}).trigger('change');
+		}
+
+		//목록조회
+		function fnSelectNewsTrendKeywordList() {
+			var param = {};
+			param = {
+				"url": "/sems/contents/selectNewsTrendKeywordList"
+				, "type": "post"
+				, "async": false
+				, "callback": function (fragment) {
+					$("#resultDiv").replaceWith(fragment);
+				}
+			};
+			_comLib.callAjax(param);
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+	<form id="applyFrm">
+		<!-- container -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>뉴스 키워드 관리</h3>
+				<ul class="breadcrumb">
+					<li>컨텐츠 관리</li>
+					<li>뉴스 키워드 관리</li>
+					<li>뉴스 키워드 관리</li>
+				</ul>
+			</div>
+			<!-- //location -->
+
+			<div id="resultDiv" class="result-wrap">
+				<div class="total">
+					<span class="lable">키워드 관리</span> - 갱신 시점 <strong id="rssNewsTotalCountView" th:text="(${updateDate})">(2023.10.15.02:00)</strong>
+				</div>
+				<!-- total -->
+				<div class="sorting-wrap">
+					<select id="rssNewsPageSize" class="select" title="데이터 건수" style="visibility: hidden">
+					</select>
+
+					<div class="btn-ctl">
+						<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+						<button id="btnRegBatch" type="button" class="btn-default">선택등록</button>
+						</th:block>
+					</div>
+				</div>
+				<!-- //sorting-wrap -->
+				<div id="newsTrendKeywordListDiv" class="table-wrap ">
+					<table>
+						<caption>출처 리스트</caption>
+						<colgroup>
+							<col style="width: 5%;">
+							<col style="width: 15%;">
+							<col style="width: 10%;">
+							<col style="width: 62%;">
+							<col style="width: 8%;">
+						</colgroup>
+						<thead>
+						<tr>
+
+							<th>순위</th>
+							<th>키워드명</th>
+							<th>가중치</th>
+							<th>대표기사</th>
+							<th>전시여부</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td th:text="${item.rowNum}">[순번]</td>
+							<td><a href="javascript:void(0);"
+								   th:onclick="fnNewsTrendNewsListPop([[${item.keywordUid}]], [[${item.name}]]);" class="link"
+								   th:text="${item.name}">[키워드명]</a></td>
+							<td th:text="${item.weight}">[가중치]</td>
+							<td class="left" th:text="${item.representativeNewsTitle}">[대표기사]</td>
+							<td>
+								<input name="keywordUid" th:value="${item.keywordUid}" type="checkbox"
+									   title="선택" th:checked="${item.dpYn == 'Y'}" th:disabled="${!session.BoMbrInfo.rights.contains('C')}">
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td class="nodata" colspan="5">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+	</form>
+
+	<!-- 신규 입수 뉴스 등록 popup fragment-->
+	<th:block th:replace="/backoffice/contents/newsTrend/newsTrendNewsListPop :: newsTrendNewsListPop"></th:block>
+
+
+</div>
+<!-- layout:fragment -->
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{frontoffice/layout/subwrapLayout}">
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function () {
+
+			$.post("/trend/selectEducationList", {}, function (data) {
+
+				$("#tmpl_edu").tmpl(data.list).appendTo("#edu-list");
+				cotentSlide();
+
+			});
+
+		});
+
+		$(function () {
+			$('.menu04').addClass("on");
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<!-- content -->
+	<section class="content btmgap content-esg-education">
+		<div class="tit-head">
+			<div class="group">
+				<h3>ESG 교육</h3>
+				<p class="txt">ESG 세미나, 웨비나 등 다양한 ESG 교육 커리큘럼을 통해 ESG 경영 내재화를 지원합니다.</p>
+			</div>
+			<span class="square"></span>
+		</div>
+		<section class="section default-width pt60">
+			<h4 class="tit-line-left">기업 유형별 맞춤형 커리큘럼</h4>
+			<div class="txt-bg-box">기본, 실무, 전문 과정으로 구분된 ESG 교육 커리큘럼을 통해 ESG 경영 내재화를 지원합니다.<br/>커리큘럼을 기업 현황에 맞게 선택하여 ‘1 Day 세미나’ 또는 ‘ESG 교육 과정’ 으로 구성하여 제공할 수 있습니다.</div>
+			<div class="curriculum-wrap js-img-extension">
+				<!-- <div class="list-wrap">
+				  <strong class="tit">기본과정</strong>
+				  <ul class="bul-square">
+					<li>ESG 이해와 역사, 국내외 동향</li>
+					<li>ESG 경영의 개념</li>
+					<li>ESG 주요 공시・평가의 이해</li>
+					<li>기후변화에 대한 대응노력</li>
+					<li>지속가능 금융의 배경 및 이해</li>
+				  </ul>
+				</div>
+				<div class="list-wrap plus">
+				  <strong class="tit">실무과정</strong>
+				  <ul class="bul-square">
+					<li>ESG 경영전략과 계획 수립</li>
+					<li>ESG 경영체계와 의사결정체계 수립</li>
+					<li>탄소 배출량 측정 및 관리</li>
+					<li>ESG 공급망 관리의 이해와 적용</li>
+					<li>기후 리스크 산출</li>
+				  </ul>
+				</div>
+				<div class="list-wrap plus">
+				  <strong class="tit">전문과정</strong>
+				  <ul class="bul-square">
+					<li>주요 공시별 기준 적용과 활용</li>
+					<li>주요 기관별 평가 방법론과 기준 비교</li>
+					<li>ESG 주요 공시・평가의 이해</li>
+					<li>지속가능경영보고서 인증 이론 및 사례</li>
+					<li>ESG 채권, 펀드 인증 이론 및 사례</li>
+				  </ul>
+				</div> -->
+				<img src="/assets/img/common/img_esg_curriculums.svg" alt="기업 유형별 맞춤형 커리큘럼"/>
+			</div>
+			<p class="foot-guide-txt"><span>*</span> 기업 맞춤형 ESG 교육 관련 문의는 삼일아카데미로 문의하시기 바랍니다.<a href="https://www.samilacademy.com/guide/business/etcEduQnaForm.do?qnaType=B" target="_blank">바로가기</a></p>
+		</section>
+		<section class="section default-width pt60">
+			<h4 class="tit-line-left">삼일 ESG 플랫폼 세미나</h4>
+			<div class="txt-bg-box">삼일 ESG 플랫폼에서는 ESG 주요 동향, 정책 또는 주요 이슈를 공유하기 위해 온라인/오프라인 세미나를 개최하고 있습니다.</div>
+			<section class="thumbnail-wrapper">
+				<h5 class="tit">[Webinar 2023.05] ESG 2.0 탄소관리와 공시 고도화</h5>
+				<div class="thumbnail-wrap">
+					<ul class="list">
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0180.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0180.mp4" data-title="Opening [ESG 2.0 탄소관리와 공시 고도화_1]" data-lclsf="10"/></span>
+									<span class="time">04 : 28</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">1. Opening</a></p>
+								<ul class="bul-square">
+									<li>
+										탄소 중립 배경
+										<ul>
+											<li>탄소중립 1.0: 2020년 EU, 각국, 한국 탄소 중립 선언  파리협정 1.5도 목표를 달성하기 위해 국가와 비국가행위자 모두 점차 기후행동을 강화하고, 전방위적 협력을 통해 솔루션을 실행하기 위해 노력했던 시기를 의미합니다. </li>
+											<li>탄소중립 2.0 : IFRS ISSB, EU CSRD, SEC 규제탄소 배출량과 관련하여 글로벌 기준이 제정되었습니다. 기업들이 새로운 규제에 대응하는 과정에서 새로운 전략과 성장의 기회를 만들어 나갈 수 있을 것으로 기대합니다. </li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0181.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0181.mp4" data-title="탄소 배출량 관리 및 측정 [ESG 2.0 탄소관리와 공시 고도화_2]" data-lclsf="10"/></span>
+									<span class="time">17 : 52</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">2. 탄소 배출량 관리 및 측정</a></p>
+								<ul class="bul-square">
+									<li>
+										탄소관리의 최신 트렌드 
+										<ul>
+											<li>각 국가별 탄소중립 정책이 발표됨에 따라 기업은 탄소중립 전략을 수립하고 글로벌 이니셔티브에 가입하고 있습니다. </li>
+											<li>EU 탄소국경세 도입 및 EU Taxonomy에 따른 친환경 제품에 대한 요구가 강화되며 기업들은 제품탄소량 측정, Scope 3 측정 고도화 등 탄소감축 실행과 TCFD 기반 기후위험에 대한 공시를 준비하고 있습니다.  </li>
+										</ul>
+									</li>
+
+									<li>
+										기업의 대응방안
+										<ul>
+											<li>LCA 기반 제품탄소량 산출</li>
+											<li>TCFD 기반 기후위험 공시</li>
+											<li>친환경 분류, Taxonomy 대응</li>
+										</ul>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0182.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0182.mp4" data-title="탄소국경세 [ESG 2.0 탄소관리와 공시 고도화_3]" data-lclsf="10"/></span>
+									<span class="time">16 : 55</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">3. 탄소국경세</a></p>
+								<ul class="bul-square">
+									<li>
+										각 국은 탄소중립 선언 후, 자국 산업 보호를 위해 탄소세, 탄소배출거래권, 또는 탄소국경세를 시행하거나 도입을 고려하고 있습니다. 
+										<ul>
+											<li>EU 탄소국경세 진행 경과 및 주요 내용 <br/>2023년 10월부터 EU 탄소국경조정제도는 시범 도입될 예정이며, 2026년 1월부터 본격적으로 시행될 예정입니다. </li>
+											<li>주요 국가 동향 <br/>미국은 최근 CCA(Clean Competition Act, 청정경쟁법안)을 통과시켜 석유화학제품 등 12개 수입품에 대해 탄소 1톤당 55달러씩 일괄적으로 관세를 부과하고 있습니다. </li>
+											<li>한국 기업의 대응 방안 <br/>국내 기업은 탄소 감축을 지속적으로 실천해가되, 국제사회 동향을 파악하고 단계적으로 회사의 현황을 파악하여 전략적 접근이 필요합니다.</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0183.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0183.mp4" data-title="ESG 공시 기준 [ESG 2.0 탄소관리와 공시 고도화_4]" data-lclsf="10"/></span>
+									<span class="time">14 : 39</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">4. ESG 공시 기준</a></p>
+								<ul class="bul-square">
+									<li>ESG 이슈에 대한 투명성 향상을 요구하는 목소리가 높아짐에 따라 ESG 공시기준이 전 세계적으로 제정되고 있습니다. 국내에서는 2023년 1월에 한국지속가능성기준위원회(KSSB)를 설립하여 단계적 공시 의무화 계획을 발표하였습니다. </li>
+									<li>
+										Big 3 ESG 공시 기준 동향
+										<ul>
+											<li>IFRS / ISSB</li>
+											<li>EU CSRD/ESRS</li>
+											<li>US SEC 기후관련공시</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0184.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0184.mp4" data-title="중대성 평가 기반 연결 ESG Reporting 전략 [ESG 2.0 탄소관리와 공시 고도화_5]" data-lclsf="10"/></span>
+									<span class="time">17 : 29</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">5. 중대성 평가 기반 연결 ESG Reporting 전략</a></p>
+								<ul class="bul-square">
+									<li>중대성 평가 기반 연결 ESG 공시를 준비하는 기업의 체계적인 ESG reporting 전략을 위한 프레임워크를 소개합니다</li>
+									<li>
+										ESG Reporting 2.0 Framework 
+										<ul>
+											<li>공시 정책<br/>ESG 공시 기준서를 적용하기 위한 회사 고유의 ESG Reporting 전략 수립이 필요합니다.</li>
+											<li>공시 전략<br/>완전하고 정확한 ESG 정보 공시를 위한 체계적인 공시 실행 프로세스 수립이 필요합니다.</li>
+											<li>공시 범위와 토픽 선정<br/>ESG 정보 공시 대상 범위 및 중대성 평가를 통한 공시 Topic을 결정해야 합니다.</li>
+											<li>지표와 목표 지표 산출 프로세스 정의를 통해 지표 데이터 산출과정에서 발생할 수 있는 오류를 최소화하여 공시 정확성과 실행력을 확보합니다. </li>
+										</ul>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0185.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0185.mp4" data-title="ESG Data 관리를 위한 Process/Control 설계 및 System 연계 [ESG 2.0 탄소관리와 공시 고도화_6]" data-lclsf="10"/></span>
+									<span class="time">14 : 21</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">6. ESG Data 관리를 위한 Process/Control 설계 및 System 연계</a></p>
+								<ul class="bul-square">
+									<li>
+										기업이 ESG 데이터를 어떤 체계와 시스템으로 관리할 수 있을지, 일반적으로 겪고 있는 ESG 데이터 측정 및 관리의 pain point에 따른 효과적인 ESG Data 관리 방향성을 알아봅니다. 
+										<ul>
+											<li>효과적인 ESG Data 관리 방향성<br/>ESG 관리 대상 지표를 정의한 후, 산출 프로세스를 정비하여 시스템 기반으로 관리해야 합니다. </li>
+											<li>산출 신뢰성<br/>원천 Data 수집부터 최종값 산출까지 담당자 검토, 승인, 문서화 등의 프로세스 정립이 필요합니다.</li>
+											<li>통합 시스템 관리<br/>데이터 취합을 자동화하고 외부 공시 및 Data 분석에 활용합니다.</li>
+										</ul>
+									</li>
+
+								</ul>
+							</div>
+
+
+						</li>
+
+						<li>
+							<a href="javascript:void(0);">
+								<div class="img-wrap">
+									<span class="thumbnail"><img src="https://samilesg.blob.core.windows.net/esg/thumbnail/M0186.png" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net/esg/movie/M0186.mp4" data-title="Q & A [ESG 2.0 탄소관리와 공시 고도화_7]" data-lclsf="10"/></span>
+									<span class="time">21 : 27</span>
+									<span class="ico-play"><i class="blind">play</i></span>
+								</div>
+							</a>
+							<div class="info-list">
+								<p class="tit"><a href="javascript:void(0);">7. Q & A</a></p>
+								<ul class="bul-square">
+									<li>
+										ESG 패널 대상 Q&A Session 
+										<ul>
+											<li>Q1. Scope 3 측정 시 카테고리 설정 및 객관적 산출방안 설정, 그리고 데이터 수집의 어려움이 있는데 이에 대한 해결 방안이 있을까요? </li>
+											<li>Q2. 향후 모든 수출품으로 탄소국경세 적용이 확대될까요? EU향 수출기업이 아니더라도 간접적인 영향이 있을까요? </li>
+											<li>Q3. ESG 공시에 대한 제3자 검증 기준 및 범위가 어떻게 되는지, 그리고 향후 이에 대한 감사가 시행될 것으로 예상하시나요? </li>
+										</ul>
+									</li>
+
+								</ul>
+							</div>
+
+
+						</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<section class="section default-width pt60">
+			<h4 class="tit-line-left">삼일 Pick (교육 영상 자료)</h4>
+			<div class="slide-wrap">
+				<!--20230903 변경//-->
+				<div class="ul img-slide-sub thumbnail-wrap" id="edu-list">
+
+
+				</div>
+				<!--//20230903 변경-->
+			</div>
+		</section>
+	</section>
+	<!-- //content -->
+
+	<script id="tmpl_edu" type="text/x-jquery-tmpl">
+		<div class="li content_pop" href="${linkUrl}"    data-kind="${contKindCd}" data-uid="${contUid}">
+		  <a href="javascript:void(0);">
+			<div class="img-wrap">
+			  <span class="thumbnail"><img src="{{if imgUrl }}{{if contKindCd != "40" }}https://samilesg.blob.core.windows.net{{/if}}${imgUrl}{{else}}/assets/img/common/noimage.png{{/if}}" style="width:100%;"></span>
+			  <!--span class="time">{{if vodQuntyHh }} ${vodQuntyHh} : {{/if}}{{if vodQuntyMi }}${vodQuntyMi} : {{/if}}${vodQuntySec}</span-->
+			  <span class="ico-play"><i class="blind">play</i></span>
+			</div>
+			<div class="info-wrap">
+			  <ul class="ctg-txt">
+				<li>${taskClsfNm}</li>
+				{{if sbjtGbNm }}<li>${sbjtGbNm}</li>{{/if}}
+			  </ul>
+			  <p class="subject ellipsis">${contNm}</p>
+			  {{if kwrdInfo}}<p class="n-hashtag">{{each(i, sub) kwrdInfo}}# ${sub.tagKwrd} {{/each}}</p>{{/if}}
+			  <span class="date">${pblcnYy}{{if pblcnMm != ''}}.${pblcnMm}{{if pblcnDd != ''}}.${pblcnDd}{{/if}}{{/if}}</span>
+			</div>
+		  </a>
+		</div>
+	</script>
+</div>
+</html>

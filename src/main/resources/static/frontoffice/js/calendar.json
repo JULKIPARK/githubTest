@@ -1,0 +1,536 @@
+[
+  {
+    "start": "2023-09-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "World Water Congress 2023",
+    "constraint": "1973년부터 3년 주기로 열리는 세계물총회(World Water Congress)는 전 세계 수자원 관련 경험과 지식을 교류하고, 지속가능하고 복원가능한 개발을 위한 다양한 물관리 기술 및 정책을 논의하고 발굴하는 권위 있는 국제학술행사입니다. ",
+    "allow": "https:\/\/www.worldwatercongress.com\/"
+  },
+  {
+    "start": "2023-09-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 SDG Summit ",
+    "constraint": "지속가능발전목표 정상회의 (SDG Summit 2023)은  4년 주기로 유엔 총회에서 개최되는 회의로 각국 정상들이 모여 2030 아젠다에 따른 글로벌 SDG 이행현황을 공동 점검하고 후속조치를 논의합니다. ",
+    "allow": "https:\/\/www.un.org\/en\/conferences\/SDGSummit2023"
+  },
+  {
+    "start": "2023-09-17",
+    "end": "2023-09-25",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 NYC Climate Week",
+    "constraint": "뉴욕 기후주간 (New York Climate Week)는 2009년부터 유엔총회와 뉴욕시에서 매년 개최되는 행사로 일주일동안 각국 정부, 기업, 시민단체가 뉴욕에 모여 적극적인 기후행동을 펼치고 기후 문제에 대해 논의합니다. <br/><br/>2023년 뉴욕 기후주간의 주제는 \"WE CAN. WE WILL\"입니다<br/>뉴욕 기후주간에서는 TNFD 프레임워크의 최종안이 발표될 예정이고, ISSB 도입에 대해 논의될 예정입니다. ",
+    "allow": "https:\/\/www.climateweeknyc.org\/"
+  },
+  {
+    "start": "2023-09-19",
+    "classIdx": "0",
+    "cata": "공시",
+    "title": "TNFD framework 최종 권고안 발표",
+    "constraint": "자연자본 관련 재무정보공개 협의체(TNFD)의 최종 권고안이 뉴욕 기후 주간(New York Climate Week)에서 발표되었습니다. "
+  },
+  {
+    "start": "2023-09-14",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2013 옥스팜 X 임팩트온 ESG 컨퍼런스",
+    "constraint": "주최\/주관: 옥스팜\/임팩트온<br/>'글로벌 기업, 인권실사 대응 방안'에 대한 주제로 유니레버와 옥스팜 사례를 살펴보는 ESG 컨퍼런스를 개최합니다. ",
+    "allow": "https:\/\/abit.ly\/oxfamobas"
+  },
+  {
+    "start": "2023-09-26",
+    "end": "2023-09-28",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "제 11차 한-OECD 국제재정포럼",
+    "constraint": "주최\/주관: 기획재정부, OECD, 한국개발연구원<br/>기후변화에 대응하는 재정의 역할이 강조되는 오늘, 미래세대를 위한 재정운용방향에 대해 논의하고, 국내 및 해외 주요국의 사례를 검토하여 예산 편성 및 집행방안에 대해 의견을 나누는 포럼입니다. ",
+    "allow": "https:\/\/www.kdi.re.kr\/share\/conferInfo?sm_no=568&pp=6&year=&month="
+  },
+  {
+    "start": "2023-09-20",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "제6회 'ESG ON 세미나'",
+    "constraint": "주최: 한국환경산업기술원 <br/>국제 환경규제 대응을 통한 수출 경쟁력 강화방안을 주제로 ESG 세미나를 개최합니다. ",
+    "allow": "https:\/\/docs.google.com\/forms\/d\/e\/1FAIpQLSeasHskleoDvIcqUmeVVgvekwItpqWT7hVxN-fZiSpw_lSiWw\/viewform"
+  },
+  {
+    "start": "2023-09-25",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "제4차 배출권거래제 기본계획! 개선 방향과 과제는",
+    "constraint": "주최: 국회기후변화포럼<br/>국내 배출권거래제 현황 및 향후 계획 방향, 국제통상질서 변화에 따른 국내 배출권거래제 개선 방안에 대한 포럼을 개최합니다. ",
+    "allow": "https:\/\/www.youtube.com\/@climateforum\/featured"
+  },
+  {
+    "start": "2023-09-18",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "공급망 실사 대응 토론회 - 인권·환경 실사를 중심으로",
+    "constraint": "행사 주최\/주관 : 전국경제인연합회, 국가인권위원회, 법무법인(유) 광장<br/>전 세계적으로 공급망 대응의 한 축으로 전개되고 있는 인권,환경 공급망 실사 관련 논의현황과 대응방안을 다각도로 조망하는 공급망 실사 대응 토론회를 개최합니다. ",
+    "allow": "https:\/\/seminar.fki.or.kr\/seminarView.do?smnkey=144"
+  },
+  {
+    "start": "2023-09-20",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "EU CBAM에 따른 주요국 산업영향 분석 및 철강산업 대응방안",
+    "constraint": "주관\/주최: 국회철강포럼(어기구, 김병욱(국), 서동용 의원실 등)<br/>EU CBAM애 따른 주요국 산업영향 분석 및 철강산업의 대응방안에 대한 포험을 개최합니다. ",
+    "allow": "https:\/\/www.assembly.go.kr\/portal\/noti\/seminar\/scheduleSmn.do?menuNo=600102"
+  },
+  {
+    "start": "2023-09-20",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "이산화탄소 대기직접포집(DAC) 기술개발과 촉진 과제",
+    "constraint": "주관\/주최: 국회기후변화포럼(임종성 의원실 등), 과학기술정보통신부, 국가녹색기술연구소<br/>이산회탄소 대기직접포집(DAC) 기술개발과 촉진과제에 대한 포럼을 개최합니다.",
+    "allow": "https:\/\/www.assembly.go.kr\/portal\/noti\/seminar\/scheduleSmn.do?menuNo=600102"
+  },
+  {
+    "start": "2023-10-01",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "EU CBAM, 탄소국경조정제도",
+    "constraint": "EU CBAM에서 6개 품목 (철강·알루미늄·시멘트·비료·전력·수소) 대상 시범 시행이 시작될 예정입니다.<br/>  전환기간은 2023.10.1 ~ 2025.12.31이며, 전환기간 중 제품생산 과정에서의 탄소배출량 보고 의무가 발생합니다. 전환기간이 시행된 후 첫 번째 보고서는 2024년 1월 31일까지 제출되어야 합니다."
+  },
+  {
+    "start": "2023-10-11",
+    "end": "2023-10-14",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "대한민국 ESG 친환경대전",
+    "constraint": "주관\/주최: 환경부, 한국환경산업기술원, ㈜메쎄이상<br/> 행사 설명: 국내 최초 ESG 친환경 박람회로 탄소중립, 녹색 산업, 순환경제로의 전환에 기여하는<br/> 기업들의 역량을 강화할 수 있는 비즈니스 플랫폼입니다.",
+    "allow": "https:\/\/k-eco.or.kr\/"
+  },
+  {
+    "start": "2023-10-12",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "ESG 공시: 어떻게 준비할 것인가",
+    "constraint": "삼일PwC ESG Platform이 ESG 공시를 준비하는 분들이 실무적으로 어려움을 느끼시는 주제를 중심으로 10월 12일 세미나를 개최합니다.<br/><br/><br/><br/>✅ IFRS S1 & S2 기준 보고서 작성 실무<br/><br/>✅ 연결 ESG 내부통제 운영 방안<br/><br/>✅ 연결 Scope 1·2·3 산출 및 공시 체계<br/><br/>✅ EU ESRS 이중 중대성 평가 방법론 등<br/><br/><br/><br/>각계에서 ESG 공시 준비를 위해 많은 고민을 하고 계신 패널 분들을 모시고 현재 기업이 겪고 있는 어려움과 어떤 준비가 필요한지 심도 있게 토론하는 시간도 마련될 예정입니다.<br/><br/>이번 세미나를 통해 ESG 공시 대응을 위해 필요한 사항들을 정확하게 이해하고, 각 기업에 맞는 추진 전략을 수립하는 데 직접적인 도움이 될 수 있기를 기대합니다.<br/><br/>관심 있는 분들의 많은 참석 바랍니다.",
+    "allow": "https:\/\/www.pwc.com\/kr\/ko\/events\/event_231012.html"
+  },
+  {
+    "start": "2023-10-12",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "오픈이노베이션 플랫폼 3: 배터리 재사용/재활용",
+    "constraint": "주최: GS에너지, 블루포인트<br/>GS 에너지와 블루포인트는 에너지 분야의 산학연 및 대기업, 스타트업, 투자자, 예비창업자까지 한 자리에 모여서 네트워킹을 할 수 있는 에너지 커뮤니티 '오픈이노베이션 플랫폼'을 주기적으로 진행할 예정입니다.",
+    "allow": "https:\/\/event-us.kr\/VFRONTIERS2\/event\/70853"
+  },
+  {
+    "start": "2023-10-13",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "Korea ESG Forum 2023",
+    "constraint": "주관\/주최: 환경부, 한국환경산업기술원, ㈜메쎄이상<br/> 행사 설명: 기업 및 비즈니스의 미래 생존전략, 산업별 최신 트렌드와 흐름을 다루는 글로벌 ESG경영전략 컨퍼런스입니다. 대한민국 ESG친환경대전과 동시 개최되어 ESG 공시제도, 글로벌 공급망, 지속가능경영, 국내외 케이스스터디 등을 집중 조명합니다.",
+    "allow": "https:\/\/kesgforum.com\/"
+  },
+  {
+    "start": "2023-10-16",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 기후테크 포럼",
+    "constraint": "주최: 탄소중립녹색성장위원회, 서울대기후테크센터, 대한상공회의소<br/>주제 : 기후테크 투자·시장 확대 및 산업기반 마련<br/> 기후테크 투자·시장 확대 및 산업기반 마련을 위해 '2023 제1회 기후테크포럼'을 개최합니다.   본 컨퍼런스에는 산업계, 학계, 정부 등 각계 전문가들이 한 데 모여 산업 현황을 돌아보고 기업간 네트워킹 시간이 마련될 예정입니다. ",
+    "allow": "https:\/\/event-us.kr\/2023climate\/event\/71852"
+  },
+  {
+    "start": "2023-10-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 한미 정례회의: 탄소중립",
+    "constraint": "주최: KDI국제정책대학원<br/>KDI국제정책대학원에서 '2023 한ˑ미 정례회의:탄소중립'을 2023년 10월 19일부터 20일까지 프레지던트호텔에서 개최합니다. 참가등록과 세부사항은 공식 홈페이지(https://kupd2023.com/)에서 확인 부탁드립니다. (본 행사는 KDI국제정책대학원 유튜브 채널에서 국ˑ영문 생중계 됩니다.)",
+    "allow": "https:\/\/www.nrc.re.kr\/board.es?mid=a10203000000&bid=0009&act=view&list_no=177266&nPage=1"
+  },
+  {
+    "start": "2023-10-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국사회투자 스타트업 ESG경영 평가모델 'ESG Plus' 세미나",
+    "constraint": "주최: 한국사회투자<br/>세미나 내용: 오늘날 스타트업은 투자, 자금조달, 대기업 공급망 관리 등의 측면에서 ESG경영을 요구 받고 있습니다. 하지만 대기업 중심의 ESG 지표는 스타트업에 적합하지 않은 경우가 많습니다. 이에 한국사회투자에서는 비즈니스 기회 발굴까지 할 수 있는 '스타트업에 딱 맞는 ESG경영 평가모델'을 개발하여 공개합니다.",
+    "allow": "https:\/\/forms.office.com\/pages\/responsepage.aspx?id=WjgOLoNjlEqfxC8IFWFKEWrSI0WHt6RArJvtBLi4xVNUNFUxNElZRzk1NTBIM0dCOE5CQkU5MDJURC4u"
+  },
+  {
+    "start": "2023-10-23",
+    "end": "2023-10-25",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 CCUS 기술 동향 및 사업전략 세미나",
+    "constraint": "주최: 세미나허브 <br/> 세미나 설명: CCUS 정책, 포집, 저장, 수송, 활용에 대한 기술 동향 및 사업전략 세미나",
+    "allow": "https:\/\/seminarhub.co.kr\/shop\/item_seminar.php?it_id=1690246159&type=1"
+  },
+  {
+    "start": "2023-10-25",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 전기차 폐배터리 리사이클링 세미나",
+    "constraint": "주최: 세미나허브 <br/> 세미나 설명: 배터리 공급망 순환경제 정책방향, 배터리 재활용 기술과 전망, 리사이클링 사업 전략, 안전관리 및 평가",
+    "allow": "https:\/\/seminarhub.co.kr\/shop\/item_seminar.php?it_id=1690093774&type=1"
+  },
+  {
+    "start": "2023-10-26",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "제10회 에너지 · 탄소 포럼",
+    "constraint": "주최: 서울파이낸스<br/>주제: 국가 NDC 달성을 위한 CCM과 VCM 대응전략<br/>일시: 2023년 10월 26일(목) 오전 10시~12시 <br/>장소: 전경련 컨퍼런스센터 루비홀 /참가비: 무료<br/>문의: 포럼 사무국 02-2266-9988",
+    "allow": "https:\/\/docs.google.com\/forms\/d\/e\/1FAIpQLSc_haP5QkLXjChLNcIIrcBHOD02imtzpC5Eq7Oy4BMmW9RcSg\/viewform"
+  },
+  {
+    "start": "2023-10-27",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "기업의 생물다양성 이슈 대응능력 제고를 위한 세미나",
+    "constraint": "주관\/주최: KBCSD, 환경부, 법무법인율촌, BNBP<br/>주제: TNFD 공시 기준 최종권고안의 주요 내용에 대해 알아보고, 기업의 효과적인 대응전략 마련을 위한 방안을 함께 모색하고자 세미나를 개최합니다.",
+    "allow": "http:\/\/kbcsd.or.kr\/page.asp?pageid=community7&pagenum=020100&bc_seq=14&b_cate=&method=view&page=1&b_seq=6157&search_key=&search_word="
+  },
+  {
+    "start": "2023-10-31",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 서울 국제기후환경포럼",
+    "constraint": "주최: 서울특별시<br/>주제: 지구를 위한 동행",
+    "allow": "https:\/\/www.sifce.org/bbs\/write.php?bo_table=preRegistration"
+  },
+  {
+    "start": "2023-10-31",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "KRX ESG 포럼 2023",
+    "constraint": "주최: 한국거래소<br/>주제: 바람직한 국내 ESG 공시제도 도입방향",
+    "allow": "https:\/\/open.krx.co.kr\/contents\/OPN\/05\/05000000\/OPN05000000.jsp#fe3647848b826aa1ddee224c4b5526f4=1&view=2023102301"
+  },
+  {
+    "start": "2023-10-31",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "기상청·대신경제연구소 공동포럼_기후정보 활용과 물리적위험 대응",
+    "constraint": "주관\/주최: 기상청, 대신경제연구소<br/>주제: 기후정보 활용과 물리적위험 대응<br/>일시: 2023.10.31 화요일 14:00 ~ 17:00<br/>장소: 대신파이낸스센터 5층 대강당",
+    "allow": "https:\/\/docs.google.com\/forms\/d\/e\/1FAIpQLSciSGHJKf42-aKJA_GUeQYTaiMn_cF3vgVAmghymaac2hG1IQ/viewform"
+  },
+  {
+    "start": "2023-11-01",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "ESG Outlook Conference 2023 APAC",
+    "constraint": "주관\/주최: Sustainable Fitch<br/> 행사 설명: 홍콩과 온라인 동시에 진행하는 ESG 전망에 대한 컨퍼런스로 아시아 태평양의 ESG 관련 아젠다 및 동향에 대해 의논합니다.",
+    "allow": "https:\/\/events.sustainablefitch.com\/esgoutlookconference2023apac"
+  },
+  {
+    "start": "2023-11-01",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "ESG 정보 사업보고서 연계 공시",
+    "constraint": "주관\/주최: ESG경제, 금융위원회, 한국거래소, 한국공인회계사회,금융투자협회,손해보험협<br/>주제: ESG 정보 사업보고서 연계 공시, 정부 정책 방향과 기업의 대응",
+    "allow": "https:\/\/www.esgeconomy.com\/news\/articleViewAmp.html?idxno=4886"
+  },
+  {
+    "start": "2023-11-03",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국공인회계사회 제6회 ESG 인증 포럼",
+    "constraint": "주최: 한국공인회계사회<br/>주제: 국제지속가능성인증기준(ISSA) 5000 공개초안 주요 내용과 시사점",
+    "allow": "https:\/\/www.kicpa.or.kr\/portal\/default\/kicpa\/gnb\/kr_pc\/menu05\/menu01.page.page?action=READ&boardId=noti&bltnNo=11697086377625"
+  },
+  {
+    "start": "2023-11-06",
+    "end": "2023-11-08",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023년 금융동향과 2024년 전망세미나",
+    "constraint": "주최: 한국금융연구원<br/>주제: 글로벌 금융환경의 변화와 한국의 대응방향",
+    "allow": "https:\/\/www.kif.re.kr\/kif\/etc\/event\/2023\/1106_kif.htm"
+  },
+  {
+    "start": "2023-11-08",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "기후리스크 TCFD 공시 대응 전략 세미나",
+    "constraint": "주최: ESG GLOBAL STANDARD, BDO 성현회계법인, South Pole<br/>대한민국 TCFD 기후리스크 공시대응전략<br/>글로벌 기후 솔루션 기업 South pole과 함께 해답을 찾아 떠난다.",
+    "allow": "https:\/\/event-us.kr\/esgstandard\/event\/71737"
+  },
+  {
+    "start": "2023-11-08",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "배출권거래제와 전력 시장의 역할과 연계방안 세미나",
+    "constraint": "주최: 기후변화센터<br/>주제: 탄소중립 녹색성장 이행을 위한 배출권거래제와 전력 시장의 역할과 연계방안",
+    "allow": "https:\/\/docs.google.com\/forms\/d\/e\/1FAIpQLSeeQDSi5NSXqLyVg9ZPIaesCWiTwmb3cfhN0I7sp6bbnFeznQ/viewform"
+  },
+  {
+    "start": "2023-11-13",
+    "end": "2023-11-16",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2024 세계경제포럼 사이버보안 연례회의",
+    "constraint": "2024 세계경제포럼 사이버보안 연례회의 (World Economic Forum Annual Meeting on Cybersecurity)",
+    "allow": "https:\/\/www.weforum.org\/events\/annual-meeting-on-cybersecurity-2023"
+  },
+  {
+    "start": "2023-11-14",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "글로벌 ESG 선진 사례 벤치마킹 한국대표단",
+    "constraint": "주최: 한국ESG경영개발원<br/>세계 최대 신재생 에너지 컨퍼런스 & EXPO 참가 <br/>ESG 우수 기업 벤치마킹 IN KANSAI <br/><br/>아시아 탄소중립 선도국을 향해 나아가는 일본에서 최대 규모 SMART ENERGY 컨퍼런스와 ESG우수 실천기업이 가진 인사이트를 제공합니다. ",
+    "allow": "https:\/\/kemi.re.kr\/106"
+  },
+  {
+    "start": "2023-11-21",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국공인회계사회 제7회 ESG 인증 포럼",
+    "constraint": "주최: 한국공인회계사회<br/>주제:  TCFD 권고안 이행 및 비금융 기업을 위한 시나리오 분석 지침서 강독<br/>일    시 : 2023년 11월 21일(화) 09:00 ~ 17:00",
+    "allow": "https:\/\/www.kicpa.or.kr\/portal\/default\/kicpa\/gnb\/kr_pc\/menu05\/menu01.page.page?action=READ&boardId=noti&bltnNo=11698135307294"
+  },
+  {
+    "start": "2023-11-30",
+    "end": "2023-12-13",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "UN COP 28 in Dubai",
+    "constraint": "2023 UN Climate Change Conference (UNFCCC COP 28)<br/> 제 28차 유엔 기후변화협약 당사국 총회 COP 28",
+    "allow": "https:\/\/unfccc.int\/cop28"
+  },
+  {
+    "start": "2023-11-28",
+    "end": "2023-12-01",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "제6회 ESG 경영과 지속가능성 국제컨퍼런스",
+    "constraint": "주관\/주최: 국제ESG협회, 고려대학교 ESG 연구원, 환태평양대학협회 등<br/> 행사 설명:3일간 서울에서 열리는 국제 컨퍼런스는 ESG 경영과 지속가능성에 대한 세계 석학들의 담론이 펼쳐지는 행사입니다. IUCN 사무총장, 미국 스탠포드대학교 지속가능대학, 영국 옥스포드대학교 경영대학원 등 전세계 10대 대학의 주요 연구자를 포함하여 미국, 영국, 캐나다, 유럽, 홍콩, 중국, 일본 등에서 해당 분야 전문가 100여 명이 한국을 방문할 예정입니다. 이번 컨퍼런스에서는 ESG 경영, 기후변화와 생물다양성, 녹색금융 등 지속가능성에 관한 전문가들의 심도 있는 토론 또한 이루어집니다.",
+    "allow": "https:\/\/globalesgforum.org\/ko\/"
+  },
+  {
+    "start": "2023-12-05",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 THE ESG 포럼",
+    "constraint": "주최: 조선비즈<br>주제 : ESG공시 의무화 대응반안 - ESG 공시 인프라 구축<br>일시 : 2023년 12월 5일 화요일, 09:00~11:30<br>장소 : 서울 소공동 웨스틴 조선호텔, 라일락품",
+    "allow": "https://e.chosunbiz.com/tc-events/2023-the-esg%ED%8F%AC%EB%9F%BC/"
+  },
+  {
+    "start": "2023-12-08",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "온실가스 국제감축사업의 도전과제와 대응전략",
+    "constraint": "주최: 대신경제연구소, 한국국제경제학회<br>주제: 온실가스 국제감축사업의 도전과제와 대응전략<br>일시: 2023.12.08 금요일 14:00 ~ 17:00<br>장소: 대신파이낸스센터 5층 대강당",
+    "allow": "https://docs.google.com/forms/d/e/1FAIpQLSfRfH5Lx-knV0e09YnZhUX-5aEI6COmmQ-PXBxMlKzr36hzbQ/viewform"
+  },
+  {
+    "start": "2023-12-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국공인회계사회 제8회 ESG 인증 포럼 - ESG가 재무제표에 미치는 영향",
+    "constraint": "주최: 한국공인회계사회<br>주제: ESG가 재무제표에 미치는 영향, ESG 재무제표에 대한 영향이 ESG 공시에 대해 가지는 의미",
+    "allow": "https://www.kicpa.or.kr/home/symposiumGnrl/popup.face?sympCode=2023007"
+  },
+  {
+    "start": "2023-12-12",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2024년 세계경제통상전망 세미나",
+    "constraint": "주최: 한국무역협회<br>주제: 2024년 수출입 환경 및 전망, 2024년 주요 통상 이슈 및 전망",
+    "allow": "https://kita.net/asocBiz/asocBiz/asocBizOngoingDetail.do;JSESSIONID_KITA=AC64ED244406771C7D3809ADD2D52E9A.Hyper?bizAltkey=202311044&openRegistPopYn=Y&logGb="
+  },
+  {
+    "start": "2023-12-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "제16차 대한상의 ESG경영 온라인 포럼",
+    "constraint": "주최: 대한상공회의소<br>주제: 2024년 주요 ESG 이슈 전망 및 과제 등 최근 ESG 현안과 시사점",
+    "allow": "https://www.korcham.net/nCham/Service/Event/appl/KcciNewsDetail.asp?DATA_ID=20231128142407799270K000&CHAM_CD=B001&BIZ_SEQ=000"
+  },
+  {
+    "start": "2023-12-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국TCFD얼라이언스 WG3 <기업과 금융의 기후 시나리오 적용 - 전환 계획>",
+    "constraint": "주최: 한국사회책임투자포럼<br>주제: 기업과 금융의 기후 시나리오 적용 - 전환 계획",
+    "allow": "https://kosif.org/esg-2/?category1=%ED%96%89%EC%82%AC%EC%95%88%EB%82%B4&vid=119"
+  },
+  {
+    "start": "2023-12-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "삼일PwC 거버넌스센터 세미나",
+    "constraint": "주최: 삼일PwC 거버넌스 센터<br>주제: K-거버넌스, 바람직한 변화를 위한 이사회의 과제",
+    "allow": "https://www.pwc.com/kr/ko/events/event_231211.html"
+  },
+  {
+    "start": "2023-12-07",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023년도 제2차 KEI 중국탄소중립연구포럼",
+    "constraint": "주최: 한국환경연구원<br>주제: 제2차 KEI 중국탄소중립연구포럼 - 한중 양국의 탄소중립 우수사례 교류",
+    "allow": "https://www.kei.re.kr/board.es?mid=a10302000000&bid=0034&act=view&list_no=58841"
+  },
+  {
+    "start": "2023-12-07",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "모두의 사회적경제 X ESG 콘퍼런스",
+    "constraint": "주최: 경기도사회적경제원<br>내용:  ESG 특강 및 기조강연, 홍보부스 및 체험프로그램 운영 및 미니포럼 등",
+    "allow": "https://preregistration.spaceedu.co.kr/PreRegistration?key=0GmWOE%2bQwn0b%2fxJWAJHnLw%3d%3d&index=0"
+  },
+
+  {
+    "etcStart": "2023-12",
+    "classIdx": "4",
+    "cata": "평가",
+    "title": "2023 CDP 등급 발표",
+    "constraint": "2023년 CDP 등급 발표",
+    "allow": "https:\/\/www.ul.com\/news\/cdp-disclosure-timelines-and-resources-2023#:~:text=July%2026%20%E2%80%93%20For%20companies%20eligible,Release%20of%202023%20corporate%20scores."
+  },
+  {
+    "start": "2023-12-17",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "EU, 내부고발지침 적용 시작",
+    "constraint": "EU 내부고발지침(EU Whistleblowing Directive) 적용 시작<br/> EU 내부고발지침(EU Whistleblowing Directive), 또는 '유럽연합 법률 위반 신고자 보호에 관한 지침'으로 불리는 법안은 유럽 연합에서 내부 고발자 보호에 대한 포괄적인 접근 방식을 제공하는 것을 목표로 하는 새로운 법적 프레임워크입니다. 기밀보고를 가능하게 하고 해고, 승진 또는 급여 거부, 직장 이전 또는 변경 및 차별로부터 내부고발자를 보호하고자 발효되었던 이 지침은 EU 역내 small (50명 이하),medium (50-249명) 기업에 내부고발지침(EU Whistleblowing Directive) 적용이 시작됩니다."
+  },
+  {
+    "etcStart": "2023-12",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "OECD BEPS Pillar 1 다자조약 공개예정",
+    "constraint": "OECD 디지털화에 따른 새로운 국가간 과세권 배분기준 다자조약 공개예정 <br/> 필라1 어마운트 에이(Amount A)의 이행을 위해 2025년 발효를 목표로 2023년 하반기에 다자조약(MLC, Multilateral Convention)안을 최종적으로 공개할 예정입니다. <br/> 경제협력개발기구(OECD)\/주요 20개국(G20) 포괄적 이행체계*(IF)는 제15차총회를 개최하여 포괄적 이행체계(IF) 143개국 중 138개 국가의 승인을 거친 디지털세(필라1, 2)에 대한 성명문(Outcome Statement)을 발표하였습니다. 성명문은 ➊필라1 어마운트 에이(Amount A), ➋필라1 어마운트 비(Amount B), ➌필라2 원천지국과세규칙(STTR, Subject To<br/> Tax Rule), ➍이행 지원에 대한 사항을 포함하고 있는데, 필라1 어마운트 에이(Amount A)는 거대 다국적 기업의 소득에 대하여 매출발생국에서 과세가 가능하도록 하는 원칙을 마련한 것으로 국제조세에 있어서 공정한 과세권의 배분이 가능하도록 할 새로운 디지털 경제에 맞는 과세기준이 될 것으로 보입니다."
+  },
+  {
+    "etcStart": "2023-12",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "EU 에코디자인 규정 (ESPR) 시행예정",
+    "constraint": "EU 에코디자인 규정(Ecodesign for Sustainable Products Regulation) 연내 유럽의회·유럽이사회 협의 통해 완성 및 시행<br/> '지속가능한 제품을 위한 에코디자인규정(ESPR)'은 EU의 그린딜 목표 달성의 일환으로 지속 가능한 제품 소비, 폐기물 감축, 제품의 재사용 및 재활용을 촉진하기 위한 것으로, 이를 위해 기존 에코디자인 지침(Directive)을 모든 회원국에 직접 적용되는 규정(Regulation)으로 개정한 것이 특징입니다. 유럽의회는 디자인 단계에서 제품의 사용수명을 고의로 제한하는 '의도적 노후화(Premature Obsolescence)'를 금지하고, 수리가 용이한 디자인 및 소비자의 수리 매뉴얼 접근권을 강화할 것을 요구하였고, 발효 1년 후부터 미판매 섬유제품, 신발 및 소형 가전제품 등의 폐기를 금지할 것을 요구한 점에 주목할 필요가 있습니다."
+  },
+  {
+    "start": "2024-01-01",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "독일 공급망실사법 시행대상 확대",
+    "constraint": "적용대상: 독일 내 직원 1000명 이상 기업<br/> 적용범위 : 노동(인권, 산업안전·보건 등), 환경 등<br/> 감독 : 기업 공급망 실사보고서 제출, 보고서 검증 및 실사결과 환경·인권 침해시 연매출액 2% 벌금 부과 및 공공조달에서 제외"
+  },
+  {
+    "start": "2024-01-01",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "EU CSRD NFRD 기업 시행",
+    "constraint": "NFRD 기업 대상으로 EU CSRD 적용이 시작됩니다."
+  },
+  {
+    "start": "2024-01-01",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "EU 공급망 실사지침 시행",
+    "constraint": "EU 공급망 실사지침(CSDDD)가 그룹1*에 적용되어 시행됩니다. <br/> 적용대상: 그룹1 (직원 수 500명 초과, 매출 1억5000만 유로(약 2025억원) 초과 기업) 발효 2년 이내"
+  },
+  {
+    "start": "2024-01-01",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "IFRS ISSB S1, S2 시행",
+    "constraint": "2024년 1월 1일부터 IFRS의 ISSB S1, S2가 시행됩니다. <br/> 2024년 1월 1일 이후에 시작하는 연차 보고 기간부터 2023년 6월 26일 발표된 국제회계기준위원회(IFRS) S1(지속가능성 관련 재무 정보 공개를 위한 일반 요건)과 S2(기후 관련 재무정보 공시)를 공시하여야 합니다. 산업계의 부담을 완화하기 위해 도입 첫 해에는 기후 관련된 재무정보를 공시하고 그 외에 다른 지속가능성 이슈는 그 다음연도부터 공시할 수 있는 전환기 완화 방안 중 선택가능합니다."
+  },
+  {
+    "start": "2024-01-01",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "미국 CCA (청정경쟁법안) 시행",
+    "constraint": "미국식 탄소국경조정제도인 미국 청정경쟁법안(Clean Competition Act)이 시행됩니다. <br/> 석유화학 제품 등 12개 수입품에 대해 온실가스 배출 1톤당 55달러를 부과될 예정이며, 온실가스 무게를 기준으로 탄소 무역 규제가 본격적으로 시행될 예정입니다."
+  },
+  {
+    "start": "2024-01-15",
+    "end": "2024-01-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2024 세계경제포럼(WEF)",
+    "constraint": "2024 세계경제포럼 (World Economic Forum)",
+    "allow": "https:\/\/www.weforum.org\/events\/world-economic-forum-annual-meeting-2024"
+  },
+  {
+    "start": "2024-02-18",
+    "classIdx": "2",
+    "cata": "정책",
+    "title": "EU 배터리 규정인 시행 예정",
+    "constraint": "2023년 8월 17일 발효된 EU 배터리 규정이 2024년 2월 18일부터 시행될 예정입니다. <br/> EU 배터리 규정은 ① 지속가능성 및 안전성, ② 라벨, 마크 표시 및 정보, ③ 공급망 실사, ④ 폐배터리의 관리에 관하여 핵심적 의무를 규정하고 있으며, 불이행시 EU 배터리 시장에 진입불가하도록 하는 제재 및 처벌 규정이 있어 컴플라이언스에 대한 주의가 필요합니다."
+  },
+  {
+    "etcStart": "2024-06",
+    "classIdx": "3",
+    "cata": "공시",
+    "title": "ESRS Set 2 발표예정",
+    "constraint": "기업지속가능성보고지침(CSRD)의 표준으로 사용될 ‘유럽지속가능성 공시기준(ESRS·European Sustainability Reporting Standards)의 두 번째 세트인 산업별, Non-EU 기업, 상장 중 소기업 대상 공시 기준이 공개될 예정입니다."
+  },
+  {
+    "start": "2024-10-12",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "ESG 공시: 어떻게 준비할 것인가",
+    "constraint": "삼일PwC ESG Platform이 ESG 공시를 준비하는 분들이 실무적으로 어려움을 느끼시는 주제를 중심으로 10월 12일 세미나를 개최합니다.<br/><br/>✅ IFRS S1 & S2 기준 보고서 작성 실무<br/>✅ 연결 ESG 내부통제 운영 방안<br/>✅ 연결 Scope 1·2·3 산출 및 공시 체계<br/>✅ EU ESRS 이중 중대성 평가 방법론 등<br/><br/>각계에서 ESG 공시 준비를 위해 많은 고민을 하고 계신 패널 분들을 모시고 현재 기업이 겪고 있는 어려움과 어떤 준비가 필요한지 심도 있게 토론하는 시간도 마련될 예정입니다.<br/><br/>이번 세미나를 통해 ESG 공시 대응을 위해 필요한 사항들을 정확하게 이해하고, 각 기업에 맞는 추진 전략을 수립하는 데 직접적인 도움이 될 수 있기를 기대합니다.<br/><br/>관심 있는 분들의 많은 참석 바랍니다.",
+    "allow": "https:\/\/www.pwc.com\/kr\/ko\/events\/event_231012.html"
+  },
+  {
+    "start": "2024-10-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "KSSB-ISSB 지속가능성 공시기준 세미나",
+    "constraint": "주제: ISSB 기준 국문 번역본 공개초안 및 SASB 기준<br/>주최: 한국회계기준원<br/>목적: 국내 이해관계자의 ISSB 기준(IFRS S1, S2, 산업기반 지침) 및 SASB 기준에 대한 이해를 제고하여 새로운 공시기준에 대한 역량을 강화<br/>일시: 2023년 10월 11일 (수) 14:00 ~ 18:00 ",
+    "allow": "http:\/\/www.kasb.or.kr\/fe\/plan\/NR_view.do?planSeq=1055&currentPage=1&rowPerPage=10&searchYear=2023&searchVal=&subSearchVal=&startDd=&endDd=&searchKey=1000&searchValue=&sort_all=Y&sortCds=01&sortCds=07&sortCds=08&sortCds=04&sortCds=02&sortCds=03&sortCds=05&sortCds=06&CSRFToken=b1c16ed5-2c30-4a1a-952f-7da805e22c30"
+  },
+  {
+    "start": "2024-11-08",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "기후리스크 TCFD 공시 대응 전략 세미나",
+    "constraint": "주최: ESG GLOBAL STANDARD, BDO 성현회계법인, South Pole<br/>대한민국 TCFD 기후리스크 공시대응전략<br/>글로벌 기후 솔루션 기업 South pole과 함께 해답을 찾아 떠난다.",
+    "allow": "https:\/\/event-us.kr\/esgstandard\/event\/71737"
+  },
+  {
+    "start": "2024-10-26",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "제10회 에너지 · 탄소 포럼",
+    "constraint": "주최: 서울파이낸스<br/>주제: 국가 NDC 달성을 위한 CCM과 VCM 대응전략<br/>일시: 2023년 10월 26일(목) 오전 10시~12시 <br/>장소: 전경련 컨퍼런스센터 루비홀 \/참가비: 무료<br/>문의: 포럼 사무국 02-2266-9988",
+    "allow": "https:\/\/docs.google.com\/forms\/d\/e\/1FAIpQLSc_haP5QkLXjChLNcIIrcBHOD02imtzpC5Eq7Oy4BMmW9RcSg\/viewform"
+  },
+  {
+    "start": "2024-10-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "한국사회투자 스타트업 ESG경영 평가모델 'ESG Plus' 세미나",
+    "constraint": "주최: 한국사회투자<br/>세미나 내용: 오늘날 스타트업은 투자, 자금조달, 대기업 공급망 관리 등의 측면에서 ESG경영을 요구 받고 있습니다. 하지만 대기업 중심의 ESG 지표는 스타트업에 적합하지 않은 경우가 많습니다. 이에 한국사회투자에서는 비즈니스 기회 발굴까지 할 수 있는 '스타트업에 딱 맞는 ESG경영 평가모델'을 개발하여 공개합니다.",
+    "allow": "https:\/\/forms.office.com\/pages\/responsepage.aspx?id=WjgOLoNjlEqfxC8IFWFKEWrSI0WHt6RArJvtBLi4xVNUNFUxNElZRzk1NTBIM0dCOE5CQkU5MDJURC4u"
+  },
+  {
+    "start": "2024-10-16",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 기후테크 포럼",
+    "constraint": "주최: 탄소중립녹색성장위원회, 서울대기후테크센터, 대한상공회의소<br/>주제 : 기후테크 투자·시장 확대 및 산업기반 마련<br/> 기후테크 투자·시장 확대 및 산업기반 마련을 위해 '2023 제1회 기후테크포럼'을 개최합니다.   본 컨퍼런스에는 산업계, 학계, 정부 등 각계 전문가들이 한 데 모여 산업 현황을 돌아보고 기업간 네트워킹 시간이 마련될 예정입니다. ",
+    "allow": "https:\/\/event-us.kr\/2023climate\/event\/71852"
+  },
+  {
+    "start": "2024-10-12",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "오픈이노베이션 플랫폼 3: 배터리 재사용\/재활용",
+    "constraint": "주최: GS에너지, 블루포인트<br/>GS 에너지와 블루포인트는 에너지 분야의 산학연 및 대기업, 스타트업, 투자자, 예비창업자까지 한 자리에 모여서 네트워킹을 할 수 있는 에너지 커뮤니티 '오픈이노베이션 플랫폼'을 주기적으로 진행할 예정입니다.",
+    "allow": "https:\/\/event-us.kr\/VFRONTIERS2\/event\/70853"
+  },
+  {
+    "start": "2024-10-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 한미 정례회의: 탄소중립",
+    "constraint": "주최: KDI국제정책대학원<br/>KDI국제정책대학원에서 '2023 한ˑ미 정례회의:탄소중립'을 2023년 10월 19일부터 20일까지 프레지던트호텔에서 개최합니다. 참가등록과 세부사항은 공식 홈페이지(https:\/\/kupd2023.com\/)에서 확인 부탁드립니다. (본 행사는 KDI국제정책대학원 유튜브 채널에서 국ˑ영문 생중계 됩니다.)",
+    "allow": "https:\/\/www.nrc.re.kr\/board.es?mid=a10203000000&bid=0009&act=view&list_no=177266&nPage=1"
+  },
+  {
+    "start": "2024-11-14",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "글로벌 ESG 선진 사례 벤치마킹 한국대표단",
+    "constraint": "주최: 한국ESG경영개발원<br/>세계 최대 신재생 에너지 컨퍼런스 & EXPO 참가 <br/>ESG 우수 기업 벤치마킹 IN KANSAI <br/><br/>아시아 탄소중립 선도국을 향해 나아가는 일본에서 최대 규모 SMART ENERGY 컨퍼런스와 ESG우수 실천기업이 가진 인사이트를 제공합니다. ",
+    "allow": "https:\/\/kemi.re.kr\/106"
+  }
+]

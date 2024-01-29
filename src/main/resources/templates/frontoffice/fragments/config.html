@@ -1,0 +1,65 @@
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<!--configFragment 선언-->
+<th:block th:fragment="configFragment">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E57ZSXG41Z"></script>
+    <script> window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-E57ZSXG41Z');</script>
+
+    <!--metatag-->
+    <meta name="naver-site-verification" content="645bbeda06b7b2942fbd363f6c958e4eeb2020a8"/>
+    <meta name="google-site-verification" content="8DlRU7CvNkfmsVUEBRFwsmdGuTrLU2OAfUw3ek8HIW4"/>
+
+    <!-- common css -->
+    <link rel="stylesheet" th:href="@{/assets/css/fonts.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/common.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/pwc.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/include.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/sub.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/slick.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/jquery-ui.datepicker.min.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/hook.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/response.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/js/chart.js/Chart.min.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/js/toast/jquery.eatoast.min.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/js/alert/wow-alert.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/daterangepicker.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}"/>
+
+    <!-- common script -->
+    <script th:src="@{/assets/js/jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/assets/js/slick.js}"></script>
+    <script th:src="@{/assets/js/jquery.form.js}"></script>
+    <script th:src="@{/assets/js/jquery-ui.datepicker.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.twbsPagination.min.js}"></script>
+    <script th:src="@{/assets/js/com.js}"></script>
+    <script th:src="@{/assets/js/form.js}"></script>
+    <script th:src="@{/assets/js/common.js}"></script>
+    <script th:src="@{/assets/js/chart.js/Chart.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.tmpl.js}"></script>
+    <script th:src="@{/assets/js/moment.js}"></script>
+    <script th:src="@{/assets/js/toast/jquery.eatoast.min.js}"></script>
+    <script th:src="@{/assets/js/alert/wow-alert.js}"></script>
+    <script th:src="@{/assets/js/daterangepicker.js}"></script>
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+
+
+    <!-- Konan -->
+    <script th:src="@{/assets/js/search/search.js}"></script>
+
+    <!-- content page css fragment -->
+    <th:block layout:fragment="css"></th:block>
+
+    <!-- content page script fragment-->
+    <th:block layout:fragment="script"></th:block>
+</th:block>
+</html>

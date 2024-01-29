@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>Samil ESG - ESG 공시 &middot; 인증 – ESG 공시</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-a pp-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/pwc.css" />
+    <link rel="stylesheet" href="../css/sub.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/include.css" />
+    <link rel="stylesheet" href="../css/hook.css" />
+    <link rel="stylesheet" href="../css/response.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <header id="header" class="header_sj">
+        <div class="top">
+          <ul class="top-menu util">
+            <li><a href="/frontoffice/common/join">회원가입</a></li>
+            <li><a href="/frontoffice/common/login">로그인</a></li>
+
+            <li><a href="/frontoffice/footer/siteProvider">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="bottom">
+          <div class="logo">
+            <a href="/frontoffice"><img src="/frontoffice/img/common/logo_type2.svg" /></a>
+          </div>
+          <ul class="menu">
+            <li class="menu01">
+              <p></p>
+              <a href="/frontoffice/diagnosis/selfDiagnosisView">ESG 진단 · 계획</a>
+            </li>
+            <li class="menu02">
+              <p></p>
+              <a href="/frontoffice/action/environmentView">ESG 실행</a>
+            </li>
+            <li class="menu03 on">
+              <p></p>
+              <a href="javascript:goDisclosureView(1)">ESG 공시 · 인증</a>
+            </li>
+            <li class="menu04">
+              <p></p>
+              <a href="/frontoffice/trend/insightsList">ESG 자료 · 동향</a>
+            </li>
+          </ul>
+
+          <div class="search-btn btn-search">
+            <div class="tx">Search</div>
+            <div class="icon"><img src="/frontoffice/img/common/icon_search_wh.png" /></div>
+          </div>
+
+          <div class="m-rt-menu">
+            <button class="mo-search-btn">
+              <img src="/frontoffice/img/common/ico_search_m.svg" class="btn-search" />
+              <img src="/frontoffice/img/common/btn_close_40.png" class="btn-close total-btn-close" />
+            </button>
+            <button type="button" class="btn-menu">메뉴 열기</button>
+          </div>
+        </div>
+
+        <div class="dropmenu">
+          <div class="dropmenu-head">
+            <a href="/frontoffice"><img src="/frontoffice/img/common/logo_type2.svg" /></a>
+            <button type="button" class="btn-close">메뉴 닫기</button>
+          </div>
+          <dl class="dropmenuList">
+            <dd class="dropmenu1">
+              <button type="button" class="btn-m-toggle">ESG 진단 · 계획</button>
+              <ul class="">
+                <li><a href="/frontoffice/diagnosis/selfDiagnosisView">ESG 자가진단</a></li>
+                <li><a href="/frontoffice/diagnosis/businessInfo">ESG 경영 가이드</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu2">
+              <button type="button" class="btn-m-toggle">ESG 실행</button>
+              <ul class="">
+                <li><a href="/frontoffice/action/environmentView">환경</a></li>
+                <li><a href="/frontoffice/action/socialView">사회 </a></li>
+                <li><a href="/frontoffice/action/governanceView">거버넌스</a></li>
+                <li><a href="/frontoffice/action/financeView">금융</a></li>
+                <li><a href="/frontoffice/action/esgTaxView">ESG Tax</a></li>
+                <li><a href="/frontoffice/action/esgDealView">ESG Deal</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu3">
+              <button type="button" class="btn-m-toggle">ESG 공시 · 인증</button>
+              <ul class="">
+                <li><a href="javascript:goDisclosureView(1)">ESG 공시</a></li>
+                <li><a href="/frontoffice/disclosure/appraisalView">ESG 평가</a></li>
+                <li><a href="/frontoffice/disclosure/certificationView">ESG 인증</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu4">
+              <button type="button" class="btn-m-toggle">ESG 자료 · 동향</button>
+              <ul class="">
+                <li><a href="/frontoffice/trend/insightsList">삼일 인사이트</a></li>
+                <li><a href="/frontoffice/trend/bbsList">ESG 자료</a></li>
+                <li><a href="/frontoffice/trend/esgNewsList">ESG 뉴스</a></li>
+                <li><a href="/frontoffice/trend/educationList">ESG 교육</a></li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="dropmenu-foot util">
+            <ul class="my-menu-list">
+              <!--로그인했을때-->
+
+              <!--로그인안했을떄-->
+              <li class="back-btn"><a href="/frontoffice/common/login">로그인</a></li>
+            </ul>
+
+            <ul class="foot-menu">
+              <!--로그인안했을떄-->
+              <li><a href="/frontoffice/footer/siteProvider">About Us</a></li>
+
+              <!--로그인안했을떄-->
+              <li><a href="/frontoffice/common/join">회원가입</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <div id="container" class="sub-wrap">
+        <!-- content -->
+        <section class="content sub content-esg-disclosure">
+          <div class="sub-title-a">
+            <div class="ct">
+              <div class="tit">ESG 공시</div>
+              <div class="subs">ESG 주요 공시 기관별 기준서의 프레임워크를 소개하고, 각 기준서의 해설/사례, 관련 컨텐츠를 제공합니다.</div>
+            </div>
+            <div class="bgBack"></div>
+            <div class="bg"><img src="/frontoffice/img/common/bg_tit.png" /></div>
+          </div>
+
+          <div class="tab-scroll">
+            <ul class="keyword-wrap current-wrap">
+              <li>
+                <button type="button" id="tabId1" class="btn-rd-wh current" data="27"><span>ESG 공시 · 보고</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId2" class="btn-rd-wh" data="28"><span>GRI</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId3" class="btn-rd-wh" data="29"><span>ISSB</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId4" class="btn-rd-wh" data="30"><span>CSRD</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId5" class="btn-rd-wh" data="31"><span>SEC</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId6" class="btn-rd-wh" data="32"><span>TCFD</span></button>
+              </li>
+              <li>
+                <button type="button" id="tabId7" class="btn-rd-wh" data="33"><span>TNFD</span></button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tab-cont">
+            <div class="contMain" id="tab_vw1">
+
+
+              <!--    콘텐츠 영역 - 여기부터 db에 넣어주세요    -->
+              <section class="section default-width pt60 e_pc">
+                <!--20230901 변경//-->
+                <h3 class="tit-line-left">ESG 주요 기관별 공시 · 보고</h3>
+                <!--//20230901 변경-->
+                <div class="table-wrap">
+                  <table class="line key-indicator">
+                    <caption>
+                      GRI상세보기
+                    </caption>
+                    <colgroup>
+                      <col style="width: 9%" />
+                      <col style="width: 28%" />
+                      <col style="width: 46%" />
+                      <col style="width: 20%" />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th colspan="2">구분</th>
+                        <th>설명</th>
+                        <th>관련URL</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td rowspan="4" class="ct">국제</td>
+                        <!--20230901 class="ct" 추가-->
+                        <td><strong>GRI</strong><br /><span>(Global Reporting Initiative) 가이드라인</span></td>
+                        <td><span>지속가능보고서 작성에 대한 가이드라인 제공</span></td>
+                        <td class="align-ct center">
+                          <a href="https://www.globalreporting.org/standards/" target="_blank" class="btn-file">GRI</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>ISSB</strong><br /><span>(International Sustainability Standards Board) 기준서</span></td>
+                        <td><span>IFRS(국제재무보고기준) 재단 산하의 위원회로서 지속가능성 공시를 위한 기준 제공</span></td>
+                        <td class="align-ct center">
+                          <a href="https://www.ifrs.org/" target="_blank" class="btn-file">IFRS</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>TNFD</strong><br /><span>(Taskforce on Nature-related Financial Disclosures) 기준서</span></td>
+                        <td>
+                          <span>G20 요청에 따라 국제 재무안정위원회(FSB)에 의해 설립 되었으며, 기업과 투자자가 자연에 대한 재무영향을 관리할 수 있도록 관련 재무 정보의 표준화와 투명성 촉진</span>
+                        </td>
+
+                        <td class="align-ct center">
+                          <a href="https://framework.tnfd.global/" target="_blank" class="btn-file">TNFD</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>TCFD</strong><br /><span>(Task Force on Climate-Related Financial Disclosures) 기준서</span></td>
+                        <td><span>기업의 기후 위험 및 기회 정보의 공개 필요성을 강조하며, 기후변화 관련 위험과 기회에 대한 평가·보고 지침을 제공</span></td>
+                        <td class="align-ct center">
+                          <a href="https://www.fsb-tcfd.org/publications/" target="_blank" class="btn-file">TCFD</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ct">EU</td>
+                        <!--20230901 class="ct" 추가-->
+                        <td><strong>CSRD</strong><br /><span>(Corporate Sustainability Reporting Directive) 지침</span></td>
+                        <td><span>유럽 재무보고자문그룹에서 제공하는 기업지속가능성에 대한보고지침</span></td>
+
+                        <td class="align-ct center">
+                          <a href="https://finance.ec.europa.eu/" target="_blank" class="btn-file">유럽재무보고자문그룹</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ct">미국</td>
+                        <!--20230901 class="ct" 추가-->
+                        <td><strong>SEC</strong><br /><span>(Securities and Exchange Commission, 증권거래위원회) 기준안</span></td>
+                        <td><span>미국 상장기업들을 대상으로 ESG 공시 기준 및 방안을 제시·발표</span></td>
+
+                        <td class="align-ct center">
+                          <a href="https://www.sec.gov/" target="_blank" class="btn-file">SEC</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ct">한국</td>
+                        <!--20230901 class="ct" 추가-->
+                        <td><strong>KSSB</strong><br /><span>(Korea sustainability Standards Board) 기준서</span></td>
+                        <td><span>한국회계기준원이 유관기관과 협력하여 ISSB의 국제지속가능성 기준을 검토하여 한국 공시 기준으로 제정</span></td>
+
+                        <td class="align-ct center">-</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <section class="section default-width pt60 pb100 e_pc">
+                <!--20230901 변경//-->
+                <h3 class="tit-line-left">ESG 주요 공시·보고 의무화 추진</h3>
+                <!--//20230901 변경-->
+                <div class="fram-wrap">
+                  <img src="../img/common/img_frame06.png" alt="ESG주요 공시·보고 의무화 추진" />
+                </div>
+              </section>
+
+              <section class="section default-width pt60 e_mo">
+                <div class="e-out-list-a">
+                  <h3 class="tit-line-left">ESG 주요 기관별 공시 · 보고</h3>
+
+                  <dl class="e-out-list">
+                    <dd>
+                      <div class="tit-box">국제</div>
+                      <ul class="e-de-list">
+                        <li>
+                          <div class="subj">GRI<span>Global Reporting Initiative</span></div>
+                          <div class="subs">지속가능보고서 작성에 대한 가이드라인 제공</div>
+                        </li>
+
+                        <li>
+                          <div class="subj">ISSB<span>International Sustainability Standards Board</span></div>
+                          <div class="subs">지속가능보고서 작성에 대한 가이드라인 제공</div>
+                        </li>
+
+                        <li>
+                          <div class="subj">TNFD<span>Taskforce on Nature-related Financial Disclosures</span></div>
+                          <div class="subs">
+                            G20 요청에 따라 국제 재무안정위원회(FSB)에 의해 설립되었으며 기업과 투자자가 자연에 대한 재무영향을 관리할 수 있도록 관련 재무 정보의 표준화와 투명성 촉진공
+                          </div>
+                        </li>
+
+                        <li>
+                          <div class="subj">TCFD<span>Taskforce on Nature-related Financial Disclosures</span></div>
+                          <div class="subs">기업의 기후 위험 및 기회 정보의 공개 필요성을 강조하며 기후변화 관련 위험과 기회에 대한 평가·보고 지침을 제공</div>
+                        </li>
+                      </ul>
+                    </dd>
+
+                    <dd>
+                      <div class="tit-box">EU</div>
+                      <ul class="e-de-list">
+                        <li>
+                          <div class="subj">CSRD<span>Corporate Sustainability Reporting Directive</span></div>
+                          <div class="subs">유럽 재무보고자문그룹에서 제공하는 기업지속가능성에 대한 보고지침</div>
+                        </li>
+                      </ul>
+                    </dd>
+
+                    <dd>
+                      <div class="tit-box">미국</div>
+                      <ul class="e-de-list">
+                        <li>
+                          <div class="subj">SEC<span>Securities and Exchange Commission 증권거래위원회</span></div>
+                          <div class="subs">미국 상장기업들을 대상으로 ESG 공시 기준 및 방안을 제시·발표</div>
+                        </li>
+                      </ul>
+                    </dd>
+
+                    <dd>
+                      <div class="tit-box">한국</div>
+                      <ul class="e-de-list">
+                        <li>
+                          <div class="subj">KSSB<span>Korea sustainability Standards Board</span></div>
+                          <div class="subs">한국회계기준원이 유관기관과 협력하여 ISSB의 국제지속가능성 기준을 검토하여 한국 공시 기준으로 제정</div>
+                        </li>
+                      </ul>
+                    </dd>
+                  </dl>
+                </div>
+
+                <div class="e-pil-list-a">
+                  <h3 class="tit-line-left">ESG 주요 공시·보고 의무화 추진</h3>
+                  <div class="fram-wrap js-img-extension mt24">
+                    <img src="../img/common/img_frame06.png" alt="ESG주요 공시·보고 의무화 추진" />
+                  </div>
+                </div>
+              </section>
+              <!--    //콘텐츠 영역    -->
+
+
+            </div>
+            <div class="contMain" id="tab_vw2" style="display: none">
+              <section class="section pt60">
+                <div class="default-width">
+                  <h3 class="tit-line-top" id="apndCn"></h3>
+                  <div class="txt-bg-box">
+                    <p id="sumryComnt"></p>
+                  </div>
+                  <!-- //txt-bg-box-->
+                </div>
+                <div class="tab-wrap gap-top">
+                  <ul class="tab-list under default-width">
+                    <li class="s-hide">
+                      <button type="button" class="current">
+                        <span
+                          ><data class="vw_nm"><span>ESG 공시 · 보고</span></data> 프레임워크</span
+                        >
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button">
+                        <span
+                          ><data class="vw_nm"><span>ESG 공시 · 보고</span></data> <data class="vw_nm2">상세보기</data></span
+                        >
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button"><span>관련 컨텐츠 보기</span></button>
+                    </li>
+                  </ul>
+                  <!-- //tab-list -->
+
+                  <div class="tab-cont">
+                    <div class="contBody s-hide showmo current" id="info_50" style=""></div>
+                    <!-- //cont -->
+                    <div class="contBody showmo" id="info_30" style="display: none"></div>
+                    <!-- //cont -->
+                    <div class="contBody" style="display: none">
+                      <section class="section default-width pt60 pb60">
+                        <h4 class="tit-line-left">삼일 인사이트</h4>
+                        <div class="thumbnail-wrap">
+                          <ul class="list" id="pwcInsightsList"></ul>
+
+                          <div class="btn-more-wrap">
+                            <button type="button" class="btn-white arrow-after" onclick="location.href='/frontoffice/trend/insightsList'">
+                              <span>더보기</span>
+                            </button>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section class="section default-width pb60">
+                        <h4 class="tit-line-left">최신 동향</h4>
+                        <div class="news-wrap">
+                          <ul id="trendList">
+                            <li>
+                              <a href="http://www.impacton.net/news/articleView.html?idxno=7232" class="content_pop" data-kind="40" data-uid="2965">
+                                <div>
+                                  <span class="thumbnail"><img src="http://www.impacton.net/news/photo/202309/7232_11523_3147.jpg" /></span>
+                                  <div class="info-wrap">
+                                    <p class="subject">ESG공시 의무화 연기 두고 시끌시끌…ESG 현장 목소리는?</p>
+                                    <p class="desc">
+                                      ESG 공시 의무화 시점이 다가오면서, 갑자기 도입시기 연기에 대한 논의가 등장했다. 최근 한국경영자총협회(경총)은 2025년으로 예정된 ESG 의무공시의 도입 시기를 3~4년
+                                      정도 늦춰야 한다는 의견서를 금융위원회에 제출했다. 최근 한 경제지의 보도에 따르면, 재계와 회계업계에서는 금융당국이 ESG 공시 시작 시점을 2026년으로 1년 더 미룰
+                                      가능성을 내비치기도 했다. 정부 발표 시점도 하반기에서 연말까지 미뤄진다는 소식도 나왔다. 금융위의 논의 과정이 '깜깜이'로 진행되다보니, 정작 기업들의 불만이 점점
+                                      높아지고 있는 상황이다
+                                    </p>
+                                    <div class="info-area"><span class="date">2023.09.13</span></div>
+                                  </div>
+                                </div>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="http://www.impacton.net/news/articleView.html?idxno=7225" class="content_pop" data-kind="40" data-uid="2843">
+                                <div>
+                                  <span class="thumbnail"><img src="http://www.impacton.net/news/photo/202309/7225_11511_4539.jpg" /></span>
+                                  <div class="info-wrap">
+                                    <p class="subject">애플, 미 캘리포니아주 기후공시화의무법안 지지…MS, 이케아미국 등도 지지 표명해</p>
+                                    <p class="desc">
+                                      애플이 스코프 3의 온실가스 배출량을 공개하도록 하는 캘리포니아 주의 법안을 지지한다는 입장을 내놓았다고 11일(현지시각) ESG투데이가 밝혔다. 이 같은 사실은
+                                      캘리포니아주 상원의원인 스콧 위너(Scott Wiener)가 지난 8일(현지시간) 애플의 서한을 자신의 X(옛 트위터)에 공개하며 알려졌다. 위너 의원은 올해 초, 캘리포니아주에서
+                                      매출 10억달러(약 1조3000억원) 이상인 기업은 매년 스코프 1, 2, 3 등 모든 범위에서 발생하는 온실가스 배출량을 보고하도록 하는 상원 법안 253호(SB253), 이른바
+                                      '기후기업데이
+                                    </p>
+                                    <div class="info-area"><span class="date">2023.09.12</span></div>
+                                  </div>
+                                </div>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="http://www.impacton.net/news/articleView.html?idxno=7201" class="content_pop" data-kind="40" data-uid="2848">
+                                <div>
+                                  <span class="thumbnail"><img src="http://www.impacton.net/news/photo/202309/7201_11473_330.png" /></span>
+                                  <div class="info-wrap">
+                                    <p class="subject">지속가능보고서 20년 낸 기업도 기후공시 어려워…EU와 ISSB, GRI는 상호운영성 강조</p>
+                                    <p class="desc">
+                                      지속가능성 공시 의무화는 다가오는데, 기업은 아직 어떤 기준을 따라야 할지 갈피를 잡지 못하고 있다. 로이터통신이 6일(현지시각) 개최한 로이터 임팩트 컨퍼런스에서
+                                      글로벌 공시 현황의 축소판을 살펴볼 수 있었다.행사에는 글로벌 기업들과 국제지속가능성기준위원회(ISSB)와 EU규제당국 등 공시 기준 및 방법론을 제시하는 단체의
+                                      관계자들이 참석했다. 행사에 참석한 일부 기업들은 새로운 기후정보 공개 규칙이 요구하는 사항에 대해 상당히 부담스럽다고 말했다. 기업이 지속가능성 정보를 유럽의
+                                      지속가능성보고지침(CSRD)과 ISSB의 공시 기
+                                    </p>
+                                    <div class="info-area"><span class="date">2023.09.08</span></div>
+                                  </div>
+                                </div>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="http://www.impacton.net/news/articleView.html?idxno=7178" class="content_pop" data-kind="40" data-uid="2857">
+                                <div>
+                                  <span class="thumbnail"><img src="http://www.impacton.net/news/photo/202309/7178_11425_522.png" /></span>
+                                  <div class="info-wrap">
+                                    <p class="subject">생물 다양성 VS 인권? ISSB 표준 우선순위에 대한 의견 갈려</p>
+                                    <p class="desc">
+                                      국제지속가능성기준위원회(ISSB)가 지난 6월, 지속가능성 및 기후 관련 보고를 위한 글로벌 표준 최종안을 공식 발표한 이후, 이들이 앞으로 어떤 연구에 초점을 맞출
+                                      것인가에 대한 의견이 나뉘고 있다.지난 5월부터 국제회계기준재단(IFRS)은 ISSB가 2개년 업무 활동 계획을 수립하기 위해 정보요청서를 발표하고 어떤 분야를 우선순위로 할
+                                      것인가에 대해 금융기관을 비롯한 여러 단체의 피드백을 받아왔다. 거론된 분야는 생물 다양성, 생태계, 생태계 서비스, 인권, 인적 자본 관리 등이다.정보제공요청(RFI)은
+                                      지난 9월 1일 마감됐다
+                                    </p>
+                                    <div class="info-area"><span class="date">2023.09.05</span></div>
+                                  </div>
+                                </div>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="btn-more-wrap mar_t20">
+                          <button type="button" class="btn-white arrow-after" onclick="location.href='/frontoffice/trend/esgNewsList'"><span>더보기</span></button>
+                        </div>
+                      </section>
+
+                      <section class="section default-width pb60">
+                        <h4 class="tit-line-left">ESG 영상모음</h4>
+                        <div class="thumbnail-wrap">
+                          <ul class="list mo-design-modify-list" id="videoList"></ul>
+                        </div>
+                        <div class="btn-more-wrap">
+                          <button type="button" class="btn-white arrow-after" onclick="location.href='/frontoffice/trend/bbsList'"><span>더보기</span></button>
+                        </div>
+                      </section>
+
+                      <section class="section default-width pb100">
+                        <h4 class="tit-line-left">ESG 자료모음</h4>
+                        <ol class="data-group-wreap">
+                          <li>
+                            <strong class="tit">기준/가이드 라인</strong>
+                            <ol id="standardList"></ol>
+                          </li>
+                          <li>
+                            <strong class="tit">연구/보고</strong>
+                            <ol id="researchList"></ol>
+                          </li>
+                          <li>
+                            <strong class="tit">법/제도</strong>
+                            <ol id="lawList"></ol>
+                          </li>
+                        </ol>
+                        <!-- //"data-group-wreap -->
+                        <!--20230901버튼추가//-->
+                        <div class="btn-more-wrap">
+                          <button type="button" class="btn-white arrow-after" onclick="location.href='/frontoffice/trend/bbsList'"><span>더보기</span></button>
+                        </div>
+                        <!--//20230901버튼추가-->
+                      </section>
+                    </div>
+                    <!-- //cont -->
+                  </div>
+                  <!-- //tab-list -->
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+        <!-- //content -->
+        <!-- floating-wrap// -->
+        <div class="floating-wrap">
+          <button type="button"><span>온라인 문의</span></button>
+        </div>
+        <!-- //floating-wrap -->
+      </div>
+      <!-- //container -->
+      <footer id="footer">
+        <div class="inner">
+          <a href="javascript:void(0);" class="foot-logo"><span class="blind">로고</span></a>
+          <p class="copyright">&copy; 2023 PwC Korea. All rights reserved.</p>
+          <nav class="fnb">
+            <ul>
+              <li><a href="javascript:void(0);">개인정보처리방침</a></li>
+              <li><a href="javascript:void(0);">Cookie policy</a></li>
+              <li><a href="javascript:void(0);">Legal disclaimer</a></li>
+              <li><a href="javascript:void(0);">About site provider</a></li>
+              <li><a href="javascript:void(0);">Site map</a></li>
+              <li><a href="javascript:void(0);" class="line">회원 탈퇴</a></li>
+            </ul>
+          </nav>
+        </div>
+      </footer>
+    </div>
+    <!-- //wrap -->
+    <script>
+      $(function () {
+        tab();
+      });
+    </script>
+  </body>
+</html>

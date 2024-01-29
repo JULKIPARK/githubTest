@@ -1,0 +1,60 @@
+[ Infra ]
+1. Azure VM
+	- IP : 4.230.9.118
+
+2. Azure SQL
+	- 관리자 계정 : samilesg_admin / Blossom2023!#
+
+3. SSH
+	- 메인 키 : azureuser / Samil-ESG_key.pem / ssh -i ~/.ssh/Samil-ESG_key.pem azureuser@4.230.9.118
+	- 개발자 키 : devuser1 / Samil-ESG_Devuser.pem / ssh -i ~/.ssh/Samil-ESG_Devuser.pem devuser1@4.230.9.118
+
+[ Service ]
+1. HTTP : nginx
+	- 위치 : /etc/nginx/
+	- 실행 : sudo systemctl start nginx / sudo systemctl restart nginx  
+
+2. WAS : Tomcat
+	- 위치 : /opt/tomcat-latest
+	- ROOT : /opt/tomcat-latest/webapps/ROOT
+	- 실행 : sudo systemctl start tomcat.service / sudo systemctl restart tomcat.service
+	
+3. DB
+	- 연결 : jdbc:sqlserver://samilesg.database.windows.net:1433;database=SamilESG;user=samilesg_admin@samilesg;password=Blossom2023!#;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+	- 클라이언트 IP 필요
+	- Scheme Name : ESG_DB
+	
+
+[ Azure 환경 ]
+1. github 설정
+	- 퍼블용 1개 FO / BO 통합
+2. 퍼블 확인 및 작업용 컨테이너 1개 8100
+
+3. 개발 확인 및 작업용 컨테이너 1개 8200
+
+4. 메타원 오픈용 컨테이너 1개 8090
+
+SAmilPwC2023!#
+
+
+[ AWS ]
+root / esgdbroot
+
+
+http://test.fdesk.net/kht/00_ebook/2023_GSSB/415/index.html
+
+
+
+blobfuse ./storage --tmp-path=/mnt/datadrive/resource/blobfusetmp -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/home/azureuser/myconnection.cfg --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120 
+
+blobfuse ./storage --tmp-path=/mnt/datadrive/resource/blobfusetmp -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/home/azureuser/myconnection.cfg --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120 -o allow_other 
+
+
+sudo umount ./blobfuse
+
+/mnt/datadrive/storage/docs  <= pdf등 문서
+/mnt/datadrive/storage/epub  <= epub 디렉토리
+/mnt/datadrive/storage/movie  <= mp4 영상
+/mnt/datadrive/storage/thumbnail  <= thumbnail 이미지
+
+https://samilesg.blob.core.windows.net/esg/epub/D0648

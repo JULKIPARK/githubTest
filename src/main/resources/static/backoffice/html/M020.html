@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 운영자 랜딩 페이지 </title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <!-- container -->
+        <div class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1 current">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- content -->
+            <div id="cont-section" class="content landing flex">
+                <div class="left">
+                    <section class="section">
+                        <h4 class="tit">오늘의 할 일</h4>
+                        <span class="day">2023-09-28 목요일</span>
+                        <ul class="count">
+                            <li>
+                                <a href="javascrpt:void(0);">
+                                    <strong>05</strong>
+                                    <span class="label">신규 문의</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascrpt:void(0);">
+                                    <strong>11</strong>
+                                    <span class="label">신규 뉴스</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascrpt:void(0);">
+                                    <strong>31</strong>
+                                    <span class="label">신규 회원</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                   <section class="section">
+                    <h4 class="tit">회원 현황</h4>
+                    <a href="javascript:void(0)" class="btn_link">바로가기</a>
+                    <div class="table-wrap tfoot-table">
+                        <table>
+                            <caption>회원 현황 리스트</caption>
+                            <colgroup>
+                                <col style="width: 25%;">
+                                <col style="width: 25%;">
+                                <col style="width: 25%;">
+                                <col style="width: 25%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>일자</th>
+                                    <th>방문</th>
+                                    <th>가입</th>
+                                    <th>문의</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div class="scroll-y">
+                            <table>
+                                <caption>회원 현황 리스트</caption>
+                                <colgroup>
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">23-10-10</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="date">최근 7일</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">이번달</td>
+                                        <td>193</td>
+                                        <td>45</td>
+                                        <td>6</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- //table-wrap -->
+                   </section>
+                </div>
+               <div class="right">
+                   <section class="section">
+                    <h4 class="tit">온라인 문의 현황</h4>
+                    <a href="javascript:void(0)" class="btn_link">바로가기</a>
+                    <ul class="count">
+                        <li>
+                            <strong>05</strong>
+                            <span class="label">미확인</span>
+                        </li>
+                        <li>
+                            <strong>03</strong>
+                            <span class="label">처리중(IT)</span>
+                        </li>
+                        <li>
+                            <strong>05</strong>
+                            <span class="label">처리중(Biz)</span>
+                        </li>
+                        <li>
+                            <strong>12</strong>
+                            <span class="label">부서전달</span>
+                        </li>
+                    </ul>
+                   </section>
+                   <section class="section result-wrap">
+                    <h4 class="tit pt22">미확인 온라인 문의</h4>
+                    <div class="table-wrap">
+                        <table>
+                            <caption>미확인 온라인 문의 리스트</caption>
+                            <colgroup>
+                                <col style="width: 15%;">
+                                <col style="width: 35%;">
+                                <col style="width: *;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>일자</th>
+                                    <th>문의유형</th>
+                                    <th>문의 &middot; 질의 제목</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일서비스  서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                </tr>
+                                <tr>
+                                    <td class="nodata" colspan="3">nodata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->
+                    <!-- paging -->
+                    <div class="paging">
+                        <a href="javascript:void(0);" class="btn first"><span class="blind">처음</span></a>
+                        <a href="javascript:void(0);" class="btn prev"><span class="blind">이전</span></a>
+                        <span class="on">1</span><!--현재페이지-->
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                        <a href="#">5</a>
+                        <a href="#">6</a>
+                        <a href="#">7</a>
+                        <a href="#">8</a>
+                        <a href="#">9</a>
+                        <a href="#">10</a>
+                        <a href="javascript:void(0);" class="btn next"><span class="blind">다음</span></a>
+                        <a href="javascript:void(0);" class="btn last"><span class="blind">마지막</span></a>
+                    </div>   
+                    <!-- //paging -->                      
+                   </section>
+               </div>
+            </div>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+</body>
+</html>

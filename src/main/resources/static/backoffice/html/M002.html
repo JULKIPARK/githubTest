@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 고객 관리 > 문의사항 관리 > 문의·요청 조회</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <!-- container -->
+        <div class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- content -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>문의 &middot; 요청 조회</h3>
+                    <ul class="breadcrumb">
+                        <li>고객 관리</li>
+                        <li>문의사항 관리</li>
+                        <li>문의 &middot; 요청 조회</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>상세 검색</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>문의사항 조회</caption>
+                                    <colgroup>
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                        <col style="width: 15%;">
+                                        <col style="width: 35%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>등록 일자</th>
+                                            <td>
+                                                <div class="date-select flex">
+                                                    <div class="datepicker-wrap">
+                                                        <input type="text" class="datepicker">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" class="datepicker" >
+                                                    </div>
+                                                    <button type="button" class="btn_date"><span>1개월</span></button>
+                                                    <button type="button" class="btn_date"><span>3개월</span></button>
+                                                </div>
+                                            </td>
+                                            <th>처리 상태</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="state" id="state01" checked="checked">
+                                                        <label for="state01">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state02">
+                                                        <label for="state02">미확인</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state03">
+                                                        <label for="state03">처리중(IT)</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state04">
+                                                        <label for="state04">처리중(Biz)</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state05">
+                                                        <label for="state05">부서전달</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state06">
+                                                        <label for="state06">완료</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>문의 유형</th>
+                                            <td colspan="4">
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="checkbox" id="esgall">
+                                                        <label for="esgall">삼일 서비스 제공 문의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg1">
+                                                        <label for="esg1">시스템 기능 &middot; 오류 문의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg2">
+                                                        <label for="esg2">회원 가입 &middot; 해지 문의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg3">
+                                                        <label for="esg3">게시 자료 문의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg4">
+                                                        <label for="esg4">추가 자료 요청</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg5">
+                                                        <label for="esg5">서비스 제휴 문의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg6">
+                                                        <label for="esg6">기타</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>검색</th>
+                                            <td colspan="4">
+                                                <div class="selectinput-wrap">
+                                                    <select name="" id="" class="select" title="검색기준">
+                                                        <option value="">제목</option>
+                                                        <option value="">등록자</option>
+                                                        <option value="">소속</option>
+                                                    </select>
+                                                    <input type="text" placeholder="검색 내용 입력" title="검색기준 입력">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="result-wrap">
+                    <div class="total">
+                        <span class="lable">문의사항 목록</span> - <strong>총 123건</strong>
+                    </div>
+                    <!-- total -->
+                    <div class="sorting-wrap">
+                        <select name="" id="" class="select" title="데이터 건수">
+                            <option value="">50개</option>
+                            <option value="" selected="selected">100개</option>
+                        </select>
+                        <select name="" id="" class="select" title="페이지 이동선택">
+                            <option value="">1/2</option>
+                        </select>
+                    </div>
+                    <!-- //sorting-wrap -->
+                    <div class="table-wrap">
+                        <table>
+                            <caption>회원 리스트</caption>
+                            <colgroup>
+                                <col style="width: 10%;">
+                                <col style="width: 15%;">
+                                <col style="width: *;">
+                                <col style="width: 10%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>등록일자</th>
+                                    <th>문의유형</th>
+                                    <th>문의 &middot; 질의 제목</th>
+                                    <th>등록자</th>
+                                    <th>소속</th>
+                                    <th>처리상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">홍길동</a></td>
+                                    <td>OO 화학</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">회원 가입/해지 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">회원 가입 오류 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">임꺽정</a></td>
+                                    <td>OO 전자</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 평가 대응 관련 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">이순신</a></td>
+                                    <td>OO 증권</td>
+                                    <td>담당부서 전달</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">시스템 기능/오류 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">웹뷰어 기능 중 주석 보기에 대한 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">장보고</a></td>
+                                    <td>OO 산업</td>
+                                    <td>처리 중(IT)</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">게시 자료에 대한 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">GRI 원문 및 사례에 대한 질의사항</a></td>
+                                    <td><a href="javascript:void(0);" class="link">황희</a></td>
+                                    <td>OO 유통</td>
+                                    <td>답변 완료</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">추가 자료 요청 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">기후리스크 측정 및 관리에 대한 추가 자료 요청</a></td>
+                                    <td><a href="javascript:void(0);" class="link">김유신</a></td>
+                                    <td>OO 전기</td>
+                                    <td>답변 완료</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">홍길동</a></td>
+                                    <td>OO 화학</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">회원 가입/해지 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">회원 가입 오류 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">임꺽정</a></td>
+                                    <td>OO 전자</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 평가 대응 관련 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">이순신</a></td>
+                                    <td>OO 증권</td>
+                                    <td>담당부서 전달</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.25</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 경영전략 및 중장기 계획 수립 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">홍길동</a></td>
+                                    <td>OO 화학</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">회원 가입/해지 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">회원 가입 오류 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">임꺽정</a></td>
+                                    <td>OO 전자</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">삼일 서비스 제공 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">ESG 평가 대응 관련 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">이순신</a></td>
+                                    <td>OO 증권</td>
+                                    <td>담당부서 전달</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.07.24</td>
+                                    <td class="left">시스템 기능/오류 문의</td>
+                                    <td class="left"><a href="javascript:void(0);" class="link">웹뷰어 기능 중 주석 보기에 대한 문의</a></td>
+                                    <td><a href="javascript:void(0);" class="link">장보고</a></td>
+                                    <td>OO 산업</td>
+                                    <td>처리 중(IT)</td>
+                                </tr>
+                                <tr>
+                                    <td class="nodata" colspan="6">nodata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->      
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area">
+                <div class="modal-head">
+                    <h2 class="tit">문의 &middot; 요청 상세 조회 및 답변</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <form action="">
+                        <fieldset>
+                            <legend></legend>
+                            <h3 class="tit">문의사항 답변 등록</h3>
+                            <span class="state-badge">미확인</span>
+                            <div class="board-body">
+                                <div class="col-wrapper">
+                                    <ul class="list flex">
+                                        <li class="col-wrap">
+                                            <div class="th w100">
+                                                <label for="ask01" class="label">등록일자</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap"><input type="text" id="ask01" value="2023.07.25" class="" disabled="disabled"></div>
+                                            </div>                                
+                                        </li>       
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="ask02" class="label">등록자</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap"><input type="text" id="ask02" value="홍길동" class="" disabled="disabled"></div>
+                                            </div>                                
+                                        </li>  
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="ask03" class="label">소속</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap"><input type="text" id="ask03" value="OO 화학" class="" disabled="disabled"></div>
+                                            </div>                                
+                                        </li>  
+                                        <li class="col-wrap">
+                                            <div class="th">
+                                                <label for="ask04" class="label">이메일</label>
+                                            </div>
+                                            <div class="td">
+                                                <div class="input-wrap"><input type="text" id="ask04" value="hong123@chem.com" disabled="disabled"></div>
+                                            </div>                                
+                                        </li>  
+                                    </ul>                       
+                                </div>
+                                <ul class="list">
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ask05" class="label">제목</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="td">
+                                                <div class="input-wrap"><input type="text" id="ask05" value="ESG 경영전략 및 중장기 계획 수립 문의" class="" disabled="disabled"></div>
+                                            </div> 
+                                        </div>                                
+                                    </li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ask06" class="label">문의사항</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="" id="ask06" class="h200" disabled="disabled">
+    안녕하십니까. 
+    ESG 경영전략과 중장기 계획을 수립하기 위해 아래와 같은 사항을 문의 드리고자 합니다. 
+    …. 이하 생략 ….
+    </textarea>
+                                            </div>
+                                        </div>                                
+                                    </li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ask07" class="label">답변</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="" id="ask07" class="h200"></textarea>
+                                            </div>
+                                        </div>                                
+                                    </li>
+                                    <li class="row-wrap">
+                                        <div class="th">
+                                            <label for="ask08" class="label">담당자<br>메모</label>
+                                        </div>
+                                        <div class="td">
+                                            <div class="textarea-wrap">
+                                                <textarea name="" id="ask08" class="memo-area"></textarea>
+                                            </div>
+                                        </div>                                
+                                    </li>
+                                </ul>
+                                <!-- //list -->
+                            </div>
+                            <div class="board-btn-wrap flex">
+                                <label for="ask09">처리상태 변경</label>
+                                <select name="" id="ask09" class="select">
+                                    <option value="">처리중(Biz)</option>
+                                    <option value="">처리중(IT)</option>
+                                </select>
+                                <button type="button" class="btn-primary"><span>등록</span></button>
+                            </div>
+                            <!-- board-btn-wrap -->
+                        </fieldset>
+                    </form>
+                </section>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area-->
+        <!--//xycenter-->  
+    </div>
+    <!--//modal-wrap-->
+</body>
+</html>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.mypage.mapper.MypageMapper">
+
+	<!-- 마이페이지 조회 -->
+	<select id="selectMypageList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT  * FROM (
+		SELECT
+			TOP 100
+			MB.CONT_UID, CONT.CONT_NM, CONT.CONT_TP_LCLSF_CD , CONT.CONT_KIND_CD ,CONT.SRC_UID  ,SRC.SRC_NM
+                                     ,FORMAT(DATEADD(HOUR, 9, MB.FST_INS_DT),'yyyy.MM.dd HH:mm') as  FST_INS_DT
+			, TRIM(CONT.PBLCN_YY) AS PBLCN_YY			/* 발행YY */
+			, TRIM(CONT.PBLCN_MM) AS PBLCN_MM		/* 발행MM */
+			, TRIM(CONT.PBLCN_DD)	AS PBLCN_DD		/* 발행DD */
+			, ESG_DB.fnCommCdNm('CONT_TP_LCLSF_CD',CONT.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_NM
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD',CONT.CONT_KIND_CD) AS CONT_KIND_NM
+			, ISNULL(RSS.IMG_URL ,ATAC.CNVN_FILE_FPATH) AS IMG_URL /* RSS 대표이미지 */
+	    	, RSS.TTL	/* RSS 제목 */
+	    	, RSS.CN	/* RSS 내용 */
+	    	, RSS.WRTR_NM	/* RSS 작성자 */
+		FROM ESG_DB.MB_MBR_CONT_VIEW MB
+		JOIN ESG_DB.ST_CONT_INFO CONT ON MB.CONT_UID = CONT.CONT_UID AND CONT.USE_YN ='Y' AND CONT.DP_YN = 'Y'
+		LEFT OUTER JOIN ESG_DB.ST_SRC_INFO SRC ON SRC.SRC_UID = CONT.SRC_UID
+		LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC
+			ON CONT.ATAC_FILE_UID = ATAC.ATAC_FILE_UID AND ATAC.ATAC_TP_CD='40' AND ATAC.DP_YN='Y' AND ATAC.USE_YN='Y'
+		LEFT OUTER JOIN ESG_DB.BT_RSS_INFO RSS
+			ON CONT.LINK_URL = RSS.LINK_URL
+		WHERE MBR_UID = #{mbrUid}
+		AND CONT.CONT_KIND_CD = #{contKindCd}
+		ORDER BY MB.FST_INS_DT DESC
+		) AS TT
+		ORDER BY TT.FST_INS_DT DESC
+	</select>
+
+	<select id="selectDiagnosisList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT TOP 3
+			ACT_TGT_RESULT_UID
+			, FORMAT(DATEADD(HOUR, 9, FST_INS_DT),'yyyy.MM.dd HH:mm')  as FST_INS_DT
+		FROM ESG_DB.MB_ESG_TGT_ACT_RESULT
+		WHERE  MBR_UID = #{mbrUid}
+		ORDER BY FST_INS_DT DESC
+
+
+	</select>
+
+	<select id="selectCsrdList" parameterType="camelcasemap" resultType="camelcasemap">
+
+		SELECT TOP 3
+			R.CSRD_TGT_RESULT_UID
+			, FORMAT(DATEADD(HOUR, 9, R.FST_INS_DT),'yyyy.MM.dd HH:mm') as FST_INS_DT
+		FROM ESG_DB.MB_CSRD_TGT_ACT_RESULT R
+		JOIN ESG_DB.CM_CSRD_INFO C
+		ON ISNULL(R.CSRD_ST1_CD,'') = C.CSRD_INFO_ST1_CD
+		AND ISNULL(R.CSRD_ST2_CD,'') = C.CSRD_INFO_ST2_CD
+		AND ISNULL(R.CSRD_ST3_CD,'') = C.CSRD_INFO_ST3_CD
+		AND ISNULL(R.CSRD_ST4_CD,'') = C.CSRD_INFO_ST4_CD
+		AND ISNULL(R.CSRD_ST5_CD,'') = C.CSRD_INFO_ST5_CD
+		WHERE MBR_UID = #{mbrUid}
+		ORDER BY FST_INS_DT DESC
+	</select>
+
+
+	<select id="selectViewCount" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CONT.CONT_KIND_CD  AS CONT_KIND_CD
+			,COUNT(*) GROUP_CNT
+			,ESG_DB.fnCommCdNm('CONT_KIND_CD',CONT.CONT_KIND_CD) AS CONT_KIND_NM
+		FROM ESG_DB.MB_MBR_CONT_VIEW MB
+		JOIN ESG_DB.ST_CONT_INFO CONT ON MB.CONT_UID = CONT.CONT_UID AND CONT.USE_YN ='Y' AND CONT.DP_YN = 'Y'
+		WHERE MBR_UID = #{mbrUid}
+		AND CONT.CONT_KIND_CD IN ('10','20','40')
+		GROUP BY CONT.CONT_KIND_CD
+		ORDER BY CONT.CONT_KIND_CD ASC
+	</select>
+
+
+</mapper>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+<th:block layout:fragment="css">
+<link rel="stylesheet" th:href="@{/assets/css/fullcalendar.min.css}" />
+<style>
+.fc-event-title{
+	text-decoration: none;
+    color: #464646;
+    }
+.calendar .schedule    {
+	border-bottom: 0px;
+    border-top: 0px;
+    border-right: 0px;
+    }
+.fc .fc-toolbar-title {
+    display: inline-block;
+    color: #000;
+    font-size: 28px;
+    font-weight: 700;
+}
+.fc-toolbar-chunk {
+	position: relative;
+	width: 230px;
+	margin: 0 41px;
+	padding: 0 30px;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.fc-prev-button {
+    left: 0;
+    background-color:#fff;
+	position: absolute;
+    top: 2px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #DEDEDE !important;
+    padding:0px !important;
+    background-color: #fff !important;
+    color:#716c6c !important;
+}
+.fc-next-button {
+    right: 0;
+    background-color:#fff !important;
+    color:#716c6c !important;
+	position: absolute;
+    top: 2px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #DEDEDE !important;
+    padding:0px !important;
+    background-color: #fff;
+}
+.fc .fc-button-group{
+	border: 1px solid #D04A02;
+    background: #fff;
+}
+.fc .fc-button-group>.fc-button {
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+    height: 44px;
+	line-height: 29px;
+	background-color:#fff;
+	color: #D04A02;
+	border:0px;
+}
+.fc .fc-button-group>.fc-button.fc-button-active{
+    color: #fff;
+    background: #D04A02;
+	border:0px;
+	border-radius: 0px;
+}
+.btn-schedule1{
+    background: #42D2AB url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.btn-schedule2{
+    background: #93C822 url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.btn-schedule3{
+    background: #FFC433 url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.btn-schedule4{
+    background: #E4533E url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.btn-schedule5{
+    background: #B03EED url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.btn-schedule6{
+    background: #4F8BFF url(../img/common/ico_schedule_bk.svg) no-repeat right 15px top 15px;
+    color: #2D2D2D;
+}
+.fc-day-today .fc-daygrid-day-frame {
+    border: 3px solid #d04a02;
+    background: #fff;
+}
+.schedule-list-area .schedule-list li .schedule .sort{
+	width: auto;
+}
+.schedule-list-area{padding:0px}
+.calendarWrap .calendar {border:0px;}
+.sort{background-image: none;}
+.calendarWrap .head {
+    margin-bottom: 0px;
+}
+</style>
+</th:block>
+<th:block layout:fragment="script">
+	<script th:src="@{/assets/js/fullcalendar.min.js}"></script>
+	<script th:src="@{/assets/js/moment.js}"></script>
+	<script th:src="@{/assets/js/jquery.tmpl.js}"></script>
+
+
+	<script type="text/javascript">
+		var st_date = "";
+		var ed_date = "";
+		var calendarType = ["schedule type01","schedule type02","schedule type03","schedule type04","schedule type05","schedule type06"];
+		var calendarIcon = ["btn-schedule1","btn-schedule2","btn-schedule3","btn-schedule4","btn-schedule5","btn-schedule6"];
+		$(function(){
+			var $doc = $(document);
+			// 이벤트 설정
+			$doc.on("click",".schedulePop",function (e) {
+				e.preventDefault();
+		    	  $("#calendarPopup").addClass("show");
+		    	  $("#calendarPopup [dt='title']").html($(this).data("title"));
+		    	  $("#calendarPopup [dt='content'] PRE").html($(this).data("content"));
+		    	  $("#calendarPopup [dt='date']").html($(this).data("etcstart"));
+					// let linkUrl = $(this).data("link");
+					// $("#calendarPopup BUTTON._linkUrl").unbind('click').bind('click', function() {
+					// 	console.log('%%%%');
+					// 	window.open(linkUrl);
+					// });
+			});
+			$doc.on("click",".keyword-wrap button",function (e) {
+				e.preventDefault();
+		    	  $(".keyword-wrap button").removeClass("current");
+		    	  $(this).addClass("current");
+		    	  calendarLoad();
+			});
+
+
+			var $calendar = new FullCalendar.Calendar($("#calendar")[0], {
+			      headerToolbar: {
+			        left: '',
+			        center: 'prev,title,next',
+			        right: 'dayGridMonth,listMonth'
+			      },
+			      defaultDate: 'YYYY.MM',
+			      showNonCurrentDates: false,
+			      views: {
+			    	  dayGridMonth: { buttonText: '캘린더형' },
+			    	  listMonth: { buttonText: '목록형' }
+			        },
+			      initialView: 'dayGridMonth',
+			      monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			      monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+			      dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+			      dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+			      //initialDate: ''',
+			      navLinks: false, // can click day/week names to navigate views
+			      selectable: false,
+			      selectMirror: true,
+			      select: function(arg) {
+
+			      },
+			      viewRender: function(view, element) {
+			          //Do something
+			          console.log("viewRender",view);
+			      },
+			      datesSet: function(e) {
+			    	  console.log("datesSet",e.view.type);
+			    	    $(".expect-schedule strong").html(moment(e.view.currentStart).format('YYYY')+"년 중 예상 일정");
+			    	    $(".expect-schedule strong").data("yyyy",moment(e.view.currentStart).format('YYYY'));
+			    	    if(e.view.type == "dayGridMonth")
+			    	   	{
+			    	    	$(".fc-view-harness").show();
+			    	    	$(".schedule-list-area").hide();
+			    	    	$("#list_search").hide();
+			    	    	$(".fc-toolbar-chunk").eq(1).show();
+                            console.log("#1");
+			    	   	}
+			    	    else
+			    	    {
+			    	    	$(".keyword-wrap button").eq(1).click();
+			    	    	//calendarLoad();
+			    	    	$(".fc-view-harness").hide();
+			    	    	$(".schedule-list-area").show();
+                            console.log("#2");
+                            console.log($("#list_search"));
+			    	    	$("#list_search").show();
+			    	    	$(".fc-toolbar-chunk").eq(1).hide();
+
+			    	    }
+
+
+			      },
+
+			      eventClick: function(arg) {
+			    	  $("#calendarPopup").addClass("show");
+			    	  $("#calendarPopup [dt='title']").html(arg.event.title);
+			    	  // console.log(arg.event)
+			    	  $("#calendarPopup [dt='content'] PRE").html(arg.event.constraint);
+			    	  $("#calendarPopup [dt='date']").html(moment(arg.event.start).format('YYYY/MM/DD') + (arg.event.end ? "~" + moment(arg.event.end).subtract(1, "days").format('YYYY/MM/DD'):"") );
+			    	  // $("#calendarPopup [dt='link']").html(arg.event.allow).attr("href",arg.event.allow);
+
+					  let linkUrl = arg.event.allow;
+					  $("#calendarPopup BUTTON._linkUrl").unbind('click').bind('click', function() {
+						  console.log('%%%%');
+						  window.open(linkUrl);
+					  });
+			      },
+			      editable: false,
+			      dayMaxEvents: false, // allow "more" link when too many events
+			      locale: 'ko', // 한국어 설정
+			      eventSources: [{
+			  		events: function(info, successCallback, failureCallback) {
+			  			st_date = moment(info.startStr).format('YYYY-MM-DD');
+			  			ed_date = moment(info.endStr).subtract(1, "days").format('YYYY-MM-DD');
+                        // ed_date = moment(info.endStr).format('YYYY-MM-DD');
+			  			$.ajax({
+			  				// url: '/assets/js/calendar2.json',
+							url: '/calendar/selectCalendarList',
+			  				type: 'get',
+			  				dataType: 'json',
+			  				data: {
+			  					start : moment(info.startStr).format('YYYY-MM-DD'),
+			  					end : moment(info.endStr).subtract(1, "days").format('YYYY-MM-DD')
+                                // end : moment(info.endStr).format('YYYY-MM-DD')
+			  				},
+			  				success: function(data) {
+								var list = data.list;
+			  					successCallback(list)
+			  				}
+			  			});
+			  		}
+
+			  	}]
+			      ,
+			  		eventSourceSuccess: function(content, response) {
+			  			var etcArr = [];
+
+			  			var yyyy = moment($calendar.currentData.currentDate).format('YYYY');
+			  			var yyyymm = moment($calendar.currentData.currentDate).format('YYYY-MM');
+			  			var cnt = 0;
+
+
+			  			$.each(content, function(index, item) {
+			  				item.className = calendarType[item.classIdx];
+			  				if(item.start != undefined && yyyymm == item.start.substring(0,7))
+			  					cnt++;
+
+
+			  				if(item.etcStart != undefined  &&  item.etcStart.substring(0,4) == yyyy &&  item.etcStart.substring(0,7) >= yyyymm  )
+		  					{
+			  					etcArr.push(item);
+		  					}
+
+						})
+						$(".etcdata").html("");
+			  			$("#tmpl_slist").tmpl(etcArr).appendTo(".etcdata");
+
+			  			$(".total-tx .date").html(cnt);
+			  			if(etcArr.length == 0)
+			  			{
+			  				$(".expect-schedule .nodata").show();
+			  				$(".expect-schedule .etcdata").hide();
+			  			}
+			  			else{
+
+			  				$(".expect-schedule .etcdata").show();
+			  				$(".expect-schedule .nodata").hide();
+			  			}
+
+
+			  		  return content.array;
+			  		}
+			    });
+
+			$calendar.render();
+			$(".fc-header-toolbar").after($(".info-hide").clone())
+			$(".info-hide").eq(1).show();
+		});
+		function calendarLoad()
+		{
+			var idx = $(".keyword-wrap button").index($(".keyword-wrap button.current"));
+			var today = moment().format('YYYY-MM-DD');
+			console.log(today)
+			st_date = today;
+			if(idx == 0)
+			{
+				ed_date = moment(today).add(1, "weeks").format('YYYY-MM-DD');
+			}
+			else if(idx == 1)
+			{
+				ed_date = moment(today).add(1, "months").format('YYYY-MM-DD');
+			}
+			else if(idx == 2)
+			{
+				ed_date = moment(today).add(3, "months").format('YYYY-MM-DD');
+			}
+			else if(idx == 3)
+			{
+				ed_date = moment(today).add(6, "months").format('YYYY-MM-DD');
+			}
+
+  			$.ajax({
+  				url: '/assets/js/calendar.json',
+  				type: 'get',
+  				dataType: 'json',
+  				data: {
+  					start : st_date,
+  					end : ed_date
+  				},
+  				success: function(content) {
+  					var Arr = [];
+  					var etcArr = [];
+  					var cnt = 0;
+		  			$.each(content, function(index, item) {
+		  				item.className = calendarIcon[item.classIdx];
+		  				if(item.start != undefined && moment(item.start).isBetween(st_date,ed_date))
+		  				{
+		  					Arr.push(item);
+		  					cnt++;
+		  				}
+		  				else if(item.etcStart != undefined && item.etcStart.substring(0,4) == st_date.substring(0,4) && item.etcStart.substring(0,7) >= st_date.substring(0,7) )
+		  				{
+		  					etcArr.push(item);
+		  				}
+
+					})
+					var obj = {"a":0,"list":Arr};
+
+		  			$(".schedule-list").html("");
+
+
+		  			$("#tmpl_clist").tmpl(obj).appendTo(".schedule-list");
+					$(".etcdata").html("");
+		  			$("#tmpl_slist").tmpl(etcArr).appendTo(".etcdata");
+
+		  			$(".total-tx .date").html(cnt);
+		  			if(etcArr.length == 0)
+		  			{
+		  				$(".expect-schedule .nodata").show();
+		  				$(".expect-schedule .etcdata").hide();
+		  			}
+		  			else{
+
+		  				$(".expect-schedule .etcdata").show();
+		  				$(".expect-schedule .nodata").hide();
+		  			}
+  				}
+  			});
+		}
+
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<section class="sub content">
+		<div class="sub-title-a">
+			<div class="ct">
+				<div class="tit">ESG 주요 일정</div>
+				<div class="subs">ESG와 관련한 행사, 공시, 평가 등의 일정을 안내합니다.</div>
+			</div>
+			<div class="bgBack"></div>
+			<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+		</div>
+	</section>
+
+
+
+<!--     <div class="gray-bg-wrap" id="list_search" style="display:none;">-->
+<!--          <div class="serch-wrap default-width">-->
+<!--              <div class="period-wrap">-->
+<!--                  <strong class="tit">기간설정 :</strong>-->
+<!--                  <ul class="keyword-wrap ">-->
+<!--                      <li><button type="button" class="btn-rd-wh "><span>최근 1주일</span></button></li>-->
+<!--                      <li><button type="button" class="btn-rd-wh current"><span>1개월</span></button></li>-->
+<!--                      <li><button type="button" class="btn-rd-wh"><span>3개월</span></button></li>-->
+<!--                      <li><button type="button" class="btn-rd-wh"><span>6개월</span></button></li>-->
+<!--                      <li><input type="text" placeholder="직접입력" class="datepicker btn-rd-wh" readonly="readonly"></li>-->
+<!--                  </ul>-->
+<!--              </div>-->
+<!--          </div>-->
+<!--      </div>-->
+
+      <div class="default-width">
+          <div class="calendarWrap">
+			<div class="info-hide" style="display:none">
+
+<!--                <div class="gray-bg-wrap" id="list_search">-->
+<!--                    <div class="serch-wrap default-width">-->
+<!--                        <div class="total-tx">총 <span class="date">9</span>건</div>-->
+<!--                        <div class="period-box">-->
+<!--                            <div class="tx">기간설정 : </div>-->
+<!--                            <ul class="keyword-wrap">-->
+<!--                                <li><button type="button" class="btn-rd-wh "><span>최근 1주일</span></button></li>-->
+<!--                                <li><button type="button" class="btn-rd-wh current"><span>1개월</span></button></li>-->
+<!--                                <li><button type="button" class="btn-rd-wh"><span>3개월</span></button></li>-->
+<!--                                <li><button type="button" class="btn-rd-wh"><span>6개월</span></button></li>-->
+<!--                                <li><input type="date" placeholder="" class="datepicker btn-rd-wh"></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+				<!--일정 목록형에만 들어가는 내용 1015일_고객사요청수정-->
+				<div class="list-period-area serch-wrap" id="list_search">
+					<div class="total-tx">총 <span class="date">9</span>건</div>
+					<div class="period-box">
+						<div class="tx">기간설정 : </div>
+						<ul class="keyword-wrap">
+							<li><button type="button" class="btn-rd-wh "><span>최근 1주일</span></button></li>
+							<li><button type="button" class="btn-rd-wh current"><span>1개월</span></button></li>
+							<li><button type="button" class="btn-rd-wh"><span>3개월</span></button></li>
+							<li><button type="button" class="btn-rd-wh"><span>6개월</span></button></li>
+							<li><input type="date" placeholder="" class="datepicker btn-rd-wh"></li>
+						</ul>
+					</div>
+				</div>
+
+
+              <div class="info-wrap">
+                  <strong class="tit">일정 유형</strong>
+                  <ul class="list">
+                      <li class="type01">ESG 행사</li>
+                      <li class="type02">ESG 발간</li>
+                      <li class="type03">ESG 정책</li>
+                      <li class="type04">ESG 공시</li>
+                      <li class="type05">ESG 평가</li>
+                      <li class="type06">기타</li>
+                  </ul>
+              </div>
+              <!--//info-wrap-->
+
+
+
+			  
+			  <!--이부분은 목록형에서는 안나오고 캘린더형에서만 나와야함 1015_고객사수정요청-->
+              <!--<p class="total">총<span class="date">9</span>건</p>-->
+
+
+
+
+
+              </div>
+              <div class="calendar" id="calendar">
+					
+              </div>
+
+				<div class="schedule-list-area">
+					<ul class="schedule-list" style="min-height:200px;">
+					</ul>
+				</div>
+              <div class="expect-schedule">
+                  <strong></strong>
+                  <div class="list-area" >
+                      <!--일정없을때 노출-->
+                      <div class="nodata" style="display:none;"><p>미확정 된 주요 일정이 없습니다.</p></div>
+
+                      <ul class="etcdata" >
+
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <!-- //calendarWrap -->
+      </div>
+	<div class="modal-wrap modal-calendar-detail" id="calendarPopup"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="layerBack"></div>
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">ESG 일정 정보</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                    <section class="ask-gray-box scroll-area" style="border-bottom: none">
+                        <div class="info">
+                            <ul class="list">
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">일정제목</div>
+                                        <div class="desc" dt="title"></div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">일정</div>
+                                        <div class="desc" dt="date"></div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label">상세내용</div>
+                                        <div class="desc">
+                                            <div class="txtarea h412" dt="content">
+												<pre></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="wide">
+                                    <div>
+                                        <div class="label _linkUrl">URL</div>
+                                        <div class="desc" >
+<!--											<a href="javascript:vodi(0);" class="line"  dt="link" target="_blank"></a>-->
+											<div class="btn-wrap flex _linkUrl">
+												<button type="button" class="btn-primary small _linkUrl" data-link=""><span>링크연결</span></button>
+											</div>
+										</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- //info -->
+                    </section>
+                    <!-- //gray-box -->
+                    <div class="btn-wrap ask-btn" style="border-top: 2px solid #D04A02; padding-top: 20px;">
+                        <button type="button" class="btn-primary small w170" onclick='$("#calendarPopup").removeClass("show")'><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+
+<script id="tmpl_slist" type="text/x-jquery-tmpl">
+	<li><button type="button" class="schedulePop btn-schedule${classIdx} arrow " data-title="${title}" data-content="${constraint}" data-link="${allow}" data-etcStart="${etcStart}"><span>${title}</span></button></li>
+</script>
+<script id="tmpl_clist" type="text/x-jquery-tmpl">
+<li class="head">
+	<div class="date">일시</div>
+	<div class="schedule">일정명</div>
+</li>
+{{each(i, sub) list}}
+<li>
+	<div class="date">${sub.start} {{if sub.end != null}}~ ${sub.end}{{/if}}</div>
+	<div class="schedule schedulePop" data-title="${sub.title}" data-content="${sub.constraint}" data-link="${sub.allow}" data-etcStart="${sub.start} {{if sub.end != null}}~ ${sub.end}{{/if}}">
+		<span class="${sub.className} sort">${sub.cata}</span>
+		${sub.title}
+	</div>
+</li>
+{{/each}}
+{{if list.length == 0}}
+<li style="justify-content:center">
+<div><p>주요 일정이 없습니다.</p></div>
+</li>
+{{/if}}
+</script>
+</div>
+
+
+
+</html>

@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+
+    <script th:inline="javascript" th:if="${session.FoMbrInfo != null}">
+        var _session_coprNm = null;
+        /*<![CDATA[*/
+        _session_coprNm = /*[[${session.FoMbrInfo.coprNm}]]*/ null;
+        /*]]>*/
+    </script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            // 화면 초기화
+            fnInitView();
+
+            // 기본 데이터 조회
+            fnInitData();
+
+            // 이벤트 설정
+            fnInitEvent();
+        });
+
+        function fnInitView() {
+            //ESG 관심 영역 checkbox 생성
+            // $.post("/common/selectCodeList", {"grpCd": "INDSTY_LCLS_CD"}, function (data) {
+            //     var list = data.list;
+            //     var innerHtml = "<option value=''>선택</option>";
+            //     $.each(list, function (index, item) {
+            //         innerHtml += "<option value='" + item.cd + "'>" + item.cdNm + "</option>";
+            //     });
+            //     $("#regIndstyLclsCd").append(innerHtml);
+            // });
+            chkNext01();
+        }
+
+        // 기본 데이터 조회
+        function fnInitData() {
+        }
+
+        // 이벤트 설정
+        function fnInitEvent() {
+
+
+            $("#dtnDiagnosis").bind("click", fnDiagnosis);	//진단 시작하기
+
+            //대분류 업종선택 - 중분류 업종 조회
+            $("#regIndstyLclsCd").bind("change", function () {
+                //ESG 관심 영역 checkbox 생성
+                $.post("/common/selectUnderCodeList", {
+                    "grpCd": "INDSTY_MCLS_CD",
+                    "uprCd": $(this).val()
+                }, function (data) {
+                    var list = data.list;
+                    $("#regIndstyMclsCd").html("");
+                    $("#regIndstySclsCd").html("<option value=''>선택</option>");
+                    var innerHtml = "<option value=''>선택</option>";
+                    $.each(list, function (index, item) {
+                        innerHtml += "<option value='" + item.cd + "'>" + item.cdNm + "</option>";
+                    });
+                    $("#regIndstyMclsCd").append(innerHtml);
+                });
+                chkNext01();
+            });
+
+            //중분류 업종선택 - 소분류 업종 조회
+            $("#regIndstyMclsCd").bind("change", function () {
+                //ESG 관심 영역 checkbox 생성
+                $.post("/common/selectUnderCodeList", {
+                    "grpCd": "INDSTY_SCLS_CD",
+                    "uprCd": $(this).val()
+                }, function (data) {
+                    var list = data.list;
+                    $("#regIndstySclsCd").html("");
+                    var innerHtml = "<option value='' data-ref1cd=''>선택</option>";
+                    $.each(list, function (index, item) {
+                        innerHtml += "<option value='" + item.cd + "' data-ref1cd='" + item.ref1Cd + "'>" + item.cdNm + "</option>";
+                    });
+                    $("#regIndstySclsCd").append(innerHtml);
+                });
+                chkNext01();
+            });
+
+            //소분류 업종
+            $("#regIndstySclsCd").bind("change", function () {
+                var ref1cd = $(this).find("option:selected").data("ref1cd");
+                if (ref1cd == "A0007") //금융
+                {
+                    $("#h_bank").show();
+                    $(".A0007").show();
+                    $(".NA0007").hide();
+
+                } else {
+                    $(".A0007").hide();
+                    $(".NA0007").show();
+                    $("#h_bank").hide();
+                    $("#h_bank input").each(function () {
+                        $(this).prop("checked", false);
+                    })
+                }
+                chkNext01();
+            });
+
+            $("#sales").bind("change", function () {
+
+                chkNext01();
+            });
+            $('#pop02Div input:radio').on("change", function () {
+                chkNext02();
+            });
+
+            $('#pop03Div [name="csrdR02"],#pop03Div [name="csrdE11"],#pop03Div [name="csrdE05"],#pop03Div [name="csrdE07"],#pop03Div [name="csrdE08"],#pop03Div [name="csrdE10"],#pop03Div [name="csrdE12"],#pop03Div [name="csrdE13"],#pop03Div [name="csrdE14"],#pop03Div [name="csrdE16"],#pop03Div [name="csrdE17"],#pop03Div [name="csrdE18"]').on("change", function () {
+                var nm = $(this).attr("name");
+                var val = $(this).val();
+                if (val == "0" && $(this).is(":checked")) {
+                    $('#pop03Div [name="' + nm + '"]').each(function () {
+                        if ($(this).val() != "0") {
+                            $(this).prop("checked", false);
+
+                        }
+                    })
+
+                } else if (val != "0" && $(this).is(":checked")) {
+                    $('#pop03Div [name="' + nm + '"]').each(function () {
+                        if ($(this).val() == "0")
+                            $(this).prop("checked", false);
+                    })
+                }
+
+            });
+            $('#pop04Div [name="csrdR02"]').on("change", function () {
+                var nm = $(this).attr("name");
+                var val = $(this).val();
+                if (val == "0" && $(this).is(":checked")) {
+                    $('#pop04Div [name="' + nm + '"]').each(function () {
+                        if ($(this).val() != "0") {
+                            $(this).prop("checked", false);
+
+                        }
+                    })
+                    $("#csrdR02_option").hide();
+
+                } else if (val != "0" && $(this).is(":checked")) {
+                    $('#pop04Div [name="' + nm + '"]').each(function () {
+                        if ($(this).val() == "0")
+                            $(this).prop("checked", false);
+                    })
+                }
+
+            });
+            $('#pop03Div input').on("change", function () {
+                chkNext03();
+            });
+            $('#pop04Div input').on("change", function () {
+                chkNext04();
+            });
+            $('#pop03Div [name="csrdE01"]').on("change", function () {
+                if ($("#csrdE01_4").is(":checked")) {
+                    $("#csrdE01_option").show();
+                } else {
+                    $("#csrdE01_option").hide();
+                    $('[name="csrdE01o"]:checked').each(function () {
+                        $(this).prop("checked", false);
+                    })
+                }
+
+            })
+
+            $('#pop03Div [name="csrdE02"]').on("change", function () {
+                if ($("#csrdE02_4").is(":checked")) {
+                    $("#csrdE02_option").show();
+                } else {
+                    $("#csrdE02_option").hide();
+                    $('[name="csrdE02o"]:checked').each(function () {
+                        $(this).prop("checked", false);
+                    })
+                    $('[name="csrdE02otxt"]').val("");
+                }
+
+            })
+            $('#pop03Div [name="csrdE21"]').on("change", function () {
+                if ($("#csrdE21_1").is(":checked")) {
+                    $("#ch_qu").show();
+                } else {
+                    $("#ch_qu").hide();
+                    $('[name="csrdR05"]:checked').each(function () {
+                        $(this).prop("checked", false);
+                    })
+                }
+            })
+            $('#pop03Div [name="csrdE25"]').on("change", function () {
+                if ($("#csrdE25_1").is(":checked")) {
+                    $("#csrdE25_option").show();
+                } else {
+                    $("#csrdE25_option").hide();
+                    $('[name="csrdE25o"]:checked').each(function () {
+                        $(this).prop("checked", false);
+                    })
+
+                }
+
+            })
+            $('#pop04Div [name="csrdR02"]').on("change", function () {
+                if ($("#csrdR02_2").is(":checked")) {
+                    $("#csrdR02_option").show();
+                } else {
+                    $("#csrdR02_option").hide();
+                    $('[name="csrdR02o"]:checked').each(function () {
+                        $(this).prop("checked", false);
+                    })
+                    $('[name="csrdR02otxt"]').val("");
+                }
+
+            })
+            $('#pop04Div [name="csrdR03"]').on("change", function () {
+
+                $("#csrdR03_option").hide();
+                $('[name="csrdR03o"]:checked').each(function () {
+                    $(this).prop("checked", false);
+                })
+                $('[name="csrdR03otxt"]').val("");
+                $('[name="csrdR03otxt2"]').val("");
+
+                if ($("#csrdR03_2").is(":checked")) {
+                    $("#csrdR03_option").show();
+                    $("#csrdR03_option2").hide();
+                } else if ($("#csrdR03_3").is(":checked")) {
+                    $("#csrdR03_option").hide();
+                    $("#csrdR03_option2").show();
+
+                } else {
+
+
+                }
+
+            })
+
+            $('#pop03Div [name="csrdE02o"]').on("change", function () {
+                if ($("#csrdE02o_5").is(":checked")) {
+                    $("#csrdE02otxt").show();
+                } else {
+                    $("#csrdE02otxt").hide();
+                    $('#csrdE02otxt').val("");
+                }
+            })
+
+            $('#pop04Div [name="csrdR02o"]').on("change", function () {
+                if ($("#csrdR02o_7").is(":checked")) {
+                    $("#csrdR02otxt").show();
+                } else {
+                    $("#csrdR02otxt").hide();
+                    $('#csrdR02otxt').val("");
+                }
+            })
+            $('#pop04Div [name="csrdR03o"]').on("change", function () {
+                if ($("#csrdR03o_5").is(":checked")) {
+                    $("#csrdR03otxt").show();
+                } else {
+                    $("#csrdR03otxt").hide();
+                    $('#csrdR03otxt').val("");
+                }
+
+                if ($("#csrdR03o_10").is(":checked")) {
+                    $("#csrdR03otxt2").show();
+                } else {
+                    $("#csrdR03otxt2").hide();
+                    $('#csrdR03otxt2').val("");
+                }
+
+            })
+
+
+            //01. 기본 정보 입력 - 다음 버튼클릭
+            $("#btnNtxt01").bind("click", function () {
+                if ($(this).hasClass("disabled"))
+                    return;
+
+                fnOpenPop('pop02Div');
+            });//02. ESG 전략 계획 open
+
+            //02.ESG 전략 계획
+            $("#btnPre02").bind("click", function () {
+                fnOpenPop('pop01Div');
+            });//01. 기본 정보 입력 open
+            $("#btnNtxt02").bind("click", function () {
+                if ($(this).hasClass("disabled"))
+                    return;
+                fnOpenPop('pop03Div');
+
+            });//03. ESG 과제 이행 open
+
+            //03. ESG 과제 이행
+            $("#btnPre03").bind("click", function () {
+                fnOpenPop('pop02Div');
+            });//02.ESG 전략 계획 open
+            $("#btnNtxt03").bind("click", function () {
+                if ($(this).hasClass("disabled"))
+                    return;
+                fnOpenPop('pop04Div');
+            });//04. 공시・인증 open
+            $("#btnPre04").bind("click", function () {
+                fnOpenPop('pop03Div');
+            });//02.ESG 전략 계획 open
+
+            //04. 공시・인증 open
+            $("#btnNtxt04").bind("click", function () {
+                if ($(this).hasClass("disabled"))
+                    return;
+                //$("#pop04Div").removeClass("show");
+                $(".etcInput").each(function () {
+                    $(this).closest("li").find("input[type='checkbox']").val($(this).val());
+                })
+
+                var formData, param = {};
+                formData = _formLib.getFormData("savefrm");
+
+                param = {
+                    "url": "/diagnosis/selfDiagnosisSave"
+                    , "type": "post"
+                    , "data": formData
+                    , "async": false
+                    , "callback": function (data) {
+                        if (data.msg == "success") {
+
+                            $("#actTgtResultUid").val(data.actTgtResultUid);
+                            $("#sfrm").submit();
+
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                };
+                _comLib.callAjax(param);
+
+            });
+        }
+
+        //ESG 경영 자가진단 팝업오픈
+        function fnDiagnosis() {
+            if (_session_id == null) {
+                alert("로그인 후 이용가능합니다.")
+                return;
+            }
+            _formLib.initFormData('savefrm');
+            $("#comNm").html(_session_coprNm);
+            $("#pop01Div").addClass("show");
+            $("#ch_qu").hide();
+            $("#h_bank").hide();
+            $(".question-ck-list").each(function () {
+                var id = $(this).attr("id");
+                if (id != undefined && id.indexOf("_option") > -1)
+                    $(this).hide();
+            })
+            $(".etcInput").each(function () {
+                $(this).hide();
+            })
+        }
+
+        //01. 기본 정보 입력 - 다음버튼 활성화 체크
+        function chkNext01() {
+            var lclsCd = $("#regIndstyLclsCd").val();	//업종 대분류
+            var mclsCd = $("#regIndstyMclsCd").val();	//업종 중분류
+            var sclsCd = $("#regIndstySclsCd").val();	//업종 소분류
+            var sales = $("#sales").val();				//매출액
+
+            var cnt = 0;
+            if (lclsCd != '' && mclsCd != '' && sclsCd != '') {
+                cnt++;
+            }
+            if (sales != '') {
+                cnt++;
+            }
+
+            if (lclsCd != '' && mclsCd != '' && sclsCd != '' && sales != '') {
+                $("#btnNtxt01").removeClass("disabled");
+            } else {
+                $("#btnNtxt01").addClass("disabled");
+            }
+            $('#pop01Div .awCnt').html(cnt);
+            $('#pop01Div .awCntSum').html(2);
+
+        }
+
+        //02. ESG 전략 계획 - 다음버튼 활성화 체크
+        function chkNext02() {
+            var is = true;
+            var sum = $("#pop02Div  .question-list").not(":hidden").length;
+            var cnt = 0;
+            $("#pop02Div  .question-list").not(":hidden").each(function () {
+                var is_cnt = true;
+                var obj = $(this);
+                $(this).find("input:radio").each(function () {
+                    if (obj.find('[name="' + $(this).attr("name") + '"]:checked').val() == undefined) {
+                        is = false;
+                        is_cnt = false;
+                        console.log("pop02Div", $(this).attr("name"))
+                    }
+                })
+                if (is_cnt)
+                    cnt++;
+            })
+
+            if (!is) {
+                $("#btnNtxt02").addClass("disabled");
+            } else {
+                $("#btnNtxt02").removeClass("disabled");
+            }
+
+            $('#pop02Div .awCnt').html(cnt);
+            $('#pop02Div .awCntSum').html(sum);
+
+        }
+
+        //03. ESG 과제 이행
+        function chkNext03() {
+            var is = true;
+            var sum = $("#pop03Div  .question-list").not(":hidden").length;
+            var cnt = 0;
+
+            $("#pop03Div  .question-list").not(":hidden").each(function () {
+                var is_cnt = true;
+                var obj = $(this);
+
+                $(this).find(".box-radio-wrap > li > input:radio , .question-ck-list > .checkbox-wrap > li > input:checkbox").each(function () {
+                    var nm = $(this).closest(".question-ck-list").attr("id");
+
+                    if (nm == undefined || (nm != undefined && nm.indexOf("_option") == -1)) {
+                        if (obj.find('[name="' + $(this).attr("name") + '"]:checked').val() == undefined) {
+                            is = false;
+                            is_cnt = false;
+                            console.log("pop03Div", $(this).attr("name"))
+                        } else {
+                            if ($(this).attr("name") == "csrdE01" && $('#csrdE01_4').is(":checked") && $('[name="csrdE01o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                            if ($(this).attr("name") == "csrdE02" && $('#csrdE02_4').is(":checked") && $('[name="csrdE02o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                            if ($(this).attr("name") == "csrdE02" && $("#csrdE02_4").is(":checked") && $('#csrdE02o_5').is(":checked") && $("#csrdE02otxt").val() == '') {
+                                is_cnt = false;
+                                is = false;
+                            }
+                            if ($(this).attr("name") == "csrdE25" && $("#csrdE25_1").is(":checked") && $('[name="csrdE25o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                        }
+                    }
+
+                })
+                if (is_cnt)
+                    cnt++;
+            })
+
+
+            if (!is) {
+                $("#btnNtxt03").addClass("disabled");
+            } else {
+                $("#btnNtxt03").removeClass("disabled");
+            }
+
+
+            $('#pop03Div .awCnt').html(cnt);
+            $('#pop03Div .awCntSum').html(sum);
+
+        }
+
+        function chkNext04() {
+            var is = true;
+            var sum = $("#pop04Div  .question-list").not(":hidden").length;
+            var cnt = 0;
+
+            $("#pop04Div  .question-list").not(":hidden").each(function () {
+                var is_cnt = true;
+                var obj = $(this);
+
+                $(this).find(".box-radio-wrap > li > input:radio , .question-ck-list > .checkbox-wrap > li > input:checkbox").each(function () {
+                    var nm = $(this).closest(".question-ck-list").attr("id");
+
+                    if (nm == undefined || (nm != undefined && nm.indexOf("_option") == -1)) {
+                        if (obj.find('[name="' + $(this).attr("name") + '"]:checked').val() == undefined) {
+                            is = false;
+                            is_cnt = false;
+                            console.log("pop04Div", $(this).attr("name"))
+                        } else {
+                            if ($(this).attr("name") == "csrdR02" && $('#csrdR02_2').is(":checked") && $('[name="csrdR02o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                            if ($(this).attr("name") == "csrdR03" && $('#csrdR03_2').is(":checked") && $('[name="csrdR03o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                            if ($(this).attr("name") == "csrdR03" && $("#csrdR03_3").is(":checked") && $('[name="csrdR03o"]:checked').length == 0) {
+                                is_cnt = false;
+                                is = false;
+                            }
+                        }
+                    }
+
+                })
+                if (is_cnt)
+                    cnt++;
+            })
+
+            if (!is) {
+                $("#btnNtxt04").addClass("disabled");
+            } else {
+                $("#btnNtxt04").removeClass("disabled");
+            }
+
+
+            $('#pop04Div .awCnt').html(cnt);
+            $('#pop04Div .awCntSum').html(sum);
+
+        }
+
+        //팝업 오픈
+        function fnOpenPop(showId) {
+            //alert(showId);
+            $(".modal-wrap").removeClass("show");
+            $("#" + showId).addClass("show");
+        }
+
+        $(document).ready(function () {
+            $('.menu01').addClass("on");
+        });
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <form id="sfrm" method="post" action="/diagnosis/selfDiagnosisResult">
+        <input type="hidden" name="actTgtResultUid" id="actTgtResultUid">
+    </form>
+
+    <section class="sub content-esg-selfdiagnosis-view">
+        <div class="sub-title-a">
+            <div class="ct">
+                <div class="tit">ESG 경영 자가진단</div>
+                <div class="subs">기업이 ESG 경영을 위해 어떤 활동을 하고 있는지를 자가진단하고 필요한 ESG 경영활동에 대한 가이드를 제공합니다.</div>
+            </div>
+            <div class="bgBack"></div>
+            <div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+        </div>
+
+        <div class="esg-plan default-width content sub-wrap" id="init">
+            <ul class="text-border-box">
+                <li><b>ESG 경영 자가진단</b>은 현재 기업이 운영하는 ESG 경영활동의 수준을 자가진단하고, 보완이 필요한 <b>ESG 경영활동 영역을 확인하여 해당 영역에 경영 가이드를 쉽게
+                    참고</b>할 수 있도록 지원하기 위한 목적으로 구성 되었습니다.
+                </li>
+                <li>자가진단은 <b>기본정보를 입력하는 단계</b>와 <b/>ESG 경영활동의 3단계 프로세스</b>를 반영하여 총 4단계로 진행됩니다.</li>
+                <li>경우에 따라 34 ~ 36개의 문항에 응답하도록 구성되어 있으며, 문항에 따라 ‘예’ 또는 ‘아니오’로 응답하는 문항과 ‘해당하는 항목을 하나만 또는 모두 선택’하는 문항이 섞여
+                    있습니다. <b>모든 문항의 응답을 입력하지 않으면 다음으로 넘어갈 수 없습니다.</b></li>
+            </ul>
+
+            <div class="back-btn" id="dtnDiagnosis">
+                진단 시작하기<span><img src="/assets/img/common/ico_arrow_right.png"></span>
+            </div>
+
+            <div class="plan-process">
+                <ul class="processList">
+                    <li>
+                        <div class="icon"><img src="/assets/img/common/ico_progress01_bk.svg"></div>
+                        <div class="tx">01. 기본정보 입력</div>
+                    </li>
+
+                    <li>
+                        <div class="icon"><img src="/assets/img/common/ico_progress02_bk.svg"></div>
+                        <div class="tx">02. ESG 전략 계획</div>
+                    </li>
+
+                    <li>
+                        <div class="icon"><img src="/assets/img/common/ico_progress03_bk.svg"></div>
+                        <div class="tx">03. ESG 과제 이행</div>
+                    </li>
+
+                    <li>
+                        <div class="icon"><img src="/assets/img/common/ico_progress04_bk.svg"></div>
+                        <div class="tx">04. 공시・인증</div>
+                    </li>
+                </ul>
+
+                <dl class="detailList">
+                    <dd>
+                        <ul>
+                            <li>기업 업종</li>
+                            <li>기업 규모</li>
+                        </ul>
+                    </dd>
+
+                    <dd>
+                        <ul>
+                            <li>ESG 경영전략 수립</li>
+                            <li>ESG 경영체계 수립</li>
+                        </ul>
+                    </dd>
+
+                    <dd>
+                        <ul>
+                            <li>환경 과제</li>
+                            <li>사회 과제</li>
+                            <li>거버넌스 과제</li>
+                            <li>지속가능 금융</li>
+                            <li>ESG 영향평가</li>
+                            <li>ESG 시스템 운영</li>
+                        </ul>
+                    </dd>
+
+                    <dd>
+                        <ul>
+                            <li>ESG 공시</li>
+                            <li>ESG 평가</li>
+                            <li>ESG 인증</li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+
+    </section>
+
+
+</div>
+
+<!-- popup fragment -->
+<th:block layout:fragment="popup">
+    <form id="savefrm">
+        <!-- 01. 기본 정보 입력 -->
+        <div id="pop01Div" class="modal-wrap" style="display:none;"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            <div class="dimmed"></div>
+            <div class="center">
+                <section class="modal-area w1024">
+                    <div class="modal-head left">
+                        <h2 class="tit">ESG 경영 자가진단</h2>
+                        <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                    </div>
+                    <section class="modal-cont">
+                        <div class="esg01-wrap">
+                            <div class="op">
+                                <div>[기본 정보] 단계 응답 현황</div>
+                                <div>
+                                    <data class="awCnt">0</data>
+                                    문항 /
+                                    <data class="awCntSum">2</data>
+                                    문항
+                                </div>
+                            </div>
+
+
+                            <div class="progress-wrap">
+                                <ol>
+                                    <li class="current"><strong><i></i><span>01. </span> 기본 정보 입력</strong></li>
+                                    <li><strong><i></i><span>02. ESG </span> 전략∙계획</strong></li>
+                                    <li><strong><i></i><span>03. ESG </span> 과제 이행</strong></li>
+                                    <li><strong><i></i><span>04. ESG </span> 공시∙인증</strong></li>
+                                </ol>
+                            </div>
+                            <!-- //progress-wrap -->
+                            <!-- 기본 정보 입력 -->
+                            <div class="question-wrap">
+
+                                <div class="head">
+                                    안녕하세요, [
+                                    <data id="comNm"></data>
+                                    ] ESG 담당자님,<br> ESG 경영 자가진단에 앞서 보다 상세한 진단 결과의 제공을 위해 아래의 기본 정보를 입력해 주세요.
+                                </div>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사의 업종은 무엇입니까? (매출의 가장 많은 비중을 차지하는 활동을 기준으로 응답해
+                                            주세요.)</p>
+                                        <label for="question01" class="label">업종 분류 선택</label>
+                                        <div class="select-flex wide"><!-- 20230821 추가 -->
+                                            <select name="regIndstyLclsCd" id="regIndstyLclsCd" class="select">
+                                                <option value="">대분류 선택</option>
+                                                <option th:each="item, stat : ${code1}" th:value="${item.cd}">
+                                                    [[${item.cdNm}]]
+                                                </option>
+
+                                            </select>
+                                            <select name="regIndstyMclsCd" id="regIndstyMclsCd" class="select">
+                                                <option value="">중분류 선택</option>
+                                            </select>
+                                            <select name="regIndstySclsCd" id="regIndstySclsCd" class="select">
+                                                <option value="">소분류 선택</option>
+                                            </select>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사의 규모는 어느 정도입니까? (매출액 기준)</p>
+                                        <label for="sales" class="label">매출액</label>
+                                        <select name="sales" id="sales" class="select">
+                                            <option value="">선택</option>
+                                            <option value="01">5 조 원 이상</option>
+                                            <option value="02">1 조 원 ~ 5 조 원</option>
+                                            <option value="03">5,000 억 원 ~ 1 조 원</option>
+                                            <option value="04">1,500 억 원 ~ 5,000 억 원</option>
+                                            <option value="05">1,500 억 이하</option>
+                                        </select>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="btn-wrap ">
+
+                                <button type="button" id="btnNtxt01" class="btn-primary small arrow "><span>다음</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- //esg01-wrap -->
+                    </section>
+                    <!--//modal-cont-->
+                </section>
+                <!--//modal-area-->
+            </div>
+            <!-- //xycenter -->
+        </div>
+
+        <!-- 02. ESG 전략 계획 -->
+        <div id="pop02Div" class="modal-wrap" style="display:none;"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            <div class="dimmed"></div>
+            <div class="center">
+                <section class="modal-area w1024">
+                    <div class="modal-head left">
+                        <h2 class="tit">ESG 경영 자가진단</h2>
+                        <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                    </div>
+                    <div class="modal-cont">
+                        <div class="esg01-wrap">
+                            <div class="op">
+                                <div>[ESG 전략∙계획] 단계 응답 현황</div>
+                                <div>
+                                    <data class="awCnt">0</data>
+                                    문항 /
+                                    <data class="awCntSum">6</data>
+                                    문항
+                                </div>
+                            </div>
+
+
+                            <div class="progress-wrap">
+                                <ol>
+                                    <li class="pass"><strong><i></i><span>01. </span> 기본 정보 입력</strong></li>
+                                    <li class="current"><strong><i></i><span>02. ESG </span> 전략∙계획</strong></li>
+                                    <li><strong><i></i><span>03. ESG </span> 과제 이행</strong></li>
+                                    <li><strong><i></i><span>04. ESG </span> 공시∙인증</strong></li>
+
+                                </ol>
+                            </div>
+                            <!-- //progress-wrap -->
+                            <!-- 전략계획 -->
+                            <div class="question-wrap"><!-- 노출시 hide 제거 -->
+
+                                <ul class="category">
+                                    <li>ESG 전략계획</li>
+                                    <li>ESG 경영전략 수립</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 ESG 경영 비전과 전략 방향성을 수립하여 공개하고 있습니까?<br>
+                                            혹은 귀사가 그룹사에 속해있는 경우, 그룹사 차원에서 ESG 경영 비전 및 전략 방향성을 수립하여 공개하고 있습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS01_1" value="0" name="csrdS01">
+                                                <label for="csrdS01_1"><span>아직 비전 및 방향성을 수립하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS01_2" value="0.5" name="csrdS01">
+                                                <label for="csrdS01_2"><span>비전 및 방향성을 수립하였으나 공개하고 있지 않음 </span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS01_3" value="1" name="csrdS01">
+                                                <label for="csrdS01_3"><span>비전 및 방향성을 수립하여 웹사이트 등 정해진 위치에 공개함</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사는 전사 ESG 비전과 전략 방향성을 구체화하기 위해 KPI를 설정하고 이에 대한 단∙중∙장기
+                                            목표를 수립하였습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS02_1" value="0" name="csrdS02">
+                                                <label for="csrdS02_1"><span>아직 KPI와 단계별 목표를 수립하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS02_2" value="0.5" name="csrdS02">
+                                                <label for="csrdS02_2"><span> KPI와 이에 대한 목표를 설정하였으나 단계별 구체화하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS02_3" value="1" name="csrdS02">
+                                                <label for="csrdS02_3"><span> KPI와 이에 대한 단∙중∙장기 단계별 목표를 수립함</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">03. 귀사는 ESG 전략 목표의 달성을 위한 구체적인 실행과제와 계획이 있습니까?
+                                        </p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS03_1" value="0" name="csrdS03">
+                                                <label for="csrdS03_1"><span>아직 실행과제와 계획을 수립하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS03_2" value="0.5" name="csrdS03">
+                                                <label for="csrdS03_2"><span>실행과제를 도출하고 기본 계획을 수립하였으나, 실행 가능한 수준으로 계획이 구체화되지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS03_3" value="1" name="csrdS03">
+                                                <label for="csrdS03_3"><span>구체적인 실행과제와 계획을 수립함</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 전략계획</li>
+                                    <li>ESG 경영체계 수립</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 ESG 경영활동을 관리∙감독하기 위한 의사결정체계를 구축하고, 의사결정체계 내의 역할과 책임,
+                                            운영 현황을 규정하고 있습니까? </p>
+                                        <p class="guide-txt">* 의사결정체계: 이사회와 이사회 산하 위원회, 경영진, 전담 조직, 실무협의체의 구성</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS04_1" name="csrdS04" value="0">
+                                                <label for="csrdS04_1"><span>아직 ESG 의사결정체계를 구축하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS04_2" name="csrdS04" value="0.5">
+                                                <label for="csrdS04_2"><span>ESG 의사결정체계를 정의하여 문서화, 공개하고 있으나 실질적인 운영은 미흡함</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS04_3" name="csrdS04" value="1">
+                                                <label for="csrdS04_3"><span>ESG 의사결정체계를 정의하여 문서화, 공개하고 있으며 실질적인 운영을 하고 있음</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사는 ESG 경영 계획, ESG 경영활동 수행, 모니터링, 보고, 업무 개선과 성과 평가로 이어지는
+                                            업무 프로세스와 이에 대한 R&R을 지침에 반영하고 이행하고 있습니까? </p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS05_1" name="csrdS05" value="0">
+                                                <label for="csrdS05_1"><span>ESG 경영활동 관련 프로세스를 수립하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS05_2" name="csrdS05" value="0.5">
+                                                <label for="csrdS05_2"><span>ESG 경영활동 관련 업무프로세스 수립하여 규정 등에 반영하고 있으나 실질적인 업무 적용은 미흡함 </span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS05_3" name="csrdS05" value="1">
+                                                <label for="csrdS05_3"><span>ESG 업무 프로세스를 규정하고 R&R을 정의하여, ESG 경영활동에 대한 수행과 관리가 적절하게 이뤄지고 있음</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">03. ESG 리스크를 식별, 평가, 모니터링하는 관리체계(규정, 정책, 역할과 책임 정의, 프로세스 등)가
+                                            구축되어 있습니까? </p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdS06_1" name="csrdS06" value="0">
+                                                <label for="csrdS06_1"><span>아직 ESG 리스크 관리체계를 수립하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS06_2" name="csrdS06" value="0.2">
+                                                <label for="csrdS06_2"><span>ESG 리스크를 정의함 </span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS06_3" name="csrdS06" value="0.5">
+                                                <label for="csrdS06_3"><span>정의한 ESG 리스크를 식별, 평가, 모니터링하는 방안 및 프로세스에 대한 규정 및 정책을 수립함 </span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdS06_4" name="csrdS06" value="1">
+                                                <label for="csrdS06_4"><span>각 관리 단계별 R&R을 규정하여 업무를 배정함</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <!-- 전략계획일때// -->
+                            <div class="btn-wrap ">
+                                <button type="button" id="btnPre02"
+                                        class="btn-white small arrow">
+                                    <span class="">이전</span>
+                                </button>
+                                <button type="button" id="btnNtxt02" class="btn-primary small arrow disabled">
+                                    <span>다음</span></button>
+                            </div>
+                            <!-- //전략계획일때 -->
+                        </div>
+                        <!-- //esg01-wrap -->
+                    </div>
+                    <!--//modal-cont-->
+                </section>
+                <!--//modal-area-->
+            </div>
+            <!-- //xycenter -->
+        </div>
+
+        <!-- 03. ESG 과제 이행 -->
+        <div id="pop03Div" class="modal-wrap" style="display:none;"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            <div class="dimmed"></div>
+            <div class="center">
+                <section class="modal-area w1024">
+                    <div class="modal-head left">
+                        <h2 class="tit">ESG 경영 자가진단</h2>
+                        <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                    </div>
+                    <div class="modal-cont">
+                        <div class="esg01-wrap">
+                            <div class="op">
+                                <div>[ESG 과제 이행] 단계 응답 현황</div>
+                                <div>
+                                    <data class="awCnt">0</data>
+                                    문항 /
+                                    <data class="awCntSum">24</data>
+                                    문항
+                                </div>
+                            </div>
+
+                            <div class="progress-wrap">
+                                <ol>
+                                    <li class="pass"><strong><i></i><span>01. </span> 기본 정보 입력</strong></li>
+                                    <li class="pass"><strong><i></i><span>02. ESG </span> 전략∙계획</strong></li>
+                                    <li class="current"><strong><i></i><span>03. ESG </span> 과제 이행</strong></li>
+                                    <li><strong><i></i><span>04. ESG </span> 공시∙인증</strong></li>
+                                </ol>
+                            </div>
+                            <!-- //progress-wrap -->
+                            <div class="question-wrap"><!-- 노출시 hide 제거 -->
+
+
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>환경 과제 이행</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 운영 통제 범위* 내에 속하는 모든 사업장에 대해 온실가스 배출량을 측정하고
+                                            있습니까? </p>
+                                        <p class="guide-txt">* 운영 통제 범위: 조직의 온실가스 배출과 관련하여 지배적인 영향력을 행사할 수 있는 지리적 경계,
+                                            물리적 경계, 업무활동 경계 등을 의미</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE01_1" name="csrdE01" value="0">
+                                                <label for="csrdE01_1">
+                                                    <span class="NA0007">아직 온실가스 배출량을 측정하고 있지 않거나 측정을 계획하고 있음</span>
+                                                    <span class="A0007" style="display:none;">아직 온실가스 배출량을 측정하고 있지 않거나 Scope 1&2 온실가스 배출량만을 측정하고 있음</span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE01_2" name="csrdE01" value="0.5">
+                                                <label for="csrdE01_2">
+                                                    <span class="NA0007">Scope 1&2 온실가스 배출량만을 측정하고 있음 </span>
+                                                    <span class="A0007" style="display:none;">Scope 1&2 온실가스 배출량 및 Scope 3 '카테고리 15 투자'에 해당하는 배출량을 측정하고 있음</span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE01_3" name="csrdE01" value="1">
+                                                <label for="csrdE01_3">
+                                                    <span class="NA0007">Scope 1&2 온실가스 배출량을 측정하고 있으며, Scope 3 스크리닝을 실시하여 측정이 필요한 카테고리를 검토함</span>
+                                                    <span class="A0007" style="display:none;">Scope 1&2 온실가스 배출량을 측정하고 있으며, 카테고리 15 외의 Scope 3 스크리닝을 실시하여 측정이 필요한 카테고리를 검토함</span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE01_4" name="csrdE01" value="1.5">
+                                                <label for="csrdE01_4">
+                                                    <span class="NA0007">Scope 1&2 온실가스 배출량을 측정하고 있으며, Scope 3 스크리닝을 실시한 후 Scope 3 배출량까지도 측정하고 있음</span>
+                                                    <span class="A0007" style="display:none;">Scope 1&2 온실가스 배출량을 측정하고 있으며,  카테고리 15 외의 Scope 3 스크리닝을 실시한 후 Scope 3 배출량까지도 측정하고 있음</span>
+                                                </label>
+                                            </li>
+                                            <li class="question-ck-list  wide" id="csrdE01_option"
+                                                style="display:none;">
+                                                <ul class="checkbox-wrap">
+
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_1" name="csrdE01o"
+                                                               value="1">
+                                                        <label for="csrdE01o_1"><span>상품 및 서비스</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_2" name="csrdE01o"
+                                                               value="2">
+                                                        <label for="csrdE01o_2"><span>자본재</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_3" name="csrdE01o"
+                                                               value="3">
+                                                        <label for="csrdE01o_3"><span>scope1/2에 포함되지 않는 연료 및 에너지 관련 활동</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_4" name="csrdE01o"
+                                                               value="4">
+                                                        <label for="csrdE01o_4"><span>업스트림 운송 및 유통</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_5" name="csrdE01o"
+                                                               value="5">
+                                                        <label for="csrdE01o_5"><span>사업장 발생 폐기물</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_6" name="csrdE01o"
+                                                               value="6">
+                                                        <label for="csrdE01o_6"><span>비즈니스 출장</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_7" name="csrdE01o"
+                                                               value="7">
+                                                        <label for="csrdE01o_7"><span>임직원 출퇴근</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_8" name="csrdE01o"
+                                                               value="8">
+                                                        <label for="csrdE01o_8"><span>업스트림 임대자산</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_9" name="csrdE01o"
+                                                               value="9">
+                                                        <label for="csrdE01o_9"><span>다운스트림 운송 및 유통</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_10" name="csrdE01o"
+                                                               value="10">
+                                                        <label for="csrdE01o_10"><span>판매된 상품의 가공과정</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_11" name="csrdE01o"
+                                                               value="11">
+                                                        <label for="csrdE01o_11"><span>판매된 상품의 이용</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_12" name="csrdE01o"
+                                                               value="12">
+                                                        <label for="csrdE01o_12"><span>판매 상품의 폐기</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_13" name="csrdE01o"
+                                                               value="13">
+                                                        <label for="csrdE01o_13"><span>다운스트림 임대자산</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_14" name="csrdE01o"
+                                                               value="14">
+                                                        <label for="csrdE01o_14"><span>프랜차이즈 공급사</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE01o_15" name="csrdE01o"
+                                                               value="15">
+                                                        <label for="csrdE01o_15"><span>투자</span></label>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 온실가스 감축 목표를 수립하여 공개하고 감축 이행 방안을 실천하고 있습니까? 또한, Net Zero
+                                            달성을 위한 글로벌 이니셔티브에 가업하여 정기적으로 온실가스 감축 이행 현황을 공개하고 있습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE02_1" name="csrdE02" value="0">
+                                                <label for="csrdE02_1"><span>온실가스 배출량 감축 목표를 수립하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE02_2" name="csrdE02" value="0.5">
+                                                <label for="csrdE02_2"><span>온실가스 배출량 감축 목표를 수립하여 주기적으로 지정된 위치*에 공개하고 있으나 아직 이행 방안의 수립 및 실천으로 연계하지 않음
+											<br>* 회사 홈페이지, 사업보고서, 지속가능경영보고서 등</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE02_3" name="csrdE02" value="1">
+                                                <label for="csrdE02_3"><span>온실가스 배출량 감축 목표뿐 아니라 감축 이행 방안 및 그 실천 활동 경과에 대해 주기적으로 지정된 위치에 공개하고 있음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE02_4" name="csrdE02" value="1.5">
+                                                <label for="csrdE02_4"><span>Net Zero 달성을 위한 글로벌 이니셔티브에 가입하여 해당 기준에 따라 목표 및 이행 현황을 공개하고 있음</span></label>
+                                            </li>
+                                            <li class="question-ck-list  wide" id="csrdE02_option" style="display:none">
+                                                <ul class="checkbox-wrap">
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE02o_1" name="csrdE02o"
+                                                               value="1">
+                                                        <label for="csrdE02o_1"><span>CDP</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE02o_2" name="csrdE02o"
+                                                               value="2">
+                                                        <label for="csrdE02o_2"><span>SBTi</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE02o_3" name="csrdE02o"
+                                                               value="3">
+                                                        <label for="csrdE02o_3"><span>NZIA, NZBA 등</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE02o_4" name="csrdE02o"
+                                                               value="4">
+                                                        <label for="csrdE02o_4"><span>PCAF</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE02o_5" name="csrdE02o" value="">
+                                                        <label for="csrdE02o_5"><span>기타 (직접 입력)</span></label>
+                                                        <input class="etcInput" type="text" id="csrdE02otxt"
+                                                               name="csrdE02otxt"
+                                                               style="margin-left: 10px;padding: 5px 10px; height: 30px;display:none">
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+                                        </ul>
+
+
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">03. 귀사가 생산∙판매하는 제품∙서비스의 환경 영향을 고려하여 친환경 제품∙서비스에 대한 정의가 되어
+                                            있습니까? </p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE03_1" name="csrdE03" value="1">
+                                                <label for="csrdE03_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE03_2" name="csrdE03" value="0">
+                                                <label for="csrdE03_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">04. 친환경 제품∙서비스의 실적(매출, 투자액 등)을 관리하고 공시하고 있습니까?</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE04_1" name="csrdE04" value="1">
+                                                <label for="csrdE04_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE04_2" name="csrdE04" value="0">
+                                                <label for="csrdE04_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">05. 귀사는 기업의 사업장 위치나 사업 활동이 생물다양성에 미치는 영향을 평가하여 부정적 영향을
+                                            모니터링하고, 복원 활동 또는 생물다양성 보전 활동을 기획하여 운영하고 있습니까? 관리하고 계신 주제를 모두 선택해 주세요.</p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE05_1" name="csrdE05" value="0.5">
+                                                    <label for="csrdE05_1"><span>사업장 위치나 사업 활동이 생물다양성에 미치는 영향을 평가하여 모니터링하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE05_2" name="csrdE05" value="0.5">
+                                                    <label for="csrdE05_2"><span>생물다양성 보전 활동을 기획하고 운영하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE05_3" name="csrdE05" value="0">
+                                                    <label for="csrdE05_3"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">06. 귀사의 에너지와 신재생에너지 사용량을 측정하고 에너지 사용량 감축 방안과 신재생에너지 활용 방안을
+                                            수립하여 운영하고 있습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE06_1" name="csrdE06" value="0">
+                                                <label for="csrdE06_1"><span>아직 에너지 및 신재생에너지 관리 활동을 하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE06_2" name="csrdE06" value="0.3">
+                                                <label for="csrdE06_2"><span>에너지 사용량을 측정하고 있음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE06_3" name="csrdE06" value="0.5">
+                                                <label for="csrdE06_3"><span>에너지 사용량을 측정하고 감축 방안을 수립하여 시행하고 있음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE06_4" name="csrdE06" value="1">
+                                                <label for="csrdE06_4"><span>에너지 사용량을 측정하고 에너지 사용량 감축을 위해 신재생 에너지를 활용하며 사용량을 측정하고 있음</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">07. 귀사는 원부자재 및 수자원의 사용량, 재활용량을 측정하고 사용량 감축 방안과 재활용 방안을 수립하여
+                                            운영하고 있습니까? 관리하고 계신 주제를 모두 선택해 주세요.
+                                        </p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE07_1" name="csrdE07" value="0.5">
+                                                    <label for="csrdE07_1"><span>원부자재 사용량 및 재활용량</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE07_2" name="csrdE07" value="0.5">
+                                                    <label for="csrdE07_2"><span>수자원 사용량 및 재활용량</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE07_3" name="csrdE07" value="0">
+                                                    <label for="csrdE07_3"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">08. 귀사의 폐기물, 오염물질 배출량 및 재활용률을 측정하고 감축 방안과 재활용 방안을 수립하여 운영하고
+                                            있습니까? 관리하고 계신 주제를 모두 선택해 주세요.
+                                        </p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap ">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE08_1" name="csrdE08" value="0.5">
+                                                    <label for="csrdE08_1"><span>폐기물 배출량 및 재활용률 관리</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE08_2" name="csrdE08" value="0.5">
+                                                    <label for="csrdE08_2"><span>오염물질 배출량 및 재활용률 관리</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE08_3" name="csrdE08" value="0">
+                                                    <label for="csrdE08_3"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+
+
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>사회 과제 이행</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 책임있는 공급망 설계 정책을 수립하여 공급망 ESG 리스크 관리체계*를 구축하고 공급망 관리를
+                                            위한 협력사 지원을 제공하고 있습니까?</p>
+                                        <p class="guide-txt">* 공급망 ESG 리스크 관리체계: 가치사슬 전반에 대해 생태계 파괴, 분쟁광물 규제 위반, 강제 노동
+                                            등의 ESG 리스크를 진단하고 실사를 진행하여 개선 활동으로 이어지도록 하는 정책 및 프로세스</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE09_1" name="csrdE09" value="0">
+                                                <label for="csrdE09_1"><span>아직 공급망 관리와 관련된 활동을 하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE09_2" name="csrdE09" value="0.5">
+                                                <label for="csrdE09_2"><span>공급망 관리체계를 정의하여 규정에 반영하거나 정책화하였음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE09_3" name="csrdE09" value="1">
+                                                <label for="csrdE09_3"><span>정의된 공급망 관리체계에 기반하여 공급망 관리를 위한 협력사 지원을 제공하고 있음</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사는 강제 노동 금지, 아동 노동 금지, 선주민 인권 보호, 고객 인권 보호 등의 인권보호 정책을
+                                            수립하고 인권 리스크 평가 체계(인권영향 평가)*를 구축하여 운영하고 있습니까?</p>
+                                        <p class="guide-txt">* 인권 리스크 평가 체계(인권영향 평가): 인권 리스크를 진단하고 실사를 진행하여 개선 활동으로
+                                            이어지도록 하는 정책 및 프로세스</p>
+
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE10_1" name="csrdE10" value="0">
+                                                <label for="csrdE10_1"><span>아직 인권보호 관련 활동을 하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE10_2" name="csrdE10" value="0.3">
+                                                <label for="csrdE10_2"><span>인권보호 관련 정책 ∙ 가이드 ∙ 선언 등을 수립하여 공개함 </span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE10_3" name="csrdE10" value="0.3">
+                                                <label for="csrdE10_3"><span>인권 정책에 기반하여 인권 리스크 평가 체계를 정의함</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE10_4" name="csrdE10" value="1">
+                                                <label for="csrdE10_4"><span>정의된 인권 리스크 평가 체계에 기반하여 실사를 실시하고 개선활동으로 연계하고 있음</span></label>
+                                            </li>
+                                        </ul>
+
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">03. 귀사는 인적자본과 관련한 다음의 이슈를 관리하기 위해 별도의 지침 또는 규정을 수립하고, 정책과
+                                            프로그램을 기획하여 운영하고 있습니까? 관리하고 계신 주제를 모두 선택해 주세요.</p>
+                                        <p class="guide-txt">
+                                            * 안전보건관리: 안전교육, 사업장 위험성 평가, 안전경영시스템인증 등<br/>
+                                            * 고용∙노동 정책 관리: 법정 근로조건 준수, 복지 혜택 제공 등<br/>
+                                            * 다양성 존중과 차별 방지: 사내 정책 수립, 차별 해소 프로그램, 교육의 실시
+                                        </p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE11_1" name="csrdE11" value="0.3">
+                                                    <label for="csrdE11_1"><span>임직원의 안전보건 관리</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE11_2" name="csrdE11" value="0.3">
+                                                    <label for="csrdE11_2"><span>임직원의 고용 노동 정책 관리</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE11_3" name="csrdE11" value="0.3">
+                                                    <label for="csrdE11_3"><span>임직원의 다양성 존중과 차별 방지 정책</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE11_4" name="csrdE11" value="0">
+                                                    <label for="csrdE11_4"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">04. 귀사는 지역사회에 미치는 영향을 분석하고 지역사회의 의견을 경영활동에 반영하고 있습니까? 관리하고
+                                            계신 주제를 모두 선택해 주세요.</p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE12_1" name="csrdE12" value="0.3">
+                                                    <label for="csrdE12_1"><span>사업 활동이 지역사회에 미치는 영향을 분석하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE12_2" name="csrdE12" value="0.3">
+                                                    <label for="csrdE12_2"><span>지역사회의 의견을 반영하는 채널, 절차 등이 정의되어 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE12_3" name="csrdE12" value="0.3">
+                                                    <label for="csrdE12_3"><span>지역사회의 발전에 기여하는 활동을 기획 및 운영하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE12_4" name="csrdE12" value="0">
+                                                    <label for="csrdE12_4"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">05. 귀사는 소비자 정보 보안 체계와 위반 시의 공시 기준, 제품 안전과 품질 확보를 위한 관리체계,
+                                            소비자 보호 정책* 및 프로그램을 수립하고 운영하고 있습니까? 관리하고 계신 주제를 모두 선택해 주세요.</p>
+                                        <p class="guide-txt">* 소비자 보호 정책: 소비자 보건∙안전 보호, 컴플레인 대응, 마케팅 과정의 정확한 정보 제공, 필수
+                                            서비스에 대한 접근성 제고를 위한 정책</p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE13_1" name="csrdE13" value="0.3">
+                                                    <label for="csrdE13_1"><span>소비자 정보 보안 체계 및 위반 시의 공시 기준을 갖추고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE13_2" name="csrdE13" value="0.3">
+                                                    <label for="csrdE13_2"><span>품질 경영 체계를 수립하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE13_3" name="csrdE13" value="0.3">
+                                                    <label for="csrdE13_3"><span>그 외 소비자 보호 정책 및 프로그램을 수립하고 운영하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE13_4" name="csrdE13" value="0">
+                                                    <label for="csrdE13_4"><span>관리하고 있는 주제 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 과제이행</li>
+                                    <li>거버넌스과제 이행</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 이사회의 독립성*, 전문성*, 구성의 다양성*을 확보하고 있습니까? 충족하고 있는 조건을 모두
+                                            선택해 주시기 바랍니다.</p>
+                                        <div class="guide-txt">
+                                            * 독립성: 이사회는 CEO, 대주주 등과 독립적이어야 하며, 「상법」 및 「금융회사의 지배구조에 관한 법률」에서 규정하는 조건을
+                                            충족하여야 함<br/>
+                                            * 전문성: 관련 전문 지식 및 경력을 보유한 전문가 중심으로 구성되어야 함 <br/>
+                                            * 다양성: 성별·국적·인종·종교·경험 및 문화적 배경·경력 등에 있어서 다양하게 구성되어야 함
+                                        </div>
+
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE14_1" name="csrdE14" value="0.3">
+                                                    <label for="csrdE14_1"><span>이사회의 독립성을 충족함</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE14_2" name="csrdE14" value="0.3">
+                                                    <label for="csrdE14_2"><span>이사회의 전문성을 충족함</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE14_3" name="csrdE14" value="0.3">
+                                                    <label for="csrdE14_3"><span>이사회 구성의 다양성을 충족함</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE14_4" name="csrdE14" value="0">
+                                                    <label for="csrdE14_4"><span>해당사항 없음</span></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사는 이사회 또는 이사회 산하 위원회에서 정기적으로 ESG 관련 안건*을 검토·심의·의결하고
+                                            있습니까?</p>
+                                        <p class="guide-txt">* ESG 관련 안건: ESG 경영 목표 및 전략 방향, 리스크 관리, 각종 정책, 경영 평가 등</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE15_1" name="csrdE15" value="1">
+                                                <label for="csrdE15_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE15_2" name="csrdE15" value="0">
+                                                <label for="csrdE15_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">03. 귀사는 독립적인 내부 감사 조직이 존재하고, 3중 방어 모형에 따라 방어선*별 리스크 관리 및
+                                            내부통제에 관련된 역할과 책임을 명확하게 규정하고 있습니까? 관리하고 계신 내용을 모두 선택해 주세요.</p>
+                                        <p class="guide-txt">* ①제1방어선: 일반 업무 부서, ②제2방어선: 리스크 관리 전담부서, ③제3방어선: 감사부서 </p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE16_1" name="csrdE16" value="0.5">
+                                                    <label for="csrdE16_1"><span>독립적인 내부 감사 조직이 존재함</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE16_2" name="csrdE16" value="0.5">
+                                                    <label for="csrdE16_2"><span>리스크 관리 및 내부통제에 대한 역할과 책임을 명확하게 규정하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE16_3" name="csrdE16" value="0">
+                                                    <label for="csrdE16_3"><span>해당사항 없음</span></label>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+
+
+                                        <p class="question">04. 귀사는 윤리경영지침을 수립하고 해당 내용*이 실제 임직원의 활동으로 이어질 수 있도록 임직원 교육,
+                                            사규 개정, 평가 지표 반영 등의 활동을 수행하고 있습니까? 관리하고 계신 내용을 모두 선택해 주세요.</p>
+                                        <p class="guide-txt">* 윤리경영활동 예시: 임직원 및 이해관계자 존중, 윤리 이슈 관리, 법규 준수, 반부패 정책 준수
+                                            등</p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE17_1" name="csrdE17" value="0.5">
+                                                    <label for="csrdE17_1"><span>윤리경영지침을 수립하였음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE17_2" name="csrdE17" value="0.5">
+                                                    <label for="csrdE17_2"><span>임직원 교육 등의 윤리경영활동을 기획하고 운영하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE17_3" name="csrdE17" value="0">
+                                                    <label for="csrdE17_3"><span>해당사항 없음</span></label>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="question-list">
+
+
+                                        <p class="question">05. 귀사는 귀사의 경영 정보를 다양한 위치와 방법으로 투명하게 공개하고, 주주 권리 보호를 위한 정책과
+                                            제도적 장치*를 마련하고 있습니까? 관리하고 계신 내용을 모두 선택해 주세요.</p>
+                                        <p class="guide-txt">* 주주 권리 보호 제도 예시: 집중투표제, 서면투표제, 주주제안권, 의결권 대리행사 권유제도 등</p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdE18_1" name="csrdE18" value="0.5">
+                                                    <label for="csrdE18_1"><span>경영 정보를 투명하게 공개하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE18_2" name="csrdE18" value="0.5">
+                                                    <label for="csrdE18_2"><span>주주 권리 보호 제도를 도입하고 있음</span></label>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdE18_3" name="csrdE18" value="0">
+                                                    <label for="csrdE18_3"><span>해당사항 없음</span></label>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>과제 이행 관리</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사에서 이행 중인 환경, 사회, 거버넌스 영역의 개별 과제에 대해 해당 내용을 업무 규정∙지침에
+                                            반영하거나 개별 규정∙지침을 수립하고 있습니까? </p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE19_1" name="csrdE19" value="0.5">
+                                                <label for="csrdE19_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE19_2" name="csrdE19" value="0">
+                                                <label for="csrdE19_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사에서 이행 중인 환경, 사회, 거버넌스 영역의 개별 과제에 대해 과제별 이행 성과를 주기적으로
+                                            모니터링하고 보고하여 성과평가와 개선점 도출에 활용하고 있습니까?</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE20_1" name="csrdE20" value="0.5">
+                                                <label for="csrdE20_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE20_2" name="csrdE20" value="0">
+                                                <label for="csrdE20_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>지속가능 금융</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 환경∙사회적 가치에 대한 책임 투자 관점에서 녹색채권, 사회적 채권, 지속가능 채권, 지속가능성 연계
+                                            채권 등을 발행하여 ESG 관련 프로젝트에 자금을 공급하고 있습니까?</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE21_1" name="csrdE21" value="0.5">
+                                                <label for="csrdE21_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE21_2" name="csrdE21" value="0">
+                                                <label for="csrdE21_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="question-list" id="h_bank">
+                                        <p class="question">02. 투자/여신 심사 대상 기업의 ESG 수준을 평가하고 평가 결과를 투자/여신 심사 시 반영하는 기준과
+                                            프로세스가 수립되어 있습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE22_1" name="csrdE22" value="0">
+                                                <label for="csrdE22_1"><span>아직 ESG 투자 및 심사 관리 활동을 수행하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE22_2" name="csrdE22" value="0.5">
+                                                <label for="csrdE22_2"><span>투자/여신 심사 대상 기업에 대한 ESG 평가 기준을 정의하고 있음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE22_3" name="csrdE22" value="1">
+                                                <label for="csrdE22_3"><span>ESG 평가 결과를 투자/여신 심사 시 반영하는 기준과 프로세스가 수립되어 있음</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>ESG 영향 평가</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 기후변화로 인한 리스크(이행∙물리적 리스크)와 기회를 검토하여 그로 인한 재무적 영향을 검토하고
+                                            있습니까? 특히, 재무적 영향 분석에 시나리오 분석을 활용하고 있습니까?</p>
+                                        <ul class="box-radio-wrap wide">
+                                            <li>
+                                                <input type="radio" id="csrdE23_1" name="csrdE23" value="0">
+                                                <label for="csrdE23_1"><span>재무적 영향 분석을 실시하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE23_2" name="csrdE23" value="0.8">
+                                                <label for="csrdE23_2"><span>재무적 영향 분석은 실시하고 있으나 시나리오 분석을 활용하지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE23_3" name="csrdE23" value="1">
+                                                <label for="csrdE23_3"><span>재무적 영향 분석에 시나리오 분석을 활용함</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
+                                    <li class="question-list">
+                                        <p class="question">02. 귀사의 경영활동이 환경∙사회에 미치는 영향과 환경∙사회 요인이 귀사에 미치는 영향을 평가하여 중대한
+                                            영향을 미치는 이슈를 선정하고 영향 수준을 확인하고 있습니까?</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE24_1" name="csrdE24" value="1">
+                                                <label for="csrdE24_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdE24_2" name="csrdE24" value="0">
+                                                <label for="csrdE24_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 과제 이행</li>
+                                    <li>ESG 시스템 운영</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. ESG 경영활동의 관리, 공시 데이터 확보의 편의성∙신뢰성 제고를 위해 ESG 경영관리 시스템,
+                                            ESG 데이터 통합 관리 시스템 등의 별도 시스템을 활용하고 있습니까? 활용하고 계신 시스템의 유형을 선택해 주세요.</p>
+                                        <p class="guide-txt">* ESG KPI∙관리지표 측정/모니터링 시스템, ESG 데이터 통합 관리 시스템, 공시/보고 시스템,
+                                            환경/사회 책임 경영 시스템 등 ESG와 관련된 시스템의 보유 여부</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdE25_1" name="csrdE25" value="1">
+                                                <label for="csrdE25_1"><span>예</span></label>
+                                            </li>
+
+                                            <li>
+                                                <input type="radio" id="csrdE25_2" name="csrdE25" value="0">
+                                                <label for="csrdE25_2"><span>아니오</span></label>
+                                            </li>
+                                            <div class="question-ck-list  wide mar_t30" id="csrdE25_option"
+                                                 style="display:none">
+                                                <ul class="checkbox-wrap">
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE25o_1" name="csrdE25o"
+                                                               value="1">
+                                                        <label for="csrdE25o_1"><span>KPI∙관리지표 측정/모니터링 시스템</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE25o_2" name="csrdE25o"
+                                                               value="2">
+                                                        <label for="csrdE25o_2"><span>전사 ESG 데이터 통합 관리 시스템</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE25o_3" name="csrdE25o"
+                                                               value="3">
+                                                        <label for="csrdE25o_3"><span>ESG 공시/보고 시스템</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdE25o_4" name="csrdE25o"
+                                                               value="4">
+                                                        <label for="csrdE25o_4"><span>ESG 정보 기반 경영관리 시스템</span></label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </ul>
+
+
+                                    </li>
+                                </ol>
+                            </div>
+
+
+                            <div class="btn-wrap ">
+                                <button type="button" id="btnPre03" class="btn-white small arrow"><span
+                                        class="">이전</span></button>
+                                <button type="button" id="btnNtxt03" class="btn-primary small arrow disabled">
+                                    <span>다음</span></button>
+                            </div>
+                            <!-- //전략계획일때 -->
+                        </div>
+                        <!-- //esg01-wrap -->
+                    </div>
+                    <!--//modal-cont-->
+                </section>
+                <!--//modal-area-->
+            </div>
+            <!-- //xycenter -->
+        </div>
+
+        <!-- 04. 공시・인증 -->
+        <div id="pop04Div" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            <div class="dimmed"></div>
+            <div class="center">
+                <section class="modal-area w1024">
+                    <div class="modal-head left">
+                        <h2 class="tit">ESG 경영 자가진단</h2>
+                        <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                    </div>
+                    <div class="modal-cont">
+                        <div class="esg01-wrap">
+                            <div class="op">
+                                <div>[ESG 공시∙인증] 단계 응답 현황</div>
+                                <div>
+                                    <data class="awCnt">0</data>
+                                    문항 /
+                                    <data class="awCntSum">5</data>
+                                    문항
+                                </div>
+                            </div>
+
+
+                            <div class="progress-wrap">
+                                <ol>
+                                    <li class="pass"><strong><i></i><span>01. </span> 기본 정보 입력</strong></li>
+                                    <li class="pass"><strong><i></i><span>02. ESG </span> 전략∙계획</strong></li>
+                                    <li class="pass"><strong><i></i><span>03. ESG </span> 과제 이행</strong></li>
+                                    <li class="current"><strong><i></i><span>04. ESG </span> 공시∙인증</strong></li>
+                                </ol>
+                            </div>
+                            <!-- //progress-wrap -->
+                            <!-- 전략계획 -->
+                            <div class="question-wrap"><!-- 노출시 hide 제거 -->
+
+                                <ul class="category">
+                                    <li>ESG 공시∙인증</li>
+                                    <li>ESG 공시</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 정기적으로 지속가능경영보고서(또는 통합보고서 등)를 발간하여 ESG 관련 사항을 공시하고
+                                            있습니까? </p>
+                                        <ul class="box-radio-wrap row-style wide">
+                                            <li>
+                                                <input type="radio" id="csrdR01_1" name="csrdR01" value="0">
+                                                <label for="csrdR01_1"><span>ESG 관련 사항을 공시하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR01_2" name="csrdR01" value="0.5">
+                                                <label for="csrdR01_2"><span>ESG 관련 사항을 부정기적이거나 일회적으로 공시하고 있음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR01_3" name="csrdR01" value="1">
+                                                <label for="csrdR01_3"><span>ESG 관련 사항을 최소 연단위로 주기적으로 공시하고 있음</span></label>
+                                            </li>
+
+
+                                        </ul>
+                                    </li>
+                                    <li class="question-list">
+                                        <p class="question">02. 중대성 평가 수행을 통해 귀사의 경영활동에 밀접한 관련이 있는 공시 주제를 선정하고, 신뢰성 있는
+                                            정보 공개 표준 또는 프레임워크에 따라 지속가능경영보고서를 작성하였습니까? 관리하고 계신 내용을 모두 선택 해주세요.
+                                        </p>
+                                        <div class="question-ck-list  wide">
+                                            <ul class="checkbox-wrap">
+                                                <li>
+                                                    <input type="checkbox" id="csrdR02_1" name="csrdR02" value="0.5">
+                                                    <label for="csrdR02_1"><span>중대성 평가를 수행하고, 그 결과에 기반하여 공시 주제를 선정함</span></label>
+                                                </li>
+
+                                                <li>
+                                                    <input type="checkbox" id="csrdR02_2" name="csrdR02" value="0.5">
+                                                    <label for="csrdR02_2"><span>신뢰성 있는 정보 공개 표준 또는 프레임워크에 따라 지속가능경영보고서를 작성함</span></label>
+                                                </li>
+                                                <li class="question-ck-list block-list wide" id="csrdR02_option"
+                                                    style="display:none;">
+                                                    <ul class="checkbox-wrap block-checkbox-wrap">
+                                                        <li>
+                                                            * 활용 표준/프레임워크
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_1" name="csrdR02o"
+                                                                   value="1">
+                                                            <label for="csrdR02o_1"><span>GRI</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_2" name="csrdR02o"
+                                                                   value="2">
+                                                            <label for="csrdR02o_2"><span>TCFD</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_3" name="csrdR02o"
+                                                                   value="3">
+                                                            <label for="csrdR02o_3"><span>SASB</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_4" name="csrdR02o"
+                                                                   value="4">
+                                                            <label for="csrdR02o_4"><span>KSSB</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_5" name="csrdR02o"
+                                                                   value="5">
+                                                            <label for="csrdR02o_5"><span>EU CSRD</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_6" name="csrdR02o"
+                                                                   value="6">
+                                                            <label for="csrdR02o_6"><span>SEC</span></label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="csrdR02o_7" name="csrdR02o">
+                                                            <label for="csrdR02o_7"><span>기타 (직접 입력)</span></label>
+                                                            <input type="text" class="etcInput" id="csrdR02otxt"
+                                                                   name="csrdR02otxt"
+                                                                   style="margin-left: 10px;padding: 5px 10px; height: 30px;display:none">
+                                                        </li>
+
+
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <input type="checkbox" id="csrdR02_3" name="csrdR02" value="0">
+                                                    <label for="csrdR02_3"><span>해당사항 없음 </span></label>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 공시∙인증</li>
+                                    <li>ESG 평가</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 ESG 평가 등급을 취득하거나 개선하기 위한 활동을 수행하고 있습니까?</p>
+                                        <ul class="box-radio-wrap row-style wide">
+                                            <li>
+                                                <input type="radio" id="csrdR03_1" name="csrdR03" value="0">
+                                                <label for="csrdR03_1"><span>평가 등급을 보유하고 있지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR03_2" name="csrdR03" value="0.5">
+                                                <label for="csrdR03_2"><span>평가 등급을 보유하고 있음</span></label>
+                                            </li>
+                                            <li class="question-ck-list " id="csrdR03_option" style="display:none">
+                                                <ul class="checkbox-wrap">
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_1" name="csrdR03o"
+                                                               value="1">
+                                                        <label for="csrdR03o_1"><span>KCGS</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_2" name="csrdR03o"
+                                                               value="2">
+                                                        <label for="csrdR03o_2"><span>MSCI</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_3" name="csrdR03o"
+                                                               value="3">
+                                                        <label for="csrdR03o_3"><span>DJSI</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_4" name="csrdR03o"
+                                                               value="4">
+                                                        <label for="csrdR03o_4"><span>CDP</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_5" name="csrdR03o">
+                                                        <label for="csrdR03o_5"><span>기타 (직접 입력)</span></label>
+                                                        <input type="text" class="etcInput" id="csrdR03otxt"
+                                                               name="csrdR03otxt"
+                                                               style="margin-left: 10px;padding: 5px 10px; height: 30px;display:none">
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR03_3" name="csrdR03" value="1">
+                                                <label for="csrdR03_3"><span>평가 등급을 보유하고 있으며 등급 상향 조정을 위한 활동을 수행하고 있음</span></label>
+                                            </li>
+                                            <li class="question-ck-list " id="csrdR03_option2" style="display:none">
+                                                <ul class="checkbox-wrap">
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_6" name="csrdR03o"
+                                                               value="1">
+                                                        <label for="csrdR03o_6"><span>KCGS</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_7" name="csrdR03o"
+                                                               value="2">
+                                                        <label for="csrdR03o_7"><span>MSCI</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_8" name="csrdR03o"
+                                                               value="3">
+                                                        <label for="csrdR03o_8"><span>DJSI</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_9" name="csrdR03o"
+                                                               value="4">
+                                                        <label for="csrdR03o_9"><span>CDP</span></label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="csrdR03o_10" name="csrdR03o">
+                                                        <label for="csrdR03o_10"><span>기타 (직접 입력)</span></label>
+                                                        <input type="text" class="etcInput" id="csrdR03otxt2"
+                                                               name="csrdR03otxt2"
+                                                               style="margin-left: 10px;padding: 5px 10px; height: 30px;display:none">
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                                <ul class="category">
+                                    <li>ESG 공시∙인증</li>
+                                    <li>ESG 인증</li>
+                                </ul>
+                                <ol class="list-wrap">
+                                    <li class="question-list">
+                                        <p class="question">01. 귀사는 이해관계자의 신뢰도를 제고하기 위해 발간한 지속가능경영보고서에 대해 독립적이고 자격이 있는
+                                            제3자의 인증을 받았습니까?</p>
+                                        <ul class="box-radio-wrap row-style wide">
+                                            <li>
+                                                <input type="radio" id="csrdR04_1" name="csrdR04" value="0">
+                                                <label for="csrdR04_1"><span>지속가능경영보고서에 대한 제3자 인증을 받지 않음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR04_2" name="csrdR04" value="0.5">
+                                                <label for="csrdR04_2"><span>지속가능경영보고서에 대한 제3자 인증을 받음</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR04_3" name="csrdR04" value="1">
+                                                <label for="csrdR04_3"><span>지속가능경영보고서에 대한 제3자 인증을 받았으며 인증서에 인증 방법론과 인증 수준을 공개하고 있음</span></label>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                    <li class="question-list" id="ch_qu" style="display:none;">
+                                        <p class="question">02. ESG 채권 가이드라인을 준수하여 ESG 채권 발행 전∙후 해당 채권의 관리체계 및 적합성 평가에
+                                            대해 외부기관의 검증을 거쳐 공개하고 있습니까? </p>
+                                        <p class="guide-txt">* ESG 채권 발행 전 검증, 발행 후 사후 보고서 검증 및 공개를 모두 준수하는 경우 '예'를 선택해
+                                            주십시오.</p>
+                                        <ul class="box-radio-wrap">
+                                            <li>
+                                                <input type="radio" id="csrdR05_1" name="csrdR05" value="0.5">
+                                                <label for="csrdR05_1"><span>예</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="csrdR05_2" name="csrdR05" value="0">
+                                                <label for="csrdR05_2"><span>아니오</span></label>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+
+                                </ol>
+                            </div>
+
+                            <!-- 전략계획일때// -->
+                            <div class="btn-wrap ">
+                                <button type="button" class="btn-white small arrow" id="btnPre04"><span
+                                        class="">이전</span></button>
+                                <button type="button" class="btn-primary small arrow disabled " id="btnNtxt04">
+                                    <span>완료</span></button>
+                            </div>
+                            <!-- //전략계획일때 -->
+                        </div>
+                        <!-- //esg01-wrap -->
+                    </div>
+                    <!--//modal-cont-->
+                </section>
+                <!--//modal-area-->
+            </div>
+            <!-- //xycenter -->
+        </div>
+    </form>
+
+
+</th:block>
+</html>

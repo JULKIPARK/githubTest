@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 고객 관리 > 회원관리  > 회원상세조회</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <!-- container -->
+        <div class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- content -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>회원 조회</h3>
+                    <ul class="breadcrumb">
+                        <li>고객 관리</li>
+                        <li>회원 관리</li>
+                        <li>회원 조회</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>상세 검색</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>회원 조회</caption>
+                                    <colgroup>
+                                        <col style="width: 15%;">
+                                        <col style="width: 29%;">
+                                        <col style="width: 10%;">
+                                        <col style="width: 18%;">
+                                        <col style="width: 10%;">
+                                        <col style="width: 18%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>가입일/탈퇴일</th>
+                                            <td colspan="5">
+                                                <div class="period-wrap flex">
+                                                    <select name="" id="" class="select" title="가입일 탈퇴일 선택">
+                                                        <option value="">가입일</option>
+                                                        <option value="">탈퇴일</option>
+                                                    </select>
+                                                    <ul class="flex ck-list">
+                                                        <li>
+                                                            <input type="radio" name="period" id="month1">
+                                                            <label for="month1">1개월</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="period" id="month3">
+                                                            <label for="month3">3개월</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="period" id="month6">
+                                                            <label for="month6">6개월</label>
+                                                        </li>
+                                                        <li class="date-select">
+                                                            <input type="radio" name="period" id="month">
+                                                            <label for="month">직접 선택</label>
+                                                            <div class="datepicker-wrap">
+                                                                <input type="text" class="datepicker">
+                                                                <span class="separator"> - </span>
+                                                                <input type="text" class="datepicker" >
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>회원 구분</th>
+                                            <td>
+                                                <div class="flex">
+                                                    <ul class="flex ck-list flex1">
+                                                        <li>
+                                                            <input type="radio" name="type" id="groupall">
+                                                            <label for="groupall">전체</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="type" id="groupa">
+                                                            <label for="groupa">그룹 A</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="type" id="groupb">
+                                                            <label for="groupb">그룹 B</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="type" id="groupc">
+                                                            <label for="groupc">그룹 C</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="type" id="groupd">
+                                                            <label for="groupd">그룹 D</label>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tooltip-wrap">
+                                                        <button type="button" class="tooltip"><span class="blind">도움말</span></button>
+                                                        <div class="tooltip-cont">
+                                                            <strong>[도움말]</strong>
+                                                            <ul class="list">
+                                                                <li>그룹 A: 운영관리자 </li>
+                                                                <li>그룹 B: 삼일 ESG 플랫폼</li>
+                                                                <li>그룹 C: PwC 사용자</li>
+                                                                <li>그룹 D: 외부 가입자</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <th><label for="affiliation" class="label">소속</label></th>
+                                            <td colspan="3">
+                                                <div class="inputbtn-wrap">
+                                                    <input type="text" id="affiliation" placeholder="기관, 기업 검색">
+                                                    <button type="button" class="btn-srch"><span class="blind">검색</span></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>상태</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="state" id="stateall" checked="checked">
+                                                        <label for="stateall">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state1">
+                                                        <label for="state1">가입</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state2">
+                                                        <label for="state2">탈퇴신청</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="state" id="state3">
+                                                        <label for="state3">탈퇴</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <th>마케팅 동의 여부</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="agree" id="agreeall" checked="checked">
+                                                        <label for="agreeall">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="agree" id="agree1">
+                                                        <label for="agree1">동의</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="agree" id="agree2">
+                                                        <label for="agree2">미동의</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <th>뉴스레터</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="news" id="newsall" checked="checked">
+                                                        <label for="newsall">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="news" id="news1">
+                                                        <label for="news1">신청</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="news" id="news2">
+                                                        <label for="news2">미신청</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ESG 관심영역</th>
+                                            <td colspan="5">
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="checkbox" id="esgall">
+                                                        <label for="esgall">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg1">
+                                                        <label for="esg1">ESG 전략 &middot; 계획</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg2">
+                                                        <label for="esg2">ESG 공시 &middot; 평가</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg3">
+                                                        <label for="esg3">ESG 인증 &middot; 검증</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg4">
+                                                        <label for="esg4">ESG 실행 - 환경</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg5">
+                                                        <label for="esg5">ESG 실행 - 사회</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" id="esg6">
+                                                        <label for="esg6">ESG 실행 - 거버넌스</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>아이디, 회원명, 회원번호</th>
+                                            <td colspan="5">
+                                                <div class="selectinput-wrap">
+                                                    <select name="" id="" class="select" title="조회기준">
+                                                        <option value="">아이디</option>
+                                                        <option value="">회원명</option>
+                                                        <option value="">회원번호</option>
+                                                    </select>
+                                                    <input type="text" placeholder="아이디, 회원명, 회원번호 검색" class="w200" title="조회기준 입력">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="result-wrap">
+                    <div class="total">
+                        <span class="lable">회원 리스트</span> - <strong>총 123건</strong>
+                    </div>
+                    <!-- total -->
+                    <div class="sorting-wrap">
+                        <select name="" id="" class="select" title="데이터 건수">
+                            <option value="">10개</option>
+                            <option value="" selected="selected">50개</option>
+                            <option value="">100개</option>
+                        </select>
+                        <select name="" id="" class="select" title="페이지 이동선택">
+                            <option value="">1/2</option>
+                        </select>
+                        <div class="btn-ctl">
+                            <button type="button" class="btn-download">다운로드</button>
+                            <button type="button" class="btn-default">탈퇴승인</button>
+                        </div>
+                    </div>
+                    <!-- //sorting-wrap -->
+                    <div class="table-wrap ">
+                        <table>
+                            <caption>회원 리스트</caption>
+                            <colgroup>
+                                <col style="width: 3%;">
+                                <col style="width: 3%;">
+                                <col style="width: 6%;">
+                                <col style="width: 5%;">
+                                <col style="width: 5%;">
+                                <col style="width: 5%;">
+                                <col style="width: 5%;">
+                                <col style="width: 6%;">
+                                <col style="width: 4%;">
+                                <col style="width: 12%;">
+                                <col style="width: 7%;">
+                                <col style="width: *;">
+                                <col style="width: 8%;"><!-- 20230727 수정 -->
+                                <col style="width: 5%;">
+                                <col style="width: 5%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>선택</th>
+                                    <th>NO</th>
+                                    <th>회원 번호</th>
+                                    <th>아이디</th>
+                                    <th>회원명</th>
+                                    <th>회원 구분</th>
+                                    <th>소속</th>
+                                    <th>부서명</th>
+                                    <th>직급</th>
+                                    <th>회사 이메일</th>
+                                    <th>회사 전화</th>
+                                    <th>ESG 관심영역</th>
+                                    <th>마케팅 동의 여부</th>
+                                    <th>뉴스레터</th>
+                                    <th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="radio" name="membertype" title="선택"></td>
+                                    <td>1</td>
+                                    <td><a href="javascript:void(0);" class="member">23A000001</a></td>
+                                    <td>pwcesg</td>
+                                    <td>김삼일</td>
+                                    <td>그룹 A</td>
+                                    <td>삼일PwC</td>
+                                    <td>ESG 플랫폼</td>
+                                    <td>A</td>
+                                    <td>samil.kim@pwc.com</td>
+                                    <td>02-709-1234</td>
+                                    <td>ESG 실행 – 환경, ESG 실행 – 거버넌스</td>
+                                    <td>Y</td>
+                                    <td>Y</td>
+                                    <td>가입</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="membertype" title="선택"></td>
+                                    <td>2</td>
+                                    <td><a href="javascript:void(0);" class="member">23A000001</a></td>
+                                    <td>pwcesg</td>
+                                    <td>김삼일</td>
+                                    <td>그룹 A</td>
+                                    <td>삼일PwC</td>
+                                    <td>ESG 플랫폼</td>
+                                    <td>A</td>
+                                    <td>samil.kim@pwc.com</td>
+                                    <td>02-709-1234</td>
+                                    <td>ESG 실행 – 환경, ESG 실행 – 거버넌스</td>
+                                    <td>Y</td>
+                                    <td>Y</td>
+                                    <td>가입신청</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="membertype" title="선택"></td>
+                                    <td>3</td>
+                                    <td><a href="javascript:void(0);" class="member">23A000001</a></td>
+                                    <td>pwcesg</td>
+                                    <td>김삼일</td>
+                                    <td>그룹 A</td>
+                                    <td>삼일PwC</td>
+                                    <td>ESG 플랫폼</td>
+                                    <td>A</td>
+                                    <td>samil.kim@pwc.com</td>
+                                    <td>02-709-1234</td>
+                                    <td>ESG 실행 – 환경, ESG 실행 – 거버넌스</td>
+                                    <td>Y</td>
+                                    <td>Y</td>
+                                    <td><span class="quit">탈퇴신청</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="nodata" colspan="15">nodata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->                  
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area small">
+                <div class="modal-head">
+                    <h2 class="tit">소속 조회</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <form action="">
+                        <fieldset>
+                            <legend>소속 검색</legend>
+                            <div class="srch-head">
+                                <label for="srch" class="lable">소속</label>
+                                <input type="text" id="srch" placeholder="소속 검색">
+                            </div>
+                            <div class="result-wrap">
+                                <!-- total -->
+                                <div class="sorting-wrap inner-lable">
+                                    <p class="label">조회 결과</p>
+                                    <select name="" id="" class="select" title="데이터 건수">
+                                        <option value="">10개</option>
+                                        <option value="" selected="selected">50개</option>
+                                        <option value="">100개</option>
+                                    </select>
+                                    <select name="" id="" class="select" title="페이지 이동선택">
+                                        <option value="">1/2</option>
+                                    </select>
+                                    <div class="btn-ctl">
+                                        <button type="button" class="btn-default">조회</button>
+                                        <button type="button" class="btn-default">초기화</button>
+                                        <button type="button" class="btn-default">입력</button>
+                                    </div>                                    
+                                </div>
+                                <!-- //sorting-wrap -->
+                                <div class="table-wrap">
+                                    <table>
+                                        <caption>소속 리스트</caption>
+                                        <colgroup>
+                                            <col style="width: 10%;">
+                                            <col style="width: 45%;">
+                                            <col style="width: 45%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>선택</th>
+                                                <th>소속<button type="button" class="btn-sort"><span class="blind">정렬</span></button></th>
+                                                <th>사업자등록번호</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="radio" name="company" title="선택"></td>
+                                                <td>(주)마이크로컨텍솔루션</td>
+                                                <td>###-##-####</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="radio" name="company" title="선택"></td>
+                                                <td>(주)포스코엠텍</td>
+                                                <td>###-##-####</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="radio" name="company" title="선택"></td>
+                                                <td>AJ네트웍스</td>
+                                                <td>###-##-####</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="radio" name="company" title="선택"></td>
+                                                <td>AK홀딩스</td>
+                                                <td>###-##-####</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="nodata" colspan="3">nodata</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                            </div>
+                            <!-- //result-list -->
+                        </fieldset>
+                    </form>
+                </section>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap--> 
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!-- footerFragment -->
+<footer id="leftMenu" th:fragment="leftMenuFragment">
+
+	<!-- aside -->
+	<aside class="aside">
+		<nav id="nav" class="menu">
+			<ul>
+				<li><a href="/sems" class="depth1">Home</a></li>
+				<li><a href="javascript:void(0)" class="depth1">컨텐츠 관리</a>
+					<ul class="depth2-wrap">
+                        <li><a href="/sems/contents/document/documentList">문서&middot;영상 관리</a></li>
+						<li><a href="/sems/contents/newsTrendList">뉴스 키워드 관리</a></li>
+						<li><a href="/sems/contents/rssNewsList">뉴스 업데이트</a></li>
+						<li><a href="/sems/contents/newsList">등록 뉴스 관리</a></li>
+						<li><a href="/sems/contents/srcList">출처 관리</a></li>
+					</ul>
+				</li>
+				<li><a href="javascript:void(0)" class="depth1">고객 관리</a>
+					<ul class="depth2-wrap">
+						<li><a href="/sems/custom/memberList">회원관리</a></li>
+						<li><a href="/sems/custom/csList">문의&middot;요청 관리</a></li>
+						<li><a href="/sems/custom/roleGroupList">권한 그룹 관리</a></li>
+						<li><a href="/sems/custom/memberState">회원 통계</a></li>
+					</ul>
+				</li>
+				<li><a href="javascript:void(0)" class="depth1">웹사이트 관리</a>
+					<ul class="depth2-wrap">
+						<li><a href="/sems/management/selectCurationList">큐레이션 관리</a></li>
+						<li><a href="/sems/management/schdlList">ESG일정 관리</a></li>
+						<li><a href="/sems/management/operateList">관리자 활동로그 관리</a></li>
+						<li><a href="https://analytics.google.com/analytics/web/#/p413800491/reports/home" target="_ga">Google Analytics</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</aside>
+	<!-- //aside -->
+</footer>
+</html>

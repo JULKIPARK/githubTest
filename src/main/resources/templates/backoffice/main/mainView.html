@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function () {
+			//오늘의 할 일
+			$("#today-todo").LoadingOverlay("show");
+			$.post("/sems/main/selectToDo", function (data) {
+				var item = data.item;
+				$("#toDayView").text(`${item.today} ${item.dayofweek}`);
+				$("#newAskCnt").text(item.askCnt);
+				$("#newNewsCnt").text(item.rssCnt);
+				$("#newMbrCnt").text(item.mbrCnt);
+
+				$("#today-todo").LoadingOverlay("hide");
+			});
+
+			//회원 현황
+			$("#member-stat").LoadingOverlay("show");
+			var param = {
+				"url": "/sems/main/selectMbrState"
+				, "type": "post"
+				, "async": false
+				, "callback": function (fragment) {
+					$("#mbrStateDiv").replaceWith(fragment);
+
+					$("#member-stat").LoadingOverlay("hide");
+				}
+			};
+			_comLib.callAjax(param);
+
+			//회원 현황 집계
+			var param = {
+				"url": "/sems/main/selectMbrStateSum"
+				, "type": "post"
+				, "async": false
+				, "callback": function (fragment) {
+					$("#mbrStateSumDiv").replaceWith(fragment);
+
+					$("#member-stat").LoadingOverlay("hide");
+				}
+			};
+			_comLib.callAjax(param);
+
+			//온라인 문의 현황
+			$("#cs-stat").LoadingOverlay("show");
+			var param = {
+				"url": "/sems/main/selectAskCtCnt"
+				, "type": "post"
+				, "async": false
+				, "callback": function (fragment) {
+					$("#askCtCntDiv").replaceWith(fragment);
+
+					$("#cs-stat").LoadingOverlay("hide");
+				}
+			};
+			_comLib.callAjax(param);
+
+			//회원 현황 집계
+			function fnSelectList() {
+				$("#cs-list").LoadingOverlay("show");
+				var formData;
+				formData = _formLib.getFormData('Frm1');
+				var param = {
+					url: "/sems/main/selectUnconfirmedAskList"
+					, type: "post"
+					, data: formData
+					, async: false
+					, paging: "Y"
+					, pageNumber: _formLib.getValue($("#Frm1 #pageNumber").val()) != "" ? $("#Frm1 #pageNumber").val() : 1
+					, pageSize: 10
+					, callback: function (data) {
+						$("#Frm1 #askListDiv").html("");
+						if (data.dataList.length > 0) {
+							$("#tmpl_dlist").tmpl(data.dataList).appendTo("#Frm1 #askListDiv");
+							// 페이징 영역 생성
+							_comLib.setPagination(
+								"Frm1paging",
+								function (page) {
+									// 페이지 번호 설정
+									$("#Frm1 #pageNumber").val(page);
+									// 게시글 조회
+									fnSelectList();
+								},
+								data.pagingInfo.totalPage,
+								_formLib.getValue($("#Frm1 #pageNumber").val()) != "" ? $("#Frm1 #pageNumber").val() : 1
+							);
+						} else  {
+							$("#Frm1 #askListDiv").empty().append(`<tr><td class="nodata" colspan="3">데이터가 존재하지 않습니다.</td></tr>`);
+						}
+
+						$("#cs-list").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			}
+
+			fnSelectList();
+		});
+
+		//온라인문의 상세
+		function fnGoCs(askUid) {
+			var formObj = $('<form></form>');
+			formObj.attr('method', 'post');
+			formObj.attr("action", "/sems/custom/csList");
+			formObj.append($('<input/>', {type: 'hidden', name: 'askUid', value: askUid}));//문의채번
+			formObj.appendTo('body');
+
+			formObj.submit();
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+
+	<!-- content -->
+	<div id="cont-section" class="content landing flex">
+		<div class="left">
+			<section id="today-todo" class="section">
+				<h4 class="tit">오늘의 할 일</h4>
+				<span class="day" id="toDayView">2023-09-28 목요일</span>
+				<ul class="count">
+					<li>
+						<a href="/sems/custom/csList?initTodayCs=Y">
+							<strong id="newAskCnt">0</strong>
+							<span class="label">신규 문의</span>
+						</a>
+					</li>
+					<li>
+						<a href="/sems/contents/rssNewsList">
+							<strong id="newNewsCnt">0</strong>
+							<span class="label">신규 뉴스</span>
+						</a>
+					</li>
+					<li>
+						<a href="/sems/custom/memberList?initTodayJoin=Y">
+							<strong id="newMbrCnt">0</strong>
+							<span class="label">신규 회원</span>
+						</a>
+					</li>
+				</ul>
+			</section>
+			<section id="member-stat" class="section">
+				<h4 class="tit">회원 현황</h4>
+				<a href="/sems/custom/memberList" class="btn_link">바로가기</a>
+				<div class="table-wrap tfoot-table">
+					<table>
+						<caption>회원 현황 리스트</caption>
+						<colgroup>
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>일자</th>
+							<th>방문</th>
+							<th>가입</th>
+							<th>문의</th>
+						</tr>
+						</thead>
+					</table>
+					<div class="scroll-y">
+						<table>
+							<caption>회원 현황 리스트</caption>
+							<colgroup>
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+							</colgroup>
+							<tbody id="mbrStateDiv">
+							<tr th:each="item, stat : ${list}">
+								<td class="date" th:text="${item.date}">23-10-10</td><!-- 일별일자 -->
+								<td th:text="${item.visitCnt}">45</td><!-- 방문건수 -->
+								<td th:text="${item.joinCnt}">6</td><!-- 가입건수 -->
+								<td th:text="${item.askCnt}">193</td><!-- 문의건수 -->
+							</tr>
+							<tr th:if="${#lists.isEmpty(list)}">
+								<td style="text-align: center;" colspan="4">데이터가 존재하지 않습니다.</td>
+							</tr>
+							</tbody>
+							<tfoot id="mbrStateSumDiv">
+							<tr th:each="item, stat : ${listSum}">
+								<td th:text="${item.date}" class="date">최근 7일</td>
+								<td th:text="${item.visitCnt}">193</td><!-- 방문건수 -->
+								<td th:text="${item.joinCnt}">45</td><!-- 가입건수 -->
+								<td th:text="${item.askCnt}">6</td><!-- 문의건수 -->
+							</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+				<!-- //table-wrap -->
+			</section>
+		</div>
+		<div class="right">
+			<section id="cs-stat" class="section">
+				<h4 class="tit">온라인 문의 현황</h4>
+				<a href="/sems/custom/csList" class="btn_link">바로가기</a>
+				<ul id="askCtCntDiv" class="count">
+					<li th:each="item, stat : ${askStCntList}">
+						<strong th:text="${item.askStCdCnt}">05</strong><!-- 문의상태별 카운트 -->
+						<span th:text="${item.askStNm}" class="label">미확인</span><!-- 문의상태명 -->
+					</li>
+				</ul>
+			</section>
+			<section id="cs-list" class="section result-wrap">
+				<h4 class="tit pt22">미확인 온라인 문의</h4>
+				<form id="Frm1">
+					<input type="hidden" name="pageNumber" id="pageNumber" value="1">
+					<div class="table-wrap">
+						<table>
+							<caption>미확인 온라인 문의 리스트</caption>
+							<colgroup>
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+								<col style="width: *;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>일자</th>
+								<th>문의유형</th>
+								<th>문의 &middot; 질의 제목</th>
+							</tr>
+							</thead>
+							<tbody id="askListDiv">
+							<tr>
+								<td class="nodata" colspan="3">데이터가 존재하지 않습니다.</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+
+					<!-- paging -->
+					<div class="paging" id="Frm1paging">
+						<!--						<a href="javascript:void(0);" class="btn first"><span class="blind">처음</span></a>-->
+						<!--						<a href="javascript:void(0);" class="btn prev"><span class="blind">이전</span></a>-->
+						<!--						<span class="on">1</span>&lt;!&ndash;현재페이지&ndash;&gt;-->
+						<!--						<a href="#">2</a>-->
+						<!--						<a href="#">3</a>-->
+						<!--						<a href="#">4</a>-->
+						<!--						<a href="#">5</a>-->
+						<!--						<a href="#">6</a>-->
+						<!--						<a href="#">7</a>-->
+						<!--						<a href="#">8</a>-->
+						<!--						<a href="#">9</a>-->
+						<!--						<a href="#">10</a>-->
+						<!--						<a href="javascript:void(0);" class="btn next"><span class="blind">다음</span></a>-->
+						<!--						<a href="javascript:void(0);" class="btn last"><span class="blind">마지막</span></a>-->
+					</div>
+					<!-- //paging -->
+				</form>
+			</section>
+		</div>
+	</div>
+	<!-- //content -->
+
+	<script id="tmpl_dlist" type="text/x-jquery-tmpl">
+		<tr>
+			<td>${fstInsDt}</td>
+			<td class="left">${askTpNm}</td>
+			<td class="left"><a href="/sems/custom/csList?initDetailId=${askUid}" class="link">${askTtl}</a></td>
+		</tr>
+	</script>
+
+</div>
+</html>

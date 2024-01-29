@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+    <script th:src="@{/assets/js/jquery.tmpl.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var $doc = $(document);
+            var sendEmailProc = false;
+            var isAuthEmail = false;
+
+
+            $doc.on("keyup", "#chkMbrPwd", function (e) {
+                //e.preventDefault();
+                var chkMbrPwd = $("#chkMbrPwd").val();
+                var regMbrPwd = $("#regMbrPwd").val();
+                var regPwPass = /^(?=.*?[a-zA-Z])(?=.*?[#?!@$%^&*-+=])(?=.*?[0-9]).{8,16}$/;
+                if (chkMbrPwd == "") {
+                    $("#chkMbrPwd").removeClass("matching").removeClass("error");
+                    return;
+                }
+                if (!regPwPass.test(chkMbrPwd)) {
+                    $("#chkMbrPwd").removeClass("matching").addClass("error");
+                } else {
+                    if (regMbrPwd != chkMbrPwd)
+                        $("#chkMbrPwd").removeClass("matching").addClass("error");
+                    else
+                        $("#chkMbrPwd").removeClass("error").addClass("matching");
+                }
+            });
+            $doc.on("keyup", "#regMbrPwd", function (e) {
+                //e.preventDefault();
+                var regMbrPwd = $("#regMbrPwd").val();
+                var regPwPass = /^(?=.*?[a-zA-Z])(?=.*?[#?!@$%^&*-+=])(?=.*?[0-9]).{8,16}$/;
+                if (regMbrPwd == "") {
+                    $("#regMbrPwd").removeClass("matching").removeClass("error");
+                    return;
+                }
+                if (!regPwPass.test(regMbrPwd)) {
+                    $("#regMbrPwd").removeClass("matching").addClass("error");
+                } else {
+                    $("#regMbrPwd").removeClass("error").addClass("matching");
+                }
+            });
+            // 이벤트 설정
+            $doc.on("change", "#all-agree", function (e) {
+                //e.preventDefault();
+                var isCk = $(this).is(":checked");
+                $("[step1_area] .agree-list [type='checkbox']").each(function () {
+                    $(this).prop("checked", isCk);
+                })
+            });
+            $doc.on("change", "[step1_area] [type='checkbox']", function (e) {
+                //e.preventDefault();
+                if ($("[step1_area] #agree01").is(":checked") && $("[step1_area] #agree02").is(":checked")) {
+                    $("#btn_step1").removeClass("disabled")
+                } else {
+                    $("#btn_step1").addClass("disabled")
+                }
+                var all_pass = true;
+                $("[step1_area] .agree-list [type='checkbox']").each(function () {
+                    if (!$(this).is(":checked"))
+                        all_pass = false;
+                })
+                $("#all-agree").prop("checked", all_pass);
+
+
+            })
+            $doc.on("click", ".list-pop-close", function () {
+                $(".company-list-pop").removeClass("show");
+            });
+
+            $doc.on("click", ".add-pop-close", function () {
+                $(".company-add-pop").removeClass("show");
+            });
+            $doc.on("click", ".btn-cont-view", function (e) {
+                e.preventDefault();
+                $("#" + $(this).data("pop")).addClass("show");
+            })
+
+            $doc.on("click", "#btn_cancel", function (e) {
+                e.preventDefault();
+                window.location.href = "/";
+            })
+
+
+            $doc.on("keyup", ".onlyAlpabet", function (e) {
+                var inputVal = $(this).val();
+                $(this).val(inputVal.replace(/[^A-Za-z0-9+]/gi, ''));
+            })
+
+            $doc.on("keyup", ".onlyNuMber", function (e) {
+                $(this).val($(this).val().replace(/[^0-9]/g, ""));
+            })
+
+            $doc.on("click", "#btnAuthEmail", function (e) {
+                e.preventDefault();
+                $("#regHiddenCompMail").val("");
+                $("#regCompMail").removeClass("matching").prop("readonly", false);
+                isAuthEmail = false;
+                if (_formLib.isEmpty($("#authCompMail").val())) {
+                    $("#authCompMail").focus();
+                    alert('인증번호를 입력해 주세요');
+                    return;
+                }
+
+
+                $.post(
+                    "/common/checkEmail"
+                    , {emailCode: $("#authCompMail").val()}
+                    , function (data) {
+                        if (data.isEamil) {
+                            alert("인증되었습니다.")
+                            $("#authEmail").hide();
+                            $("#regHiddenCompMail").val($("#regCompMail").val());
+                            $("#regCompMail").addClass("matching").prop("readonly", true);
+                            isAuthEmail = true;
+                        } else {
+                            alert("인증번호가 일치하지 않습니다.")
+                        }
+
+                    }
+                );
+
+
+            })
+            $doc.on("click", "#ckCompMail", function (e) {
+                e.preventDefault();
+                // if (sendEmailProc) {
+                //     alert("이메일을 전송중 입니다");
+                //     return;
+                // }
+                // if (isAuthEmail) {
+                //     alert("인증이 완료되었습니다.");
+                //     return;
+                // }
+
+                $("#regHiddenCompMail").val("");
+                $("#regCompMail").removeClass("matching");
+
+                if (_formLib.isEmpty($("#regMbrNm").val())) {
+                    $("#regMbrNm").focus();
+                    alert('이름을 입력해 주세요');
+                    return;
+                }
+
+                var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+                if (!regExp.test($("#regCompMail").val())) {
+                    alert("이메일 형식에 맞춰 입력해 주세요");
+                    $("#regCompMail").focus();
+                    return;
+                }
+
+                if ($("#regCompMail").val().match(/naver.com|hanmail.net|daum.net|nate.com|gmail.com|empal.com|freechal.com|korea.com|hotmail.com/i) != null) {
+                    alert("회사 또는 기관에서 사용하는 이메일을 입력해주세요")
+                    $("#regCompMail").focus();
+                    return;
+                }
+
+                sendEmailProc = true;
+                isAuthEmail = false;
+                $("#authEmail").hide();
+                $("#authCompMail").val("");
+                $("#popStayEmailSendView").addClass("show");
+                $.post(
+                    "/common/checkEmailSend"
+                    , {email: $("#regCompMail").val()}
+                    , function (data) {
+                        sendEmailProc = false;
+                        $("#popStayEmailSendView").removeClass("show");
+                        if (data.isEamil) {
+                            $("#popEmailSendView [dt='nm']").html($("#regMbrNm").val());
+                            $("#popEmailSendView [dt='email']").html($("#regCompMail").val());
+                            $("#popEmailSendView").addClass("show");
+                            $("#authEmail").show();
+                            countdown(300);
+
+                        } else {
+                            alert("이미 사용중인 이메일 계정입니다.")
+                        }
+
+                    }
+                );
+
+
+            })
+
+            $doc.on("click", "#ckMbrId", function (e) {
+                e.preventDefault();
+                fnCheckMbrId();
+            })
+            $doc.on("click", "[name='regNsltAgreYn']", function (e) {
+                //e.preventDefault();
+                var ck = $("[name='regNsltAgreYn']").is(":checked");
+                $("#regMrktAgreYn").prop("checked", ck);
+                // $("#regAgreeEmail").prop("checked", ck);
+                // $("#regAgreeSms").prop("checked", ck);
+
+            })
+            $doc.on("click", "[name='regMrktAgreYn']", function (e) {
+                //e.preventDefault();
+                var ck = $("[name='regMrktAgreYn']").is(":checked");
+                if (!ck) {
+                    $("[name='regNsltAgreYn']").prop("checked", false);
+                    // $("#regAgreeEmail").prop("checked", false);
+                    // $("#regAgreeSms").prop("checked", false);
+                }
+
+            })
+            $doc.on("click", "#regAgreeEmail", function (e) {
+                //e.preventDefault();
+                var ck = $("#regAgreeEmail").is(":checked");
+                if (!ck) {
+                    $("[name='regNsltAgreYn']").eq(1).prop("checked", true);
+                } else
+                    $("[name='regNsltAgreYn']").eq(0).prop("checked", true);
+
+            })
+
+            $doc.on("click", "#btn_step1", function (e) {
+                e.preventDefault();
+                if ($(this).hasClass("disabled")) {
+                    alert("필수 약관에 모두 동의하셔야 회원가입이 가능합니다");
+                    return;
+                }
+                $("[step1][addHide]").each(function () {
+                    $(this).hide();
+                })
+                $("[step1][removeClass]").each(function () {
+                    $(this).removeClass($(this).attr("removeClass"));
+                })
+
+                $(".progress-list li").eq(0).removeClass("ing").addClass("confirm");
+                $(".progress-list li").eq(1).addClass("ing");
+
+                $(".sub-tit").eq(0).hide();
+                $(".sub-tit").eq(1).show();
+
+                $("[step2]").each(function () {
+
+                    if ($(this).attr("addClass") != undefined) {
+                        $(this).addClass($(this).attr("addClass"));
+                    }
+                    if ($(this).attr("addShow") != undefined) {
+                        $(this).show();
+                    }
+                })
+                $('html,body').animate({scrollTop: 0}, 100, "", function () {
+                }).dequeue();
+            })
+            $doc.on("click", "#btn_step2", function (e) {
+                e.preventDefault();
+
+                if (!fnCheck()) {
+                    return;
+                }
+
+
+                var formData, param = {};
+                formData = _formLib.getFormData("joinFrm");
+
+                param = {
+                    "url": "/common/insertJoin"
+                    , "type": "post"
+                    , "data": formData
+                    , "async": false
+                    , "callback": function (data) {
+                        if (data.msg == "success") {
+
+
+                            $(".margin-mod").html("회원가입 완료");
+
+                            $("[step2][addHide]").each(function () {
+                                $(this).hide();
+                            })
+                            $("[step2][removeClass]").each(function () {
+                                $(this).removeClass($(this).attr("removeClass"));
+                            })
+
+                            $(".progress-list li").eq(1).removeClass("ing").addClass("confirm");
+                            $(".progress-list li").eq(2).addClass("ing");
+
+                            $(".sub-tit").eq(1).hide();
+                            $(".sub-tit").eq(2).show();
+
+                            $("[step3]").each(function () {
+
+                                if ($(this).attr("addClass") != undefined) {
+                                    $(this).addClass($(this).attr("addClass"));
+                                }
+                                if ($(this).attr("addShow") != undefined) {
+                                    $(this).show();
+                                }
+                            })
+                            $('html,body').animate({scrollTop: 0}, 100, "", function () {
+                            }).dequeue();
+
+                        } else {
+                            alert("이미 등록된 아이디입니다.");
+                        }
+                    }
+                };
+                _comLib.callAjax(param);
+
+
+            })
+
+            init();
+        });
+
+        function countdown(seconds) {
+            var element, endTime, hours, mins, msLeft, time;
+
+            function updateTimer() {
+                msLeft = endTime - (+new Date);
+                if (msLeft < 0) {
+                    $("#authEmail").hide();
+                    alert("유효 시간이 만료되었습니다. 다시 시도해주세요");
+                } else {
+                    time = new Date(msLeft);
+                    hours = time.getUTCHours();
+                    mins = time.getUTCMinutes();
+                    $(".time").html((hours ? hours + ':' + ('0' + mins).slice(-2) : mins) + ':' + ('0' + time.getUTCSeconds()).slice(-2));
+                    setTimeout(updateTimer, time.getUTCMilliseconds());
+                }
+            }
+
+            endTime = (+new Date) + 1000 * seconds;
+            updateTimer();
+        }
+
+        function init() {
+            //ESG 관심 영역 checkbox 생성
+            $.post("/common/selectCodeList", {"grpCd": "INTR_CD"}, function (data) {
+                var list = data.list;
+                var innerHtml = "";
+                $("#intrCdList").html("");
+                $("#tmpl_slist").tmpl(list).appendTo("#intrCdList");
+
+            });
+        }
+
+        //중복확인
+        function fnCheckMbrId() {
+            var regMbrId = $("#regMbrId").val();
+            var regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,12}$/;//6자 이상, 12자리 이하의 영문, 숫자를 조합(!regPass.test(regMbrId))
+            $("#regHiddenMbrId").val("");
+            $("#regMbrId").removeClass("matching");
+
+            if (_formLib.isEmpty(regMbrId)) {
+                alert('아이디를 입력해 주세요');
+                return;
+            }
+            if (regMbrId.length < 6 || regMbrId.length > 12) {
+                alert('아이디를 정확히 입력해 주세요\n아이디는 6자 이상, 12자리 이하의 영문 혹은 숫자를 조합');
+                return;
+            }
+            if (!regPass.test(regMbrId)) {
+                alert('아이디를 정확히 입력해 주세요\n아이디는 6자 이상, 12자리 이하의 영문 혹은 숫자를 조합');
+                return;
+            }
+            $.post(
+                "/common/checkDuplicate"
+                , {mbrId: regMbrId}
+                , function (data) {
+                    if (data.isDuplicate) {
+                        alert('이미 사용중인 아이디입니다.');
+
+                    } else {
+                        alert('사용가능한 아이디입니다.');
+                        $("#regHiddenMbrId").val(regMbrId);
+                        $("#regMbrId").removeClass("error").addClass("matching");
+                    }
+                }
+            );
+        }
+
+        function fnCheck() {
+            var regMbrId = $("#regMbrId").val();
+            var regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,12}$/;//6자 이상, 12자리 이하의 영문, 숫자를 조합(!regPass.test(regMbrId))
+
+            $("select,input").removeClass("error");
+            if (_formLib.isEmpty(regMbrId)) {
+                alert('아이디를 입력해 주세요');
+                $("#regMbrId").focus();
+                return false;
+            }
+            if (regMbrId.length < 6 || regMbrId.length > 12) {
+                alert('아이디를 정확히 입력해 주세요\n아이디는 6자 이상, 12자리 이하의 영문 혹은 숫자를 조합');
+                $("#regMbrId").focus();
+                return false;
+            }
+            if (!regPass.test(regMbrId)) {
+                alert('아이디를 정확히 입력해 주세요\n아이디는 6자 이상, 12자리 이하의 영문 혹은 숫자를 조합');
+                $("#regMbrId").focus();
+                return false;
+            }
+            if ($("#regHiddenMbrId").val() != regMbrId) {
+                alert('아이디 중복검사를 해주세요');
+                $("#regMbrId").addClass("error").focus();
+                return false;
+            }
+            //암호체크
+            //영문, 숫자, 특수문자 중 2가지 이상 조합하여 20자리 이내의 암호 정규식 ( 2 가지 조합)
+            var regMbrPwd = $("#regMbrPwd").val();
+            var chkMbrPwd = $("#chkMbrPwd").val();
+            var regPwPass = /^(?=.*?[a-zA-Z])(?=.*?[#?!@$%^&*-+=])(?=.*?[0-9]).{8,16}$/;
+            if (!regPwPass.test(regMbrPwd)) {
+                alert("비밀번호를 정확히 입력해 주세요\n영문/숫자/특수문자 중 3가지 이상 조합, 최소 8자 이상, 16자 이하");
+                $("#regMbrPwd").focus();
+                return false;
+            }
+            //비밀번호 확인 오류
+            if (regMbrPwd != chkMbrPwd) {
+                alert("비밀번호를 확인해 주세요");
+                $("#chkMbrPwd").focus();
+                return false;
+            }
+
+
+            if (_formLib.isEmpty($("#regMbrNm").val())) {
+                alert('이름을 입력해 주세요');
+                $("#regMbrNm").focus();
+                return false;
+            }
+
+
+            var telRegExp = /^0\d{1,3}[-]{1}\d{3,4}[-]{1}\d{4}$/i;
+
+			if(!_formLib.isEmpty($("#regCphonNo1").val()) || !_formLib.isEmpty($("#regCphonNo2").val()) || !_formLib.isEmpty($("#regCphonNo3").val()) ){
+				if(_formLib.isEmpty($("#regCphonNo1").val())){
+					alert('전화번호를 입력해 주세요');
+					$("#regCphonNo1").focus();
+					return false;
+				}
+				if(_formLib.isEmpty($("#regCphonNo2").val())){
+					alert('전화번호를 입력해 주세요');
+					$("#regCphonNo2").focus();
+					return false;
+				}
+				if(_formLib.isEmpty($("#regCphonNo3").val())){
+					alert('전화번호를 입력해 주세요');
+					$("#regCphonNo3").focus();
+					return false;
+				}
+				var regCphonNo = $("#regCphonNo1").val() + "-" +$("#regCphonNo2").val() + "-" + $("#regCphonNo3").val();
+				$("#regCphonNo").val(regCphonNo);
+
+				if(!telRegExp.test(regCphonNo)){
+					alert("전화번호를 형식에 맞춰 입력해 주세요.");
+					$("#regCphonNo2").focus();
+					return false;
+				}
+			}
+
+            // if(_formLib.isEmpty($("#regCphonNo1").val())){
+            //     alert('전화번호를 입력해 주세요');
+            //     $("#regCphonNo1").focus();
+            //     return false;
+            // }
+            // if(_formLib.isEmpty($("#regCphonNo2").val())){
+            //     alert('전화번호를 입력해 주세요');
+            //     $("#regCphonNo2").focus();
+            //     return false;
+            // }
+            // if(_formLib.isEmpty($("#regCphonNo3").val())){
+            //     alert('전화번호를 입력해 주세요');
+            //     $("#regCphonNo3").focus();
+            //     return false;
+            // }
+
+            // if(!telRegExp.test(regCphonNo)){
+            // 	alert("전화번호를 형식에 맞춰 입력해 주세요.");
+            //     $("#regCphonNo2").focus();
+            //     return false;
+            // }
+
+            if (_formLib.isEmpty($("#regCoprNm").val())) {
+                alert('소속(회사/기관)를 입력해 주세요');
+                $("#regCoprNm").focus();
+                return false;
+            }
+            // if (_formLib.isEmpty($("#regCoprUid").val())) {
+            //     alert('소속(회사/기관)를 검색하여 입력해 주세요');
+            //     $("#coprNm").focus();
+            //     return false;
+            // }
+            // if(_formLib.isEmpty($("#regDeptNm").val())){
+            // 	alert('부서명을 입력해 주세요');
+            // 	$("#regDeptNm").focus();
+            // 	return false;
+            // }
+            // if(_formLib.isEmpty($("#regPosNm").val())){
+            // 	alert('직급을 입력해 주세요');
+            // 	$("#regPosNm").focus();
+            // 	return false;
+            // }
+
+            // 이메일 체크
+            var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            if (!regExp.test($("#regCompMail").val())) {
+                alert("이메일 형식에 맞춰 입력해 주세요");
+                $("#regCompMail").focus();
+                return false;
+            }
+            //비밀번호 확인 오류
+            if ($("#regHiddenCompMail").val() != $("#regCompMail").val()) {
+                alert("이메일 인증을 해주세요");
+                $("#regCompMail").addClass("error").focus();
+                return false;
+            }
+
+
+            if(!_formLib.isEmpty($("#regCoprPhonNo1").val()) || !_formLib.isEmpty($("#regCoprPhonNo2").val()) || !_formLib.isEmpty($("#regCoprPhonNo3").val()) ){
+            	if(_formLib.isEmpty($("#regCoprPhonNo1").val())){
+            		alert('소속 전화번호를 입력해 주세요');
+            		$("#regCoprPhonNo1").focus();
+            		return false;
+            	}
+            	if(_formLib.isEmpty($("#regCoprPhonNo2").val())){
+            		alert('소속 전화번호를 입력해 주세요');
+            		$("#regCoprPhonNo2").focus();
+            		return false;
+            	}
+            	if(_formLib.isEmpty($("#regCoprPhonNo3").val())){
+            		alert('소속 전화번호를 입력해 주세요');
+            		$("#regCoprPhonNo3").focus();
+            		return false;
+            	}
+            	var regCoprPhonNo = $("#regCoprPhonNo1").val() + "-" +$("#regCoprPhonNo2").val() + "-" + $("#regCoprPhonNo3").val();
+            	$("#regCoprPhonNo").val(regCoprPhonNo);
+
+                if(!telRegExp.test(regCoprPhonNo)){
+                	alert("전화번호를 형식에 맞춰 입력해 주세요.");
+                    $("#regCoprPhonNo2").focus();
+                    return false;
+                }
+            }
+
+            var is_regNsltAgreYn = false;
+            if ($('[name="regNsltAgreYn"]').is(":checked")) {
+                is_regNsltAgreYn = true;
+            }
+            // $('[name="regNsltAgreYn"]').each(function(){
+            // 	if($(this).is(":checked"))
+            // 		is_regNsltAgreYn = true;
+            // })
+
+            // if(!is_regNsltAgreYn)
+            // {
+            // 	alert("뉴스레터 수신 동의를 선택해주세요");
+            //     $('#ra01[name="regNsltAgreYn"]').focus();
+            //     return false;
+            // }
+
+            // if ($('#regMrktAgreYn').is(":checked")) {
+            //     if (!$('#regAgreeEmail').is(":checked") && !$('#regAgreeSms').is(":checked")) {
+            //         alert("문자, 이메일에 대한 수신 선택해주세요");
+            //         $('#ra01[name="regNsltAgreYn"]').focus();
+            //         return false;
+            //     }
+            // }
+            return true;
+
+        }
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <div id="container" class="sub-wrap">
+        <!-- content -->
+        <div class="content btmgap content-esg-join">
+            <section class="join-wrap">
+                <form action="" id="joinFrm">
+                    <fieldset>
+                        <legend>회원가입</legend>
+                        <h3 class="tit margin-mod">회원가입</h3>
+                        <div class="join-progress">
+                            <ul class="progress-list">
+                                <li class="ing">
+                                    <div class="num">01</div>
+                                    <div class="subj">약관동의</div>
+                                </li>
+                                <li>
+                                    <div class="num">02</div>
+                                    <div class="subj">정보입력</div>
+                                </li>
+                                <li>
+                                    <div class="num">03</div>
+                                    <div class="subj">가입완료</div>
+                                </li>
+                            </ul>
+
+                            <div class="sub-tit ">삼일 ESG 서비스 이용약관에 동의해주세요.</div>
+                            <div class="sub-tit " style="display:none;">정보를 입력해 주세요.</div>
+                            <div class="sub-tit" style="display:none;">
+                                삼일 ESG 회원가입이 완료되었습니다.<br/>
+                                지금 바로 ESG 관련 다양한 서비스와 콘텐츠를 경험해보세요.
+                            </div>
+                        </div>
+                        <div step1_area step1 addHide>
+                            <div class="term-agree-list">
+                                <div class="all-agree">
+                                    <div class="checkbox-wrap">
+                                        <input type="checkbox" id="all-agree">
+                                        <label for="all-agree"><span>전체 동의</span></label>
+                                    </div>
+                                    <p class="guide-txt">선택항목에 동의하지 않을 경우도 회원가입 및 일반적인 서비스를 이용할 수 있습니다.</p>
+                                </div>
+
+                                <ul class="agree-list">
+                                    <li>
+                                        <div class="checkbox-wrap">
+                                            <input type="checkbox" id="agree01" name="agree01" value="Y">
+                                            <label for="agree01"><span>이용약관 동의 (필수)</span></label>
+                                        </div>
+
+                                        <button type="button" class="btn-cont-view agreeView-btn" data-pop="">내용 보기</button>
+
+                                        <p class="guide-txt">삼일ESG 플랫폼의 서비스를 이용하시려면 이용약관 및 개인정보 수집 및 이용동의(필수)에 모두 동의하셔야
+                                            합니다.</p>
+                                    </li>
+
+                                    <li>
+                                        <div class="checkbox-wrap">
+                                            <input type="checkbox" id="agree02" name="agree02" value="Y">
+                                            <label for="agree02"><span>개인정보 수집 및 이용 동의 (필수)</span></label>
+                                        </div>
+
+                                        <button type="button" class="btn-cont-view essentialView-btn" data-pop="">내용 보기
+                                        </button>
+
+                                        <p class="guide-txt">개인정보 수집 및 이용에 대하여 동의를 거부할 권리가 있으나, 동의거부 시에는 본 사이트의 회원가입이
+                                            제한됩니다.</p>
+                                    </li>
+
+                                    <li>
+                                        <div class="checkbox-wrap">
+                                            <input type="checkbox" id="agree03" name="agree03" value="Y">
+                                            <label for="agree03"><span>개인정보 수집 및 이용 동의 (선택)</span></label>
+                                        </div>
+
+                                        <button type="button" class="btn-cont-view optionsView-btn" data-pop="">내용 보기
+                                        </button>
+
+                                        <p class="guide-txt">상기 선택적 동의 항목에 동의하지 않아도 회원가입이 가능합니다.</p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary disabled" id="btn_step1"><span>동의하고 가입하기</span>
+                                </button><!-- 비활성화상태 class="disabled" -->
+                            </div>
+                        </div>
+                        <div step2_area step2 addShow addHide style="display:none;">
+                            <section class="sub-section">
+                                <div class="tit-wrap"><h4 class="tit">개인 정보</h4></div>
+                                <ul class="input-list">
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regMbrId">아이디<span class="required"><i
+                                                        class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-mix">
+                                                    <input type="hidden" name="regHiddenMbrId" id="regHiddenMbrId">
+                                                    <input type="text" id="regMbrId" name="regMbrId" maxlength="12"
+                                                           class="txt onlyAlpabet" placeholder="아이디를 입력해 주세요">
+                                                    <button type="button" id="ckMbrId" class="btn-white btn125"><span>중복 확인</span>
+                                                    </button>
+                                                </div>
+                                                <p class="guide-txt">6자 이상, 12자리 이하의 영문 혹은 숫자를 조합</p>
+                                                <!-- //input-wrap -->
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regMbrPwd">비밀번호<span class="required"><i
+                                                        class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <input type="password" id="regMbrPwd" name="regMbrPwd" maxlength="16"
+                                                       class="txt" placeholder="비밀번호를 입력해 주세요">
+                                                <p class="guide-txt">영문/숫자/특수문자 중 3가지 이상 조합, 최소 8자 이상, 16자
+                                                    이하</p>
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="chkMbrPwd">비밀번호 확인<span class="required"><i
+                                                        class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <input type="password" id="chkMbrPwd" class="txt"
+                                                       placeholder="비밀번호를 한번 더 입력해 주세요">
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regMbrNm">이름<span class="required"><i class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <input type="text" id="regMbrNm" name="regMbrNm" class="txt "
+                                                       placeholder="이름을 입력해 주세요">
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regCphonNo1">전화번호</label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-triple">
+                                                    <input type="hidden" id="regCphonNo" name="regCphonNo" value="">
+                                                    <select id="regCphonNo1" class="num-select">
+                                                        <option value="">선택</option>
+                                                        <option value="010">010</option>
+                                                        <option value="011">011</option>
+                                                        <option value="016">016</option>
+                                                        <option value="017">017</option>
+                                                        <option value="018">018</option>
+                                                        <option value="019">019</option>
+                                                        <option value="02">02</option>
+                                                        <option value="031">031</option>
+                                                        <option value="032">032</option>
+                                                        <option value="033">033</option>
+                                                        <option value="041">041</option>
+                                                        <option value="042">042</option>
+                                                        <option value="043">043</option>
+                                                        <option value="044">044</option>
+                                                        <option value="051">051</option>
+                                                        <option value="052">052</option>
+                                                        <option value="053">053</option>
+                                                        <option value="054">054</option>
+                                                        <option value="055">055</option>
+                                                        <option value="061">061</option>
+                                                        <option value="062">062</option>
+                                                        <option value="063">063</option>
+                                                        <option value="064">064</option>
+                                                        <option value="0502">0502</option>
+                                                        <option value="0503">0503</option>
+                                                        <option value="0504">0504</option>
+                                                        <option value="0505">0505</option>
+                                                        <option value="0506">0506</option>
+                                                        <option value="0506">0506</option>
+                                                        <option value="0507">0507</option>
+                                                        <option value="0508">0508</option>
+                                                        <option value="070">070</option>
+                                                    </select>
+                                                    <span>-</span>
+                                                    <input type="text" id="regCphonNo2" class="num onlyNuMber" value=""
+                                                           placeholder="" numberOnly maxlength="4"/>
+                                                    <span>-</span>
+                                                    <input type="text" id="regCphonNo3" class="num onlyNuMber" value=""
+                                                           placeholder="" numberOnly maxlength="4"/>
+                                                </div>
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                </ul>
+                            </section>
+                            <!-- //sub-section -->
+                            <section class="sub-section">
+                                <div class="tit-wrap"><h4 class="tit">소속(회사/기관) 정보</h4></div>
+                                <ul class="input-list">
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="coprNm">소속(회사/기관)<span class="required"><i class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-mix">
+                                                    <input type="text" id="regCoprNm" name="regCoprNm" class="txt"
+                                                           placeholder="회사 또는 기관명을 입력해 주세요" maxlength="50">
+                                                    <!--                                                    <input type="hidden" id="regCoprUid" name="regCoprUid">-->
+                                                    <!--                                                    <input type="text" id="coprNm" class="txt"-->
+                                                    <!--                                                           placeholder="회사 또는 기관명을 입력해 주세요" readonly>-->
+                                                    <!--                                                    <button type="button" class="btn-white btn125" id="ckCoprUid"><span>소속 검색</span>-->
+                                                    <!--                                                    </button>-->
+                                                </div>
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="join08">부서명</label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <input type="text" id="regDeptNm" name="regDeptNm" class="txt"
+                                                       placeholder="소속 내 부서명을 입력해 주세요" maxlength="100">
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regPosNm">직급</label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <input type="text" id="regPosNm" name="regPosNm" class="txt"
+                                                       placeholder="소속 내 직급을 입력해 주세요" maxlength="50">
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regCompMail">소속 이메일<span class="required"><i class="blind">필수입력</i></span></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-mix">
+                                                    <input type="hidden" id="regHiddenCompMail"
+                                                           name="regHiddenCompMail">
+                                                    <input type="text" id="regCompMail" name="regCompMail" class="txt"
+                                                           placeholder="회사 또는 기관에서 사용하는 이메일을 입력해 주세요" maxlength="100">
+                                                    <button type="button" class="btn-white btn125" id="ckCompMail">
+                                                        <span>인증번호 받기</span></button>
+                                                </div>
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                    <li class="list" id="authEmail" style="display:none;">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for=""></label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-mix">
+
+                                                    <input type="text" id="authCompMail" class="txt"
+                                                           placeholder="인증번호를 입력해주세요" maxlength="10"/>
+                                                    <span class="time">05:00</span>
+
+                                                    <button type="button" class="btn-white btn125" id="btnAuthEmail">
+                                                        <span>인증번호 확인</span></button>
+                                                </div>
+                                                <!-- //input-wrap -->
+                                            </div>
+                                    </li>
+                                    <li class="list">
+                                        <div class="input-wrap">
+                                            <div class="label-wrap">
+                                                <label for="regCoprPhonNo">소속 전화번호</label>
+                                            </div>
+                                            <!-- //label-wrap -->
+                                            <div class="input-area">
+                                                <div class="input-triple">
+                                                    <input type="hidden" id="regCoprPhonNo" name="regCoprPhonNo">
+                                                    <select id="regCoprPhonNo1" class="num-select">
+                                                        <option value="">선택</option>
+                                                        <option value="010">010</option>
+                                                        <option value="011">011</option>
+                                                        <option value="016">016</option>
+                                                        <option value="017">017</option>
+                                                        <option value="018">018</option>
+                                                        <option value="019">019</option>
+                                                        <option value="02">02</option>
+                                                        <option value="031">031</option>
+                                                        <option value="032">032</option>
+                                                        <option value="033">033</option>
+                                                        <option value="041">041</option>
+                                                        <option value="042">042</option>
+                                                        <option value="043">043</option>
+                                                        <option value="044">044</option>
+                                                        <option value="051">051</option>
+                                                        <option value="052">052</option>
+                                                        <option value="053">053</option>
+                                                        <option value="054">054</option>
+                                                        <option value="055">055</option>
+                                                        <option value="061">061</option>
+                                                        <option value="062">062</option>
+                                                        <option value="063">063</option>
+                                                        <option value="064">064</option>
+                                                        <option value="0502">0502</option>
+                                                        <option value="0503">0503</option>
+                                                        <option value="0504">0504</option>
+                                                        <option value="0505">0505</option>
+                                                        <option value="0506">0506</option>
+                                                        <option value="0506">0506</option>
+                                                        <option value="0507">0507</option>
+                                                        <option value="0508">0508</option>
+                                                        <option value="070">070</option>
+                                                    </select>
+                                                    <span>-</span>
+                                                    <input type="text" id="regCoprPhonNo2" class="num onlyNuMber"
+                                                           value="" placeholder="" numberOnly maxlength="4"/>
+                                                    <span>-</span>
+                                                    <input type="text" id="regCoprPhonNo3" class="num onlyNuMber"
+                                                           value="" placeholder="" numberOnly maxlength="4"/>
+                                                </div>
+                                            </div>
+                                            <!-- //input-wrap -->
+                                        </div>
+                                    </li>
+                                </ul>
+                            </section>
+                            <!-- //sub-section -->
+                            <section class="sub-section">
+                                <div class="tit-wrap"><h4 class="tit">ESG 관심 영역</h4><span>(ESG 관심 영역 복수 선택)</span></div>
+                                <ul class="box-check-wrap row3" id="intrCdList">
+
+                                </ul>
+                            </section>
+
+
+                            <!--<section class="sub-section">
+                                <div class="tit-wrap"><h4 class="tit">뉴스레터 수신 동의</h4></div>
+                                <ul class="agree-col-list">
+                                    <li>
+                                        <div class="radio-wrap">
+                                            <input type="radio" id="regNsltAgreYn01" name="regNsltAgreYn" value="Y">
+                                            <label for="regNsltAgreYn01"><span>수신</span></label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="radio-wrap">
+                                            <input type="radio" id="regNsltAgreYn02" name="regNsltAgreYn"  value="N"  checked>
+                                            <label for="regNsltAgreYn02"><span>비수신</span></label>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="agree-inner-wrap">
+                                    <ul class="agree-col-list">
+                                        <li class="inner-cont-view">
+                                            <div class="checkbox-wrap">
+                                                <input type="checkbox" id="regMrktAgreYn" name="regMrktAgreYn" value="Y">
+                                                <label for="regMrktAgreYn"><span>광고성 정보 수신 및 마케팅 활용 동의 (선택)</span></label>
+                                            </div>
+                                            <button type="button" class="btn-cont-view" data-pop="popMarketingView"><span>내용 보기</span></button>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-wrap">
+                                                <input type="checkbox" id="regAgreeEmail" name="regAgreeEmail"  value="Y">
+                                                <label for="regAgreeEmail"><span>이메일</span></label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-wrap">
+                                                <input type="checkbox" id="regAgreeSms" name="regAgreeSms"  value="Y">
+                                                <label for="regAgreeSms"><span>SMS</span></label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <p class="guide-txt">상기 마케팅 동의 항목에 동의하셔야, 주간 뉴스레터/안내문자 등 서비스를 제공받을 수 있습니다.</p>
+                                </div>
+                            </section>-->
+
+
+                            <section class="sub-section">
+                                <div class="tit-wrap"><h4 class="tit">개인정보 제3자 제공 동의</h4></div>
+
+
+                                <div class="agree-inner-wrap">
+                                    <ul class="agree-col-list">
+                                        <li class="inner-cont-view">
+                                            <div class="checkbox-wrap">
+                                                <input type="checkbox" id="agree" name="regNsltAgreYn" value="Y">
+                                                <label for="agree"><span>뉴스레터 수신 동의</span></label>
+                                            </div>
+                                        </li>
+
+                                        <li class="inner-cont-view">
+                                            <div class="checkbox-wrap">
+                                                <input type="checkbox" id="regMrktAgreYn" name="regMrktAgreYn"
+                                                       value="Y">
+                                                <label for="regMrktAgreYn"><span>개인정보 제3자 제공 동의</span></label>
+                                            </div>
+                                            <button type="button" class="btn-cont-view" data-pop="popMarketingView">
+                                                <span>내용 보기</span></button>
+                                        </li>
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="checkbox-wrap">-->
+                                        <!--                                                <input type="checkbox" id="regAgreeEmail" name="regAgreeEmail"-->
+                                        <!--                                                       value="Y">-->
+                                        <!--                                                <label for="regAgreeEmail"><span>이메일</span></label>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="checkbox-wrap">-->
+                                        <!--                                                <input type="checkbox" id="regAgreeSms" name="regAgreeSms" value="Y">-->
+                                        <!--                                                <label for="regAgreeSms"><span>SMS</span></label>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                    </ul>
+                                    <p class="guide-txt">상기 개인정보 제3자 제공 동의 항목에 동의하셔야, 뉴스레터를 제공받을 수 있습니다</p>
+                                </div>
+                            </section>
+
+
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-white" id="btn_cancel"><span>취소하기</span></button>
+                                <button type="button" class="btn-primary " id="btn_step2"><span>등록하기</span></button>
+                                <!-- 비활성화상태 class="disabled" -->
+                            </div>
+                        </div>
+                        <div step3_area step3 addShow style="display:none;">
+                            <div class="btn-wrap flex">
+                                <button type="button" class="btn-white" onclick='location.href="/"'>
+                                    <span>이전화면 이동하기</span>
+                                </button>
+                                <button type="button" class="btn-primary"
+                                        onclick='location.href="/common/login"'><span>로그인 하기</span></button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+            <!-- //member-wrap -->
+        </div>
+        <!-- //content -->
+    </div>
+
+    <script id="tmpl_slist" type="text/x-jquery-tmpl">
+        <li>
+            <input type="checkbox" id="ck_${cd}" name='regIntrCd' value="${cd}">
+            <label for="ck_${cd}"><span>${cdNm}</span></label>
+        </li>
+    </script>
+    <script id="tmpl_compnaylist" type="text/x-jquery-tmpl">
+        <li>
+            <div class="check">
+                <div class="radio-wrap">
+                     <input type="radio" id="radCom_${coprUid}" name="selcompany" data-nm="${coprNm}" data-num="${coprUid}">
+                    <label for="radCom_${coprUid}"></label>
+                </div>
+            </div>
+            <div class="name"><label for="radCom_${coprUid}">${coprNm}</label></div>
+            <div class="business-num"><label for="radCom_${coprUid}">${brno}</label></div>
+        </li>
+    </script>
+
+
+    <section class="popup company-list-pop" style="display:none">
+        <div class="search-ct">
+            <div class="top-line">
+                <div class="subj">소속 회사/기관</div>
+                <div class="close list-pop-close"><img src="/assets/img/common/popup-close.png"></div>
+            </div>
+            <form class="form" id="selComFrm">
+                <div class="search">
+                    <input type="text" placeholder="회사 또는 기관명을 입력하세요" id="selComNm"/>
+                    <button class="search-btn">
+                        <img src="/assets/img/common/search-ico.png">
+                    </button>
+                </div>
+            </form>
+
+            <div class="add-company mo">
+                <div class="tx">등록하시고자 하는 회사, 기관명이 검색 결과에 없는경우, 신규 등록하여 입력 바랍니다.</div>
+                <button class="add-company-btn">회사/기관명 등록</button>
+            </div>
+
+            <div class="company-listA sel-data">
+                <ul class="company-list" style="border-bottom:0px;">
+                    <li class="head">
+                        <div class="check">선택</div>
+                        <div class="name">소속</div>
+                        <div class="business-num">사업자등록번호</div>
+                    </li>
+                </ul>
+                <ul class="company-list" id="companyList">
+
+                </ul>
+
+            </div>
+            <div class="company-listA no-data" style="display:none;">
+                <ul class="company-list">
+                    <li>
+                        <div class="tx">
+                            <span class="subject">검색결과가 없습니다.</span>
+                            등록하시고자 하는 회사, <br/>기관명을 신규등록 해주세요.
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="confirm-btn add-company-btn btn_add_com">
+                    <button>신규등록하기</button>
+                </div>
+            </div>
+            <div class="add-company pc">
+                <div class="tx">등록하시고자 하는 회사, 기관명이 검색 결과에 없는경우, 신규 등록하여 입력 바랍니다.</div>
+                <button class="add-company-btn btn_add_com">회사/기관명 등록</button>
+            </div>
+        </div>
+        <div class="layerBack"></div>
+    </section>
+
+    <section class="popup company-add-pop" style="display:none">
+        <div class="add-ct">
+            <div class="top-line">
+                <div class="subj">회사/기관명 등록</div>
+                <div class="close add-pop-close"><img src="/assets/img/common/popup-close.png"></div>
+            </div>
+
+            <form class="form" id="addComFrm">
+                <div class="input">
+                    <div class="form-list">
+                        <label>회사/기관명</label>
+                        <input type="text" placeholder="회사/기관명을 입력하세요" id="addComNm" name="addComNm" maxlength="50"/>
+                    </div>
+
+                    <div class="form-list">
+                        <label>사업자등록번호</label>
+                        <input type="text" placeholder="사업자등록번호를 입력하세요" id="addComNum" name="addComNum" maxlength="10"/>
+                    </div>
+                </div>
+
+                <div class="submit-btn" id="btn_add_company">
+                    <button>등록하기</button>
+                </div>
+            </form>
+
+
+        </div>
+        <div class="layerBack"></div>
+    </section>
+
+</div>
+</html>

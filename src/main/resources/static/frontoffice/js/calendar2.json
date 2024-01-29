@@ -1,0 +1,26 @@
+[
+  {
+    "start": "2023-09-11",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "World Water Congress 2023",
+    "constraint": "1973년부터 3년 주기로 열리는 세계물총회(World Water Congress)는 전 세계 수자원 관련 경험과 지식을 교류하고, 지속가능하고 복원가능한 개발을 위한 다양한 물관리 기술 및 정책을 논의하고 발굴하는 권위 있는 국제학술행사입니다. ",
+    "allow": "https:\/\/www.worldwatercongress.com\/"
+  },
+  {
+    "start": "2023-09-19",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 SDG Summit ",
+    "constraint": "지속가능발전목표 정상회의 (SDG Summit 2023)은  4년 주기로 유엔 총회에서 개최되는 회의로 각국 정상들이 모여 2030 아젠다에 따른 글로벌 SDG 이행현황을 공동 점검하고 후속조치를 논의합니다. ",
+    "allow": "https:\/\/www.un.org\/en\/conferences\/SDGSummit2023"
+  },
+  {
+    "etcStart": "2023-1분기",
+    "classIdx": "0",
+    "cata": "행사",
+    "title": "2023 SDG Summit ",
+    "constraint": "지속가능발전목표 정상회의 (SDG Summit 2023)은  4년 주기로 유엔 총회에서 개최되는 회의로 각국 정상들이 모여 2030 아젠다에 따른 글로벌 SDG 이행현황을 공동 점검하고 후속조치를 논의합니다. ",
+    "allow": "https:\/\/www.un.org\/en\/conferences\/SDGSummit2023"
+  }
+]

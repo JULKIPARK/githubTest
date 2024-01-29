@@ -1,0 +1,14 @@
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<!-- headerFragment -->
+<header th:fragment="headerFragment" id="header" class="header">
+    <h1 class="logo"><a href="javascript:void(0);"><span class="blind">pwc</span>관리자 포털</a></h1>
+    <div class="utility" th:if="${session.BoMbrInfo != null}">
+        <ul>
+            <li th:text="|${session.BoMbrInfo.mbrNm} [${session.BoMbrInfo.mbrId}]|">정승은님 [seungeun.jung]</li>
+            <li><a href="/sems/common/logout">로그아웃</a></li>
+            <!--            <li><a href="javascript:void(0);">업무공지</a></li>-->
+        </ul>
+    </div>
+</header>
+</html>

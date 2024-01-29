@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.calendar.mapper.CalendarMapper">
+
+    <select id="selectCalendarList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SCHDL_UID
+			, SCHDL_TTL AS TITLE
+			, (CASE
+				WHEN SCHDL_TP_CD = '10' THEN '0'
+				WHEN SCHDL_TP_CD = '20' THEN '1'
+				WHEN SCHDL_TP_CD = '30' THEN '2'
+				WHEN SCHDL_TP_CD = '40' THEN '3'
+				WHEN SCHDL_TP_CD = '50' THEN '4'
+				WHEN SCHDL_TP_CD = '60' THEN '5'
+			END) AS CLASS_IDX
+			, ESG_DB.FNCOMMCDNM('SCHDL_TP_CD', CSI.SCHDL_TP_CD) AS CATA
+			, SCHDL_GB_CD
+			, REPLACE(SCHDL_STT_DTE, '.', '-') AS START
+			, REPLACE(DATEADD(DAY, 1, CAST(SCHDL_END_DTE AS DATE)), '.', '-') AS 'END'
+			, UDTMN_SCHDL_YY
+			, UDTMN_SCHDL_MM
+			, (CASE
+				WHEN UDTMN_SCHDL_MM <![CDATA[>=]]> '01' AND UDTMN_SCHDL_MM <![CDATA[<=]]> '12' THEN CONCAT(UDTMN_SCHDL_YY, '-', UDTMN_SCHDL_MM)
+				WHEN UDTMN_SCHDL_MM = '21'                             THEN CONCAT(UDTMN_SCHDL_YY, N'-1분기')
+				WHEN UDTMN_SCHDL_MM = '22'                             THEN CONCAT(UDTMN_SCHDL_YY, N'-2분기')
+				WHEN UDTMN_SCHDL_MM = '23'                             THEN CONCAT(UDTMN_SCHDL_YY, N'-3분기')
+				WHEN UDTMN_SCHDL_MM = '24'                             THEN CONCAT(UDTMN_SCHDL_YY, N'-4분기')
+				ELSE ''
+			END)                                                  AS UDTMN_SCHDL
+			, SCHDL_CN AS 'CONSTRAINT'
+			, LINK_URL AS ALLOW
+		FROM
+			ESG_DB.CS_SCHDL_INFO CSI
+		<where>
+			<!-- 검색조건 : 일정 기간 -->
+			<if test="start != null and !start.equals('') and end != null and !end.equals('')">
+				AND (
+					(SCHDL_STT_DTE <![CDATA[<=]]> REPLACE(#{end}, '-', '.')
+					AND (CASE
+						WHEN SCHDL_GB_CD = '10' THEN SCHDL_STT_DTE
+						ELSE SCHDL_END_DTE
+					END) <![CDATA[>=]]> REPLACE(#{start}, '-', '.'))
+					OR UDTMN_SCHDL_YY = LEFT(REPLACE(#{start}, '-', '.'), 4)
+				)
+			</if>
+		</where>
+		ORDER BY
+			CASE
+				WHEN SCHDL_GB_CD IN ('10', '20') THEN 1
+				ELSE 2
+			END
+			, SCHDL_STT_DTE
+			, SCHDL_TTL
+    </select>
+
+</mapper>

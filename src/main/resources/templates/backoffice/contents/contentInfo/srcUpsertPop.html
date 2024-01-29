@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<!-- append/modify form -->
+<th:block th:fragment="fragmentBySrcUpsertPop">
+    <script type="text/javascript">
+        $(function () {
+            console.log('upserpop call...');
+
+            initializeForm();
+        });
+
+        function fnShowBySrcUpsertPop(srcUid) {
+            if (srcUid !== '') {
+                var param = {
+                    "url": "/sems/contents/selectSrcView"
+                    , "type": "post"
+                    , "data": {"srcUid": srcUid}
+                    , "async": false
+                    , "callback": function (data) {
+                        var info = data.item;
+
+                        $('#srcUno').val(info.srcUno);		//출처번호
+                        $('#srcUidByUpsertPop').val(info.srcUid);		//출처채번
+                        $('#srcNmByUpsertPop').val(info.srcNm);	//출처명
+
+                        $('input:radio[name="dmstcYn"]').each(function (idx, element) {
+                            var $this = $(this);
+
+                            if ($this.val() === info.dmstcYn) {
+                                $this.prop('checked', true);
+                            } else {
+                                $this.prop('checked', false);
+                            }
+                        });
+                    }
+                };
+                _comLib.callAjax(param);
+            } else {
+                $('#srcNmByUpsertPop').val("");//출처명
+                $('#srcUno').val("");//출처번호
+                $("input:radio[name='dmstcYn']:input[value='Y']").prop("checked", "checked");
+                ;//국내/해외
+            }
+
+            $('#mainBySrcUpsertPop').addClass('show');
+            $('.dimmed').removeAttr('style');
+        }
+
+        function initializeForm() {
+            $('#frmBySrcUpsertPop').clearForm();
+        }
+
+        //출처등록
+        function upsertSrcView() {
+            if ($('#srcNmByUpsertPop').val() === '') {
+                alert('출처명을 입력하세요.');
+                return;
+            }
+
+            if ($('input:radio[name="dmstcYn"]').is(':checked') === false) {
+                alert('국내/해외 중 하나를 선택하세요.');
+                return;
+            }
+
+            var formData = {};
+            formData = _formLib.getFormData("frmBySrcUpsertPop");
+            var param = {
+                "url": "/sems/contents/upsertSrcView"
+                , "type": "post"
+                , "data": formData
+                , "async": false
+                , "callback": function (data) {
+                    if (data.cnt > 0) {
+                        fnSelectSrcList();
+                        alert('저장 되었습니다.');
+                    } else {
+                        alert('저장에 실패하였습니다.');
+                    }
+
+                    // 팝업된 화면 닫히고 모창의 조회를 실행!!
+                    $('#mainBySrcUpsertPop').removeClass('show');
+                    $('#srcNmByUpsertPop').val('');
+                    // todo 팝업에서 모창에 자동 반영은 어려울 것 같아 Callback 구성을 해야 할 것 같음....
+                    //fnSelectSrcList();
+                }
+            };
+            _comLib.callAjax(param);
+        }
+    </script>
+
+    <!-- modal-wrap -->
+    <div id="mainBySrcUpsertPop" class="modal-wrap" style="z-index:1000">
+        <!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area small">
+                <div class="modal-head">
+                    <h2 class="tit">출처 등록</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <div class="search-wrap">
+                        <form id="frmBySrcUpsertPop">
+                            <input type="hidden" name="srcUidByUpsertPop" id="srcUidByUpsertPop">
+                            <fieldset>
+                                <legend>출처 등록</legend>
+                                <div class="table-wrap">
+                                    <table>
+                                        <caption>소속 리스트</caption>
+                                        <colgroup>
+                                            <col style="width: 15%;">
+                                            <col style="width: 35%;">
+                                            <col style="width: 15%;">
+                                            <col style="width: 35%;">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th><label for="srcNmByUpsertPop">출처명</label></th>
+                                            <td><input type="text" id="srcNmByUpsertPop" name="srcNmByUpsertPop"></td>
+                                            <th><label for="srcUno">출처번호</label></th>
+                                            <td><input type="text" id="srcUno" name="srcUno" disabled="disabled"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>국내/해외</th>
+                                            <td colspan="3">
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="dmstcYn" value="Y" id="area04"
+                                                               checked="checked">
+                                                        <label for="area04">국내</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="dmstcYn" value="N" id="area05">
+                                                        <label for="area05">해외</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                                <div class="btn-wrap">
+                                    <button type="button" onclick="upsertSrcView();" class="btn-primary">등록</button>
+                                    <button type="button" id="btnCloseByUpsertPop" class="btn-sub btn-close">닫기</button>
+                                </div>
+                                <!-- //btn-wrap -->
+                            </fieldset>
+                        </form>
+                    </div>
+                    <!--//search-wrap-->
+                </section>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+</th:block>
+
+</html>

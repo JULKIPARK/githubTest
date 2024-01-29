@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.common.mapper.FoCommonMapper">
+
+	<!-- 사용자 정보 조회 -->
+	<select id="checkDuplicate" parameterType="string" resultType="int">
+		/* checkDuplicate */
+		SELECT
+			COUNT(MBR_ID)
+		FROM
+			ESG_DB.MB_MBR_INFO	/* 회원정보 */
+		WHERE
+			MBR_ID = #{mbrId}	/* 회원아이디 */
+	</select>
+
+	<!-- 이메일 정보 조회 -->
+	<select id="checkEmail" parameterType="string" resultType="int">
+		/* checkEmail */
+		SELECT
+			COUNT(MBR_ID)
+		FROM
+			ESG_DB.MB_MBR_INFO	/* 회원정보 */
+		WHERE
+			MBR_ST_CD = '10'	/* 회원상태: 가입(10), 탈퇴(30) */
+			AND COMP_MAIL = #{email}	/* 회사이메일 */
+	</select>
+
+	<!-- 회원가입 정보 저장 -->
+	<insert id="insertJoin" parameterType="camelcasemap">
+		<selectKey keyProperty="mbrUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'MB_MBR_INFO_SQ01'
+		</selectKey>
+
+		INSERT INTO ESG_DB.MB_MBR_INFO (
+			MBR_UID
+			, MBR_UNO
+			, MBR_ID
+			, MBR_PWD
+			, MBR_GB_CD
+			, MBR_NM
+			, MBR_ST_CD
+			, JOIN_DT
+			, DEPT_NM
+			, POS_NM
+			, COMP_MAIL
+			, MAIL_CHK_YN
+			, MAIL_CHK_DT
+			, MRKT_AGRE_YN
+			, MRKT_AGRE_DT
+			, NSLT_AGRE_YN
+			, NSLT_AGRE_DT
+			, INTR_CD_ARRY
+			, CPHON_NO
+			, COPR_PHON_NO
+			, COPR_NM
+			, MAIL_AGRE_YN
+			, MAIL_AGRE_DT
+			, SMS_AGRE_YN
+			, SMS_AGRE_DT
+			, FST_INS_ID
+			, LST_UPD_ID
+		) VALUES (
+			#{mbrUid}
+			, ESG_DB.fnGetMbrUno(#{mbrUno})
+			, #{regMbrId}
+			, #{regMbrPwd}
+			, #{mbrGbCd}
+			, #{regMbrNm}
+			, '10'
+			, GETDATE()
+			, #{regDeptNm}
+			, #{regPosNm}
+			, #{regCompMail}
+			, 'Y'
+			, GETDATE()
+			, #{regMrktAgreYn}
+			, CASE WHEN #{regMrktAgreYn} = 'Y' THEN GETDATE() ELSE NULL END
+			, #{regNsltAgreYn}
+			, CASE WHEN #{regNsltAgreYn} = 'Y' THEN GETDATE() ELSE NULL END
+			, #{regIntrCd}
+			, #{regCphonNo}
+			, #{regCoprPhonNo}
+			, #{regCoprNm}
+			, #{regAgreeEmail}
+			, CASE WHEN #{regAgreeEmail} = 'Y' THEN GETDATE() ELSE NULL END
+			, #{regAgreeSms}
+			, CASE WHEN #{regAgreeSms} = 'Y' THEN GETDATE() ELSE NULL END
+			, 'reg'
+			, 'reg'
+		)
+	</insert>
+
+	<!-- 사용자 정보 조회 -->
+	<select id="selectMbMbrInfo" parameterType="camelcasemap" resultType="com.pwc.pwcesg.config.SessionData">
+		/* selectMbMbrInfo */
+		SELECT
+			MBR.MBR_UID /* 회원채번 */
+			, MBR.MBR_UNO /* 회원고유번호 */
+			, MBR.MBR_ID /* 회원아이디 */
+			, MBR.MBR_PWD /* 회원암호 */
+			, MBR.MBR_GB_CD /* 회원구분코드 */
+			, MBR.MBR_NM /* 회원명 */
+			, MBR.MBR_ST_CD /* 회원상태코드 */
+			, MBR.JOIN_DT /* 가입일 */
+			, MBR.WHDWL_APLY_DT /* 탈퇴신청일 */
+			, MBR.WHDWL_APRV_DT /* 탈퇴승인일 */
+			, MBR.DEPT_NM /* 부서명 */
+			, MBR.POS_NM /* 직급명 */
+			, MBR.COMP_MAIL /* 회사이메일 */
+			, MBR.MAIL_CHK_YN /* 이메일확인여부 */
+			, MBR.MAIL_CHK_DT /* 이메일확인일 */
+			, MBR.PWD_FAIL_CNT /* 암호실패건수 */
+			, MBR.PWD_RCTLY_CHNG_DT /* 암호최근변경일 */
+			, MBR.MRKT_AGRE_YN /* 마케팅동의여부 */
+			, MBR.MRKT_AGRE_DT /* 마케팅동의일 */
+			, MBR.NSLT_AGRE_YN /* 뉴스레터동의여부 */
+			, MBR.NSLT_AGRE_DT /* 뉴스레터동의일 */
+			, MBR.INTR_CD_ARRY /* 관심코드배열 */
+			, MBR.CPHON_NO /* 휴대폰번호 */
+			, MBR.COPR_PHON_NO /* 소속전화번호 */
+			, MBR.COPR_UID /* 소속채번 */
+			, MBR.COPR_NM /* 소속명 */
+			, MAIL_AGRE_YN
+			, MAIL_AGRE_DT
+			, SMS_AGRE_YN
+			, SMS_AGRE_DT
+			, MBR.FST_INS_DT /* 최초등록일 */
+			, MBR.FST_INS_ID /* 최초등록아이디 */
+			, MBR.LST_UPD_DT /* 최종수정일 */
+			, MBR.LST_UPD_ID /* 최종수정아이디 */
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			MBR.MBR_ID = #{mbrId} /* 회원아이디 */
+			AND MBR.MBR_PWD = #{pwEncrypt} /* 회원암호 */
+			AND MBR.MBR_ST_CD = '10' /* 회원상태코드(10:가입, 20: 탈퇴신청, 30: 탈퇴) */
+	</select>
+
+	<!-- 사용자 정보 조회 -->
+	<select id="selectMyInfo" parameterType="camelcasemap" resultType="com.pwc.pwcesg.config.SessionData">
+		/* selectMyInfo */
+		SELECT
+			MBR_UID /* 회원채번 */
+			, MBR_ID /* 회원아이디 */
+			, MBR_UNO /* 회원고유번호 */
+			, MBR_NM /* 회원명 */
+			, COMP_MAIL /* 회사이메일 */
+		FROM
+			ESG_DB.MB_MBR_INFO MBR /* 회원정보 */
+		WHERE
+			MBR_NM = #{mbrNm} /* 회원명 */
+			AND MBR.COMP_MAIL = #{compMail} /* 회사이메일 */
+			AND MBR.MBR_ST_CD = '10' /* 회원상태코드(10:가입, 20: 탈퇴신청, 30: 탈퇴) */
+	</select>
+
+	<!-- 비밀번호 변경 -->
+	<update id="updatePwd" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MBR_PWD = #{mbrPwd} /* 회원암호 */
+			, PWD_RCTLY_CHNG_DT = CURRENT_TIMESTAMP
+		WHERE
+			MBR_UID = #{mbrUid} /* 회원채번 */
+			AND COMP_MAIL = #{compMail} /* 회사이메일 */
+	</update>
+
+	<!-- 사용자 정보 변경 -->
+	<update id="updateJoin" parameterType="camelcasemap">
+		UPDATE ESG_DB.MB_MBR_INFO
+		SET
+			DEPT_NM = #{regDeptNm}
+			, POS_NM = #{regPosNm}
+			, MRKT_AGRE_YN = #{regMrktAgreYn}
+			, MRKT_AGRE_DT = CASE WHEN #{regMrktAgreYn} = 'Y' THEN GETDATE() ELSE NULL END
+			, NSLT_AGRE_YN = #{regNsltAgreYn}
+			, NSLT_AGRE_DT = CASE WHEN #{regNsltAgreYn} = 'Y' THEN GETDATE() ELSE NULL END
+			, INTR_CD_ARRY = #{regIntrCd}
+			, COPR_NM = #{regCoprNm}
+			, CPHON_NO = #{regCphonNo}
+			, COPR_PHON_NO = #{regCoprPhonNo}
+			, MAIL_AGRE_YN = #{regAgreeEmail}
+			, MAIL_AGRE_DT = CASE WHEN #{regAgreeEmail} = 'Y' THEN GETDATE() ELSE NULL END
+			, SMS_AGRE_YN = #{regAgreeSms}
+			, SMS_AGRE_DT = CASE WHEN #{regAgreeSms} = 'Y' THEN GETDATE() ELSE NULL END
+			, LST_UPD_DT = GETDATE()
+			, LST_UPD_ID = #{mbrUid}
+		WHERE
+			MBR_UID = #{mbrUid}
+	</update>
+
+
+
+
+
+
+	<select id="selectNewsletter" parameterType="com.pwc.pwcesg.config.SessionData"
+		resultType="INT">
+		SELECT
+			COUNT(MBR_UID)
+		FROM
+			ESG_DB.MB_MBR_INFO
+		WHERE
+			MBR_UID = #{mbrUid}
+			AND MAIL_AGRE_YN = 'Y'
+			AND MRKT_AGRE_YN = 'Y'
+
+	</select>
+
+	<insert id="saveNewsletter" parameterType="camelcasemap">
+		/* selectKey 구문의 위치는 INSERT 쿼리 위, 아래 상관 없이 위치할 수 있습니다. */
+		<selectKey keyProperty="newsSuscUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'NEWS_SUSC_UID'
+		</selectKey>
+
+		INSERT INTO ESG_DB.MB_NEWS_SUSC_INFO
+		(NEWS_SUSC_UID, SUSC_ID, SUSC_ST_CD, SUSC_APLY_DT, SUSC_APLY_PRC_DT, SUSC_MAIL, MAIL_CHK_YN,
+		FST_INS_DT,
+		FST_INS_ID, LST_UPD_DT, LST_UPD_ID)
+		VALUES (#{newsSuscUid}, #{mbrId}, '10', GETDATE(), GETDATE(), #{compMail}, 'Y', GETDATE(),
+		#{mbrId}, GETDATE(),
+		#{mbrId})
+	</insert>
+	<update id="saveMbrNewsletter" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MRKT_AGRE_YN = 'Y'
+			, NSLT_AGRE_YN = 'Y'
+			, NSLT_AGRE_DT = CASE WHEN NSLT_AGRE_DT IS NULL THEN GETDATE() ELSE NSLT_AGRE_DT END
+			, MAIL_AGRE_YN = 'Y'
+			, MAIL_AGRE_DT = CASE WHEN MAIL_AGRE_DT IS NULL THEN GETDATE() ELSE MAIL_AGRE_DT END
+			, LST_UPD_DT = GETDATE() /* 최종수정일 */
+			, LST_UPD_ID = #{mbrId} /* 최종수정아이디 */
+		WHERE
+			MBR_UID = #{mbrUid} /* 회원채번 */
+	</update>
+
+	<!--  컨텐츠 조회 -->
+	<select id="selectContent" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CONT.CONT_UID /* 콘텐츠채번 */
+			, CONT.CONT_UNO /* 콘텐츠고유번호 */
+			, CONT.CONT_KIND_CD /* 콘텐츠종류코드 */
+			, CONT.CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, CONT.CONT_NM /* 콘텐츠명 */
+			, CONT.PBLCN_DTE /* 발행일자 */
+			, CONT.PBLCN_GB_CD /* 발행구분코드 */
+			, TRIM(CONT.PBLCN_YY) AS PBLCN_YY /* 발행YY */
+			, TRIM(CONT.PBLCN_MM) AS PBLCN_MM /* 발행MM */
+			, TRIM(CONT.PBLCN_DD) AS PBLCN_DD /* 발행DD */
+			, CONT.DMSTC_YN /* 국내여부 */
+			, CONT.SPLY_LANG_CD /* 제공언어코드 */
+			, CONT.CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드 */
+			, CONT.CONT_TP_MCLSF_CD /* 콘텐츠유형중분류코드 */
+			, CONT.TASK_CLSF_CD /* 업무분류코드 */
+			, CONT.TPIC_MNU_CD /* 토픽메뉴코드 */
+			, CONT.USE_YN /* 사용여부 */
+			, CONT.DP_YN /* 전시여부 */
+			, CONT.DP_TP_CD /* 전시유형코드 */
+			, CONT.DP_STT_DT /* 전시시작일 */
+			, CONT.DP_END_DT /* 전시종료일 */
+			, CONT.PIRD_STNG_USE_YN /* 기간설정사용여부 */
+			, CONT.DWNLD_PSBLTY_YN /* 다운로드가능여부 */
+			, CONT.SRCH_PSBLTY_YN /* 검색가능여부 */
+			, CONT.CONT_SUMRY /* 콘텐츠요약 */
+			, CONT.CONT_ST_CD /* 콘텐츠상태코드 */
+			, CONT.KWRD_ARRY /* 키워드배열 */
+			, CONT.RLS_TGT_CD_ARRY /* 공개대상코드배열 */
+			, CONT.SRC_UID /* 출처채번 */
+			, CONT.ATAC_FILE_UID /* 첨부파일채번 */
+			, APND.LINK_URL /* 링크주소 */
+			, APND.NWIN_YN /* 새창여부 */
+			, APND.CONT_SPLY_TP_CD /* 콘텐츠제공유형코드 */
+			, TRIM(APND.VOD_QUNTY_HH) AS VOD_QUNTY_HH /* 영상분량시 */
+			, TRIM(APND.VOD_QUNTY_MI) AS VOD_QUNTY_MI /* 영상분량분 */
+			, TRIM(APND.VOD_QUNTY_SEC) AS VOD_QUNTY_SEC/* 영상분량초 */
+			, ISNULL(RSS.IMG_URL, ATAC.CNVN_FILE_FPATH) AS IMG_URL /* RSS 대표이미지 */
+			, ATAC_MO.CNVN_FILE_FPATH AS MOVIE_URL
+			, ATAC_FI.CNVN_FILE_FPATH AS FILE_URL
+		     , ATAC_FI.TUMNL_FPATH
+			, RSS.TTL /* RSS 제목 */
+			, RSS.CN /* RSS 내용 */
+			, RSS.WRTR_NM /* RSS 작성자 */
+			, SRC.SRC_NM
+			, ESG_DB.FNCOMMCDNM('TASK_CLSF_CD', CONT.TASK_CLSF_CD) AS TASK_CLSF_NM
+			, ESG_DB.FNCOMMCDNM('SBJT_GB_CD', CONT.SBJT_GB_CD) AS SBJT_GB_NM
+			, ESG_DB.FNCOMMCDNM('CONT_KIND_CD', CONT.CONT_KIND_CD) AS CONT_KIND_NM
+			, ESG_DB.FNCOMMCDNM('SPLY_LANG_CD', CONT.SPLY_LANG_CD) AS SPLY_LANG_NM
+			, ESG_DB.FNCOMMCDNM('CONT_TP_LCLSF_CD', CONT.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_NM
+			, ESG_DB.FNCOMMCDNM('CONT_TP_MCLSF_CD', CONT.CONT_TP_MCLSF_CD) AS CONT_TP_MCLSF_NM
+			, ESG_DB.FNCOMMCDNM('CONT_SPLY_TP_CD', APND.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_NM
+		FROM
+			ESG_DB.ST_CONT_INFO CONT /* 콘텐츠정보 */
+			INNER JOIN ESG_DB.ST_CONT_APND_INFO APND /* 콘텐츠부가정보 */
+					   ON CONT.CONT_UID = APND.CONT_UID /* 콘텐츠채번 */
+						   AND APND.SEQ_NO = 1
+			LEFT OUTER JOIN ESG_DB.BT_RSS_INFO RSS
+							ON CONT.LINK_URL = RSS.LINK_URL
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC
+							ON CONT.ATAC_FILE_UID = ATAC.ATAC_FILE_UID AND
+							   ATAC.ATAC_TP_CD = '40' AND
+							   ATAC.DP_YN = 'Y' AND ATAC.USE_YN = 'Y'
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC_MO
+							ON CONT.ATAC_FILE_UID = ATAC_MO.ATAC_FILE_UID AND
+							   ATAC_MO.ATAC_TP_CD = '20' AND
+							   ATAC_MO.DP_YN = 'Y' AND ATAC_MO.USE_YN = 'Y'
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC_FI
+				ON CONT.ATAC_FILE_UID = ATAC_FI.ATAC_FILE_UID AND
+				   ATAC_FI.ATAC_TP_CD = '10' AND
+				   ATAC_FI.DP_YN = 'Y' AND ATAC_FI.USE_YN = 'Y'
+			LEFT OUTER JOIN ESG_DB.ST_SRC_INFO SRC
+							ON CONT.SRC_UID = SRC.SRC_UID
+		WHERE
+			CONT.CONT_UID = #{contUid}
+			AND CONT.USE_YN = 'Y'
+			AND CONT.DP_YN = 'Y'
+
+	</select>
+	<!--  컨텐츠 조회 -->
+	<select id="selectMuContent" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CONT.CONT_UID /* 콘텐츠채번 */
+			, CONT.CONT_NM
+			, CONT.CONT_TP_LCLSF_CD
+			, APND.LESN_NM
+			, APND.VOD_COMNT
+			, TRIM(APND.VOD_QUNTY_HH) AS VOD_QUNTY_HH /* 영상분량시 */
+			, TRIM(APND.VOD_QUNTY_MI) AS VOD_QUNTY_MI /* 영상분량분 */
+			, TRIM(APND.VOD_QUNTY_SEC) AS VOD_QUNTY_SEC/* 영상분량초 */
+			, ATAC.CNVN_FILE_FPATH AS IMG_URL /* RSS 대표이미지 */
+			, ATAC_MO.CNVN_FILE_FPATH AS MOVIE_URL
+			, CONT.DP_TP_CD
+			, CONT.RLS_TGT_CD_ARRY
+		FROM
+			ESG_DB.ST_CONT_INFO CONT /* 콘텐츠정보 */
+			INNER JOIN ESG_DB.ST_CONT_APND_INFO APND /* 콘텐츠부가정보 */
+					   ON CONT.CONT_UID = APND.CONT_UID /* 콘텐츠채번 */
+				AND APND.SEQ_NO > 0
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC
+							ON APND.ATAC_FILE_UID = ATAC.ATAC_FILE_UID AND
+							   ATAC.ATAC_TP_CD = '40' AND
+							   ATAC.DP_YN = 'Y' AND ATAC.USE_YN = 'Y'
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC_MO
+							ON APND.ATAC_FILE_UID = ATAC_MO.ATAC_FILE_UID AND
+							   ATAC_MO.ATAC_TP_CD = '20' AND
+							   ATAC_MO.DP_YN = 'Y' AND ATAC_MO.USE_YN = 'Y'
+		WHERE
+			CONT.CONT_UID = #{contUid}
+			AND CONT.USE_YN = 'Y'
+			AND CONT.DP_YN = 'Y'
+		ORDER BY
+			CONT.CONT_UID
+			, APND.SEQ_NO
+	</select>
+	<delete id="deleteContentLog" parameterType="camelcasemap">
+		DELETE
+		FROM
+			ESG_DB.MB_MBR_CONT_VIEW
+		WHERE
+			MBR_UID = #{mbrUid}
+			AND CONT_UID = #{contUid}
+	</delete>
+	<insert id="insertContentLog" parameterType="camelcasemap">
+		INSERT INTO
+			ESG_DB.MB_MBR_CONT_VIEW
+		(MBR_UID, CONT_UID, FST_INS_DT, FST_INS_ID, LST_UPD_DT, LST_UPD_ID)
+		VALUES (#{mbrUid}, #{contUid}, GETDATE(), #{mbrUid}, GETDATE(), #{mbrUid})
+	</insert>
+	<update id="updateViewCnt" parameterType="camelcasemap">
+		UPDATE
+			ESG_DB.ST_CONT_INFO
+		SET
+			VW_CNT = VW_CNT + 1
+		WHERE
+			CONT_UID = #{contUid}
+	</update>
+	<select id="selectContentItem" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			APND.CONT_UID /* 콘텐츠채번 */
+			, APND.LINK_URL /* 링크주소 */
+			, APND.NWIN_YN /* 새창여부 */
+			, APND.CONT_SPLY_TP_CD /* 콘텐츠제공유형코드 */
+			, TRIM(APND.VOD_QUNTY_HH) AS VOD_QUNTY_HH /* 영상분량시 */
+			, TRIM(APND.VOD_QUNTY_MI) AS VOD_QUNTY_MI /* 영상분량분 */
+			, TRIM(APND.VOD_QUNTY_SEC) AS VOD_QUNTY_SEC/* 영상분량초 */
+			, ATAC_MO.CNVN_FILE_FPATH AS IMG_URL
+			, ATAC_MO.CNVN_FILE_FPATH AS MOVIE_URL
+			, ESG_DB.FNCOMMCDNM('CONT_SPLY_TP_CD', APND.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_NM
+		FROM
+			ESG_DB.ST_CONT_INFO CONT /* 콘텐츠정보 */
+			INNER JOIN ESG_DB.ST_CONT_APND_INFO APND /* 콘텐츠부가정보 */
+					   ON CONT.CONT_UID = APND.CONT_UID /* 콘텐츠채번 */
+			LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC_MO
+							ON CONT.ATAC_FILE_UID = ATAC_MO.ATAC_FILE_UID AND
+							   ATAC_MO.ATAC_TP_CD = '20' AND
+							   ATAC_MO.DP_YN = 'Y' AND ATAC_MO.USE_YN = 'Y'
+		WHERE
+			APND.CONT_UID = #{contUid}
+
+	</select>
+
+	<!-- 회원탈퇴 -->
+	<update id="withdrawal" parameterType="camelcasemap">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MBR_ST_CD = '30' /* 회원상태코드(10:가입, 20: 탈퇴신청, 30: 탈퇴) */
+			, WHDWL_CAUS_CD = #{whdwlCausCd} /* 탈퇴사유코드(10: 컨텐츠 부족, 20: 회원 혜택 부족, 30: 개인정보 유출 우려, 40: 사이트 이용 불편, 50: 이용빈도 낮음, 60: 기타) */
+			, WHDWL_CAUS_COMNT = #{whdwlCausComnt} /* 탈퇴사유설명 */
+			, WHDWL_APLY_DT = GETDATE() /* 탈퇴신청일 */
+			, MBR_NM = '@'
+			, COMP_MAIL = '@'
+			, LST_UPD_DT = GETDATE() /* 최종수정일 */
+			, LST_UPD_ID = #{mbrId} /* 최종수정아이디 */
+		WHERE
+			MBR_UID = #{mbrUid} /* 회원채번 */
+			AND MBR_PWD = #{mbrPwd} /* 회원암호 */
+	</update>
+
+	<select id="updatePwdFailCnt" parameterType="com.pwc.pwcesg.config.SessionData" resultType="int">
+		UPDATE ESG_DB.MB_MBR_INFO
+		SET PWD_FAIL_CNT = PWD_FAIL_CNT + 1
+		OUTPUT inserted.PWD_FAIL_CNT
+		WHERE MBR_ID = #{mbrId} /* 회원아이디 */
+	</select>
+	<update id="updatePwdByFail" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			MBR_PWD    = #{mbrPwd} /* 회원암호 */
+			, PWD_RCTLY_CHNG_DT = CURRENT_TIMESTAMP
+		WHERE
+			MBR_ID = #{mbrId} /* 회원아이디 */
+	</update>
+	<update id="updatePwdFailCntReset" parameterType="com.pwc.pwcesg.config.SessionData">
+		UPDATE ESG_DB.MB_MBR_INFO /* 회원정보 */
+		SET
+			PWD_FAIL_CNT = 0
+		WHERE
+			MBR_ID = #{mbrId} /* 회원아이디 */
+	</update>
+
+
+
+</mapper>

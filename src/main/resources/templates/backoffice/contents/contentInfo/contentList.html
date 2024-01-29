@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+  <script type="text/javascript">
+    $(function () {
+
+      // 화면 초기화
+      fnInitView();
+
+      // 기본 데이터 조회
+      fnInitData();
+
+      // 이벤트 설정
+      fnInitEvent();
+    });
+
+    // 화면 초기화
+    function fnInitView() {
+      _comLib.setDatePicker("schStrtDate", "schEndDate", "yy-mm-dd");
+      _comLib.setDatePicker("schEndDate", null, "yy-mm-dd");
+      setSchDate();
+    }
+
+    // 조회기간 설정
+    function setSchDate() {
+      var stDay = _comLib.preMonth($('input:radio[name=period]:checked').val());
+      $("#schStrtDate").val(stDay);
+      $("#schEndDate").val(_comLib.toDay());
+    }
+
+    // 이벤트 설정
+    function fnInitEvent() {
+
+      $("#btnSearch").bind("click", fnSelectContentList);	//조회
+      $("#btnReset").bind("click", fnResetSearch);		//초기화
+      $('input:radio[name=period]').bind("click", setSchDate);//조회기간변경
+
+      //페이지 사이즈 변경
+      $("#contPageSize").bind("change", function() {
+        $('#contPageNum').find('option:first').attr('selected', 'selected');//선택된 페이지 초기화
+        fnSelectContentList();	//페이지 사이즈변경
+      });
+
+      //페이지 번호 변경
+      $("#contPageNum").bind("change", fnSelectContentList);
+
+      // 검색조건 - 기간 이벤트
+      $('#schJoinType').bind("change", function () {
+        if ($('#schJoinType').val() === 'N') {
+          $('#schStrtDate').attr('disabled', 'disabled');
+          $('#schEndDate').attr('disabled', 'disabled');
+        } else {
+          $('#schStrtDate').removeAttr('disabled');
+          $('#schEndDate').removeAttr('disabled');
+        }
+      });
+
+      // 콘텐츠종류를 선택시 하위 활성화
+      $('#schContKindOpt').bind("change", function() {
+        if ($('#schContKindOpt').val() === 'ALL') {
+          $('#schContRmthdOpt').attr('disabled', 'disabled');
+        } else {
+          $('#schContRmthdOpt').removeAttr('disabled');
+        }
+      });
+
+      // 유형분류를 선택시 하위 활성화
+      $('#schContTpLclsfOpt').bind('change', function() {
+        if($('#schContTpLclsfOpt').val() == "ALL"){
+          $('#schContTpMclsfOpt').attr('disabled', 'disabled');
+        } else {
+          $('#schContTpMclsfOpt').removeAttr('disabled');
+        }
+      });
+
+      // 전시여부를 선택시 하위 활성화
+      $('input:radio[name=schDpTpRdo]').bind('change', function() {
+        if($('input:radio[name=schDpTpRdo]:checked').val() == "20"){
+          $("input:checkbox[name=schRlsTgtChk]").each(function() {
+            $(this).prop('checked', false);
+            $(this).removeAttr('disabled');
+          });
+        } else {
+          $('input:checkbox[name=schRlsTgtChk]').each(function() {
+            $(this).prop('checked', false);
+            $(this).attr('disabled', 'disabled');
+          });
+        }
+      });
+
+      // 토픽를 선택시 하위 활성화
+      $('#schTpicMnuOpt').bind('change', function() {
+        if ($('#schTpicMnuOpt').val() === 'ALL') {
+          $('#schTpicNmOpt').attr('disabled', 'disabled');
+        } else {
+          $('#schTpicNmOpt').removeAttr('disabled');
+        }
+      });
+
+      $("#btnStop").bind("click", fnStop);	//사용중지
+
+      $("#btnExcelDown").bind("click", fnExcelDown);	//엑셀 다운로드
+    }
+
+    // 기본 데이터 조회
+    function fnInitData() {
+      fnSelectContentList();
+    }
+
+    //목록조회
+    function fnSelectContentList() {
+      var formData, param = {};
+      formData = _formLib.getFormData("searchListFrm");
+      param = {
+        "url": "/sems/contents/selectContentList"
+        , "type": "post"
+        , "data": formData
+        , "async": false
+        , "callback": function (fragment) {
+          $("#contentListDiv").replaceWith(fragment);
+          $("#contTotalCountView").text(
+              "총 " + _formLib.addComma($("#contTotalCount").val()) + "건");
+
+          //페이징처리
+          var currPage = $('#contPageNum').val();//현재 선택된 페이지
+          $('#contPageNum').empty();//페이지 option 삭제
+          for (var count = 1; count <= $("#contTotalPage").val(); count++) {
+            var selTxt = "";
+            if (count == currPage) {
+              selTxt = "selected='selected'";//현재 페이지 선택
+            }
+
+            var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+                "#contTotalPage").val() + "</option>");
+            $('#contPageNum').append(option);
+          }
+        }
+      };
+      _comLib.callAjax(param);
+    }
+
+    // 엑셀 다운로드
+    function fnExcelDown() {
+      // todo 콘텐츠리스트 다운로드 - 양식 필요!!
+      alert('콘텐츠리스트 다운로드 - 양식 필요!!');
+      return;
+
+      if (!confirm("다운로드 하시겠습니까?")) {
+        return;
+      }
+
+      var data = "";
+      var formObj = $('<form></form>');
+      var formData = _formLib.getFormData("searchListFrm");
+      formObj.attr('method', 'post');
+      formObj.attr("action", "/sems/custom/selectMemberListExcelDown");
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schJoinType', value: formData.schJoinType}));//검색조건 : 가입일/탈퇴일 구분
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schStrtDate', value: formData.schStrtDate}));//검색조건 : 가입일/탈퇴일
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schCoprUid', value: formData.schCoprUid}));//검색조건 : 소속채번
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schMbrStCd', value: formData.schMbrStCd}));//검색조건 : 회원상태코드
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schMrkTAgreYn', value: formData.schMrkTAgreYn}));//검색조건 : 마케팅동의여부
+      formObj.append(
+          $('<input/>', {type: 'hidden', name: 'schNsltAgreYn', value: formData.schNsltAgreYn}));//검색조건 : 뉴스레터동의여부
+      formObj.append($('<input/>', {type: 'hidden', name: 'schIntrCd', value: formData.schIntrCd}));//검색조건 : ESG 관심영역
+      formObj.append($('<input/>', {type: 'hidden', name: 'schType', value: formData.schType}));//검색조건 : 아이디, 회원명, 회원번호
+      formObj.append($('<input/>', {type: 'hidden', name: 'schText', value: formData.schText}));//검색조건 : 검색어
+      formObj.appendTo('body');
+      formObj.submit();
+    }
+
+    //조회조건 초기화
+    function fnResetSearch() {
+      fnInitView();
+    }
+
+    function fnStop() {
+      // todo 콘텐츠 사용중지 처리
+      alert('사용중지');
+    }
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <th:block layout:fragment="script_sub"></th:block>
+  <form id="searchListFrm">
+    <!-- content -->
+    <section id="cont-section" class="content">
+      <div class="location">
+        <h3>컨텐츠 조회</h3>
+        <ul class="breadcrumb">
+          <li>컨텐츠 관리</li>
+          <li>문서 &middot; 영상 컨텐츠 관리</li>
+          <li>컨텐츠 조회</li>
+        </ul>
+      </div>
+      <!-- //location -->
+      <!--  20230721 컨텐츠 등록버튼 추가//-->
+      <div class="btn-group-txtr">
+        <button onclick="fnShowByContUpsertPop('');" type="button" class="btn_link">컨텐츠 등록</button>
+      </div>
+      <!--  //20230721 컨텐츠 등록버튼 추가-->
+      <div class="search-wrap">
+        <fieldset>
+          <legend>컨텐츠 조회</legend>
+          <div class="table-wrap">
+            <table class="inner-input">
+              <caption>회원 조회</caption>
+              <colgroup>
+                <col style="width: 12%;">
+                <col style="width: 33%;">
+                <col style="width: 15%;">
+                <col style="width: 20%;">
+                <col style="width: 10%;">
+                <col style="width: 15%;">
+              </colgroup>
+              <tbody>
+              <tr>
+                <th>등록일/수정일</th>
+                <td>
+                  <div class="date-select flex">
+                    <select name="schJoinType" id="schJoinType" class="select" title="기간설정 선택">
+                      <option value="N">기간설정 안함</option>
+                      <option value="01">등록일</option>
+                      <option value="02">수정일</option>
+                    </select>
+                    <div class="datepicker-wrap">
+                      <input type="text" name="schStrtDate" id="schStrtDate" class="datepicker" disabled="disabled">
+                      <span class="separator"> - </span>
+                      <input type="text" name="schEndDate" id="schEndDate" class="datepicker" disabled="disabled">
+                    </div>
+                  </div>
+                </td>
+                <th>등록자/수정자</th>
+                <td>
+                  <div class="selectinput-wrap">
+                    <select name="schOprtOpt" id="schOprtOpt" class="select" title="구분 선택">
+                      <option value="01">등록자</option>
+                      <option value="02">등록일</option>
+                      <option value="03">수정일</option>
+                    </select>
+                    <input type="text" name="schOprtWrd" id="schOprtWrd" title="이름입력">
+                  </div>
+                </td>
+                <th>등록상태</th>
+                <td>
+                  <select name="schUseYnOpt" class="select" title="상태 선택">
+                    <option value="ALL">전체</option>
+                    <option value="Y">사용중</option>
+                    <option value="N">사용중지</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>컨텐츠명/번호</th>
+                <td>
+                  <div class="selectinput-wrap">
+                    <select name="schContentOpt" class="select" title="컨텐츠명">
+                      <option value="01">컨텐츠명</option>
+                      <option value="02">컨텐츠번호</option>
+                    </select>
+                    <input type="text" name="schContentWrd" placeholder="" title="컨텐츠 입력">
+                  </div>
+                </td>
+                <th>컨텐츠종류/등록방식</th>
+                <td colspan="3">
+                  <div class="select-group">
+                    <select name="schContKindOpt" id="schContKindOpt" class="select" title="컨텐츠종류 선택">
+                      <option value="ALL">전체</option>
+                      <option value="10">문서</option>
+                      <option value="20">영상</option>
+                    </select>
+                    <select name="schContRmthdOpt" id="schContRmthdOpt" class="select" disabled="disabled" title="컨텐츠 등록방식 선택">
+                      <option value="ALL">전체</option>
+                      <option value="10">컨텐츠업로드</option>
+                      <option value="20">아웃링크</option><!-- 영상 선택 시 비노출 -->
+                      <!-- <option value="">임베드 코드 입력</option> --><!-- 영상 선택 시 노출 -->
+                    </select>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th>출처명/번호</th>
+                <td>
+                  <div class="selectinput-wrap">
+                    <select name="schSrcOpt" class="select" title="출처명/번호선택">
+                      <option value="01">출처명</option>
+                      <option value="02">출처번호</option>
+                    </select>
+                    <input type="text" name="schSrcWrd" placeholder="" title="입력">
+                  </div>
+                </td>
+                <th>국내/해외</th>
+                <td>
+                  <ul class="flex ck-list">
+                    <li>
+                      <input type="radio" name="schDmstcChk" value="ALL" id="radio01" checked="checked">
+                      <label for="radio01">전체</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDmstcChk" value="Y"  id="radio02">
+                      <label for="radio02">국내</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDmstcChk" value="N" id="radio03">
+                      <label for="radio03">해외</label>
+                    </li>
+                  </ul>
+                </td>
+                <th><label for="lang01">제공언어</label></th>
+                <td>
+                  <select name="schSplyLangOpt" id="lang01" class="select">
+                    <option value="ALL">전체</option>
+                    <option value="10">국문</option>
+                    <option value="20">영문</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>유형 분류</th>
+                <td>
+                  <div class="select-group">
+                    <select name="schContTpLclsfOpt" id="schContTpLclsfOpt" class="select" title="유형 선택">
+                      <option value="ALL">전체</option>
+                      <option value="10">삼일발간물</option>
+                      <option value="20">기준/가이드라인</option>
+                      <option value="30">법/제도</option>
+                      <option value="40">보고/연구</option>
+                      <option value="50">교육/안내</option>
+                    </select>
+                    <select name="schContTpMclsfOpt" id="schContTpMclsfOpt" class="select" disabled="disabled" title="발간물 선택">
+                      <option value="ALL">전체</option>
+                      <option value="10">뉴스레터</option>
+                      <option value="20">레포트</option>
+                    </select>
+                  </div>
+                </td>
+                <th><label for="class01">업무 분류</label></th>
+                <td>
+                  <select name="schTaskClsfOpt" id="class01" class="select">
+                    <option value="ALL">전체</option>
+                    <option value="10">ESG경영관리</option>
+                    <option value="20">전략/계획</option>
+                    <option value="30">실행</option>
+                    <option value="40">공시</option>
+                    <option value="50">평가</option>
+                  </select>
+                </td>
+                <th><label for="class02">주제 분류</label></th>
+                <td>
+                  <select name="schTopicOpt" id="class02" class="select">
+                    <option value="ALL">전체</option>
+                    <option value="10">ESG일반</option>
+                    <option value="20">환경</option>
+                    <option value="30">사회</option>
+                    <option value="40">거버넌스</option>
+                    <option value="50">금융</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>전시 여부</th>
+                <td>
+                  <ul class="flex ck-list">
+                    <li>
+                      <input type="radio" name="schDpTpRdo" value="ALL" id="radio07" checked="checked">
+                      <label for="radio07">전체</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDpTpRdo" value="10"  id="radio08">
+                      <label for="radio08">전체공개</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDpTpRdo" value="20" id="radio09">
+                      <label for="radio09">일부공개</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDpTpRdo" value="30" id="radio10">
+                      <label for="radio10">비전시</label>
+                    </li>
+                  </ul>
+                </td>
+                <th>일부 공개 대상</th>
+                <td colspan="3">
+                  <ul class="flex ck-list">
+                    <li>
+                      <input type="checkbox" name="schRlsTgtChk" value="10" id="ck01" disabled="disabled">
+                      <label for="ck01">그룹 A</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="schRlsTgtChk" value="20" id="ck02" disabled="disabled">
+                      <label for="ck02">그룹 B</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" name="schRlsTgtChk" value="30" id="ck03" disabled="disabled">
+                      <label for="ck03">그룹 C</label>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>다운로드 가능여부</th>
+                <td>
+                  <ul class="flex ck-list">
+                    <li>
+                      <input type="radio" name="schDwnldPsbltyRdo" value="ALL" id="ck07" checked="checked">
+                      <label for="ck07">전체</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDwnldPsbltyRdo" value="Y" id="ck08">
+                      <label for="ck08">가능</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schDwnldPsbltyRdo" value="N" id="ck09">
+                      <label for="ck09">불가 </label>
+                    </li>
+                  </ul>
+                </td>
+                <th>검색 가능 여부</th>
+                <td colspan="3">
+                  <ul class="flex ck-list">
+                    <li>
+                      <input type="radio" name="schSrchPsbltyRdo" value="ALL" id="radio9" checked="checked">
+                      <label for="radio9">전체</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schSrchPsbltyRdo" value="Y" id="radi10">
+                      <label for="radi10">가능</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="schSrchPsbltyRdo" value="N" id="radi11">
+                      <label for="radi11">불가 </label>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>ESG 토픽</th>
+                <td>
+                  <div class="select-group">
+                    <select name="schTpicMnuOpt" id="schTpicMnuOpt" class="select" title="ESG 토픽 선택">
+                      <option value="ALL">전체</option>
+                      <option value="10">E(환경)</option>
+                      <option value="20">S(사회)</option>
+                      <option value="30">G(거버넌스)</option>
+                      <option value="40">F(금융)</option>
+                      <option value="50">공시</option>
+                    </select>
+                    <select name="schTpicNmOpt" id="schTpicNmOpt" class="select" title="키워드 선택" disabled="disabled">
+                      <option value="ALL">전체</option>
+                    </select>
+                  </div>
+                </td>
+                <th><label for="txt01">태그 키워드</label></th>
+                <td colspan="3">
+                  <input type="text" name="schKwrd" id="txt01" class="w100p">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- //table-wrap -->
+          <div class="btn-wrap">
+            <button type="button" id="btnSearch" class="btn-primary">조회</button>
+            <button type="button" id="btnReset" class="btn-sub">초기화</button>
+          </div>
+          <!-- //btn-wrap -->
+        </fieldset>
+      </div>
+      <!-- //search-wrap -->
+      <div class="result-wrap">
+        <div class="total">
+          <span class="lable">컨텐츠 리스트</span> - <strong id="contTotalCountView">총 123건</strong>
+          <button type="button" id="btnStop" class="btn-del"><span>사용중지</span></button>
+        </div>
+        <!-- total -->
+        <div class="sorting-wrap">
+          <select name="contPageSize" id="contPageSize" class="select" title="데이터 건수">
+            <option value="20">20개</option>
+            <option value="50">50개</option>
+            <option value="100">100개</option>
+            <option value="500">500개</option>
+            <option value="1000">1000개</option>
+          </select>
+          <select name="contPageNum" id="contPageNum" class="select" title="페이지 이동선택">
+          </select>
+          <div class="btn-ctl">
+            <button type="button" id="btnDownload" class="btn-download">다운로드</button>
+          </div>
+        </div>
+        <!-- //sorting-wrap -->
+        <div id="contentListDiv" class="table-wrap xscroll-wrap">
+          <!-- 페이징 정보 -->
+          <th:block th:unless="${#lists.isEmpty(list)}">
+            <input type="hidden" id="contTotalCount" th:value="${PageInfo.totalCount}"/>
+            <input type="hidden" id="contPageNumber" th:value="${PageInfo.pageNumber}"/>
+            <input type="hidden" id="contTotalPage" th:value="${PageInfo.totalPage}"/>
+          </th:block>
+          <table class="w2300">
+            <caption>콘텐츠 리스트</caption>
+            <colgroup>
+              <col style="width: 2%;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 5%;">
+              <col style="width: 3%;">
+              <col style="width: 6%;">
+              <col style="width: *;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 3%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 3%;">
+              <col style="width: 8%;">
+              <col style="width: 5%;">
+              <col style="width: 3%;">
+              <col style="width: 5%;">
+              <col style="width: 3%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th></th>
+              <th>NO</th>
+              <th>종류</th>
+              <th>등록방식</th>
+              <th>등록상태</th>
+              <th>컨텐츠 번호</th>
+              <th>컨텐츠명</th>
+              <th>출처</th>
+              <th>국내/해외</th>
+              <th>언어</th>
+              <th>유형분류</th>
+              <th>유형세분류</th>
+              <th>업무분류</th>
+              <th>주제분류</th>
+              <th>형태</th>
+              <th>전시여부</th>
+              <th>일부공개대상</th>
+              <th>다운로드가능</th>
+              <th>검색여부</th>
+              <th>토픽분류</th>
+              <th>등록일</th>
+              <th>등록자</th>
+              <th>수정일</th>
+              <th>수정자</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, stat : ${list}">
+              <td><input type="checkbox" title="선택"></td>
+              <td th:text="${stat.count}">1</td>
+              <td th:text="${item.contKindCdNm}">문서</td>
+              <td th:text="${item.contRmthdCdNm}">컨텐츠업로드</td>
+              <td>등록</td>
+              <td><a th:text="${item.contUno}" th:onclick="fnShowByContUpsertPop([[${item.contUid}]]);" class="link">CDIA00012</a></td>
+              <td class="left" th:text="${item.contNm}">GRI 1: Foundation 2021</td>
+              <td><a th:text="${item.srcNm}" th:onclick="fnSrcDetailEditPop([[${item.srcUid}]]);" class="link">SK12345</a></td>
+              <td th:text="${item.dmstcYnNm}">해외</td>
+              <td th:text="${item.splyLangCdNm}">영문</td>
+              <td th:text="${item.contTpLclsfCdNm}">기준/표준</td>
+              <td th:text="${item.contTpMclsfCdNm}"></td>
+              <td th:text="${item.taskClsfCdNm}">공시</td>
+              <td th:text="${item.tpicMnuCdNm}">ESG일반</td>
+              <td th:text="${'제공유형코드'}">E-pub</td>
+              <td th:text="${item.dpTpCdNm}">전시</td>
+              <td th:text="${item.rlsTgtCdNms}"></td>
+              <td th:text="${item.dwnldPsbltyYn}">불가</td>
+              <td th:text="${item.srchPsbltyYn}">가능</td>
+              <td th:text="${'토픽분류다건'}">공시, GRI, 지속가능</td>
+              <td th:text="${item.fstInsDt}">2023-09-20</td>
+              <td th:text="${item.fstInsId}">정승은</td>
+              <td th:text="${item.lstUpdDt}"></td>
+              <td th:text="${item.lstUpdId}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(list)}">
+              <td style="text-align: center;" colspan="24">데이터가 존재하지 않습니다.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- //table-wrap -->
+      </div>
+      <!-- //result-list -->
+    </section>
+    <!-- //content -->
+  </form>
+
+  <!-- 콘텐츠 수정 popup fragment-->
+  <th:block th:replace="/sems/contents/contentInfo/contUpsertPop :: fragmentByContUpsertPop" />
+  <!-- 출처상세 popup fragment-->
+  <th:block th:replace="/sems/contents/contentInfo/srcDetailEditPop :: srcDetailEditPopFragment"></th:block>
+
+</div>
+</html>

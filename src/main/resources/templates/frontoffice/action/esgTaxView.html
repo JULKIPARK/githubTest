@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{frontoffice/layout/subwrapLayout}">
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      var MenuCd ;
+      var Tpicid;
+      var KwdList = "tax_list";
+      $(function(){
+      	tab();
+
+      	/*<![CDATA[*/
+      		var tabId = "tabId"+/*[[${tabId}]]*/;
+      		MenuCd = /*[[${MenuCd}]]*/;
+      		var idx = $("#"+tabId).attr("data");
+      		$("#"+tabId).addClass("current");
+      		fnSelectDpTpicApndInfo(idx);
+      	/*]]>*/
+
+      		$(".keyword-wrap li button").on('click',function(){
+      			var tabId = $(this).attr("data");
+      			$(".keyword-wrap li button").removeClass("current");
+      			$(this).addClass("current");
+      			fnSelectDpTpicApndInfo(tabId);
+      	    })
+
+
+      		// 화면 초기화
+      		fnInitView();
+
+      		// 기본 데이터 조회
+      		fnInitData();
+
+      		// 이벤트 설정
+      		fnInitEvent();
+
+          tabOffsetAuto();
+      });
+
+      	$(function(){
+      	$('.menu02').addClass("on");
+      });
+      // 화면 초기화
+      function fnInitView() {
+
+      }
+
+      // 기본 데이터 조회
+      function fnInitData() {
+      	//fnSelectActionTpicInfoList();
+      }
+
+      // 이벤트 설정
+      function fnInitEvent() {
+
+      }
+
+      //토픽 목록 조회
+      function fnSelectActionTpicInfoList(){
+      	var tpicMnuCd =MenuCd;//토픽메뉴코드(10: E(환경), 20: S(사회), 30: G(거버넌스), 40: 금융, 50: ESG TAX, 60: ESG Deal)
+      	$.post("/action/selectActionTpicInfoList", {tpicMnuCd: tpicMnuCd}, function(data){
+      		var list = data.list;
+      		var innerHtml = "";
+      		var tpicUid='';
+      		$.each(list, function(index, item) {
+      			if(index==0){
+      				tpicUid = item.tpicUid;
+      				innerHtml+="<li><button onclick='fnSelectDpTpicApndInfo(this, \""+item.tpicUid+"\")' type='button' class='btn-rd-wh current'><span>"+item.tpicNm+"</span></button></li>";
+      			}
+      			else
+      				innerHtml+="<li><button onclick='fnSelectDpTpicApndInfo(this, \""+item.tpicUid+"\")' type='button' class='btn-rd-wh'><span>"+item.tpicNm+"</span></button></li>";
+      		});
+      		$("#tpicInfoList").append(innerHtml);
+
+      		fnSelectDpTpicApndInfo($(".btn-rd-wh.current"), tpicUid);
+      	});
+      }
+
+      //토픽 토픽부가정보 조회
+      function fnSelectDpTpicApndInfo( tpicUid){
+      	$.post("/action/selectActionTpicApndInfo", {tpicUid: tpicUid}, function(data){
+      		var info = data.info;
+      		$("#apndTtl").text(info.apndTtl);//부가제목
+      		$("#apndCn").html(info.apndCn);//부가내용
+
+      		fnSelectEnvironmentList(tpicUid);
+      	});
+      }
+
+      //컨텐츠 목록조회
+      function fnSelectEnvironmentList(tpicUid){
+      	var tpicMnuCd = MenuCd;//토픽메뉴코드(10:E(환경), 20:S(사회), 30:G(거버넌스), 40:금융, 50:ESG TAX, 60:ESG Deal)
+        Tpicid = tpicUid;
+
+      	$.post("/action/selectActionContList", {tpicMnuCd: tpicMnuCd, tpicUid: tpicUid}, function(data){
+      		var pwcInsightsList = data.pwcInsightsList;	//삼일 인사이트 목록
+      		var trendList = data.trendList;				//최신동향 목록
+      		var videoList = data.videoList;				//ESG 영상모음 목록
+      		var standardList = data.standardList;		//ESG 자료모음 >> 기준/가이드 라인 목록
+      		var researchList = data.researchList;		//ESG 자료모음 >> 연구/보고 목록
+      		var lawList = data.lawList;					//ESG 자료모음 >> 법/제도 목록
+      		var apndList = data.apndList;				//코멘트 리스트
+      		var spcalList = data.spcalList;				//전문가 리스트
+
+      		//삼일 인사이트
+      		$("#pwcInsightsList").html("");
+       			$("#tmpl_contents").tmpl(pwcInsightsList).appendTo("#pwcInsightsList");
+       			//최신동향
+      		$("#trendList").html("");
+       			$("#tmpl_news").tmpl(trendList).appendTo("#trendList");
+      		//ESG 영상모음
+      		$("#videoList").html("");
+       			$("#tmpl_video").tmpl(videoList).appendTo("#videoList");
+
+      		$("#standardList").html("");
+       			$("#tmpl_etc1").tmpl(data).appendTo("#standardList");
+      		$("#researchList").html("");
+       			$("#tmpl_etc2").tmpl(data).appendTo("#researchList");
+      		$("#lawList").html("");
+       			$("#tmpl_etc3").tmpl(data).appendTo("#lawList");
+
+      		$("#apndList").html("");
+       			$("#tmpl_apndList").tmpl(apndList).appendTo("#apndList");
+
+      		$("#spcalList").html("");
+       			$("#tmpl_spcalList").tmpl(spcalList).appendTo("#spcalList");
+
+      	});
+      }
+
+      function tabOffsetAuto() {
+        let winW = $(window).width();
+        if($(window).width() < 1180){
+          const btnLeft = $('.current-wrap .current').offset().left;
+          const btnW = $('.current-wrap .current').outerWidth(true);
+          $('.current-wrap').scrollLeft($('.current-wrap').scrollLeft() + btnLeft + -$(window).width()/2 + btnW/2);
+        }    
+      }
+    </script>
+  </th:block>
+
+  <div layout:fragment="content">
+    <!-- content -->
+    <section class="sub content">
+      <div class="sub-title-a">
+        <div class="ct">
+          <div class="tit">ESG Tax</div>
+          <div class="subs">ESG 세제 관련 과제 중에서 주요 이슈를 선별하여 핵심 개념 요약부터 추천 컨텐츠까지 바로 확인하실 수 있습니다.</div>
+        </div>
+        <div class="bgBack"></div>
+        <div class="bg"><img src="/assets/img/common/bg_tit.png" /></div>
+      </div>
+
+      <div class="esg02-wrap">
+        <div class="tab-scroll">
+          <ul class="keyword-wrap current-wrap">
+            <li th:each="item, stat : ${list}">
+              <button type="button" th:id="'tabId'+${stat.count}" class="btn-rd-wh" th:data="${item.tpicUid}"><span>[[${item.tpicNm}]]</span></button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tab-cont">
+          <div id="tab1" class="contMain" style="display: block">
+            <section class="section default-width">
+              <h4 class="tit-line-left" id="apndTtl"></h4>
+              <div class="txt-wrap">
+                <div class="txt-area" id="apndCn"></div>
+                <div class="btn-topic-wrap">
+                  <button type="button" class="btn-topic-ctl"><span>펼치기</span></button>
+                </div>
+              </div>
+            </section>
+            <section class="section default-width pb60">
+              <h4 class="tit-line-left">삼일 인사이트</h4>
+              <div class="thumbnail-wrap">
+                <ul class="list" id="pwcInsightsList"></ul>
+
+                <div class="btn-more-wrap">
+                  <button type="button" class="btn-white arrow-after" onclick="location.href='/trend/insightsList?category=SAMIL&env='+MenuCd+'%7C'+Tpicid+'&esgKwdList='+KwdList"><span>더보기</span></button>
+                </div>
+              </div>
+            </section>
+            <section class="gray-bg-wrap">
+              <div class="section default-width">
+                <h4 class="tit-line-left">최신 동향</h4>
+                <div class="news-wrap">
+                  <ul id="trendList"></ul>
+                </div>
+                <div class="btn-more-wrap mar_t20">
+                  <button type="button" class="btn-white arrow-after" onclick="location.href='/trend/esgNewsList?category=NEWS&env='+MenuCd+'%7C'+Tpicid+'&esgKwdList='+KwdList"><span>더보기</span></button>
+                </div>
+              </div>
+            </section>
+            <section class="gray-bg-wrap">
+              <div class="section default-width">
+                <h4 class="tit-line-left">ESG 영상모음</h4>
+                <div class="thumbnail-wrap">
+                  <ul class="list mo-design-modify-list" id="videoList"></ul>
+                </div>
+                <div class="btn-more-wrap">
+                  <button type="button" class="btn-white arrow-after" onclick="location.href='/trend/bbsList?category=MEDIA&env='+MenuCd+'%7C'+Tpicid+'&esgKwdList='+KwdList"><span>더보기</span></button>
+                </div>
+              </div>
+            </section>
+            <section class="gray-bg-wrap pb60">
+              <div class="section default-width">
+                <h4 class="tit-line-left">ESG 자료모음</h4>
+                <ol class="data-group-wreap">
+                  <li>
+                    <strong class="tit">기준/가이드라인</strong>
+                    <ol id="standardList"></ol>
+                  </li>
+                  <li>
+                    <strong class="tit">연구/보고</strong>
+                    <ol id="researchList"></ol>
+                  </li>
+                  <li>
+                    <strong class="tit">법/제도</strong>
+                    <ol id="lawList"></ol>
+                  </li>
+                </ol>
+                <!-- //"data-group-wreap -->
+                <!--20230901버튼추가//-->
+                <div class="btn-more-wrap">
+                  <button type="button" class="btn-white arrow-after" onclick="location.href='/trend/bbsList?category=GUIDE&env='+MenuCd+'%7C'+Tpicid+'&esgKwdList='+KwdList"><span>더보기</span></button>
+                </div>
+                <!--//20230901버튼추가-->
+              </div>
+            </section>
+            <section class="section-talk-wrap">
+              <div class="talk-wrap shot current">
+                <section class="talk-area default-width">
+                  <div class="group">
+                    <h4 class="tit">삼일 ESG 전문가 코멘트</h4>
+                    <div class="talk-list">
+                      <ul class="bul-square" id="apndList"></ul>
+
+                      <div class="expert-list-wrap">
+                        <ul class="expert-list" id="spcalList"></ul>
+                      </div>
+                      <button type="button" class="samil-qna btn-primary arrow"><span>삼일 서비스 문의하기</span></button>
+                    </div>
+                  </div>
+                </section>
+                <button type="button" class="btn-ctl">Samil Comment<span class="blind">버튼</span></button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- //esg01-wrap -->
+    </section>
+    <!-- //content -->
+    <div class="floating-wrap">
+      <button type="button"><span>온라인 문의</span></button>
+    </div>
+  </div>
+</html>

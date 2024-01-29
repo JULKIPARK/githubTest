@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		var TpicUid ;
+		$(function(){
+			// 이벤트 설정
+
+			/*<![CDATA[*/
+			TpicUid = [[${tpicUid}]];
+			/*]]>*/
+
+
+			$.post("/diagnosis/selectContList", {tpicUid : TpicUid}, function(data){
+
+				$("#tmpl_relation").tmpl(data.list).appendTo("#relation-list");
+				// 빈 카테고리 라인 제거
+				$('#relation-list .po').each((idx, item) => {
+					if (!$.trim($(item)[0].innerHTML)) {
+						$(item)[0].remove();
+					}
+				});
+				$(".relation-list").slick({
+			    autoplay: true,
+			    speed: 500,
+			    arrows: true,
+			    dots: false,
+			    infinite: true,
+			    cssEase: "linear",
+			speed: 300,
+			    slidesToShow: 3,
+			    slidesToScroll: 1,
+			    responsive: [
+			      {
+			        breakpoint: 1180,
+			        settings: {
+			          slidesToShow: 2,
+			          dots: false,
+			          arrows: false,
+			        },
+			      },
+			      {
+			        breakpoint: 767,
+			        settings: {
+			          slidesToShow: 1,
+			          dots: false,
+			          arrows: true,
+			        },
+			      },
+			    ],
+			  });
+
+			});
+		});
+
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+			$('.submenu03_01').addClass("on");
+		});
+
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+		<form id="frm">
+			<section class="sub">
+				<div class="sub-title-a">
+					<div class="ct">
+						<div class="tit">ESG 경영활동 가이드</div>
+						<div class="subs">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영활동에 도움이 될 수 있는 참고 자료를 추천합니다.</div>
+					</div>
+					<div class="bgBack"></div>
+					<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+				</div>
+
+				<div class="mo_dropmenu">
+					<div class="nav">환경과제<span><img src="/assets/img/common/ico_selectdesign.png"></span></div>
+					<ul class="dropmenu-list">
+						<li><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요</a></li>
+					<li><strong>ESG 전략 · 계획</strong></li>
+					<li><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립</a></li>
+					<li><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립</a></li>
+					<li><strong>ESG 과제 이행</strong></li>
+					<li><a href="/diagnosis/environmentView?tabId=1">환경 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=2">사회 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=4">지속가능 금융</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영</a></li>
+					<li><strong>ESG 공시 · 인증</strong></li>
+					<li><a href="/diagnosis/certifiedView?tabId=1">ESG 공시</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=2">ESG 평가</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=3">ESG 인증</a></li>
+					</ul>
+				</div>
+
+				<div class="esg-guide default-width">
+					<dl class="leftMenu">
+						<dd>
+							<div class="depth-1"></div>
+							<ul class="depth-2-menulist">
+								<li class="submenu01"><a href="/diagnosis/businessInfo">ESG 경영 활동 가이드 개요<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 전략 · 계획</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu02_01"><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu02_02"><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 과제 이행</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu03_01"><a href="/diagnosis/environmentView?tabId=1">환경 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_02"><a href="/diagnosis/environmentView?tabId=2">사회 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_03"><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_04"><a href="/diagnosis/environmentView?tabId=4">지속가능 금융<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_05"><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_06"><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 공시 ・ 인증</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu04_01"><a href="/diagnosis/certifiedView?tabId=1">ESG 공시<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu04_02"><a href="/diagnosis/certifiedView?tabId=2">ESG 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu04_03"><a href="/diagnosis/certifiedView?tabId=3">ESG 인증<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+					</dl>
+
+					<div class="content">
+						<div class="border-txbox-a">
+							<div class="sub-common-tit">개요</div>
+							<div class="border-box">
+								기업은 자사의 경영활동이 환경에 미치는 영향을 인식하고, 지속가능한 발전을 위해 환경 영향 및 오염을 최소화해야 합니다. 최근 '기후 변화 대응 및 자연 자본 보전'이 중요한 경영 이슈로 대두되고 있으며 이와 관련된 법률 준수, 이해관계자 관심 사항 및 업종 특성을 고려한 경영관리가 필요합니다.<br/><br/>
+								환경 이슈별 사업목표와 계획 수립부터 이에 대한 정책과 프로그램 기획∙운영, 필수 지표 측정 및 모니터링, 과제 이행에 대한 성과 평가까지 모든 업무가 유기적으로 연계되어야 하며, 이러한 과정 내에서 친환경 인증 및 환경 이니셔티브 가입도 함께 추진할 수 있습니다.
+							</div>
+						</div>
+
+						<div class="guide-work">
+							<div class="sub-common-tit">주요 실행 과제</div>
+							<dl class="work-list">
+								<dd>
+									<div class="subj-box"><span>온실가스 배출량 측정 및 개선</span></div>
+									<ul class="work-detail-list">
+										<li>국가 온실가스 목표 관리제, 온실가스 배출권 거래제 등에 대한 대응</li>
+										<li>보고 경계와 온실가스 측정 범위 설정, Scope 1&2 온실가스 배출량 측정</li>
+										<li>Scope 3 스크리닝과 Scope 3 온실가스 배출량 측정</li>
+										<li>탄소중립 목표 및 감축 이행 방안 수립</li>
+										<li>저탄소 포트폴리오 전환 방안 검토</li>
+										<li>탄소중립 이니셔티브(CDP, SBTi 등) 가입 및 필수 이행 사항 주기적 공시</li>
+
+										<li class="more-btn">
+								 			<a href="/action/environmentView?tabId=1" >
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>에너지 관리</span></div>
+									<ul class="work-detail-list">
+										<li>
+											에너지 사용 관리
+											<span>사업장의 에너지 사용량 측정, 감축 목표 및 감축 방안 수립 (건물에너지관리시스템 운영 관리 및 에너지 효율성 제고 방안 수립)</span>
+											<span>신∙재생에너지 사용량 측정 및 활용 방안 수립, K-RE100∙RE100 가입 및 실행 방안 검토</span>
+										</li>
+
+
+										<li class="more-btn">
+											<a href="/action/environmentView?tabId=3" >
+												더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+											</a>
+										</li>
+
+
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>자원 관리</span></div>
+									<ul class="work-detail-list">
+
+										<li>
+											수자원 사용 관리
+											<span>관련 법령 및 국내외 ESG 기준에서 규정하는 용수 사용량, 재사용량, 폐수 배출량 측정 및 관리</span>
+											<span>중수도, 오∙폐수 처리시설 등을 통한 용수 순환 체계 구축</span>
+											<span>용수 재활용률 제고 및 폐수 배출 감축 정책/프로그램 기획</span>
+										</li>
+										<li>
+											원부자재 사용 관리
+											<span>원부자재 및 포장재 사용량∙재활용량 측정 및 재활용 방안 수립∙운영</span>
+										</li>
+
+										<li class="more-btn">
+											<a href="/action/environmentView?tabId=4" >
+												더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+											</a>
+										</li>
+
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>폐기물·오염물질 처리 관리</span></div>
+									<ul class="work-detail-list">
+										<li>
+											폐기물 관리
+											<span>관련 법령 및 국내외 ESG 기준에서 규정하는 폐기물의 배출량∙재활용률 측정 및 관리</span>
+											<span>폐기물 처리 시설 유지 관리, 배출량 감축 방안 및 재활용률 제고 정책/프로그램 기획</span>
+										</li>
+										<li>
+											오염물질 배출 관리
+											<span>관련 법령 및 국내외 ESG 기준에서 규정하는 화학물질 사용량, 대기오염물질 배출량 측정 및 관리</span>
+											<span>오염물질 처리시설 유지 관리, 오염물질 저감활동 및 대기/수자원 보호 정책/프로그램 기획</span>
+										</li>
+
+										<li class="more-btn">
+											<a href="/action/environmentView?tabId=5" >
+												더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+											</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>생물다양성 보전</span></div>
+									<ul class="work-detail-list">
+										<li>기업의 사업장 위치 및 사업 활동이 생물다양성에 미치는 영향 검토 (보호지역 여부, 보호동식물 유무 등)</li>
+										<li>부정적 영향 모니터링 체계 수립 및 생태계 피해 복원 활동 수행</li>
+										<li>생물다양성 보전 정책, 프로그램, 투자 활동 등의 기획 및 추진</li>
+
+										<li class="more-btn">
+											<a href="/action/environmentView?tabId=6" >
+												더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+											</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>친환경 제품∙서비스 개발 및 관리</span></div>
+									<ul class="work-detail-list">
+										<li>제품∙서비스 ‘기획→설계→생산→유통→판매→사용→폐기’ 전 과정에서, 환경에 대한 긍정적 영향을 확대하고 부정적 영향을 감축하도록 계획 및 관리 활동 수행</li>
+										<li>제품∙서비스에 대한 국내·외 친환경 인증을 취득하고, 인증 기준에 부합하도록 관리</li>
+
+										<li class="more-btn">
+								 			<a href="/action/environmentView?tabId=7" >
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>환경 과제 이행 모니터링 및 관리</span></div>
+									<ul class="work-detail-list">
+										<li>환경 주제 KPI 모니터링 체계 구축 및 모니터링 실시</li>
+										<li>이행 과제에 대한 성과 측정 및 점검∙개선, 기준과 지침 수립</li>
+										<li>모니터링 결과 기반 성과 평가와 개선점 도출 활용</li>
+									</ul>
+								</dd>
+
+
+							</dl>
+						</div>
+
+
+						<div class="needs-work">
+							<div class="sub-common-tit">필요 업무역량</div>
+							<ul class="needs-list">
+								<li>ESG 경영활동 전반에 대한 이해, 지식</li>
+								<li>전사 비전, 목표, 경영전략 수립 역량</li>
+								<li>중장기 로드맵 수립 및 전략과제 정의 역량</li>
+								<li>구체적인 과제별 이행계획 수립 역량</li>
+							</ul>
+						</div>
+
+						<div class="guide-relation">
+							<div class="sub-common-tit">관련 컨텐츠</div>
+
+						<ul class="relation-list" id="relation-list">
+
+						</ul>
+						</div>
+
+					</div>
+				</div>
+
+
+				<div class="guide-service">
+					<div class="container">
+						<div class="sub-common-tit">서비스 안내</div>
+
+						<dl class="service-list">
+							<dd>
+								<div class="subj">온실가스 감축 컨설팅</div>
+								<ul class="detail-list">
+									<li>온실가스 배출량 측정 (Scope 1, 2, 3), 온실가스 인벤토리 구축 컨설팅</li>
+									<li>온실가스 배출량 감축 목표 및 이행 방안 수립 컨설팅</li>
+									<li>Net Zero 전략 및 로드맵 수립, 이니셔티브 가입 지원</li>
+								</ul>    
+							</dd>
+							<dd>
+								<div class="subj">에너지 감축 컨설팅</div>
+								<ul class="detail-list">
+									<li>RE100 가입 자문 등</li>
+								</ul>    								
+							</dd>
+							<dd>
+								<div class="subj">친환경 기준 수립 컨설팅</div>
+								<ul class="detail-list">
+									<li>녹색 분류체계 및 활용 방안 수립</li>
+								</ul>    
+							</dd>
+							<dd>
+								<div class="subj">생물다양성 리스크 및 기업 영향 분석 컨설팅</div>
+								<ul class="detail-list">
+									<li>자연자본 가치평가 및 투자 자문</li>
+								</ul>    
+							</dd>
+							<dd>
+								<div class="subj">순환경제 전략 및 세금 정책 자문</div>
+								<ul class="detail-list">
+									<li>폐기물 등 순환경제 관련 규제 대응 전략</li>
+									<li>CBAM 영향 진단 및 전략 수립</li>
+								</ul>    
+							</dd>
+						</dl>
+
+						<div class="back-btn onlineBtn">
+							삼일 서비스 문의하기 <span><img src="/assets/img/common/ico_arrow_right.png"></span>
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</form>
+</div>
+</html>

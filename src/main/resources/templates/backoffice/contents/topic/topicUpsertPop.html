@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="fragmentByTopicPop">
+  <script th:inline="javascript">
+    var fixServiceRows = 0;
+    var fixExpertRows = 0;
+
+    //토픽 상세 보기
+    function fnTopicRegistViewPop(tpicUid) {
+      if (tpicUid === '') {
+        $('#tpicUid').val('');
+
+        $('#liByFramework').hide();
+        $('#divByFramework').css('display', 'none');
+        $('#divByFramework').hide();
+
+        fnAddRowByService(fixServiceRows);
+        fnAddRowByExpert(fixExpertRows);
+      } else {
+        var param = {
+          "url": "/sems/contents/selectTpicByTpicUid"
+          , "type": "post"
+          , "data": {"tpicUid": tpicUid}
+          , "async": false
+          , "callback": function (data) {
+            var info = data.item;
+
+            $('#tpicUid').val(tpicUid);             //토픽채번
+            $("#tpicGbCd").val(info.tpicGbCd);					//토픽구분코드
+            $("#tpicMnuCd").val(info.tpicMnuCd);			//토픽메뉴코드
+            $("#tpicNm").val(info.tpicNm);	//토픽명
+            $("#rlsTgtCds").val(info.rlsTgtCds);//전시대상코드
+            $("#dpSttDte").val(info.dpSttDte);			//전시시작일자
+            $("#dpSttHh").val(info.dpSttHh);				//전시시작시간
+            $("#dpSttMi").val(info.dpSttMi);				//전시시작시간
+            $("#dpEndDte").val(info.dpEndDte);				//전시종료일자
+            $("#dpEndHh").val(info.dpEndHh);				//전시종료시간
+            $("#dpEndMi").val(info.dpEndMi);				//전시종료시간
+            $("#pirdStngUseYn").val(info.pirdStngUseYn);				//기간설정사용여부
+            $("#useYn").val(info.useYn);					//사용여부
+            $("#dpYn").val(info.dpYn);					//전시여부
+
+            if ( info.tpicGbCd == '20') {
+              $('#liByFramework').show();
+              $('#divByFramework').css('display', 'block');
+              $('#divByFramework').show();
+            } else {
+              $('#liByFramework').hide();
+              $('#divByFramework').css('display', 'none');
+              $('#divByFramework').hide();
+            }
+
+            // 공개대상
+            if(info.rlsTgtCds!=null && info.rlsTgtCds.length>0){
+              $.each(info.rlsTgtCds.split(","), function(index, element) {
+                $("input[name='rlsTgtCd'][value="+element+"]").prop("checked",true);
+              });
+            }
+
+            // todo 토픽 부가 데이터가 배열이므로 해당 탭별로 픽스 노출 해야 함.
+            var apndItems = data.apndItems;
+
+            var svcCnt = 0;
+            var expertCnt = 0;
+
+            $.each(apndItems, function(index, element) {
+              if ( element.tpicTpCd === '10' ) {
+                $('#apndCn_1').val(element.apndCn);
+              }
+              if ( element.tpicTpCd === '40' ) {
+                $('#apndCn_2').val(element.apndCn);
+              }
+              if ( element.tpicTpCd === '20' ) {
+                svcCnt++;
+
+                fnAddRowByService(fixServiceRows);
+
+                $('#apndTtlByService_'+svcCnt).val(element.apndTtl);
+                $('#apndCnByService_'+svcCnt).val(element.apndCn);
+              }
+              if ( element.tpicTpCd === '30' ) {
+                expertCnt++;
+
+                fnAddRowByExpert(fixExpertRows);
+
+                $('#apndTtlByExpert_'+expertCnt).val(element.apndTtl);
+                $('#spcalNmByExpert_'+expertCnt).val(element.spcalNm);
+                $('#spcalPosNmByExpert_'+expertCnt).val(element.spcalPosNm);
+                $('#spcalUrlByExpert_'+expertCnt).val(element.spcalMail);
+              }
+            });
+          }
+        };
+
+        _comLib.callAjax(param);
+      }
+
+      $('#divByTopicUpsertPop').addClass('show');
+    }
+
+    $(function () {
+      datePicker();
+      layerClose();
+      tab();
+
+      fnInitView();
+
+      //등록 버튼
+      $("#btnTopicSave").bind("click", function(e) {
+        e.preventDefault();
+
+        if ($('#tpicNm').val() === '') {
+          alert('토픽명을 입력해 주세요.');
+          return;
+        }
+
+        var formData = new FormData($("#frmByTopicUpsertPop")[0]);
+
+        for (var key of formData.keys()) {
+          console.log(key);
+        }
+
+        $.ajax({
+          type:'POST',
+          enctype:'multipart/form-data',
+          url : "/sems/contents/upsertByTopicPop",
+          data : formData,
+          dataType: 'json',
+          processData:false,
+          contentType:false,
+          cache:false,
+          success:function(res){
+            alert("저장에 성공하셨습니다.");
+          },error:function(res){
+            alert("오류 발생.\n관리자에게 문의해주세요.");
+          }
+        });
+
+        // $("#divByTopicUpsertPop").removeClass("show");
+      });
+      
+      showEditor();
+    });
+
+    function showEditor(){
+		ClassicEditor
+		.create( document.querySelector( '#apndCn_1' ), {
+			language:'ko'
+			, extraPlugins: [MyCustomUploadAdapterPlugin]
+			// toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+    }
+    
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new UploadAdapter(loader)
+        }
+    }
+    
+    function fnInitView() {
+      $('#frmByTopicUpsertPop')[0].reset();
+
+      _comLib.setDatePicker("dpSttDte","dpEndDte", "yy-mm-dd");
+      _comLib.setDatePicker("dpEndDte", null, "yy-mm-dd");
+      // setSchDate();
+    }
+
+    function fnAddRowByService() {
+      fixServiceRows++;
+
+      // todo 행 추가는 있는데 행삭제는 기획서에 없는데 어케해야 할까?
+      var addTrHtml = `
+          <tr>
+            <th rowspan="2">${fixServiceRows}</th>
+            <th>제목</th>
+            <td>
+              <textarea name="apndTtlByService" id="apndTtlByService_${fixServiceRows}" cols="100" rows="3">● 탄소 집약적 제품을 EU로 수출하는 기업 대상 고려 요소 및 자문 및 컨설팅
+              </textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="line">상세</th>
+            <td>
+              <textarea name="apndCnByService" id="apndCnByService_${fixServiceRows}" cols="100" rows="5">다양한 시나리오 기반 수출에 대한 CBAM의 잠재적 재정적 영향 분석\n현재 사업의 가치사슬(Value Chain) 점검 및 변경 필요\n부문 자문 마케팅 전략에 대한 잠재적 효과 분석
+              </textarea>
+            </td>
+          </tr>
+      `;
+
+      // tBodyByService - tbody 영역에 tr dynamic add row!
+      $('#tBodyByService').append(addTrHtml);
+    }
+
+    function fnAddRowByExpert() {
+      fixExpertRows++;
+
+      // todo 행 추가는 있는데 행삭제는 기획서에 없는데 어케해야 할까?
+      var addTrHtml = `
+          <tr>
+            <th rowspan="3">${fixExpertRows}</th>
+            <th><label for="apndTtlByExpert_${fixExpertRows}">소속</label></th>
+            <td>
+              <input type="text" name="apndTtlByExpert" id="apndTtlByExpert_${fixExpertRows}" class="w100p"
+                     value="삼일회계법인 Tax 본부">
+            </td>
+          </tr>
+          <tr>
+            <th class="line"><label for="spcalNmByExpert_${fixExpertRows}">이름/직급 </label></th>
+            <td>
+              <div class="flex selectinput-mix">
+                <input type="text" name="spcalNmByExpert" id="spcalNmByExpert_${fixExpertRows}" class=""
+                       value="김홍현">
+                <select id="spcalPosCdByExpert_${fixExpertRows}" class="select" title="직급">
+                  <option value="Partner">Partner</option>
+                  <option value="Director">Director</option>
+                  <option value="Senior manager">Senior manager</option>
+                  <option value="Manager">Manager</option>
+                  <option value="">직접입력</option>
+                </select>
+                <input type="text" name="spcalPosNmByExpert" id="spcalPosNmByExpert_${fixExpertRows}"
+                       class="write-area"><!-- 직접입력 선택시 활성화 disabled="disabled"-->
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th class="line"><label for="spcalUrl_${fixExpertRows}">홈페이지</label></th>
+            <td>
+              <input type="text" name="spcalUrlByExpert" id="spcalUrlByExpert_${fixExpertRows}" class="w100p"
+                     value="https://www.pwc.com/kr/ko/tax.html">
+            </td>
+          </tr>
+      `;
+
+      // tBodyByExpert - tbody 영역에 tr dynamic add row!
+      $('#tBodyByExpert').append(addTrHtml);
+    }
+  </script>
+
+  <div id="divByTopicUpsertPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+    <div class="dimmed"></div>
+    <div class="xycenter">
+      <section class="modal-area large">
+        <div class="modal-head">
+          <h2 class="tit">토픽 등록</h2>
+          <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+        </div>
+        <section class="modal-cont">
+          <div class="form-content">
+            <form id="frmByTopicUpsertPop">
+              <input type="hidden" name="tpicUid" id="tpicUid">
+
+              <fieldset>
+                <legend>토픽 등록</legend>
+                <div class="btn-group-r flex">
+                  <button type="button" class="btn_link">미리보기</button>
+                  <button type="button" id="btnTopicSave" class="btn-primary">저장</button>
+                </div>
+                <div class="search-wrap">
+                  <div class="table-wrap">
+                    <table class="inner-input align-left line-gray">
+                      <caption>토픽 등록</caption>
+                      <colgroup>
+                        <col style="width: 13%;">
+                        <col style="width: 27%;">
+                        <col style="width: 10%;">
+                        <col style="width: 20%;">
+                        <col style="width: 10%;">
+                        <col style="width: 20%;">
+                      </colgroup>
+                      <tbody>
+                      <tr>
+                        <th><label for="tpicGbCd">구분<span class="required"><i
+                            class="blind">필수입력</i></span></label></th>
+                        <td>
+                          <select name="tpicGbCd" id="tpicGbCd" class="type select">
+                            <option value="10">ESG실행</option>
+                            <option value="20">ESG공시평가</option>
+                          </select>
+                        </td>
+                        <th><label for="tpicMnuCd">메뉴<span class="required"><i
+                            class="blind">필수입력</i></span></label>
+                        </th>
+                        <td>
+                          <select name="tpicMnuCd" id="tpicMnuCd" class="type select">
+                            <option value="10">E(환경)</option>
+                            <option value="20">S(사회)</option>
+                            <option value="30">F(금융)</option>
+                          </select>
+                        </td>
+                        <th><label for="useYn">사용여부<span class="required"><i
+                            class="blind">필수입력</i></span></label>
+                        </th>
+                        <td>
+                          <select name="useYn" id="useYn" class="type select">
+                            <option value="Y">사용</option>
+                            <option value="N">사용안함</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="tpicNm">토픽명<span class="required"><i
+                            class="blind">필수입력</i></span></label></th>
+                        <td colspan="5">
+                          <input type="text" name="tpicNm" id="tpicNm">
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><label for="tpicMnuCd">일부 공개 대상<span class="required"><i
+                            class="blind">필수입력</i></span></label>
+                        </th>
+                        <td>
+                          <ul class="flex ck-list">
+                            <li>
+                              <input type="checkbox" name="rlsTgtCd" id="ck01" value="10">
+                              <label for="ck01">그룹 A</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" name="rlsTgtCd" id="ck02" value="20">
+                              <label for="ck02">그룹 B</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" name="rlsTgtCd" id="ck03" value="30">
+                              <label for="ck03">그룹 C</label>
+                            </li>
+                          </ul>
+                        </td>
+                        <th><label for="useYn">전시기간</label></th>
+                        <td colspan="3">
+                          <div class="date-select flex date-ck-mix">
+                            <div class="datepicker-wrap flex">
+                              <input type="text" name="dpSttDte" id="dpSttDte" class="datepicker">
+                              <input type="text" name="dpSttHh" value="00" class="time">:
+                              <input type="text" name="dpSttMi" class="time" value="00">
+                              <span class="separator"> - </span>
+                              <input type="text" name="dpEndDte" id="dpEndDte" class="datepicker">
+                              <input type="text" name="dpEndHh" value="23" class="time">:
+                              <input type="text" name="dpEndMi" class="time" value="59">
+                            </div>
+                            <input type="checkbox" name="pirdStngUseYn" id="pirdStngUseYn"
+                                   value="Y"><label for="pirdStngUseYn">기간설정사용</label>
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-wrap -->
+                  <div class="tab-wrap">
+                    <ul class="tab-list flex">
+                      <li><a href="javascript:void(0);" class="current">핵심 개념<span class="required"><i
+                          class="blind">필수입력</i></span></a></li>
+                      <li id="liByFramework"><a href="javascript:void(0);">프레임워크<span class="required"><i
+                          class="blind">필수입력</i></span></a></li>
+                      <!-- ESG 공시〮평가〮인증 일때 노출 -->
+                      <li><a href="javascript:void(0);" class="">삼일 제공 서비스<span class="required"><i
+                          class="blind">필수입력</i></span></a></li>
+                    </ul>
+                    <div class="cont-wrap">
+                      <!-- 핵심 개념 -->
+                      <div class="cont" style="display: block;">
+                        <!-- 기획서 230728_2차공유 49p 23.7.19 삭제라고 나옴 -->
+                        <!--                        <section>-->
+                        <!--                          <h4 class="tit">핵심개념 요약</h4>-->
+                        <!--                          <div class="btn-group-r">-->
+                        <!--                            <button type="button" class="btn-primary" disabled="disabled">저장-->
+                        <!--                            </button>-->
+                        <!--                          </div>-->
+                        <!--                          <textarea name="" id="" cols="" rows="" title="핵심개념 요약" class="h100">2023년 10월부터 EU에서 탄소국경세가 시범 운영되며, 2026년부터 본격적으로 시행됩니다.EU로 수입되는 철강, 알루미늄 등 6개 제품군에 대해 탄소국경세(Carbon Border Adjustment Mechanism. 이하 “CBAM”)를 적용하며, 가격은 EU ETS(탄소배출거래가격)에 연동될 예정임에 따라 관련 기업의 대응이 필요할 것으로 보입니다.-->
+                        <!--CBAM은 온실가스 배출 규제가 느슨한 국가(비 EU)에사 규제가 엄격한 국가(EU)로 물품을 수출할 때 발생하는 가격차이를 보전하기 위해 비용을 부과하는 일종의 무역관 관세입니다. 잠정 합의안에 따르면 시범 기간(23.10.01～2025.12.31)에는 EU로 수입되는 CBAM 대상 제품의 온실가스(Greenhouse Gas-->
+                        <!--																					</textarea>-->
+                        <!--                        </section>-->
+                        <section>
+                          <h4 class="tit">핵심개념</h4>
+                          <div class="btn-group-r">
+                            <button type="button" class="btn-primary" disabled="disabled">저장
+                            </button>
+                          </div>
+                          <!-- //btn-wrap -->
+                          <div class="edit-wrap">
+                            <!--                            <img src="/assets/assets/img/temp/editor.png" style="width:100%" alt="editor">-->
+                            <input type="hidden" name="tpicTpCd" value="10">
+                            <textarea name="apndCn" id="apndCn_1" cols="100" rows="10"></textarea>
+                          </div>
+                        </section>
+                      </div>
+                      <!-- //핵심 개념 -->
+                      <!-- 프레임워크 -->
+                      <div class="cont" id="divByFramework">
+                          <div class="btn-group-txtr">
+                              <button type="button" class="btn-primary" disabled="disabled">저장</button>
+                          </div>
+                          <div class="edit-wrap">
+<!--                              <img src="/assets/assets/img/temp/editor.png" style="width:100%" alt="editor">-->
+                            <input type="hidden" name="tpicTpCd" value="40">
+                            <textarea name="apndCn" id="apndCn_2" cols="100" rows="10"></textarea>
+                          </div>
+                      </div>
+                      <!-- //프레임워크 -->
+                      <!-- 삼일 제공 서비스 -->
+                      <div class="cont" style="display: none;">
+                        <!-- 기획서 230728_2차공유 49p 23.7.19 삭제라고 나옴 -->
+                        <!--                        <section>-->
+                        <!--                          <h4 class="tit">삼일 제공 서비스 요약</h4>-->
+                        <!--                          <div class="btn-group-r">-->
+                        <!--                            <button type="button" class="btn-primary" disabled="disabled">저장-->
+                        <!--                            </button>-->
+                        <!--                          </div>-->
+                        <!--												<input type="hidden" name="tpicTpCd" value="40">-->
+                        <!--                          <textarea name="" id="" cols="" rows="">● 탄소 집약적 제품을 EU로 수출하는 기업 대상 고려 요소 및 자문 및 컨설팅-->
+                        <!--● 10월부터 시작되는 새로운 보고 요건에 대비하기 위해 필요한 액션 플랜 수립-->
+                        <!--																					</textarea>-->
+                        <!--                        </section>-->
+                        <section>
+                          <h4 class="tit">삼일 제공 서비스</h4>
+                          <div class="btn-group-r">
+                            <button type="button" class="btn-primary" disabled="disabled">저장
+                            </button>
+                          </div>
+                          <div class="table-wrap mix-table">
+                            <input type="hidden" name="tpicTpCd" value="20">
+                            <table>
+                              <caption>삼일 제공 서비스</caption>
+                              <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 10%;">
+                                <col style="width: *;">
+                              </colgroup>
+                              <thead>
+                              <tr>
+                                <th>NO</th>
+                                <th>구분</th>
+                                <th>내용</th>
+                              </tr>
+                              </thead>
+                              <tbody id="tBodyByService">
+
+                              </tbody>
+                            </table>
+                            <!-- //table-wrap -->
+                            <div class="btn-add-wrap">
+                              <button type="button" th:onclick="fnAddRowByService()" class="btn-add">
+                                <span>행 추가</span></button>
+                            </div>
+                          </div>
+                        </section>
+                        <section>
+                          <h4 class="tit">전문가 리스트</h4>
+                          <div class="btn-group-r">
+                            <button type="button" class="btn-primary" disabled="disabled">저장
+                            </button>
+                          </div>
+                          <div class="table-wrap mix-table">
+                            <input type="hidden" name="tpicTpCd" id="tpicTpCd_1" value="30">
+                            <table>
+                              <caption>전문가 리스트</caption>
+                              <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 10%;">
+                                <col style="width: *;">
+                              </colgroup>
+                              <thead>
+                              <tr>
+                                <th>NO</th>
+                                <th>구분</th>
+                                <th>내용</th>
+                              </tr>
+                              </thead>
+                              <!-- 20230721 전문가 리스트 수정 -->
+                              <tbody id="tBodyByExpert">
+
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- //table-wrap -->
+                          <div class="btn-add-wrap">
+                            <button type="button" th:onclick="fnAddRowByExpert()" class="btn-add">
+                              <span>행 추가</span></button>
+                          </div>
+                        </section>
+                      </div>
+                      <!-- //삼일 제공 서비스 -->
+                    </div>
+                    <!-- //cont-wrap -->
+                  </div>
+                </div>
+                <!-- //table-wrap -->
+              </fieldset>
+            </form>
+          </div>
+          <!-- form-content -->
+        </section>
+        <!--//modal-cont-->
+      </section>
+      <!--//modal-area-->
+    </div>
+    <!-- //xycenter -->
+  </div>
+  <!--//modal-wrap-->
+</th:block>
+<!-- layout:fragment -->
+</html>

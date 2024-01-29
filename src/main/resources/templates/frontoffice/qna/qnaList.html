@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+    <script type="text/javascript">
+        $(function () {
+            // 화면 초기화
+            fnInitView();
+
+            // 기본 데이터 조회
+            fnInitData();
+
+            // 이벤트 설정
+            fnInitEvent();
+
+            // 모바일 기간 선택
+            periodSelectEvent();
+            datepickerEvent();
+
+            // 모바일 유형 선택
+            typeSelectEvent();
+        });
+
+        function fnSearch() {
+            btnSearch
+        }
+
+        // 화면 초기화
+        function fnInitView() {
+            _comLib.setDatePicker("schStrtDate", "schEndDate", "yy-mm-dd");
+            _comLib.setDatePicker("schEndDate", null, "yy-mm-dd");
+
+
+            //문의 유형 checkbox 생성 - 문의유형코드	ASK_TP_CD
+            $.post("/common/selectCodeList", {"grpCd": "ASK_TP_CD"}, function (data) {
+                var list = data.list;
+                var innerHtml = "";
+                var optionHtml = "";
+                $.each(list, function (index, item) {
+                    innerHtml += "<li>";
+                    innerHtml += "	<div class='checkbox-wrap'>";
+                    innerHtml += "		<input type='checkbox' id='ask" + index + "' name='schAskTpChk' value='" + item.cd + "' checked>";
+                    innerHtml += "		<label for='ask" + index + "'>";
+                    innerHtml += "			<span>" + item.cdNm + "</span>";
+                    innerHtml += "		</label>";
+                    innerHtml += "	</div>";
+                    innerHtml += "</li>";
+
+                    optionHtml += "<option value='" + item.cd + "'>" + item.cdNm + "</option>";
+                });
+                $("#qnaAskTpCdList").append(innerHtml);
+
+            });
+            setSchDate();
+        }
+
+        // 조회기간 설정
+        function setSchDate() {
+            var stDay = _comLib.preMonth($('input:radio[name=period]:checked').val());
+            $("#schStrtDate").val(stDay);
+            $("#schEndDate").val(_comLib.toDay());
+        }
+
+        // 이벤트 설정
+        function fnInitEvent() {
+            var $doc = $(document);
+
+            $("#btnRegPop").bind("click", fnOpenRegPop);	//등록팝업 Open
+            $("#btnSearch").bind("click", fnSelectList);	//조회
+            $('input:radio[name=period]').bind("click", setSchDate);//조회기간변경
+
+            $doc.on("click", "#btnQnaMod", function (e) {
+                e.preventDefault();
+
+                if ($("#viewQnaDiv #regAskCn").val() == "") {
+                    alert("문의 내용을 입력해 주세요.");
+                    $("#viewQnaDiv #regAskCn").focus();
+                    return;
+                }
+
+                var formData, param = {};
+                formData = _formLib.getFormData("updateFrm");
+
+                param = {
+                    "url": "/qna/updateQna"
+                    , "type": "post"
+                    , "data": formData
+                    , "async": false
+                    , "callback": function (data) {
+                        if (data.msg == "success") {
+
+
+                            alert("수정완료 되었습니다");
+                            $('html,body').animate({scrollTop: 0}, 100, "", function () {
+                            }).dequeue();
+
+                        } else {
+                            alert("수정실패");
+                        }
+                    }
+                };
+                _comLib.callAjax(param);
+
+
+            })
+        }
+
+        //등록팝업 Open
+        function fnOpenRegPop() {
+            $("#regFrm #regAskTtl").val("");//제목
+            $("#regFrm #regAskTpCdSelect option:eq(0)").prop("selected", true);//유형 선택
+            $("#regFrm #regAskCn").val("");//내용
+
+            $("#regQnaDiv").addClass("show");
+        }
+
+
+        // 기본 데이터 조회
+        function fnInitData() {
+            fnSelectList();
+        }
+
+
+        //문의·요청 상세 조회
+        function fnOpenQna(askUid) {
+            var param = {};
+            param = {
+                "url": "/qna/selectQna"
+                , "type": "post"
+                , "data": {askUid: askUid}
+                , "async": false
+                , "callback": function (data) {
+                    var qnaInfo = data.qnaInfo;
+
+                    $("#updateFrm input[name=askUid]").val(qnaInfo.askUid);
+					$("#askStNm").empty().append(qnaInfo.askStNm);
+                    $("#dtlFstInsDt").empty().append(qnaInfo.fstInsDt);//등록일
+                    $("#dtlAskTtl").empty().append(qnaInfo.askTtl);//제목
+                    $("#dtlAskTpNm").val(qnaInfo.askTpNm);//문의유형
+                    $("#dtlAskCn").val(qnaInfo.askCn);//문의사항
+                    $("#dtlAnsrCn").val(qnaInfo.ansrCn);//답변
+                    $(".viewQnaDiv .state").val(qnaInfo.askStNm);//답변
+                    //문의상태코드(10: 미확인, 20: 처리중(IT), 30: 처리중(Biz), 40: 부서전달, 50: 완료)
+                    //문의 수정 가능여부 체크
+                    if (qnaInfo.askStCd > 30) {
+                        // $("#dtlAskTtl").attr("disabled",true);//제목
+                        $("#dtlAskCn").attr("disabled", true);//문의사항
+                        $("#btnQnaMod").attr("disabled", true);//수정버튼
+                        $("#dtlAnsrCnLi").show();
+                    } else {
+                        // $("#dtlAskTtl").attr("disabled",false);//제목
+                        $("#dtlAskCn").attr("disabled", false);//문의사항
+                        $("#btnQnaMod").attr("disabled", false);//수정버튼
+                        $("#dtlAnsrCnLi").hide();
+                    }
+                    $("#viewQnaDiv").addClass("show");
+					if (qnaInfo.atacFileFpath) {
+						$("#cs-attach").show();
+						$("#cs-attach > DIV > A").attr("href", qnaInfo.atacFileFpath);
+						$("#cs-attach > DIV > A").empty().append(qnaInfo.atacFileFpath)
+					} else {
+						$("#cs-attach").hide();
+					}
+                }
+            };
+            _comLib.callAjax(param);
+        }
+
+        //문의·요청 목록 조회
+        function fnSelectList() {
+            var formData,
+                param = {};
+            formData = _formLib.getFormData("searchListFrm");
+            param = {
+                url: "/qna/selectQnaList",
+                type: "post",
+                data: formData,
+                async: false,
+                paging: "Y",
+                pageNumber: _formLib.getValue($("#pageNumber").val()) != "" ? $("#pageNumber").val() : 1,
+                pageSize: 10,
+                callback: function (data) {
+                    console.log(data)
+                    $("#qnaTotalCountView").text("문의사항 목록 (" + data.page.totalCount + ")");
+                    for (var i = 0; i < data.list.length; i++) {
+
+                        data.list[i].num = (data.page.totalCount - data.list[i].pageRowNumber + 1);
+                    }
+
+                    $("#list").html("");
+                    $("#tmpl_qlist").tmpl(data.list).appendTo("#list");
+                    // 페이징 영역 생성
+                    _comLib.setPagination(
+                        "paging",
+                        function (page) {
+                            // 페이지 번호 설정
+                            $("#pageNumber").val(page);
+                            // 게시글 조회
+                            fnSelectList();
+                        },
+                        data.page.totalPage,
+                        _formLib.getValue($("#pageNumber").val()) != "" ? $("#pageNumber").val() : 1
+                    );
+                },
+            };
+            _comLib.callAjax(param);
+        }
+
+        // 기간 선택
+        function datepickerEvent() {
+            $('.js-daterangepicker').on('apply.daterangepicker', function (ev, picker) {
+                let date = picker.startDate.format('YYYY-MM-DD') + " ~ " + picker.endDate.format('YYYY-MM-DD');
+                $('.input-daterangepicker').val(date);
+            });
+        }
+
+        // 유형 셀렉트 멀티 선택
+        function typeSelectEvent() {
+            $('.type-select select').select2({});
+            $('.type-select select').on('select2:opening select2:closing', function (event) {
+                let $searchfield = $(this).parent().find('.select2-search__field');
+                $searchfield.prop('disabled', true);
+            });
+        }
+
+        // 기간 선택 시 입력창 노출
+        function periodSelectEvent() {
+            $('.period-select').find('input[name="periodSelect"]').on("change", function (e) {
+                const idx = $(e.target).parent().index();
+                if (idx === 2) {
+                    $('.date-select').addClass('active');
+                } else {
+                    $('.date-select').removeClass('active');
+                }
+            });
+        }
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <form id="searchListFrm">
+        <input type="hidden" name="pageNumber" id="pageNumber" value="1">
+        <!-- content -->
+        <section class="content btmgap content-qna">
+            <div class="tit-head mb20">
+                <div class="group">
+                    <h3>나의 문의내역</h3>
+                    <p class="txt">내가 등록한 문의 ∙ 요청과 이에 대한 진행현황을 확인할 수 있습니다.</p>
+                </div>
+                <span class="square"></span>
+            </div>
+            <section class="section">
+                <div class="default-width">
+                    <div class="table-wrap">
+                        <!-- PC -->
+                        <table class="left rowline e_pc">
+                            <caption>나의 문의 ∙ 요청 현황 조회</caption>
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 80%;">
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <th>등록일자</th>
+                                <td>
+                                    <div class="datepicker-radio-mix flex">
+                                        <input type="text" placeholder="" class="datepicker" id="schStrtDate"
+                                               name="schStrtDate" maxlength="10">
+                                        <span class="dash">-</span>
+                                        <input type="text" placeholder="" class="datepicker" id="schEndDate"
+                                               name="schEndDate" maxlength="10">
+                                        <ul class="box-radio-wrap flex">
+                                            <li>
+                                                <input type="radio" id="regDate1" name="period" checked="checked"
+                                                       value="1">
+                                                <label for="regDate1"><span>1개월</span></label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" id="regDate2" name="period" value="3">
+                                                <label for="regDate2"><span>3개월</span></label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!--<tr>
+                                <th>처리 상태</th>
+                                <td>
+                                    <ul class="input-group-list" id="qnaAskStCdList"></ul>
+                                </td>
+                            </tr> -->
+                            <tr>
+                                <th>문의 유형</th>
+                                <td>
+                                    <ul class="input-group-list grid5" id="qnaAskTpCdList"></ul>
+                                </td>
+                            </tr>
+                            <!--<tr>
+                                <th><label for="srch">검색</label></th>
+                                <td><input type="text" id="srch" name="schAskTtl" class="w100p" placeholder="검색 제목 입력"></td>
+                            </tr> -->
+                            </tbody>
+                        </table>
+
+                        <!-- Mobile -->
+                        <div class="e_mo">
+                            <div class="period-select">
+                                <label>
+                                    <input type="radio" name="periodSelect" checked>
+                                    <span>3개월</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="periodSelect">
+                                    <span>1개월</span>
+                                </label>
+                                <label>
+                                    <input type="radio" class="detail-period" name="periodSelect">
+                                    <span>기간조회</span>
+                                </label>
+                            </div>
+                            <div class="date-select">
+                                <div class="flex">
+                                    <label class="js-daterangepicker">
+                                        <input type="text" class="input-daterangepicker" readonly
+                                               placeholder="기간을 선택해 주세요.">
+                                        <button type="button"><img src="/assets/img/common/ico_date2.svg" alt=""></button>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="type-select">
+                                <select class="select" name="states[]" multiple="multiple">
+                                    <option value="" selected>삼일 서비스 제공 문의</option>
+                                    <option value="">시스템 기능·오류 문의</option>
+                                    <option value="">회원 가입·해지 문의</option>
+                                    <option value="">게시자료 문의</option>
+                                    <option value="">추가자료 요청</option>
+                                    <option value="">서비스 제휴 문의</option>
+                                    <option value="">기타</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap ct">
+                        <button type="button" id="btnSearch" class="btn-primary w320"><span>조회하기</span></button>
+                    </div>
+                    <div class="divider"></div>
+                    <section class="section">
+                        <div class="e_pc">
+                            <div class="table-head mar_b30">
+                                <h4 class="tit-line-left" id="qnaTotalCountView">문의사항 목록 (0)</h4>
+                                <button type="button" class="btn-white small btn-upload onlineBtn">
+                                    <span>온라인 문의 ∙ 요청하기</span></button>
+                            </div>
+                        </div>
+
+                        <div id="qnaListDiv" class="table-wrap qna-list-table">
+                            <table class="line">
+                                <caption>문의사항 목록</caption>
+                                <colgroup>
+                                    <col style="width: 12%;">
+                                    <col style="width: 20%;">
+                                    <col>
+                                    <col style="width: 12%">
+                                    <col style="width: 10%">
+                                    <col style="width: 15%">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>등록일자</th>
+                                    <th>문의유형</th>
+                                    <th>문의제목</th>
+                                    <th>처리일자</th>
+                                    <th>처리상태</th>
+                                    <th>답변내역</th>
+                                </tr>
+                                </thead>
+                                <tbody id="list">
+
+                                <tr th:if="${#lists.isEmpty(list)}">
+                                    <td style="text-align: center;" colspan="6">데이터가 존재하지 않습니다.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="paging">
+                                <ul class="pagination" id="paging">
+                                    <li class="btn first">
+                                        <a href="#" class="page-link"><span class="blind"
+                                                                            style="display: inline">처음</span></a>
+                                    </li>
+                                    <li class="btn prev">
+                                        <a href="#" class="page-link"><span class="blind"
+                                                                            style="display: inline">이전</span></a>
+                                    </li>
+
+                                    <li class="btn next">
+                                        <a href="#" class="page-link"><span class="blind"
+                                                                            style="display: inline">다음</span></a>
+                                    </li>
+                                    <li class="btn last">
+                                        <a href="#" class="page-link"><span class="blind"
+                                                                            style="display: inline">마지막</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="e_mo btn-connect">
+                            <button type="button" class="btn-white small btn-upload onlineBtn">
+                                <span>온라인 문의 ∙ 요청하기</span></button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </section>
+        <!-- //content -->
+    </form>
+
+    <script id="tmpl_qlist" type="text/x-jquery-tmpl">
+        <tr  >
+            <td >${fstInsDt}</td>
+            <td  class="lf">${askTpNm}</td>
+            <td class="subject"><a href="javascript:void(0);" onclick="fnOpenQna('${askUid}');" class="link ellipsis">${askTtl}</a></td>
+            <td>${ansrFstInsDt}</td>
+            <td >{{if askStNm === '미확인'}}<span class="noanswer">${askStNm}</span>{{else}}<span class="answer">${askStNm}</span>{{/if}}</td>
+            <td >{{if askStCd=='50'}}<a href="javascript:void(0);" onclick="fnOpenQna('${askUid}');" class="primary-txt line"><strong>답변보기</strong></a>{{/if}}</td>
+        </tr>
+    </script>
+    <!-- QnA 상세 팝업 -->
+    <div id="viewQnaDiv" class="modal-wrap modal-inquiry"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left flex">
+                    <h2 class="tit">문의 ∙ 요청 상세 조회</h2>
+                    <span class="state" id="askStNm">미확인</span>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                    <div class="ask-gray-box scroll-area">
+                        <form id="updateFrm">
+                            <input type="hidden" name="askUid" value="">
+                            <div class="info">
+                                <ul class="info-list">
+                                    <li>
+                                        <div>
+                                            <div class="label">등록일자</div>
+                                            <div class="desc" id="dtlFstInsDt"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <div class="label">이름</div>
+                                            <div class="desc" th:if="${session.FoMbrInfo != null}"
+                                                 th:text="${session.FoMbrInfo.mbrNm}"></div>
+                                        </div>
+                                    </li>
+                                    <!--<li>
+                                        <div>
+                                            <div class="label">소속</div>
+                                            <div class="desc" th:if="${session.FoMbrInfo != null}" th:text="${session.FoMbrInfo.coprNm}">OO화학</div>
+                                        </div>
+                                    </li>-->
+                                    <li>
+                                        <div>
+                                            <div class="label">이메일</div>
+                                            <div class="desc" th:if="${session.FoMbrInfo != null}"
+                                                 th:text="${session.FoMbrInfo.compMail}">hong123@chem.com
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                            <div class="info">
+                                <ul class="list">
+                                    <li class="grid6 ">
+                                        <div>
+                                            <label for="dtlAskTtl">제목</label>
+                                            <div id="dtlAskTtl"></div>
+                                            <!--										<input type="text" id="dtlAskTtl" name="dtlAskTtl" value="">-->
+                                        </div>
+                                    </li>
+                                    <li class="grid4 readonly">
+                                        <div>
+                                            <label for="dtlAskTpNm">문의유형</label>
+                                            <input type="text" id="dtlAskTpNm" value="삼일 서비스 제공 문의" disabled="disabled">
+                                        </div>
+                                    </li>
+                                    <li class="wide">
+                                        <div>
+                                            <label for="dtlAskCn">문의사항</label>
+                                            <textarea name="dtlAskCn" id="dtlAskCn" cols="" rows=""
+                                                      class="pop-txtarea01">안녕하십니까. ESG 경영전략과 증장기 계획을 수립하기 위해 아래와 같은 사항을 문의 드리고자 합니다.</textarea>
+                                        </div>
+                                    </li>
+                                    <li class="wide" id="dtlAnsrCnLi">
+                                        <div>
+                                            <label for="dtlAnsrCn">답변내역</label>
+                                            <textarea name="dtlAnsrCn" id="dtlAnsrCn" cols="" rows=""
+                                                      disabled="disabled" class="pop-txtarea01">ESG 경영전략과 중장기 계획 수립을 위해서는 다음과 같은 업무가 필요합니다.</textarea>
+                                        </div>
+                                    </li>
+									<li id="cs-attach" class="wide">
+										<div style="align-items: center;">
+											<label for="dtlAskCn">첨부자료</label>
+											<a href="" target="_blank" download>다운로드</a>
+										</div>
+									</li>
+                                </ul>
+                            </div>
+                            <!-- //info -->
+                        </form>
+                    </div>
+                    <!-- //gray-box -->
+                    <div class="btn-wrap ask-btn">
+                        <button type="button" id="btnQnaMod" class="btn-primary small"><span>수정</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>
+            <!--//modal-area-->
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+
+
+</div>
+</html>

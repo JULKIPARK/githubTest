@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+			// 이벤트 설정
+			$("#btnCancel").bind("click", fnCancel);	//취소하기
+			$("#btnWhdwl").bind("click", fnWithdrawal);	//탈퇴하기
+			$("#btnWhdwlOk").bind("click", fnWithdrawalOk);	//탈퇴하기
+
+			$("input:checkbox[name=whdwlCausCd]").prop('checked',false);
+
+
+		});
+
+		//취소하기
+		function fnCancel(){
+			window.location.href = "/";
+		}
+
+		//탈퇴하기
+		function fnWithdrawal(){
+
+
+
+
+			if($("input:checkbox[name=whdwlCausCd]:checked").length<1){
+
+				alert('탈퇴 사유를 선택하세요');
+				return;
+			}
+
+			if($("#whdwlCausComnt").val()==''){
+				$("#whdwlCausComnt").focus();
+				alert('고객님의 의견을 입력하세요');
+				return;
+			}
+
+			if($("#mbrPwd").val()==''){
+				$("#mbrPwd").focus();
+				alert('비밀번호 입력를 입력하세요');
+				return;
+			}
+
+			if(!$("#chkAgree").is(':checked')){
+				alert('안내 사항에 동의 하셔야 합니다.');
+				return;
+			}
+
+			$('#confirmDiv').addClass('show');
+		}
+		function fnWithdrawalOk()
+		{
+			$("#confirmDiv").removeClass("show");
+
+			var formData, param = {};
+			formData = _formLib.getFormData("frm");
+			param = {
+				"url" : "/common/withdrawal"
+				, "type" : "post"
+				, "data" : formData
+				, "async" : false
+				, "callback" : function(data) {
+					if(data.msg=='success'){
+						window.location.href = "/common/whdwlComplet";
+					}else{
+						alert(data.msg);
+					}
+				}
+			};
+			_comLib.callAjax(param);
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="frm">
+		<!-- content -->
+		<div class="content btmgap">
+			<section class="member-wrap default-width">
+				<h3 class="tit">회원 탈퇴</h3>
+				<div class="info-txt">
+					<p>불편사항이 있으셨나요? 1:1 문의 ∙ 요청으로 불편사항을 남겨주시면 적극 반영하여 고객님의 불편함을 해결해 드리도록 노력하겠습니다.</p>
+					<ul class="dash-list">
+						<li><strong>회원 탈퇴 시, 회원님의 사이트 활동 내역 및 정보가 자동 소멸되며 복구되지 않습니다.</strong></li>
+						<li><strong>SMS, E-MAIL 마케팅 정보를 수신하셨다면 탈퇴 이후 약 2일~3일 정도까지 뉴스레터 및 안내 정보가 전송될 수 있사오니, 이 점 양해 부탁드립니다.</strong></li>
+					</ul>
+				</div>
+				<form action="">
+					<fieldset>
+						<legend>회원 탈퇴</legend>
+						<ul class="input-list grid4">
+							<li class="list">
+								<div class="input-wrap">
+									<div class="label-wrap"><span class="label">탈퇴 사유</span></div>
+									<!-- //label-wrap -->
+									<div class="input-area">
+										<ul class="box-check-wrap row3">
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck01" value="10">
+												<label for="ck01"><span>컨텐츠 부족</span></label>
+											</li>
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck02" value="20">
+												<label for="ck02"><span>회원 혜택 부족</span></label>
+											</li>
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck03" value="30">
+												<label for="ck03"><span>개인정보 유출 우려</span></label>
+											</li>
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck04" value="40">
+												<label for="ck04"><span>사이트 이용 불편</span></label>
+											</li>
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck05" value="50">
+												<label for="ck05"><span>이용빈도 낮음</span></label>
+											</li>
+											<li>
+												<input type="checkbox" name="whdwlCausCd" id="ck06" value="60">
+												<label for="ck06"><span>기타</span></label>
+											</li>
+										</ul>
+									</div>
+									<!-- //input-wrap -->
+								</div>
+							</li>
+							<li class="list">
+								<div class="input-wrap">
+									<div class="label-wrap">
+										<label for="member01">고객님의 의견</label>
+									</div>
+									<!-- //label-wrap -->
+									<div class="input-area">
+										<textarea name="whdwlCausComnt" id="whdwlCausComnt" class="textarea h200" placeholder="삼일 ESG 플랫폼에 대한 불만사항이나 의견이 있으시면 기재 부탁드립니다."></textarea>
+									</div>
+									<!-- //input-wrap -->
+								</div>
+							</li>
+							<li class="list">
+								<div class="input-wrap">
+									<div class="label-wrap">
+										<label for="member02">비밀번호 입력</label>
+									</div>
+									<!-- //label-wrap -->
+									<div class="input-area">
+										<input type="password" name="mbrPwd" id="mbrPwd" class="txt w318" placeholder="현재 비밀번호를 입력해주세요"/>
+									</div>
+									<!-- //input-wrap -->
+								</div>
+							</li>
+						</ul>
+						<div class="agree-wrap-ct">
+							<div class="checkbox-wrap">
+								<input type="checkbox" id="chkAgree">
+								<label for="chkAgree"><span>안내 사항을 모두 확인하였으며 동의합니다.</span></label>
+							</div>
+						</div>
+						<div class="btn-wrap">
+							<button type="button" id="btnCancel" class="btn-white"><span>취소하기</span></button>
+							<button type="button" id="btnWhdwl" class="btn-primary"><span>탈퇴하기</span></button>
+						</div>
+					</fieldset>
+				</form>
+			</section>
+			<!-- //member-wrap -->
+		</div>
+		<!-- //content -->
+
+	</form>
+
+	<!-- 회원탈퇴 확인 -->
+	<div id="confirmDiv" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="center">
+			<section class="modal-area">
+				<div class="modal-cont">
+					<h2 class="tit">회원 탈퇴</h2>
+					<p class="txt">회원 탈퇴 시, 모든 계정 정보가 삭제되며 복구가 불가합니다. 정말로 탈퇴 하시겠습니까?</p>
+				</div>
+				<!-- //modal-cont -->
+				<div class="btn-wrap flex">
+					<button type="button" class="btn-white" onclick="$('#confirmDiv').removeClass('show');"><span>취소하기</span></button>
+					<button type="button" id="btnWhdwlOk"  class="btn-primary"><span>탈퇴하기</span></button>
+				</div>
+			</section>
+			<!--//modal-area-->
+		</div>
+	</div>
+	<!--//modal-wrap-->
+</div>
+</html>

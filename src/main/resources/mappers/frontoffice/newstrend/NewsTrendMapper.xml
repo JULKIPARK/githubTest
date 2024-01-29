@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.newstrend.mapper.NewsTrendMapper">
+
+    <select id="getNwsKeywordsLatest" resultType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsKeywordEntity">
+        /* NewsTrendMapper.getNwsKeywordsLatest */
+        SELECT TOP 5  nwskwd.KEYWORD_UID  AS keywordUid
+                , nwskwd.BASE_DATE  AS baseDate
+                , nwskwd.DAY_COUNT  AS dayCount
+                /*, nwskwd.ORDER_NO   AS orderNo*/
+                , ROW_NUMBER() OVER(ORDER BY nwskwd.WEIGHT DESC) AS orderNo
+                , nwskwd.ID         AS id
+                , nwskwd.NAME       AS name
+                , nwskwd.LEVEL      AS level
+                , nwskwd.WEIGHT     AS weight
+                , DATEADD(HOUR, 9, nwskwd.REG_DT)     AS regDt
+                , ROUND(nwskwd.WEIGHT/gKwd.WEIGHT*100,0,1) as pos
+                , (select TOP 1 TITLE from ESG_DB.NWS_NEWS WHERE DP_YN = 'Y' AND TRIM(PROVIDER_LINK_PAGE)  <![CDATA[<>]]>  '' AND KEYWORD_UID = NWSKWD.KEYWORD_UID ORDER BY ORDER_NO) AS title
+          FROM  ESG_DB.NWS_KEYWORD nwskwd
+          JOIN (SELECT SUM(WEIGHT) WEIGHT ,BASE_DATE ,DAY_COUNT FROM ESG_DB.NWS_KEYWORD GROUP BY BASE_DATE ,DAY_COUNT) gKwd
+          		ON nwskwd.BASE_DATE = gKwd.BASE_DATE
+          		AND nwskwd.DAY_COUNT = gKwd.DAY_COUNT
+          JOIN  (
+              SELECT TOP 1  subnwskwd.BASE_DATE as BASE_DATE
+                      , subnwskwd.DAY_COUNT as DAY_COUNT
+                FROM  ESG_DB.NWS_KEYWORD subnwskwd
+               WHERE  1 = 1
+               ORDER BY subnwskwd.KEYWORD_UID DESC
+          ) tmp     ON  tmp.BASE_DATE = nwskwd.BASE_DATE
+                    AND tmp.DAY_COUNT = nwskwd.DAY_COUNT
+         WHERE  1 = 1 AND nwskwd.DP_YN = 'Y'
+        ORDER BY nwskwd.WEIGHT DESC
+    </select>
+
+    <select id="getNwsNewsByKeywordUid" resultType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsNewsEntity">
+        /* NewsTrendMapper.getNwsNewsByKeywordUid */
+        SELECT TOP 10  nwsnws.NEWS_UID         AS newsUid
+                , nwsnws.KEYWORD_UID    AS keywordUid
+                , nwsnws.ORDER_NO       AS orderNo
+                , nwsnws.NEWS_ID        AS newsId
+                , nwsnws.TITLE          AS title
+                , nwsnws.HILIGHT        AS hilight
+                , nwsnws.PUBLISHED_AT   AS publishedAt
+                , nwsnws.ENVELOPED_AT   AS envelopedAt
+                , nwsnws.DATELINE       AS dateline
+                , nwsnws.PROVIDER       AS provider
+                , nwsnws.CATEGORY       AS category
+                , nwsnws.CATEGORY_INCIDENT  AS categoryIncident
+                , nwsnws.BYLINE         AS byline
+                , nwsnws.PROVIDER_LINK_PAGE AS providerLinkPage
+                , nwsnws.PRINTING_PAGE  AS printingPage
+                , nwsnws.REG_DT         AS regDt
+          FROM  ESG_DB.NWS_NEWS nwsnws
+         WHERE  1 = 1 AND nwsnws.DP_YN = 'Y'
+           AND  nwsnws.KEYWORD_UID = ${keywordUid}
+           AND nwsnws.PROVIDER_LINK_PAGE <![CDATA[<>]]> ''
+         ORDER BY nwsnws.ORDER_NO ASC
+    </select>
+
+    <select id="getNwsTrendsByKeywordUid" resultType="com.pwc.pwcesg.frontoffice.schedule.newstore.mapper.entity.NwsTrendEntity">
+        /* NewsTrendMapper.getNwsTrendsByKeywordUid */
+        SELECT  nwstrd.TREND_UID    AS trendUid
+                , nwstrd.KEYWORD_UID    AS keywordUid
+                , nwstrd.LABEL      AS label
+                , nwstrd.HITS       AS hits
+                , nwstrd.REG_DT     AS regDt
+          FROM  ESG_DB.NWS_TREND nwstrd
+         WHERE  1 = 1
+           AND  nwstrd.KEYWORD_UID = ${keywordUid}
+         ORDER BY nwstrd.LABEL ASC
+    </select>
+
+    <select id="getNwsTopicTrendListWithParentHits" resultType="com.pwc.pwcesg.frontoffice.newstrend.mapper.dto.GetNwsTopicTrendListWithParentHitsDto">
+        /* NewsTrendMapper.getNwsTopicTrendListWithParentHits */
+        SELECT  nwstpc.PARENT_TOPIC_UID AS topicUid
+                , SUM(nwstpctrd.HITS)   AS hits
+                , (
+                    SELECT  subnwstpc.TOPIC
+                      FROM  ESG_DB.NWS_TOPIC subnwstpc
+                     WHERE  1 = 1
+                       AND  subnwstpc.TOPIC_UID = nwstpc.PARENT_TOPIC_UID
+                )                       AS topic
+          FROM  ESG_DB.NWS_TOPIC_TREND nwstpctrd
+          JOIN  ESG_DB.NWS_TOPIC nwstpc ON nwstpc.TOPIC_UID = nwstpctrd.TOPIC_UID
+          JOIN  (
+                    SELECT TOP 1  subnwstpctrd.BASE_DATE      AS BASE_DATE
+                            , subnwstpctrd.DAY_COUNT    AS DAY_COUNT
+                      FROM  ESG_DB.NWS_TOPIC_TREND subnwstpctrd
+                     WHERE  1 = 1
+                     ORDER BY subnwstpctrd.TOPIC_TREND_UID DESC
+                ) tmp   ON  tmp.BASE_DATE = nwstpctrd.BASE_DATE
+                        AND tmp.DAY_COUNT = nwstpctrd.DAY_COUNT
+         WHERE  1 = 1
+         GROUP BY nwstpc.PARENT_TOPIC_UID
+    </select>
+
+    <select id="getNwsTopicTrendDetails" resultType="com.pwc.pwcesg.frontoffice.newstrend.mapper.dto.GetNwsTopicTrendDetailsDto">
+        /* NewsTrendMapper.getNwsTopicTrendDetails */
+        SELECT  nwstpctrd.LABEL         AS label
+                , nwstpctrd.TOPIC_UID   AS topicUid
+                , nwstpc.TOPIC          AS topic
+                , nwstpctrd.HITS        AS hits
+          FROM  ESG_DB.NWS_TOPIC_TREND nwstpctrd
+          JOIN  ESG_DB.NWS_TOPIC nwstpc ON nwstpc.TOPIC_UID = nwstpctrd.TOPIC_UID
+          JOIN  (
+                    SELECT TOP 1  subnwstpctrd.BASE_DATE      AS BASE_DATE
+                            , subnwstpctrd.DAY_COUNT    AS DAY_COUNT
+                      FROM  ESG_DB.NWS_TOPIC_TREND subnwstpctrd
+                     WHERE  1 = 1
+                     ORDER BY subnwstpctrd.TOPIC_TREND_UID DESC
+                ) tmp   ON  tmp.BASE_DATE = nwstpctrd.BASE_DATE
+                        AND tmp.DAY_COUNT = nwstpctrd.DAY_COUNT
+         WHERE  1 = 1
+           AND  nwstpc.PARENT_TOPIC_UID = #{parentTopicUid}
+         ORDER BY nwstpctrd.LABEL ASC, nwstpctrd.TOPIC_UID ASC
+    </select>
+
+</mapper>

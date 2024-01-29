@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/blankLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+			// 이벤트 설정
+			$("#btnLogin").bind("click", function(){
+				window.location.href="/frontoffice/common/login";
+			});	//로그인
+		});
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+	<form id="frm">
+	
+            <!-- content -->
+            <div class="content align-center">
+                <div class="member-wrap">
+                    <p class="main-txt">[[${myInfo.mbrNm}]]님, <strong>[[${myInfo.compMail}]]</strong>(으)로 아이디와 임시 비밀번호를 전송하였습니다.</p>
+                    <p class="sub-txt">메일을 받지 못하셨다면 스팸함을 확인해보세요.<br>임시 비밀번호는 [회원정보 수정]에서 변경하여 주세요.</p>
+                    <div class="btn-wrap">
+                        <button type="button" id="btnLogin" class="btn-primary"><span>로그인 하기</span></button>
+                    </div>
+                </div>
+                <!-- //member-wrap -->
+            </div>
+            <!-- //content -->  
+		
+	</form>
+</div>
+</html>

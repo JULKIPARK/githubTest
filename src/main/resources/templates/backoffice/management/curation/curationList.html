@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		let apndCn1Edit;
+		let apndCn2Edit;
+		let apndCn3Edit;
+		let apndCn4Edit;
+
+		let page = (function() {
+			let moduleNm = "page";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				apndCn1Edit = ace.edit("apndCn1Edit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/html",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				});
+				apndCn2Edit = ace.edit("apndCn2Edit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/html",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				});
+				apndCn3Edit = ace.edit("apndCn3Edit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/html",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				});
+				apndCn4Edit = ace.edit("apndCn4Edit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/html",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				});
+
+				setData();
+			};
+
+			let getData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function() {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		let tpicList = (function() {
+			let moduleNm = "tpicList";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+				$('SELECT#tpicGbCd').trigger('change');
+			};
+
+			let getTpicList = function(_id) {
+				console.log(`[MODULE] ${moduleNm} -> getTpicList`);
+
+				var formData, param = {};
+				formData = {
+					"tpicGbCd": $('SELECT#tpicGbCd').val()
+					, "tpicMnuCd": $('SELECT#tpicMnuCd').val()
+				};
+				param = {
+					"url": "/sems/management/selectTpicList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+
+						$('#tpicListDiv TBODY').empty();
+						list.forEach(function(info, idx) {
+							let template = $($('TEMPLATE#TpicTrHtml').html()).clone();
+							template.find('A').text(info.tpicNm);
+							template.find('INPUT[name=tpicUid]').val(info.tpicUid).prop('checked', ('Y' === info.dpYn)).trigger('change');
+							template.find('INPUT[name=dpSeq]').val(info.dpSeq);
+
+							$('#tpicListDiv TBODY').append(template);
+							$('#tpicListDiv TBODY TR:last A').data('id', info.tpicUid);
+						});
+
+						if (_id === undefined) {
+							$('#tpicListDiv TBODY TR:first A').trigger('click');
+						} else {
+							$('#tpicListDiv input[name=tpicUid][value=' + _id + ']').parent().parent().find('A').trigger('click');
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveTpicList = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicList`);
+
+				const tpicUids = [];
+				const dpYns = [];
+				const dpSeqs = [];
+				const tpicNms = [];
+				$('#tpicListDiv INPUT[name=tpicUid]').each(function() {
+					let tmpval;
+					tpicUids.push($(this).val());
+					dpYns.push($(this).is(':checked') ? 'Y' : 'N');
+					tmpval = $.trim($(this).parent().parent().find('INPUT[name=dpSeq]').val());
+					dpSeqs.push((tmpval) ? tmpval : '999');
+					tpicNms.push($.trim($(this).parent().parent().find('INPUT[name=tpicNm]').val()));
+				});
+
+				var formData = new FormData();
+				formData.append("tpicGbCd", $('SELECT#tpicGbCd').val());
+				formData.append("tpicMnuCd", $('SELECT#tpicMnuCd').val());
+				formData.append("tpicUids", tpicUids.join(",").toString());
+				formData.append("dpYns", dpYns.join(",").toString());
+				formData.append("dpSeqs", dpSeqs.join(",").toString());
+				formData.append("tpicNms", tpicNms.join(",").toString());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicList"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicList();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 토픽구분
+				$('SELECT#tpicGbCd').on('change', function() {
+					$('SELECT#tpicMnuCd OPTION').hide();
+					$('SELECT#tpicMnuCd OPTION[data-ref=' + $(this).val() + ']').show();
+					$('SELECT#tpicMnuCd OPTION[data-ref=' + $(this).val() + ']:first').prop('selected', true);
+					$('SELECT#tpicMnuCd').trigger('change');
+					if ($(this).val() === '10') {
+						$('#contTabHeaderDiv > LI:eq(2)').show();
+						$('#contTabHeaderDiv > LI:eq(3)').hide();
+						$('#contTabHeaderDiv > LI:eq(4)').hide();
+					} else if ($(this).val() === '20') {
+						$('#contTabHeaderDiv > LI:eq(2)').hide();
+						$('#contTabHeaderDiv > LI:eq(3)').show();
+						$('#contTabHeaderDiv > LI:eq(4)').show();
+					}
+				});
+
+				// 메뉴
+				$('SELECT#tpicMnuCd').on('change', function() {
+					getTpicList();
+				});
+
+				// 토픽노출정보 저장
+				$('BUTTON[name=dotpicDpInfoSave]').on('click', function() {
+					if ($('#tpicListDiv INPUT[name=tpicNm]').length && !$.trim($('#tpicListDiv INPUT[name=tpicNm]').val())) {
+						if (!confirm('추가된 행이 있으나 입력된 내용이 없습니다.\n해당 행은 저장 처리되지 않습니다. 계속하시겠습니까?')) {
+							return;
+						}
+					}
+
+					saveTpicList();
+				});
+
+				// 전시여부
+				$('#tpicListDiv TBODY').on('change', 'TR INPUT[name=tpicUid]', function() {
+					$(this).parent().parent().find('INPUT[name=dpSeq]').prop('disabled', !$(this).is(':checked'));
+				});
+
+				// 토픽명
+				$('#tpicListDiv TBODY').on('click', 'TR A', function() {
+					$('#tpicListDiv TBODY TR').removeClass('current');
+					$(this).parent().parent().addClass('current');
+					tpicView.getTpicInfo($(this).data('id'));
+					$("#recommendContDiv SELECT[name=listFilter]").val('');
+					$("#recommendContDiv BUTTON[name=doSave]").hide();
+					tpicView.getContTpicList($(this).data('id'));
+					tpicView.getTpicSpecialistList($(this).data('id'));
+				});
+
+				// 주제(토픽)추가
+				$('BUTTON[name=doAddTpic]').on('click', function() {
+					if ($('#tpicListDiv TBODY TR INPUT[name=tpicUid][value="0"]').length > 0) {
+						alert('이미 추가된 행이 존재하며 저장 처리 후 추가가 가능합니다.');
+						return;
+					}
+					let template = $($('TEMPLATE#TpicTrHtml').html()).clone();
+					template.find('A').replaceWith('<input type="text" name="tpicNm" title="토픽명" class="w100p">');
+					template.find('INPUT[name=tpicUid]').val("0").prop('checked', false).prop('disabled', true);
+					template.find('INPUT[name=dpSeq]').val('');
+
+					$('#tpicListDiv TBODY').append(template);
+				});
+			};
+
+			return {
+				init
+				, getTpicList
+			};
+		})();
+
+		let tpicView = (function() {
+			let moduleNm = "tpicView";
+			let tpicUid;
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+				selectContentsPop.init(addContTpicList);
+			};
+
+			let getTpicInfo = function(_id) {
+				console.log(`[MODULE] ${moduleNm} -> getTpicInfo`);
+
+				var formData, param = {};
+				formData = {
+					"tpicUid": (_id === undefined) ? tpicUid : _id
+				};
+				param = {
+					"url": "/sems/management/selectTpicInfo"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let info = data.info;
+						tpicUid = info.tpicUid;
+
+						$('#tpicViewDiv TD.tpicGbTd').empty().append(info.tpicGbCdNm);
+						$('#tpicViewDiv TD.tpicMnuTd').empty().append(info.tpicMnuCdNm);
+						$('#tpicViewDiv INPUT[name=tpicNm]').val(info.tpicNm);
+						$('#tpicViewDiv INPUT[name=pirdStngUseYn]').prop('checked', (info.pirdStngUseYn === 'Y') ? true : false).trigger('change');
+						if (info.pirdStngUseYn === 'Y') {
+							let dateStr = info.dpSttDt.split(' ');
+							$('#tpicViewDiv INPUT[name=dpSttDte]').val(dateStr[0]);
+							$('#tpicViewDiv INPUT[name=dpSttHh]').val(dateStr[1].split(':')[0]);
+							$('#tpicViewDiv INPUT[name=dpSttMi]').val(dateStr[1].split(':')[1]);
+							dateStr = info.dpEndDt.split(' ');
+							$('#tpicViewDiv INPUT[name=dpEndDte]').val(dateStr[0]);
+							$('#tpicViewDiv INPUT[name=dpEndHh]').val(dateStr[1].split(':')[0]);
+							$('#tpicViewDiv INPUT[name=dpEndMi]').val(dateStr[1].split(':')[1]);
+						}
+						$('#recommendContDiv DD.contTotCntDD').empty().append(info.contTotCnt);
+						$('#recommendContDiv DD.cont1CntDD').empty().append(info.cont1Cnt);
+						$('#recommendContDiv DD.cont2CntDD').empty().append(info.cont2Cnt);
+						$('#recommendContDiv DD.cont3CntDD').empty().append(info.cont3Cnt);
+						$('#recommendContDiv DD.cont4CntDD').empty().append(info.cont4Cnt);
+
+						if (_id != undefined) {
+							if (!$('#contTabHeaderDiv > LI:first > A').hasClass('current')) {
+								$('#contTabHeaderDiv > LI:first > A').trigger('click');
+							}
+						}
+
+						let apndlist = info.apndlist;
+						$('#contTabContentDiv DIV.cont:eq(1) INPUT[name=tpicTpCd]').val('10');
+						$('#contTabContentDiv DIV.cont:eq(2) INPUT[name=tpicTpCd]').val('60');
+						$('#contTabContentDiv DIV.cont:eq(3) INPUT[name=tpicTpCd]').val('50');
+						$('#contTabContentDiv DIV.cont:eq(4) INPUT[name=tpicTpCd]').val('30');
+						$('#contTabContentDiv INPUT[name=seqNo]').val('');
+						$('#contTabContentDiv INPUT[name=subSeqNo]').val('');
+						$('#contTabContentDiv INPUT[name=apndTtl]').val('');
+						$('#contTabContentDiv TEXTAREA[name=apndCn]').val('');
+						apndlist.forEach(function(item, idx) {
+							/* 핵심개념 */
+							if (item.tpicTpCd === '10') {
+								$('#contTabContentDiv DIV.cont:eq(1) INPUT[name=tpicTpCd]').val(item.tpicTpCd);
+								$('#contTabContentDiv DIV.cont:eq(1) INPUT[name=seqNo]').val(item.seqNo);
+								$('#contTabContentDiv DIV.cont:eq(1) INPUT[name=subSeqNo]').val(item.subSeqNo);
+								$('#contTabContentDiv DIV.cont:eq(1) INPUT[name=apndTtl]').val(item.apndTtl);
+								// $('#contTabContentDiv DIV.cont:eq(1) TEXTAREA[name=apndCn]').val(item.apndCn);
+								apndCn1Edit.setValue(item.apndCn, -1);
+							}
+
+							/* 전문가 코멘트 */
+							if (item.tpicTpCd === '60') {
+								$('#contTabContentDiv DIV.cont:eq(2) INPUT[name=tpicTpCd]').val(item.tpicTpCd);
+								$('#contTabContentDiv DIV.cont:eq(2) INPUT[name=seqNo]').val(item.seqNo);
+								$('#contTabContentDiv DIV.cont:eq(2) INPUT[name=subSeqNo]').val(item.subSeqNo);
+								// $('#contTabContentDiv DIV.cont:eq(2) TEXTAREA[name=apndCn]').val(item.apndCn);
+								apndCn4Edit.setValue(item.apndCn, -1);
+							}
+
+							/* 프레임워크 */
+							if (item.tpicTpCd === '50') {
+								$('#contTabContentDiv DIV.cont:eq(3) INPUT[name=tpicTpCd]').val(item.tpicTpCd);
+								$('#contTabContentDiv DIV.cont:eq(3) INPUT[name=seqNo]').val(item.seqNo);
+								$('#contTabContentDiv DIV.cont:eq(3) INPUT[name=subSeqNo]').val(item.subSeqNo);
+								// $('#contTabContentDiv DIV.cont:eq(3) TEXTAREA[name=apndCn]').val(item.apndCn);
+								apndCn2Edit.setValue(item.apndCn, -1);
+							}
+
+							/* 상세보기 */
+							if (item.tpicTpCd === '30') {
+								$('#contTabContentDiv DIV.cont:eq(4) INPUT[name=tpicTpCd]').val(item.tpicTpCd);
+								$('#contTabContentDiv DIV.cont:eq(4) INPUT[name=seqNo]').val(item.seqNo);
+								$('#contTabContentDiv DIV.cont:eq(4) INPUT[name=subSeqNo]').val(item.subSeqNo);
+								$('#contTabContentDiv DIV.cont:eq(4) TEXTAREA[name=apndCn]').val(item.apndCn);
+								apndCn3Edit.setValue(item.apndCn, -1);
+							}
+						});
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let getContTpicList = function(_id) {
+				console.log(`[MODULE] ${moduleNm} -> getContTpicList`);
+
+				var formData, param = {};
+				formData = {
+					"tpicUid": (_id !== undefined) ? _id : tpicUid
+					, "listFilter": $('#recommendContDiv SELECT[name=listFilter]').val()
+				};
+				param = {
+					"url": "/sems/management/selectContTpicList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+
+						$('#contTpicListDiv TBODY').empty();
+						list.forEach(function(info, idx) {
+							let template = $($('TEMPLATE#contTpicTrHtml').html()).clone();
+							template.find('INPUT[name=action]').val('U');
+							template.find('INPUT[name=contUid]').val(info.contUid);
+							template.find('INPUT[name=dpYn]').prop('checked', ('Y' === info.dpYn));
+							template.find('SELECT[name=dpFixYn]').val(info.dpFixYn).trigger('change');
+							template.find('INPUT[name=dpSeq]').val(info.dpSeq);
+							template.find('TD:eq(4)').empty().append(info.contKindCdNm);
+							template.find('TD:eq(5) A').empty().append(info.contUno);
+							template.find('TD:eq(6) SPAN').empty().append(info.contNm);
+							template.find('TD:eq(7)').empty().append(info.srcNm);
+							template.find('TD:eq(8)').empty().append(info.splyLangCdNm);
+							template.find('TD:eq(9)').empty().append(info.contTpLclsfCdNm);
+							template.find('TD:eq(10)').empty().append(info.contTpMclsfCdNm);
+							template.find('TD:eq(11)').empty().append(info.taskClsfCdNm);
+							template.find('TD:eq(12)').empty().append(info.sbjtGbCdNm);
+							template.find('TD:eq(13)').empty().append(info.contRmthdCdNm);
+							template.find('TD:eq(14)').empty().append(info.contSplyTpCdNm);
+							template.find('TD:eq(15)').empty().append(info.fstInsDt);
+							template.find('TD:eq(16)').empty().append(info.lstUpdDt);
+
+							$('#contTpicListDiv TBODY').append(template);
+						});
+
+						if ($("#recommendContDiv SELECT[name=listFilter]").val() === '') {
+							$('#contTpicListDiv INPUT[name=dpYn], #contTpicListDiv SELECT[name=dpFixYn], #contTpicListDiv INPUT[name=dpSeq]').prop('disabled', true);
+						} else {
+							$('#contTpicListDiv INPUT[name=dpYn], #contTpicListDiv SELECT[name=dpFixYn], #contTpicListDiv INPUT[name=dpSeq]').prop('disabled', false);
+						}
+
+
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let getTpicSpecialistList = function(_id) {
+				console.log(`[MODULE] ${moduleNm} -> getContTpicList`);
+
+				var formData, param = {};
+				formData = {
+					"tpicUid": (_id !== undefined) ? _id : tpicUid
+					, "listFilter": $('#recommendContDiv SELECT[name=listFilter]').val()
+				};
+				param = {
+					"url": "/sems/management/selectTpicSpecialistList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+
+						$('#specialist-list TBODY').empty();
+						list.forEach(function(info, idx) {
+							let template = $($('TEMPLATE#specialistListHtml').html()).clone();
+							template.find('TH:first').empty().append(idx+1);
+							template.find('INPUT[name=spcalUids]').val(info.spcalUid);
+							template.find('IMG').attr("src", info.spcalPhoto);
+							template.find('DL:eq(0) > DD').empty().append(`${info.spcalNm} / ${info.spcalPosNm}`);
+							template.find('DL:eq(1) > DD').empty().append(`${info.spcalPartNm}`);
+							template.find('DL:eq(2) > DD').empty().append(`${info.spcalCorpNm}`);
+							$('#specialist-list TBODY').append(template);
+						});
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveTpicInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("tpicNm", $('#tpicViewDiv INPUT[name=tpicNm]').val());
+				formData.append("pirdStngUseYn", $('#tpicViewDiv INPUT[name=pirdStngUseYn]').is(':checked') ? 'Y' : 'N');
+				if ($('#tpicViewDiv INPUT[name=pirdStngUseYn]').is(':checked')) {
+					let dateStr = $.trim($('#tpicViewDiv INPUT[name=dpSttDte]').val()) + ' ' + $.trim($('#tpicViewDiv INPUT[name=dpSttHh]').val()) + ':' + $.trim($('#tpicViewDiv INPUT[name=dpSttMi]').val());
+					formData.append("dpSttDt", dateStr);
+					dateStr = $.trim($('#tpicViewDiv INPUT[name=dpEndDte]').val()) + ' ' + $.trim($('#tpicViewDiv INPUT[name=dpEndHh]').val()) + ':' + $.trim($('#tpicViewDiv INPUT[name=dpEndMi]').val());
+					formData.append("dpEndDt", dateStr);
+				}
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						tpicList.getTpicList(tpicUid);
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveTpicCoreConceptInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicCoreConceptInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("tpicTpCd", $('#contTabContentDiv DIV.cont:eq(1) INPUT[name=tpicTpCd]').val());
+				formData.append("seqNo", $('#contTabContentDiv DIV.cont:eq(1) INPUT[name=seqNo]').val());
+				formData.append("subSeqNo", $('#contTabContentDiv DIV.cont:eq(1) INPUT[name=subSeqNo]').val());
+				formData.append("apndTtl", $('#contTabContentDiv DIV.cont:eq(1) INPUT[name=apndTtl]').val());
+				// formData.append("apndCn", $('#contTabContentDiv DIV.cont:eq(1) TEXTAREA[name=apndCn]').val());
+				formData.append("apndCn", apndCn1Edit.getValue());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicApndInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicInfo();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveTpicExpertCommentInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicExpertCommentInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("tpicTpCd", $('#contTabContentDiv DIV.cont:eq(2) INPUT[name=tpicTpCd]').val());
+				formData.append("seqNo", $('#contTabContentDiv DIV.cont:eq(2) INPUT[name=seqNo]').val());
+				formData.append("subSeqNo", $('#contTabContentDiv DIV.cont:eq(2) INPUT[name=subSeqNo]').val());
+				// formData.append("apndCn", $('#contTabContentDiv DIV.cont:eq(2) TEXTAREA[name=apndCn]').val());
+				formData.append("apndCn", apndCn4Edit.getValue());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicApndInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicInfo();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveTpicSpecialistInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicSpecialistInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				$('#specialist-list INPUT[name=spcalUids]').each(function() {
+					formData.append("spcalUids", $(this).val());
+				});
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicSpecialistInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicSpecialistList();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveTpicFrameworkInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicFrameworkInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("tpicTpCd", $('#contTabContentDiv DIV.cont:eq(3) INPUT[name=tpicTpCd]').val());
+				formData.append("seqNo", $('#contTabContentDiv DIV.cont:eq(3) INPUT[name=seqNo]').val());
+				formData.append("subSeqNo", $('#contTabContentDiv DIV.cont:eq(3) INPUT[name=subSeqNo]').val());
+				// formData.append("apndCn", $('#contTabContentDiv DIV.cont:eq(3) TEXTAREA[name=apndCn]').val());
+				formData.append("apndCn", apndCn2Edit.getValue());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicApndInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicInfo();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveTpicDetailViewInfo = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveTpicDetailViewInfo`);
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("tpicTpCd", $('#contTabContentDiv DIV.cont:eq(4) INPUT[name=tpicTpCd]').val());
+				formData.append("seqNo", $('#contTabContentDiv DIV.cont:eq(4) INPUT[name=seqNo]').val());
+				formData.append("subSeqNo", $('#contTabContentDiv DIV.cont:eq(4) INPUT[name=subSeqNo]').val());
+				// formData.append("apndCn", $('#contTabContentDiv DIV.cont:eq(4) TEXTAREA[name=apndCn]').val());
+				formData.append("apndCn", apndCn3Edit.getValue());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertTpicApndInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getTpicInfo();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let addContTpicList = function(_tarContUidList) {
+				$.post(
+					"/sems/management/addContTpicList"
+					, {
+						tpicUid: tpicUid
+						, contUids: _tarContUidList
+					}
+					, function(data){
+						alert(data.resultCnt+'건의 컨텐츠가 추가되었습니다.');
+						$('#selectContentsPop').removeClass('show');
+						getContTpicList();
+					}
+				);
+			};
+
+			let delContTpicList = function() {
+				console.log(`[MODULE] ${moduleNm} -> delContTpicList`);
+
+				const contUids = [];
+				$('#contTpicListDiv INPUT[name=contUid]:checked').each(function() {
+					contUids.push($(this).val());
+				});
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("contUids", contUids.join(",").toString());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/deleteContTpicList"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("삭제에 성공하였습니다.");
+						getContTpicList();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let saveContTpicList = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveContTpicList`);
+
+				const actions = [];
+				const contUids = [];
+				const dpYns = [];
+				const dpFixYns = [];
+				const dpSeqs = [];
+				$('#contTpicListDiv INPUT[name=contUid]').each(function() {
+					let tmpval;
+					contUids.push($(this).val());
+					actions.push($(this).parent().find('INPUT[name=action]').val());
+					dpYns.push($(this).parent().parent().find('INPUT[name=dpYn]').is(':checked') ? 'Y' : 'N');
+					dpFixYns.push($(this).parent().parent().find('SELECT[name=dpFixYn]').val());
+					tmpval = $.trim($(this).parent().parent().find('INPUT[name=dpSeq]').val());
+					dpSeqs.push((tmpval) ? tmpval : '999');
+				});
+
+				var formData = new FormData();
+				formData.append("tpicUid", tpicUid);
+				formData.append("actions", actions.join(",").toString());
+				formData.append("contUids", contUids.join(",").toString());
+				formData.append("dpYns", dpYns.join(",").toString());
+				formData.append("dpFixYns", dpFixYns.join(",").toString());
+				formData.append("dpSeqs", dpSeqs.join(",").toString());
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/upsertContTpicList"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						getContTpicList();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 숫자입력
+				$("#docForm INPUT[type=text].inputNumber").on("input", function () {
+					this.value = this.value.replace(/[^0-9]/g, "");
+				});
+
+				// 기간설정사용
+				$("#tpicViewDiv INPUT[name=pirdStngUseYn]").on("change", function() {
+					$("#tpicViewDiv INPUT[name=dpSttDte], #tpicViewDiv INPUT[name=dpSttHh], #tpicViewDiv INPUT[name=dpSttMi], #tpicViewDiv INPUT[name=dpEndDte], #tpicViewDiv INPUT[name=dpEndHh], #tpicViewDiv INPUT[name=dpEndMi]").prop("disabled", !$(this).prop("checked"));
+					if (!$(this).prop("checked")) {
+						$("#tpicViewDiv INPUT[name=dpSttDte], #tpicViewDiv INPUT[name=dpEndDte]").val('');
+					}
+				});
+
+				// 추천콘텐츠 목록필터
+				$("#recommendContDiv SELECT[name=listFilter]").on("change", function() {
+					if ($(this).val() === '') {
+						$("#recommendContDiv BUTTON[name=doSave]").hide();
+					} else {
+						$("#recommendContDiv BUTTON[name=doSave]").show();
+					}
+					getContTpicList();
+				});
+
+				// 엑셀 다운로드
+				$("BUTTON[name=doExcelDownload]").on('click', function() {
+					if (!confirm("다운로드 하시겠습니까?")) return;
+
+					var data = "";
+					var formObj = $('<form></form>');
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/management/selectContTpicListExcelDown");
+					formObj.append($('<input/>', {type: 'hidden', name: 'tpicUid', value: tpicUid}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'listFilter', value: $('#recommendContDiv SELECT[name=listFilter]').val()}));
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+
+				// 토픽정보 저장
+				$('BUTTON[name=doSaveTpicInfo]').on('click', function() {
+					if ($.trim($('#tpicViewDiv INPUT[name=tpicNm]').val()) === "") {
+						alert('토픽명을 입력해 주세요.');
+						return;
+					}
+
+					if ($('#tpicViewDiv INPUT[name=pirdStngUseYn]').is(":checked")) {
+						let dateStr = $.trim($('#tpicViewDiv INPUT[name=dpSttDte]').val()) + ' ' + $.trim($('#tpicViewDiv INPUT[name=dpSttHh]').val()) + ':' + $.trim($('#tpicViewDiv INPUT[name=dpSttMi]').val());
+						if (!_comLib.isValidDate(dateStr)) {
+							alert('기간설정의 시작일시를 지정해주세요.');
+							return
+						}
+						dateStr = $.trim($('#tpicViewDiv INPUT[name=dpEndDte]').val()) + ' ' + $.trim($('#tpicViewDiv INPUT[name=dpEndHh]').val()) + ':' + $.trim($('#tpicViewDiv INPUT[name=dpEndMi]').val());
+						if (!_comLib.isValidDate(dateStr)) {
+							alert('기간설정의 종료일시를 지정해주세요.');
+							return
+						}
+					}
+
+					saveTpicInfo();
+				});
+
+				// 추천컨텐츠 추가
+				$('BUTTON[name=doAddCont]').on('click', function() {
+					selectContentsPop.openPop(tpicUid);
+				});
+
+				// 추천컨텐츠 삭제
+				$('BUTTON[name=doDelCont]').on('click', function() {
+					if ($('#contTpicListDiv INPUT[name=contUid]:checked').length === 0) {
+						alert('선택된 삭제 대상 데이터가 없습니다.');
+						return;
+					}
+					if (!confirm("삭제하시겠습니까?")) return;
+
+					delContTpicList();
+				});
+
+				// 추천컨텐츠 저장
+				$('#recommendContDiv BUTTON[name=doSave]').on('click', function() {
+					saveContTpicList();
+				});
+
+				// 핵심개념 저장
+				$('BUTTON[name=doSaveCoreConcept]').on('click', function() {
+					saveTpicCoreConceptInfo();
+				});
+
+				// 전문가코멘트 저장
+				$('BUTTON[name=doSaveExpertComment]').on('click', function() {
+					saveTpicExpertCommentInfo();
+				});
+
+				// 전문가리스트 저장
+				$('BUTTON[name=doSaveSpecialist]').on('click', function() {
+					saveTpicSpecialistInfo();
+				});
+
+				// 전문가 변경
+				$('#specialist-list').on('click', 'BUTTON[name=doSpcalRegist]', function() {
+					let targetSpcalUid = $(this).parent().parent().find('INPUT[name=spcalUids]').val();
+					specialList.openPop(targetSpcalUid);
+				});
+
+				// 전문가 삭제
+				$('#specialist-list').on('click', 'BUTTON[name=doDel]', function() {
+					$(this).parent().parent().remove();
+				});
+
+				// 전문가 추가
+				$('BUTTON[name=doAddSpcal]').on('click', function() {
+					console.log('전문가 추가');
+					specialList.openPop(0);
+				});
+
+				// 프레임워크 저장
+				$('BUTTON[name=doSaveFramework]').on('click', function() {
+					saveTpicFrameworkInfo();
+				});
+
+				// 상세보기 저장
+				$('BUTTON[name=doSaveDetailView]').on('click', function() {
+					saveTpicDetailViewInfo();
+				});
+			};
+
+			return {
+				init
+				, getTpicInfo
+				, getContTpicList
+				, getTpicSpecialistList
+			};
+		})();
+
+		let specialList = (function() {
+			let moduleNm = "specialList";
+			let spcalUid = 0;
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 검색버튼
+				$('#mainBySrcSearchPop BUTTON[name=doSearch]').on('click', function() {
+					setData(true, function() {});
+				});
+
+				// 컨텐츠등록 버튼
+				$("#specialistSearchPop BUTTON[name=doAddSpecialist]").on('click', function() {
+					specialRegist.openPop(null);
+				});
+
+				// 컨텐츠수정 버튼
+				$("#specialistSearchPop #divSpecialistSearchPopList").on('click', 'BUTTON', function() {
+					console.log('수정');
+
+					let data = $(this).parent().parent().data('info');
+					specialRegist.openPop(data);
+
+					return false;
+				});
+
+				// 데이터 선택
+				$('#specialistSearchPop').on('click', '#divSpecialistSearchPopList TBODY TD > A', function() {
+					let info = $(this).parent().parent().data('info');
+
+					if (spcalUid === 0) {
+						let template = $($('TEMPLATE#specialistListHtml').html()).clone();
+						template.find('TH:first').empty().append(parseInt($('#specialist-list TBODY TR:last TH:first').text()) + 1);
+						template.find('INPUT[name=spcalUids]').val(info.spcalUid);
+						template.find('IMG').attr("src", info.spcalPhoto);
+						template.find('DL:eq(0) > DD').empty().append(`${info.spcalNm}`);
+						if (info.spcalPosNm) {
+							template.find('DL:eq(0) > DD').append(` / ${info.spcalPosNm}`);
+						}
+						template.find('DL:eq(1) > DD').empty().append(`${info.spcalPartNm ? info.spcalPartNm : ''}`);
+						template.find('DL:eq(2) > DD').empty().append(`${info.spcalCorpNm ? info.spcalCorpNm : ''}`);
+						$('#specialist-list TBODY').append(template);
+					} else {
+						var targetObj = $(`#specialist-list TBODY INPUT[name=spcalUids][value=${spcalUid}]`).parent().parent();
+						$(targetObj).find('INPUT[name=spcalUids]').val(info.spcalUid);
+						$(targetObj).find('IMG').attr("src", info.spcalPhoto);
+						$(targetObj).find('DL:eq(0) > DD').empty().append(`${info.spcalNm}`);
+						if (info.spcalPosNm) {
+							$(targetObj).find('DL:eq(0) > DD').append(` / ${info.spcalPosNm}`);
+						}
+						$(targetObj).find('DL:eq(1) > DD').empty().append(`${info.spcalPartNm ? info.spcalPartNm : ''}`);
+						$(targetObj).find('DL:eq(2) > DD').empty().append(`${info.spcalCorpNm ? info.spcalCorpNm : ''}`);
+					}
+					$('#specialistSearchPop').removeClass('show');
+				});
+			};
+
+			let openPop = function(_spcalUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_spcalUid})`);
+				spcalUid = _spcalUid;
+
+				$('#specialistSearchPop #frmSearchPop').resetForm();
+
+				setData(function() {
+					$("#specialistSearchPop").css("zIndex", 901);
+					$('#specialistSearchPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				});
+			};
+
+			let setData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+
+				getData(function(data) {
+					let list = data.list;
+
+					$('#divSpecialistSearchPopList TBODY').empty();
+					list.forEach(function(info, idx) {
+						let template = $($('TEMPLATE#schSpecialistHtml').html()).clone();
+						template.find('TD:eq(0)').empty().append(idx+1);
+						template.find('TD:eq(1) > A').empty().append(`${info.spcalNm}`);
+						if (info.spcalPosNm) {
+							template.find('TD:eq(1) > A').append(` / ${info.spcalPosNm}`);
+						}
+						template.find('TD:eq(2)').empty().append(`${info.spcalPartNm ? info.spcalPartNm : ''}`);
+						template.find('TD:eq(3)').empty().append(`${info.spcalCorpNm ? info.spcalCorpNm : ''}`);
+						$('#divSpecialistSearchPopList TBODY').append(template);
+						$('#divSpecialistSearchPopList TBODY TR:last').data('info', info);
+					});
+
+					_callback();
+				});
+			};
+
+			let getData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				// formData = new FormData();
+
+				$("#specialistSearchPop DIV.result-wrap").LoadingOverlay("show");
+				var param = {
+					"url": "/sems/management/selectTpicSpecialistAll"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+						$("#specialistSearchPop DIV.result-wrap").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			return {
+				init
+				, openPop
+				, setData
+			};
+		})();
+
+		let specialRegist = (function() {
+			let moduleNm = "specialRegist";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 이미지업로드
+				$("#specialistRegistPop #frmSpecialistInfo BUTTON[name=doPhotoUpload]").on('click', function() {
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=uploadImage]").trigger('click');
+				});
+				$("#specialistRegistPop #frmSpecialistInfo INPUT[name=uploadImage]").on('change', function (e) {
+					var reader = new FileReader();
+					reader.onload = function () {
+						$("#specialistRegistPop #frmSpecialistInfo IMG[name=previewImage]").each((e, item) => {
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+				});
+
+				// 등록버튼
+				$("#frmSpecialistInfo BUTTON[name=doRegist]").on("click", function() {
+					// 이름
+					if ($("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalNm]").val() === '') {
+						alert('이름을 입력해 주세요.');
+						$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalNm]").focus();
+						return;
+					}
+
+					saveData();
+				});
+			};
+
+			let openPop = function(_data) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_data})`);
+
+				$("#specialistRegistPop").resetForm();
+				$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalUid]").val("");
+				$("#specialistRegistPop #frmSpecialistInfo IMG[name=previewImage]").attr('src', '/sems/assets/img/common/noimage.png');
+				if (_data != null) {
+					let imgSrc = '/sems/assets/img/common/noimage.png';
+					if (_data) {
+						imgSrc = _data.spcalPhoto;
+					}
+					$("#specialistRegistPop #frmSpecialistInfo IMG[name=previewImage]").attr('src', imgSrc);
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalUid]").val(_data.spcalUid);
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalNm]").val(_data.spcalNm);
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalPosNm]").val(_data.spcalPosNm);
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalPartNm]").val(_data.spcalPartNm);
+					$("#specialistRegistPop #frmSpecialistInfo INPUT[name=spcalCorpNm]").val(_data.spcalCorpNm);
+				}
+				$("#specialistRegistPop").addClass("show");
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#frmSpecialistInfo")[0]);
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/management/saveSpecialistInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#specialistRegistPop").removeClass("show");
+						specialList.setData(function() {});
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function() {
+			page.init();
+			tpicList.init();
+			tpicView.init();
+			specialList.init();
+			specialRegist.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<!-- content -->
+	<section id="cont-section" class="content">
+		<div class="location">
+			<h3>주요 화면 관리</h3>
+			<ul class="breadcrumb">
+				<li>웹사이트 관리</li>
+				<li>큐레이션 관리</li>
+				<li>주요 화면 관리</li>
+			</ul>
+		</div>
+
+		<!-- //location -->
+		<div class="section-wrap flex esg-wrap">
+			<div class="section-wrap-left">
+				<section>
+					<h4 class="tit">메뉴/화면 조회</h4>
+					<div class="search-wrap mt20"><!-- 20230727 수정 -->
+						<div class="table-wrap">
+							<table class="inner-input">
+								<caption>화면 구분 메뉴</caption>
+								<colgroup>
+									<col style="width: 30%;">
+									<col style="width: *;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th>구분</th><!-- 20230727 수정 -->
+									<td><!-- 20230727 수정 -->
+										<select id="tpicGbCd" name="tpicGbCd" class="select w100p">
+											<option value="10">ESG 실행</option>
+											<option value="20">ESG 공시·인증</option>
+										</select>
+
+									</td>
+								</tr>
+								<tr>
+									<th>메뉴</th><!-- 20230727 수정 -->
+									<td>
+										<select name="tpicMnuCd" id="tpicMnuCd" class="select w100p">
+											<option value="10" data-ref="10">E(환경)</option>
+											<option value="20" data-ref="10">S(사회)</option>
+											<option value="30" data-ref="10">G(거버넌스)</option>
+											<option value="40" data-ref="10">금융</option>
+											<option value="50" data-ref="10">ESG TAX</option>
+											<option value="60" data-ref="10">ESG Deal</option>
+											<option value="70" data-ref="20">ESG 공시</option>
+										</select>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+					<!-- //search-wrap -->
+					<div style="position: relative; height: 45px;">
+						<div class="btn-group-r flex" style="top: 10px">
+							<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+							<button type="button" name="dotpicDpInfoSave" class="btn-primary">저장</button>
+							</th:block>
+						</div>
+					</div>
+					<div class="result-wrap">
+						<div id="tpicListDiv" class="table-wrap">
+							<!-- TEMPLATE :: 토픽목록 -->
+							<template id="TpicTrHtml">
+								<tr>
+									<td><input type="checkbox" name="tpicUid" title="선택"></td>
+									<td><input type="text" name="dpSeq" title="순서" class="ct display"></td>
+									<td><a href="#" class="link">[토픽명]</a></td>
+								</tr>
+							</template>
+							<!--// TEMPLATE :: 토픽목록 -->
+							<table class="inner-input">
+								<caption>토픽 리스트 출력</caption>
+								<colgroup>
+									<col style="width: 22%;">
+									<col style="width: 22%;">
+									<col style="width: *;">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>전시여부</th>
+									<th>전시순서</th>
+									<th>토픽명</th>
+								</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							<div class="btn-add-wrap">
+								<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+								<button type="button" name="doAddTpic" class="btn-add"><span>주제 추가</span></button>
+								</th:block>
+							</div>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+					<!-- //result-wrap -->
+				</section>
+			</div>
+			<div class="section-wrap-right">
+				<section>
+					<h4 class="tit">메뉴/화면 정보</h4>
+					<div class="btn-group-r flex">
+<!--						<button type="button" class="btn_link">미리보기</button>리-->
+						<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+						<button type="button" name="doSaveTpicInfo" class="btn-primary">저장</button>
+						</th:block>
+					</div>
+					<div class="search-wrap mt20">
+						<div id="tpicViewDiv" class="table-wrap">
+							<table class="inner-input">
+								<caption>화면 정보</caption>
+								<colgroup>
+									<col style="width: 15%;">
+									<col style="width: 35%;">
+									<col style="width: 15%;">
+									<col style="width: 35%;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th>구분</th>
+									<td class="tpicGbTd">ESG 실행</td>
+									<th>메뉴구분</th>
+									<td class="tpicMnuTd">E(환경)</td>
+								</tr>
+								<tr>
+									<th>토픽명</th>
+									<td colspan="3">
+										<input type="text" name="tpicNm" title="토픽명" class="w100p">
+										<!-- 20230727 수정 -->
+									</td>
+<!--									<th>화면번호</th>-->
+<!--									<td>M1002</td>-->
+								</tr>
+								<tr>
+									<th>전시 기간</th>
+									<td colspan="3">
+										<div class="date-select flex date-ck-mix">
+											<div class="datepicker-wrap flex">
+												<input type="text" name="dpSttDte" id="dpSttDte" class="datepicker" disabled>
+												<input type="text" name="dpSttHh" value="00" maxlength="2" class="time inputNumber" disabled>:<input type="text" name="dpSttMi" class="time inputNumber" value="00" maxlength="2" disabled>
+												<span class="separator"> - </span>
+												<input type="text" name="dpEndDte" id="dpEndDte" class="datepicker" disabled>
+												<input type="text" name="dpEndHh" value="23" maxlength="2" class="time inputNumber" disabled>:<input type="text" name="dpEndMi" class="time inputNumber" value="59" maxlength="2" disabled>
+											</div>
+											<input type="checkbox" id="pirdStngUseYn" name="pirdStngUseYn" value="Y"><label for="pirdStngUseYn">기간설정사용</label>
+										</div>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+					</div>
+					<!-- //search-wrap -->
+					<div id="contTabDiv" class="tab-wrap">
+						<ul id="contTabHeaderDiv" class="tab-list flex">
+							<li><a href="javascript:void(0);" class="current">추천 컨텐츠</a></li>
+							<li><a href="javascript:void(0);">핵심 개념<span class="required"><i class="blind">필수입력</i></span></a></li>
+							<li><a href="javascript:void(0);">전문가 코멘트<span class="required"><i class="blind">필수입력</i></span></a></li>
+							<li><a href="javascript:void(0);">프레임워크<span class="required"><i class="blind">필수입력</i></span></a></li>
+							<li><a href="javascript:void(0);">상세보기<span class="required"><i class="blind">필수입력</i></span></a></li>
+						</ul>
+						<div id="contTabContentDiv" class="cont-wrap">
+							<!-- 추천 컨텐츠 -->
+							<div id="recommendContDiv" class="cont current">
+								<div class="total-grid">
+									<dl>
+										<dt>컨텐츠 합계</dt>
+										<dd class="contTotCntDD">165</dd>
+										<dt>삼일인사이트</dt>
+										<dd class="cont1CntDD">7</dd>
+										<dt>최신동향</dt>
+										<dd class="cont2CntDD">85</dd>
+										<dt>ESG 영상모음</dt>
+										<dd class="cont3CntDD">43</dd>
+										<dt>ESG 자료모음</dt>
+										<dd class="cont4CntDD">60</dd>
+									</dl>
+								</div>
+								<div class="result-wrap">
+									<div class="sorting-wrap">
+										<select name="listFilter" class="select" title="">
+											<option value="">전체</option>
+											<option value="01">삼일인사이트</option>
+											<option value="02">최신동향</option>
+											<option value="03">ESG 영상모음</option>
+											<option value="04">ESG 자료모음 - 기준/가이드라인</option>
+											<option value="05">ESG 자료모음 - 연구/보고</option>
+											<option value="06">ESG 자료모음 - 법/제도</option>
+										</select>
+										<div class="btn-ctl">
+											<button type="button" name="doExcelDownload" class="btn-download">다운로드</button>
+											<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+											<button type="button" name="doAddCont" class="btn-default">컨텐츠 추가</button>
+											</th:block>
+											<th:block th:if="${session.BoMbrInfo.rights.contains('D')}">
+											<button type="button" name="doDelCont" class="btn-default">컨텐츠 삭제</button>
+											</th:block>
+											<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+											<button type="button" name="doSave" class="btn-primary">저장</button>
+											</th:block>
+										</div>
+									</div>
+									<!-- //sorting-wrap -->
+									<div id="contTpicListDiv" class="table-wrap xscroll-wrap">
+										<template id="contTpicTrHtml">
+											<tr>
+												<td>
+													<input type="hidden" name="action">
+													<input type="checkbox" name="contUid" title="선택">
+												</td>
+												<td><input type="checkbox" name="dpYn" title="전시여부" value="Y"></td>
+												<td>
+													<select name="dpFixYn" class="select">
+														<option value="N">최신순</option>
+														<option value="Y">최우선배치</option>
+													</select>
+												</td>
+												<td>
+													<input type="text" name="dpSeq" title="순서" class="ct display">
+												</td>
+												<td>문서</td>
+												<td><a href="javascript:void(0);" class="link1">CDIA00012</a></td>
+												<td class="left"><span class="ellipsis">GRI 1: Foundation 2021 GRI 1: Foundation 2021</span></td>
+												<td>GRI</td>
+												<td>국문</td>
+												<td>삼일발간물</td>
+												<td>레포트</td>
+												<td>공시</td>
+												<td>ESG일반</td>
+												<td>컨텐츠업로드</td>
+												<td>MP4</td>
+												<td>2023-09-20</td>
+												<td>2023-11-20</td>
+											</tr>
+										</template>
+										<template id="contTpicNoDataTrHtml">
+											<tr>
+												<td class="nodata" colspan="17">nodata</td>
+											</tr>
+										</template>
+										<table class="w1400">
+											<caption>회원 리스트</caption>
+											<colgroup>
+												<col style="width: 2%;">
+												<col style="width: 5%;">
+												<col style="width: 8%;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 7%;">
+												<col style="width: *;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 5%;">
+												<col style="width: 6%;">
+												<col style="width: 5%;">
+												<col style="width: 6%;">
+												<col style="width: 6%;">
+											</colgroup>
+											<thead>
+											<tr>
+												<th></th>
+												<th>전시여부</th>
+												<th>정렬방식</th>
+												<th>전시순서</th>
+												<th>종류</th>
+												<th>컨텐츠 번호</th>
+												<th>컨텐츠명</th>
+												<th>출처</th>
+												<th>언어</th>
+												<th>유형분류</th>
+												<th>유형세분류</th>
+												<th>업무분류</th>
+												<th>주제분류</th>
+												<th>등록방식</th>
+												<th>형태</th>
+												<th>등록일</th>
+												<th>수정일</th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //result-list -->
+							</div>
+							<!-- //추천 컨텐츠 -->
+
+							<!-- 핵심 개념 -->
+							<div class="cont">
+								<input type="hidden" name="tpicTpCd">
+								<input type="hidden" name="seqNo">
+								<input type="hidden" name="subSeqNo">
+								<div class="btn-group-txtr">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+									<button type="button" name="doSaveCoreConcept" class="btn-primary">저장</button>
+									</th:block>
+								</div>
+								<section>
+									<h4 class="tit">타이틀</h4>
+									<input type="text" name="apndTtl" title="타이틀" class="w100p">
+								</section>
+								<section>
+									<h4 class="tit">핵심개념</h4>
+									<textarea name="apndCn" cols="" rows="" title="핵심개념 요약" class="h300" style="display: none"></textarea>
+									<div id="apndCn1Edit" class="editor" style="height: 400px; width: 100%;"></div>
+								</section>
+							</div>
+							<!-- //핵심 개념 -->
+
+							<!-- 전문가 코멘트 -->
+							<div class="cont">
+								<section>
+									<input type="hidden" name="tpicTpCd">
+									<input type="hidden" name="seqNo">
+									<input type="hidden" name="subSeqNo">
+									<h4 class="tit">전문가 코멘트</h4>
+									<div class="btn-group-r">
+										<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+										<button type="button" name="doSaveExpertComment" class="btn-primary">저장</button>
+										</th:block>
+									</div>
+									<textarea name="apndCn" cols="" rows="" title="전문가 코멘트" class="h300" style="display: none"></textarea>
+									<div id="apndCn4Edit" class="editor" style="height: 400px; width: 100%;"></div>
+								</section>
+								<section style="margin-top: 50px">
+									<h4 class="tit">전문가 리스트</h4>
+									<div class="btn-group-r">
+										<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+										<button type="button" name="doSaveSpecialist" class="btn-primary">저장</button>
+										</th:block>
+									</div>
+									<div class="table-wrap mix-table" id="specialist-list">
+										<style>
+											#specialist-list TABLE TBODY TR IMG {
+												width: 90px;
+												height: 100px;
+											}
+											#specialist-list TABLE TBODY TR DL {
+												display: flex;
+												margin: 20px 0;
+												font-size: 18px;
+												width: 100%;
+											}
+											#specialist-list TABLE TBODY TR DL DT {
+												font-weight: bold;
+												width: 130px;
+											}
+										</style>
+										<template id="specialistListHtml">
+											<tr>
+												<th>1</th>
+												<th>
+													<input type="hidden" name="spcalUids">
+													<img src="">
+												</th>
+												<td>
+													<dl>
+														<dt>이름/직급</dt>
+														<dd>[이름/직급]</dd>
+													</dl>
+													<dl>
+														<dt>소속(팀명)</dt>
+														<dd>[소속(팀명)]</dd>
+													</dl>
+													<dl>
+														<dt>소속(회사명)</dt>
+														<dd>[삼일PwC]</dd>
+													</dl>
+												</td>
+												<th>
+													<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+													<button type="button" name="doSpcalRegist" class="btn_link">전문가 변경</button>
+													&nbsp;
+													<button type="button" name="doDel" class="btn-del"><span>전문가 삭제</span></button>
+													</th:block>
+												</th>
+											</tr>
+										</template>
+										<table>
+											<caption>전문가 리스트</caption>
+											<colgroup>
+												<col style="width: 5%;">
+												<col style="width: 20%;">
+												<col style="width: *;">
+												<col style="width: 25%;">
+											</colgroup>
+											<thead>
+											<tr>
+												<th>NO</th>
+												<th>사진</th>
+												<th>정보</th>
+												<th>&nbsp;</th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+									<div class="btn-add-wrap">
+										<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+										<button type="button" name="doAddSpcal" class="btn-add"><span>행 추가</span></button>
+										</th:block>
+									</div>
+								</section>
+							</div>
+							<!-- //삼일 제공 서비스 -->
+
+							<!-- 프레임워크 -->
+							<div class="cont">
+								<section>
+									<input type="hidden" name="tpicTpCd">
+									<input type="hidden" name="seqNo">
+									<input type="hidden" name="subSeqNo">
+									<h4 class="tit">프레임워크</h4>
+									<div class="btn-group-r">
+										<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+										<button type="button" name="doSaveFramework" class="btn-primary">저장</button>
+										</th:block>
+									</div>
+									<textarea name="apndCn" cols="" rows="" title="프레임워크" class="h400" style="display: none"></textarea>
+									<div id="apndCn2Edit" class="editor" style="height: 400px; width: 100%;"></div>
+								</section>
+							</div>
+							<!-- //프레임워크 -->
+
+							<!-- 상세보기 -->
+							<div class="cont">
+								<section>
+									<input type="hidden" name="tpicTpCd">
+									<input type="hidden" name="seqNo">
+									<input type="hidden" name="subSeqNo">
+									<h4 class="tit">상세보기</h4>
+									<div class="btn-group-r">
+										<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+										<button type="button" name="doSaveDetailView" class="btn-primary">저장</button>
+										</th:block>
+									</div>
+									<textarea name="apndCn" cols="" rows="" title="상세보기" class="h400" style="display: none"></textarea>
+									<div id="apndCn3Edit" class="editor" style="height: 400px; width: 100%;"></div>
+								</section>
+							</div>
+							<!-- //상세보기 -->
+						</div>
+						<!-- //cont-wrap -->
+					</div>
+					<!-- //tab-wrap -->
+				</section>
+			</div>
+		</div>
+	</section>
+	<!-- //content -->
+
+	<th:block th:replace="/backoffice/popup/selectContentsPop :: selectContentsPopFragment"></th:block>
+
+	<!-- 전문가 목록 조회 팝업 -->
+	<div id="specialistSearchPop" class="modal-wrap">
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area small" style="width: 900px;">
+				<div class="modal-head">
+					<h2 class="tit">전문가 검색</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="form-content">
+						<form id="frmSearchPop">
+							<fieldset>
+								<legend>전문가 검색</legend>
+								<div class="search-wrap">
+									<div class="table-wrap">
+										<table class="inner-input align-left">
+											<caption>전문가 검색</caption>
+											<colgroup>
+												<col style="width: 30%;">
+												<col style="width: *;">
+											</colgroup>
+											<tbody>
+											<tr>
+												<th>키워드</th>
+												<td>
+													<div class="selectinput-wrap">
+														<select name="schSpecialistOptBySearchPop" class="select">
+															<option value="01">이름</option>
+															<option value="02">소속(팀명)</option>
+															<option value="03">소속(회사명)</option>
+														</select>
+														<input type="text" name="schSpecialistWrdBySearchPop" placeholder="" title="입력">
+													</div>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- //table-wrap -->
+								<div class="btn-wrap">
+									<button type="button" name="doSearch" class="btn-primary">검색</button>
+									<button type="button" name="doAddSpecialist" class="btn-sub">신규 전문가 추가</button>
+								</div>
+								<!-- //btn-wrap -->
+								<div class="result-wrap">
+									<div class="sorting-wrap">
+									</div>
+									<!-- //sorting-wrap -->
+									<div id="divSpecialistSearchPopList" class="table-wrap ">
+										<!-- 페이징 정보 -->
+										<template id="schSpecialistHtml">
+											<tr>
+												<td>[No]</td>
+												<td class="left"><a class="link">[이름/직급]</a></td>
+												<td>[소속(팀명)]</td>
+												<td>[소속(회사명)]</td>
+												<td>
+													<button>수정</button>
+												</td>
+											</tr>
+										</template>
+										<table>
+											<caption>전문가 검색 리스트</caption>
+											<colgroup>
+												<col style="width: 10%;">
+												<col style="width: 25%;">
+												<col style="width: *;">
+												<col style="width: 20%;">
+												<col style="width: 10%;">
+											</colgroup>
+											<thead>
+											<tr>
+												<th>NO</th>
+												<th>이름 / 직급</th>
+												<th>소속(팀명)</th>
+												<th>소속(회사명)</th>
+												<th></th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //result-list -->
+								<div class="btn-wrap">
+									<button type="button" id="btnCloseBySrcSearchPop" class="btn-sub btn-close">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+
+	<!-- 전문가 등록 팝업 -->
+	<div id="specialistRegistPop" class="modal-wrap" style="z-index:1000">
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area">
+				<div class="modal-head">
+					<h2 class="tit">전문가 등록/수정</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="search-wrap">
+						<form id="frmSpecialistInfo">
+							<fieldset>
+								<legend>전문가 등록/수정</legend>
+								<div class="table-wrap">
+									<table>
+										<caption>전문가 리스트</caption>
+										<colgroup>
+											<col style="width: 20%;">
+											<col style="width: *;">
+										</colgroup>
+										<thead>
+										<tr>
+											<th>사진</th>
+											<th colspan="2">내용</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td rowspan="3">
+												<div class="thum-upload-wrap flex">
+													<div class="thumbnail" style="width: 230px; height: 130px">
+														<img id="previewImage" class="previewImage" name="previewImage" src="/sems/assets/img/common/noimage.png" style="width: 90px; height: 100px; object-fit: cover;">
+													</div>
+													<div class="btn-upload-wrap">
+														<button type="button" name="doPhotoUpload" class="btn-upload"><span>이미지 업로드</span></button>
+													</div>
+													<input type="file" id="uploadImage" name="uploadImage" accept="image/*" style="display:none;">
+												</div>
+											</td>
+											<th class="line"><label for="spcalNm">이름/직급 </label></th>
+											<td>
+												<div class="flex selectinput-mix">
+													<input type="hidden" name="spcalUid">
+													<input type="text" id="spcalNm" name="spcalNm" class="" value="">
+													<input type="text" name="spcalPosNm" class="write-area" value="">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<th class="line"><label for="spcalPartNm">소속(팀명)</label></th>
+											<td>
+												<input type="text" id="spcalPartNm" name="spcalPartNm" class="w100p" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="line"><label for="spcalCorpNm">소속(회사명)</label>
+											</th>
+											<td>
+												<input type="text" id="spcalCorpNm" name="spcalCorpNm" class="w100p" value="">
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //table-wrap -->
+								<div class="btn-wrap">
+									<button type="button" name="doRegist" class="btn-primary">저장
+									</button>
+									<button type="button" class="btn-sub btn-close">
+										닫기
+									</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!--//search-wrap-->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+
+</div>
+</html>

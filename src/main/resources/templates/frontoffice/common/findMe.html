@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+    <script type="text/javascript">
+        var is_send = false;
+        $(function () {
+            // 이벤트 설정
+            $("#btnConfirm").bind("click", fnFindId);	//확인
+        });
+
+        function fnFindId() {
+            var formData, param = {};
+            formData = _formLib.getFormData("frm");
+
+            if (_formLib.isEmpty($("#mbrNm").val())) {
+                alert('이름을 입력해 주세요');
+                $("#mbrNm").focus();
+                return false;
+            }
+
+            if (_formLib.isEmpty($("#compMail").val())) {
+                alert('이메일을 입력해 주세요');
+                $("#compMail").focus();
+                return false;
+            }
+
+            var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            if (!regExp.test($("#compMail").val())) {
+                alert("이메일 형식에 맞춰 입력해 주세요");
+                $("#compMaill").focus();
+                return false;
+            }
+
+            // if(is_send)
+            // {
+            // 	alert("이메일 발송중입니다.");
+            // 	return;
+            // }
+
+            is_send = true;
+            param = {
+                "url": "/common/selectMyInfo"
+                , "type": "post"
+                , "data": formData
+                , "async": false
+                , "callback": function (data) {
+                    is_send = false;
+                    if (data.msg == "success") {
+                        var myInfo = data.myInfo;
+
+						// $("#popStayEmailSendView").addClass("show");
+
+						var formObj = $('<form></form>');
+                        formObj.attr('method', 'post');
+                        formObj.attr("action", "/common/certificate");
+                        formObj.append($('<input/>', {type: 'hidden', name: 'mbrNm', value: myInfo.mbrNm}));//회원명
+                        formObj.append($('<input/>', {type: 'hidden', name: 'compMail', value: myInfo.compMail}));//회사이메일
+                        formObj.appendTo('body');
+                        formObj.submit();
+                    } else {
+                        // $("#popStayEmailSendView").removeClass("show");
+                        $("#resultDiv").addClass("show");
+                    }
+                }
+            };
+            _comLib.callAjax(param);
+        }
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <form id="frm">
+
+        <!-- content -->
+        <div class="content btmgap">
+            <section class="member-wrap">
+                <h3 class="tit">아이디 &middot; 비밀번호 찾기</h3>
+                <p class="sub-txt">회원 가입 시 등록한 이메일 주소로 본인 확인 진행 후 <br>아이디와 임시 비밀번호를 회원님의 이메일로 발송해 드립니다.</p>
+                <form action="">
+                    <fieldset>
+                        <legend>아이디 &middot; 비밀번호 찾기</legend>
+                        <ul class="login-area">
+                            <li>
+                                <input type="text" id="mbrNm" name="mbrNm" value="" title="이름" placeholder="이름을 입력해주세요">
+                            </li>
+                            <li>
+                                <input type="text" id="compMail" name="compMail" value="" class="" title="이메일"
+                                       placeholder="회원가입 시 등록한 소속의 이메일 주소를 입력해주세요">
+                            </li>
+                            <!-- <li>
+                                <input type="text" id="" class="matching" title="이메일" placeholder="회원가입 시 등록한 소속의 이메일 주소를 입력해주세요" value="Samil_kim@pwc.com">
+                            </li> --> <!-- 회원정보가 일치 할 경우 matching -->
+                        </ul>
+                        <div class="btn-wrap">
+                            <button type="button" id="btnConfirm" class="btn-primary"><span>확인</span></button>
+                            <!-- 회원정보가 일치 할 경우 class="disabled" 제거  -->
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+            <!-- //member-wrap -->
+        </div>
+        <!-- //content -->
+
+    </form>
+
+    <div id="resultDiv" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area">
+                <div class="modal-cont">
+                    <h2 class="tit blind">회원정보 불일치 안내</h2>
+                    <p class="txt">일치하는 정보를 찾을 수 없습니다.<br>회원가입 시 입력한 정보가 맞는지 확인해주세요.</p>
+                </div>
+                <!-- //modal-cont -->
+                <div class="btn-wrap">
+                    <button type="button" onclick="$('#resultDiv').removeClass('show');" class="btn-primary">
+                        <span>확인</span></button>
+                </div>
+            </section>
+            <!--//modal-area-->
+        </div>
+    </div>
+    <!--//modal-wrap-->
+
+</div>
+</html>

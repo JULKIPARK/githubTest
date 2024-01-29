@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		var TpicUid ;
+		$(function(){
+			// 이벤트 설정
+
+			/*<![CDATA[*/
+			TpicUid = [[${tpicUid}]];
+			/*]]>*/
+
+			$.post("/diagnosis/selectContList", {tpicUid : TpicUid}, function(data){
+
+				$("#tmpl_relation").tmpl(data.list).appendTo("#relation-list");
+				// 빈 카테고리 라인 제거
+				$('#relation-list .po').each((idx, item) => {
+					if (!$.trim($(item)[0].innerHTML)) {
+						$(item)[0].remove();
+					}
+				});
+				$(".relation-list").slick({
+			    autoplay: true,
+			    speed: 500,
+			    arrows: true,
+			    dots: false,
+			    infinite: true,
+			    cssEase: "linear",
+			    speed: 300,
+			    slidesToShow: 3,
+			    slidesToScroll: 1,
+			    responsive: [
+			      { 
+			        breakpoint: 1180,
+			        settings: {
+			          slidesToShow: 2,
+			          dots: false,
+			          arrows: false,
+			        },
+			      },
+			      {
+			        breakpoint: 767,
+			        settings: {
+			          slidesToShow: 1,
+			          dots: false,
+			          arrows: true,
+			        },
+			      },
+			    ],
+			  });
+
+			});
+		});
+
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+			$('.submenu04_02').addClass("on");
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="frm">
+		<section class="sub">
+			<div class="sub-title-a">
+				<div class="ct">
+					<div class="tit">ESG 경영활동 가이드</div>
+					<div class="subs">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영활동에 도움이 될 수 있는 참고 자료를 추천합니다.</div>
+				</div>
+				<div class="bgBack"></div>
+				<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+			</div>
+
+			<div class="mo_dropmenu">
+				<div class="nav">ESG 평가<span><img src="/assets/img/common/ico_selectdesign.png"></span></div>
+				<ul class="dropmenu-list">
+					<li><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요</a></li>
+					<li><strong>ESG 전략 · 계획</strong></li>
+					<li><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립</a></li>
+					<li><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립</a></li>
+					<li><strong>ESG 과제 이행</strong></li>
+					<li><a href="/diagnosis/environmentView?tabId=1">환경 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=2">사회 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=4">지속가능 금융</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영</a></li>
+					<li><strong>ESG 공시 · 인증</strong></li>
+					<li><a href="/diagnosis/certifiedView?tabId=1">ESG 공시</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=2">ESG 평가</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=3">ESG 인증</a></li>
+				</ul>
+			</div>
+
+			<div class="esg-guide default-width">
+				<dl class="leftMenu">
+					<dd>
+						<div class="depth-1"></div>
+						<ul class="depth-2-menulist">
+							<li class="submenu01"><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 전략 · 계획</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu02_01"><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu02_02"><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 과제 이행</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu03_01"><a href="/diagnosis/environmentView?tabId=1">환경 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_02"><a href="/diagnosis/environmentView?tabId=2">사회 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_03"><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_04"><a href="/diagnosis/environmentView?tabId=4">지속가능 금융<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_05"><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu03_06"><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+
+					<dd>
+						<div class="depth-1">ESG 공시 ・ 인증</div>
+						<ul class="depth-2-menulist">
+							<li class="submenu04_01"><a href="/diagnosis/certifiedView?tabId=1">ESG 공시<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_02"><a href="/diagnosis/certifiedView?tabId=2">ESG 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							<li class="submenu04_03"><a href="/diagnosis/certifiedView?tabId=3">ESG 인증<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+						</ul>
+					</dd>
+				</dl>
+
+				<div class="content">
+					<div class="border-txbox-a">
+						<div class="sub-common-tit">개요</div>
+						<div class="border-box">
+							ESG가 기업의 가치와 지속가능성에 영향을 미친다는 인식이 확산됨에 따라 ESG를 의사결정의 기준으로 고려하는 이해관계자들이 증가하고 있으며, 기업의 ESG 경영활동의 수준을 객관적으로 평가할 필요성이 높아졌습니다.
+							이에 따라 ESG 전문 평가기관, 신용평가 기관 등 국내외 다양한 기관에서 기업의 ESG 활동 평가 등급과 관련 정보를 제공하고 있습니다.<br/><br/>
+							그러나 ESG 평가는 전세계적으로 표준화된 기준에 따라 수행되는 신용등급 평가 등과 달리 개별 ESG 평가 기관의 자체 방법론을 바탕으로 진행되기 때문에, 다양한 기관의 ESG 평가 기준을 충족하기 위해서는 전략적인 평가 대응방안이 필요합니다.<br/><br/>
+							ESG 평가 결과가 기업의 평판에 영향을 미치기도 하고 기업이 협력사/거래처 선정 시 활용하기도 하며, 정부의 정책 지원 대상 선정이나 금융사의 금융 투자 대상 선정에 활용되기도 합니다.
+						</div>
+					</div>
+
+					<div class="guide-work">
+						<div class="sub-common-tit">주요 실행 과제</div>
+						<dl class="work-list">
+							<dd>
+								<div class="subj-box"><span>평가기관 등급 관리 및 개선활동</span></div>
+								<ul class="work-detail-list">
+									<li>
+										평가 등급 취득<br/>
+										(개별 기업의 의뢰로 진행되기도 하나, 의뢰 없이 평가 결과가 전달되기도 하며, 이 경우 ESG 정보 공시 시 ESG 평가를 고려하여 공시할 수 있음)
+
+										<span>평가 등급을 취득하거나 개선하고자 하는 평가 기관을 선택 후 해당 기관의 평가 항목 분석</span>
+										<span>동일 업종 선진 사례 벤치마킹 및 기업 내외부 현황 분석을 통한 평가 답변 방향성 수립</span>
+										<span>평가 항목 답변 자료 작성 후 제출 또는 공시 자료에 반영</span>
+									</li>
+
+									<li>
+										평가 등급 개선 활동 수행
+										<span>낮은 등급을 받은 분야에 대한 원인 및 갭분석</span>
+										<span>새로운 목표 및 성과 지표의 설정</span>
+										<span>개선 활동 기획 및 운영</span>
+									</li>
+								</ul>
+							</dd>
+
+						</dl>
+					</div>
+
+
+					<div class="needs-work">
+						<div class="sub-common-tit">필요 업무역량</div>
+						<ul class="needs-list">
+							<li>ESG 평가 기준별 요구사항에 대한 이해</li>
+							<li>평가 기준에 따라 평가에 필요한 자료를 판단하는 역량</li>
+							<li>평가 자료 수급을 위해 타 부서의 협조를 구하는 커뮤니케이션 역량</li>
+							<li>평가 기관의 Feedback을 이해하고 소명 및 결과 조정을 하는 커뮤니케이션 역량</li>
+							<li>평가 항목 답변 자료를 평가기관이 이해하기 쉽게 작성하는 글쓰기 역량</li>
+						</ul>
+					</div>
+
+					<div class="guide-relation">
+						<div class="sub-common-tit">관련 컨텐츠</div>
+
+						<ul class="relation-list" id="relation-list">
+
+						</ul>
+					</div>
+
+				</div>
+			</div>
+
+
+			<div class="guide-service">
+				<div class="container">
+					<div class="sub-common-tit">서비스 안내</div>
+
+					<dl class="service-list">
+						<dd>
+							<div class="subj">ESG 외부 평가에 대한 기업내부현황 진단 및 대응 서비스 </div>
+							<ul class="detail-list">
+								<li>KCGS, CDP, MSCI, DJSI 등 외부 평가기관의 평가 대응 지원</li>
+								<li>외부평가 대응 Process 및 개선 전략 수립 등</li>
+							</ul>
+						</dd>
+					</dl>
+
+					<div class="back-btn onlineBtn">
+						삼일 서비스 문의하기 <span><img src="/assets/img/common/ico_arrow_right.png"></span>
+					</div>
+				</div>
+			</div>
+
+		</section>
+
+	</form>
+</div>
+</html>

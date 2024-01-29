@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+	<strong class="tit">연관 검색어</strong>
+    <ul>
+        <li th:each="recommand : ${recommandResult}">
+			<button onclick="recommandKwd(this);">
+				<span th:text="${recommand}"></span>
+			</button>
+		</li>
+    </ul>
+</body>
+</html>

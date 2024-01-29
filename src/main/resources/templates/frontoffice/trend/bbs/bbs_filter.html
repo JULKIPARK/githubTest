@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+	<div class="filter-head">
+		<h4 class="tit">필터</h4>
+		<button type="button" class="btn-reset" onclick="resetFilter();"><span>초기화</span></button>
+		<button type="button" class="btn-close">닫기</button>
+	</div>
+	<!-- esg키워드// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">ESG 키워드</button>
+		<div class="filter-area">
+			<ul class="select-wrap current-wrap">
+				<li>
+					<button type="button" class="current" id="env_btn" onclick="ESG_Kwd_click('env_list');">환경</button>
+				</li>
+				<li>
+					<button type="button" id="so_btn" onclick="ESG_Kwd_click('so_list');">사회</button>
+				</li>
+				<li>
+					<button type="button" id="gov_btn" onclick="ESG_Kwd_click('gov_list');">거버넌스</button>
+				</li>
+				<li>
+					<button type="button" id="fin_btn" onclick="ESG_Kwd_click('fin_list');">금융</button>
+				</li>
+				<!--<li>
+					<button type="button" id="dis_btn" onclick="ESG_Kwd('dis_list');">공시</button>
+				</li>-->
+				<li>
+					<button type="button" id="tax_btn" onclick="ESG_Kwd_click('tax_list');">Tax</button>
+				</li>
+				<li>
+					<button type="button" id="deal_btn" onclick="ESG_Kwd_click('deal_list');">Deal</button>
+				</li>
+			</ul>
+			
+			
+			<div class="filter-list" id="env_list" style="display: block;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="10|1"/>
+						<label for="ckbox01"><span>온실가스</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="10|2"/>
+						<label for="ckbox02"><span>기후변화</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="10|3"/>
+						<label for="ckbox07"><span>에너지전환</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox03" name="esgKwdBox" onclick="esgKwdFilter();" value="10|4"/>
+						<label for="ckbox03"><span>자원 및 순환경제</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox04" name="esgKwdBox" onclick="esgKwdFilter();" value="10|5"/>
+						<label for="ckbox04"><span>생물다양성</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox08" name="esgKwdBox" onclick="esgKwdFilter();" value="10|6"/>
+						<label for="ckbox08"><span>오염과 폐기물</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="ckbox05" name="esgKwdBox" onclick="esgKwdFilter();" value="10|7"/>
+						<label for="ckbox05"><span>친환경제품 및 기술</span></label>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+			
+			
+			<div class="filter-list" id="so_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="so_ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="20|10" />
+						<label for="so_ckbox01"><span>인적자원 관리</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="so_ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="20|9"/>
+						<label for="so_ckbox02"><span>인권</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="so_ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="20|11"/>
+						<label for="so_ckbox07"><span>소비자 및 고객</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="so_ckbox03" name="esgKwdBox" onclick="esgKwdFilter();" value="20|8"/>
+						<label for="so_ckbox03"><span>공급망 관리</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="so_ckbox04" name="esgKwdBox" onclick="esgKwdFilter();" value="20|26"/>
+						<label for="so_ckbox04"><span>지역사회</span></label>
+					</li>
+				</ul>
+			</div>
+			
+
+			<div class="filter-list" id="gov_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="gov_ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="30|12" />
+						<label for="gov_ckbox01"><span>이사회</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="gov_ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="30|13"/>
+						<label for="gov_ckbox02"><span>주주권리</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="gov_ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="30|14"/>
+						<label for="gov_ckbox07"><span>윤리경영</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="gov_ckbox03" name="esgKwdBox" onclick="esgKwdFilter();" value="30|15"/>
+						<label for="gov_ckbox03"><span>위험관리</span></label>
+					</li>
+				</ul>
+			</div>
+			
+
+			<div class="filter-list" id="fin_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="fin_ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="40|17"/>
+						<label for="fin_ckbox01"><span>ESG채권</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="fin_ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="40|18"/>
+						<label for="fin_ckbox02"><span>ESG투자</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="fin_ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="40|16"/>
+						<label for="fin_ckbox07"><span>기후리스크</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="fin_ckbox03" name="esgKwdBox" onclick="esgKwdFilter();" value="40|19"/>
+						<label for="fin_ckbox03"><span>금융배출량</span></label>
+					</li>
+				</ul>
+			</div>
+			
+
+			<div class="filter-list" id="tax_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="tax_ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="50|20" />
+						<label for="tax_ckbox01"><span>탄소국경세</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="tax_ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="50|21" />
+						<label for="tax_ckbox02"><span>환경세와 세제혜택</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="tax_ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="50|22" />
+						<label for="tax_ckbox07"><span>세무투명성</span></label>
+					</li>
+				</ul>
+			</div>
+			
+			
+			<div class="filter-list" id="deal_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="deal_ckbox01" name="esgKwdBox" onclick="esgKwdFilter();" value="60|23" />
+						<label for="deal_ckbox01"><span>책임투자</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="deal_ckbox02" name="esgKwdBox" onclick="esgKwdFilter();" value="60|24" />
+						<label for="deal_ckbox02"><span>ESG 실사</span></label>
+					</li>
+					<li>
+						<input type="checkbox" id="deal_ckbox07" name="esgKwdBox" onclick="esgKwdFilter();" value="60|25" />
+						<label for="deal_ckbox07"><span>ESG M&A</span></label>
+					</li>
+				</ul>
+			</div>
+
+			
+			<!-- dis_list -->
+			<div class="filter-list" id="dis_list" style="display: none;">
+				<ul class="box-check-wrap">
+					<li>
+						<input type="checkbox" id="dis_ckbox01" />
+						<label for="ckbox01"><span>dis</span></label>
+					</li>
+				</ul>
+			</div>
+
+
+
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //esg키워드 -->
+	<!-- 주제분류// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">ESG 주제 분류</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ack01" data-filter="sbjt" value="환경"/>
+							<label for="ack01">
+								<span>환경</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ack02" data-filter="sbjt" value="사회"/>
+							<label for="ack02">
+								<span>사회</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ack03" data-filter="sbjt" value="거버넌스"/>
+							<label for="ack03">
+								<span>거버넌스</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ack04" data-filter="sbjt" value="금융"/>
+							<label for="ack04">
+								<span>금융</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ack05" data-filter="sbjt" value="ESG일반"/>
+							<label for="ack05">
+								<span>ESG 일반</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //주제분류  -->
+	<!-- ESG 업무 분류// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">ESG 업무 분류</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="bck01" data-filter="task" value="ESG경영"/><!-- ESG 경영관리로 색인 되어 있음 -->
+							<label for="bck01">
+								<span>ESG 경영</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="bck02" data-filter="task" value="공시"/>
+							<label for="bck02">
+								<span>공시</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="bck03" data-filter="task" value="평가"/>
+							<label for="bck03">
+								<span>평가</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //ESG 업무 분류  -->
+	<!-- 발간연도// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">발간연도</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck091" data-filter="years" value="2023"/>
+							<label for="ck091">
+								<span>2023년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck101" data-filter="years" value="2022" />
+							<label for="ck101">
+								<span>2022년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck111" data-filter="years" value="2021"/>
+							<label for="ck111">
+								<span>2021년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck121" data-filter="years" value="2020"/>
+							<label for="ck121">
+								<span>2021년 이전</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //발간연도 -->
+	<!-- 자료출처// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">자료출처</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck099" data-filter="dmstc" value="Y" />
+							<label for="ck099">
+								<span>국내</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck100" data-filter="dmstc" value="N" />
+							<label for="ck100">
+								<span>해외</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //자료출처 -->
+	<!-- 언어// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">언어</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck09" data-filter="lang" value="10"/>
+							<label for="ck09">
+								<span>국문</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck10" data-filter="lang" value="20" />
+							<label for="ck10">
+								<span>영문</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //언어 -->
+
+</body>
+
+</html>

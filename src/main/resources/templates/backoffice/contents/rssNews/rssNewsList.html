@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}" lang="ko">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function () {
+			// 화면 초기화
+			fnInitView();
+
+			// 기본 데이터 조회
+			fnInitData();
+
+			// 이벤트 설정
+			fnInitEvent();
+		});
+
+		// 화면 초기화
+		function fnInitView() {
+			_comLib.setDatePicker("schStrtDate", "schEndDate", "yy-mm-dd");
+			_comLib.setDatePicker("schEndDate", null, "yy-mm-dd");
+
+			//발간일자 초기화
+			$("#allDay").prop("checked", true);
+			$("#schStrtDate").val("");
+			$("#schEndDate").val("");
+
+			//뉴스제목/내용 초기화
+			$("#schType option:eq(0)").prop("selected", true);
+
+			//작성자명 초기화
+			$("#schSplyBzentyCd option:eq(0)").prop("selected", true);	//제공업체 초기화
+			$("#schWrtrNm").val("");
+		}
+
+		// 조회기간 설정
+		function setSchDate() {
+			//기간설정 안함,  직접입력
+			if ($('input:radio[name=period]:checked').val() == "") {
+				$("#schStrtDate").val("");
+				$("#schEndDate").val("");
+				return;
+			}
+
+			var stDay = _comLib.preDay($('input:radio[name=period]:checked').val());
+			$("#schStrtDate").val(stDay);
+			$("#schEndDate").val(_comLib.toDay());
+		}
+
+		// 이벤트 설정
+		function fnInitEvent() {
+			$("#btnSearch").bind("click", fnSelectRssNewsList);	//조회
+			$("#btnReset").bind("click", fnResetSearch);		//초기화
+			$('input:radio[name=period]').bind("click", setSchDate);//조회기간변경
+
+			//페이지 사이즈 변경
+			$("#rssNewsPageSize").bind("change", function () {
+				$('#rssNewsPageNum').find('option:first').attr('selected', 'selected');//선택된 페이지 초기화
+				fnSelectRssNewsList();	//페이지 사이즈변경
+			});
+
+			//페이지 번호 변경
+			$("#rssNewsPageNum").bind("change", fnSelectRssNewsList);
+
+			//목록 전체 선택 및 해제
+			$(document).on("click", "#chkAll", function () {
+				$("input[name='chkRssInfo']:checkbox").prop("checked", this.checked);
+			});
+			/*
+			$("#chkAll").bind("click", function(){
+				$("input[name='chkRssInfo']:checkbox").prop("checked", this.checked);
+			});
+			*/
+
+			//신규뉴스 일괄등록
+			$("#btnRegBatch").on("click", function () {
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/contents/insertRssBatch"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						alert(data.rtnCnt + '건 등록되었습니다.');
+						fnSelectRssNewsList();
+					}
+				};
+				_comLib.callAjax(param);
+			});
+
+
+		}
+
+		// 기본 데이터 조회
+		function fnInitData() {
+			fnSelectRssNewsList();
+		}
+
+		//목록조회
+		function fnSelectRssNewsList() {
+			var formData, param = {};
+			formData = _formLib.getFormData("searchListFrm");
+			param = {
+				"url": "/sems/contents/selectRssNewsList"
+				, "type": "post"
+				, "data": formData
+				, "async": false
+				, "callback": function (fragment) {
+					$("#rssNewsListDiv").replaceWith(fragment);
+					$("#rssNewsTotalCountView").text("총 " + _formLib.addComma($("#rssNewsTotalCount").val()) + "건");
+
+					//페이징처리
+					var currPage = $('#rssNewsPageNum').val();//현재 선택된 페이지
+					$('#rssNewsPageNum').empty();//페이지 option 삭제
+					for (var count = 1; count <= $("#rssNewsTotalPage").val(); count++) {
+						var selTxt = "";
+						if (count == currPage) {
+							selTxt = "selected='selected'";//현재 페이지 선택
+						}
+
+						var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#rssNewsTotalPage").val() + "</option>");
+						$('#rssNewsPageNum').append(option);
+					}
+				}
+			};
+			_comLib.callAjax(param);
+		}
+
+		//조회조건 초기화
+		function fnResetSearch() {
+			fnInitView();
+			fnInitData();
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+	<form id="searchListFrm">
+		<!-- container -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>신규 입수 뉴스 조회</h3>
+				<ul class="breadcrumb">
+					<li>컨텐츠 관리</li>
+					<li>뉴스 업데이트</li>
+					<li>신규 입수 뉴스 조회</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<section>
+				<h4 class="table-tit">신규 뉴스 조회 (RSS)</h4>
+				<div class="search-wrap">
+					<fieldset>
+						<legend>신규 뉴스 조회 (RSS)</legend>
+						<div class="table-wrap">
+							<table class="inner-input">
+								<caption>신규 뉴스 조회</caption>
+								<colgroup>
+									<col style="width: 20%;">
+									<col style="width: 80%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th>발간일자</th>
+										<td>
+											<div class="period-wrap flex">
+												<ul class="flex ck-list">
+													<li>
+														<input type="radio" name="period" id="allDay" value=""
+															   checked="checked">
+														<label for="allDay">기간설정 안함</label>
+													</li>
+													<li>
+														<input type="radio" name="period" value="0">
+														<label for="month3">당일</label>
+													</li>
+													<li>
+														<input type="radio" name="period" value="7">
+														<label for="month6">최근 일주일</label>
+													</li>
+													<li class="date-select">
+														<input type="radio" name="period" value="">
+														<label for="month">직접입력</label>
+														<div class="datepicker-wrap">
+															<input type="text" name="schStrtDate" id="schStrtDate"
+																   class="datepicker">
+															<span class="separator"> - </span>
+															<input type="text" name="schEndDate" id="schEndDate"
+																   class="datepicker">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>뉴스제목/내용</th>
+										<td>
+											<div class="selectinput-wrap">
+												<select name="schType" id="schType" class="select" title="조회 기준">
+													<option value="T">제목</option>
+													<option value="A">제목+내용</option>
+												</select>
+												<input type="text" name="schText" placeholder="검색내용입력" title="검색내용입력">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>작성자명</th>
+										<td>
+											<div class="selectinput-wrap">
+												<select name="schSplyBzentyCd" id="schSplyBzentyCd" class="select"
+														disabled="disabled">
+													<option value="">임팩트온</option>
+												</select>
+												<input type="text" name="schWrtrNm" id="schWrtrNm" placeholder=""
+													   title="입력"
+													   class="w200">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+						<div class="btn-wrap">
+							<button type="button" id="btnSearch" class="btn-primary">조회</button>
+							<button type="button" id="btnReset" class="btn-sub">초기화</button>
+						</div>
+						<!-- //btn-wrap -->
+					</fieldset>
+				</div>
+				<!-- //search-wrap -->
+			</section>
+			<div class="result-wrap">
+				<div class="total">
+					<span class="lable">신규 뉴스 리스트</span> - <strong id="rssNewsTotalCountView">총 0건</strong>
+				</div>
+				<!-- total -->
+				<div class="sorting-wrap">
+					<select id="rssNewsPageSize" name="rssNewsPageSize" class="select" title="데이터 건수">
+						<option value="20">20개</option>
+						<option value="50">50개</option>
+						<option value="100" selected="selected">100개</option>
+						<option value="500">500개</option>
+						<option value="1000">1000개</option>
+					</select>
+					<select id="rssNewsPageNum" name="rssNewsPageNum" class="select" title="페이지 이동선택"> </select>
+					<div class="btn-ctl">
+<!--						<button id="btnRegBatch" type="button" class="btn-default">선택등록</button>-->
+					</div>
+				</div>
+				<!-- //sorting-wrap -->
+				<div id="rssNewsListDiv" class="table-wrap ">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="rssNewsTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="rssNewsPageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="rssNewsTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table>
+						<caption>출처 리스트</caption>
+						<colgroup>
+<!--							<col style="width: 5%;">-->
+							<col style="width: 15%;">
+							<col style="width: 45%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 5%;">
+						</colgroup>
+						<thead>
+							<tr>
+<!--								<th><input type="checkbox" id="chkAll" name="chkAll" value="전체선택" title="선택"></th>-->
+								<th>발간일자</th>
+								<th>뉴스 제목</th>
+								<th>제공업체</th>
+								<th>작성자</th>
+								<th>등록여부</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item, stat : ${list}">
+<!--								<td><input id="chkRssInfo" name="chkRssInfo" th:value="${item.linkUrl}" type="checkbox"-->
+<!--										   title="선택" th:disabled="${item.contUid != null}"></td>-->
+								<td th:text="${item.pblcnDt}">2023-07-03 15:48:44</td>
+								<td class="left"><a href="javascript:void(0);"
+													th:onclick="fnRssRegistViewPop([[${item.linkUrl}]]);" class="link"
+													th:text="${item.ttl}"></a></td>
+								<td th:text="${item.splyBzentyNm}">임팩트온</td>
+								<td th:text="${item.wrtrNm}">변종용</td>
+								<td>
+									<div th:if="${item.contUid == null}">X</div>
+									<div th:if="${item.contUid != null}">O</div>
+								</td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(list)}">
+								<td class="nodata" colspan="5">데이터가 존재하지 않습니다.</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+	</form>
+
+	<!-- 신규 입수 뉴스 등록 popup fragment-->
+	<th:block th:replace="/backoffice/contents/rssNews/rssRegistViewPop :: rssRegistViewPop"></th:block>
+
+	<!-- 신규 입수 뉴스 일괄 등록 popup fragment-->
+<!--	<th:block th:replace="/backoffice/contents/rssNews/rssMultiRegistViewPop :: rssMultiRegistViewPop"></th:block>-->
+
+</div>
+<!-- layout:fragment -->
+</html>

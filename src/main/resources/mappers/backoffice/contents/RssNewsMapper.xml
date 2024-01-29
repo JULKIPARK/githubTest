@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.contents.mapper.RssNewsMapper">
+
+	<!-- 신규 뉴스 관리 목록 조회 -->
+	<select id="selectRssNewsList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			RSS.LINK_URL /* 링크주소 */
+			, RSS.SPLY_BZENTY_CD /* 제공업체코드 */
+			, ESG_DB.fnCommCdNm('SPLY_BZENTY_CD', RSS.SPLY_BZENTY_CD) SPLY_BZENTY_NM /* 제공업체명 */
+			, FORMAT(RSS.PBLCN_DT, 'yyyy.MM.dd HH:mm:ss') PBLCN_DT /* 발행일 */
+			, RSS.TTL /* 제목 */
+			, RSS.IMG_URL /* 이미지URL */
+			, RSS.WRTR_NM /* 작성자명 */
+			, RSS.FST_INS_DT /* 최초등록일 */
+			, RSS.FST_INS_ID /* 최초등록아이디 */
+			, RSS.LST_UPD_DT /* 최종수정일 */
+			, RSS.LST_UPD_ID /* 최종수정아이디 */
+			, CONT_INFO.CONT_UID
+		FROM
+			ESG_DB.BT_RSS_INFO RSS /* RSS정보 */
+			LEFT JOIN ESG_DB.ST_CONT_INFO CONT_INFO ON
+				CONT_INFO.CONT_TP_LCLSF_CD = '60'
+				AND TRIM(CONT_INFO.LINK_URL) = TRIM(RSS.LINK_URL)
+		/* 컨텐츠 등록된 뉴스 제외 */
+		WHERE
+			1=1
+		<!-- 검색조건 : 발간일자 -->
+		<if test="schStrtDate != null and !schStrtDate.equals('')">
+			AND FORMAT(RSS.PBLCN_DT, 'yyyyMMdd') <![CDATA[>=]]> REPLACE(#{schStrtDate}, '.', '') /*
+			발간일자:
+			조회시작일 */
+		</if>
+		<if test="schEndDate != null and !schEndDate.equals('')">
+			AND FORMAT(RSS.PBLCN_DT, 'yyyyMMdd') <![CDATA[<=]]> REPLACE(#{schEndDate}, '.', '') /*
+			발간일자:
+			조회종료일 */
+		</if>
+
+		<!-- 검색조건 : 뉴스제목/내용 -->
+		<!-- 검색조건 : 제목 -->
+		<choose>
+			<!-- 검색조건 : 제목+내용 -->
+			<when test="schType != null and schType.equalsIgnoreCase('T')">
+				<if test="schText != null and !schText.equals('')">
+			AND RSS.TTL LIKE CONCAT('%',#{schText},'%') /* 검색조건: 제목 */
+				</if>
+			</when>
+			<!-- 검색조건 : 제목+내용 -->
+			<when test="schType != null and schType.equalsIgnoreCase('A')">
+				<if test="schText != null and !schText.equals('')">
+			AND RSS.TTL LIKE CONCAT('%',#{schText},'%') /* 검색조건: 제목 */
+			OR RSS.CN LIKE CONCAT('%',#{schText},'%') /* 검색조건: 내용 */
+				</if>
+			</when>
+		</choose>
+
+		<!-- 검색조건 : 작성자명 -->
+		<if test="schSplyBzentyCd != null and !schSplyBzentyCd.equals('')">
+			AND RSS.SPLY_BZENTY_CD = #{schSplyBzentyCd} /* 제공업체코드 */
+		</if>
+		<if test="schWrtrNm != null and !schWrtrNm.equals('')">
+			AND RSS.WRTR_NM LIKE CONCAT('%',#{schWrtrNm},'%') /* 작성자명 */
+		</if>
+		ORDER BY
+			RSS.PBLCN_DT DESC
+	</select>
+
+	<!-- 뉴스 관리 상세 조회 -->
+	<select id="rssRegistView" parameterType="string" resultType="camelcasemap">
+		SELECT
+			TRIM(RSS.LINK_URL) AS LINK_URL /* 링크주소 */
+			, RSS.SPLY_BZENTY_CD /* 제공업체코드 */
+			, ESG_DB.fnCommCdNm('SPLY_BZENTY_CD', RSS.SPLY_BZENTY_CD) AS SPLY_BZENTY_NM /* 제공업체명 */
+			, FORMAT(RSS.PBLCN_DT, 'yyyy.MM.dd HH:mm:ss') AS PBLCN_DT /* 발행일 */
+			, RSS.TTL /* 제목 */
+			, RSS.SUMRY /* 요약 */
+			, RSS.CN /* 내용 */
+			, RSS.IMG_URL /* 이미지URL */
+			, RSS.WRTR_NM /* 작성자명 */
+			, FORMAT(DATEADD(HOUR, 9, RSS.FST_INS_DT), 'yyyy.MM.dd HH:mm:ss') AS FST_INS_DT /* 최초등록일 */
+			, RSS.FST_INS_ID /* 최초등록아이디 */
+			, FORMAT(DATEADD(HOUR, 9, RSS.LST_UPD_DT), 'yyyy.MM.dd HH:mm:ss') AS LST_UPD_DT /* 최종수정일 */
+			, RSS.LST_UPD_ID /* 최종수정아이디 */
+			, CONT_INFO.CONT_UID
+			, CONT_INFO.CONT_UNO
+			, CONT_INFO.TASK_CLSF_CD
+			, CONT_INFO.SBJT_GB_CD
+			, CONT_INFO.DP_TP_CD
+			, CONT_INFO.DP_YN
+			, CONT_INFO.RLS_TGT_CD_ARRY
+			, CONT_INFO.PIRD_STNG_USE_YN
+			, CONT_INFO.DP_STT_DT
+			, CONT_INFO.DP_END_DT
+			, CONT_INFO.SRCH_PSBLTY_YN
+			, CONT_INFO.KWRD_ARRY
+		FROM
+			ESG_DB.BT_RSS_INFO RSS /* RSS정보 */
+			LEFT JOIN ESG_DB.ST_CONT_INFO CONT_INFO ON
+				CONT_INFO.CONT_TP_LCLSF_CD = '60'
+				AND TRIM(CONT_INFO.LINK_URL) = TRIM(RSS.LINK_URL)
+		WHERE
+			TRIM(RSS.LINK_URL) = TRIM(#{linkUrl}) /* 링크주소 */
+	</select>
+
+	<!-- 뉴스 관리 상세 토픽 목록 조회 -->
+	<select id="rssRegistTopicList" parameterType="int" resultType="camelcasemap">
+		SELECT
+			TPIC_INFO.CONT_UID
+			, TPIC_INFO.TPIC_UID
+			, TPIC_INFO.DP_SEQ
+			, FORMAT(DATEADD(HOUR, 9, TPIC_INFO.FST_INS_DT), 'yyyy.MM.dd HH:mm:ss') AS FST_INS_DT
+			, FORMAT(DATEADD(HOUR, 9, TPIC_INFO.LST_UPD_DT), 'yyyy.MM.dd HH:mm:ss') AS LST_UPD_DT
+		FROM
+			ESG_DB.DP_CONT_TPIC_INFO TPIC_INFO
+		WHERE
+			TPIC_INFO.DP_YN = 'Y'
+			AND TPIC_INFO.CONT_UID = #{contUid}
+		ORDER BY
+			TPIC_INFO.TPIC_UID, DP_SEQ
+	</select>
+
+	<!-- 신규 뉴스 등록 -->
+	<insert id="insertRss" parameterType="camelcasemap">
+		<selectKey keyProperty="contUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'ST_CONT_INFO_SQ01'
+		</selectKey>
+
+		INSERT INTO ESG_DB.ST_CONT_INFO(
+			CONT_UID /* 콘텐츠채번 */
+			, CONT_UNO /* 콘텐츠고유번호(뉴스, 컨텐츠업로드, 삼일발간물) */
+			, CONT_KIND_CD /* 콘텐츠종류코드(10: 문서, 20: 영상, 30: 영상(원포인트레슨) ,40: 뉴스) */
+			, CONT_RMTHD_CD /* 콘텐츠등록방식코드(10: 컨텐츠업로드, 20: 아웃링크, 30: 콘텐츠업로드, 40: 임베드코드(URL)입력) */
+			, CONT_NM /* 콘텐츠명 */
+			, PBLCN_DTE /* 발행일자 */
+			, PBLCN_YY /* 발행YY */
+			, PBLCN_MM /* 발행MM */
+			, PBLCN_DD /* 발행DD */
+			, DMSTC_YN
+			, SPLY_LANG_CD /* 제공언어코드(10: 국문, 20: 영문, 30: 기타) */
+			, CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드(10: 삼일발간물, 20: 기준/가이드라인, 30: 법/제도, 40: 보고/연구, 50: 교육/안내) */
+			, TASK_CLSF_CD /* 업무분류코드(10: ESG경영관리, 20: 실행, 30: 전략계획) */
+			, USE_YN /* 사용여부 */
+			, DP_YN /* 전시여부 */
+			, DP_TP_CD /* 전시유형코드(10: 전체공개, 20: 일부공개, 30: 비전시) */
+			, DP_STT_DT
+			, DP_END_DT
+			, PIRD_STNG_USE_YN
+			, DWNLD_PSBLTY_YN
+			, SRCH_PSBLTY_YN /* 검색가능여부 */
+			, CONT_SUMRY /* 콘텐츠요약 */
+			, CONT_ST_CD /* 콘텐츠상태코드(10: 사용중, 20: 사용중지) */
+			, KWRD_ARRY
+			, RLS_TGT_CD_ARRY
+			, SRC_UID /* 출처채번 */
+			, FST_INS_ID /* 최초등록아이디 */
+			, LST_UPD_ID /* 최종수정아이디 */
+			, SBJT_GB_CD
+			, LINK_URL /* 링크주소(RSS피드) */
+			, PBLCN_GB_CD
+		)
+		SELECT
+			#{contUid} /* 콘텐츠채번 */
+			, ESG_DB.fnGetContUno('CNOA')
+			, '40'
+			, '20'
+			,  <![CDATA[TTL]]>
+			, FORMAT(PBLCN_DT, 'yyyyMMdd')
+			, FORMAT(PBLCN_DT, 'yyyy')
+			, FORMAT(PBLCN_DT, 'MM')
+			, FORMAT(PBLCN_DT, 'dd')
+			, 'Y'
+			, '10'
+			, '60'
+			, #{taskClsfCd}
+			, 'Y'
+			<choose>
+				<when test="dpTpCd != null and dpTpCd.equals('30')">
+					, 'N' /* 전시여부 */
+				</when>
+				<otherwise>
+					, 'Y' /* 전시여부 */
+				</otherwise>
+			</choose>
+			, #{dpTpCd}
+			<choose>
+				<when test="pirdStngUseYn == null or pirdStngUseYn.equals('')">
+					, NULL
+					, NULL
+					, 'N'
+				</when>
+				<otherwise>
+					, NULL
+					, NULL
+					, 'Y'
+				</otherwise>
+			</choose>
+			, 'N'
+			, #{srchPsbltyYn} /* 검색가능여부 */
+			, <![CDATA[SUMRY]]>          /* 콘텐츠요약 */
+			, '10' /* 콘텐츠상태코드(10: 사용중, 20: 사용중지) */
+		    , #{kwrdArry}
+		    , #{mbrGbCd}
+			, '232' /* 출처채번 */
+			, #{mbrId} /* 최초등록아이디 */
+			, #{mbrId} /* 최종수정아이디 */
+			, #{sbjtGbCd}
+			, TRIM(LINK_URL) /* 링크주소(RSS피드) */
+			, '30'
+		FROM
+			ESG_DB.BT_RSS_INFO
+		WHERE
+			TRIM(LINK_URL) = TRIM(#{linkUrl})
+	</insert>
+
+	<!-- 신규 뉴스 부가정보 등록 -->
+	<insert id="insertRssApnd" parameterType="camelcasemap">
+		INSERT INTO ESG_DB.ST_CONT_APND_INFO(
+			CONT_UID
+			, CONT_KIND_CD
+			, SEQ_NO
+			, CONT_RMTHD_CD
+			, LINK_URL
+			, NWIN_YN
+			, CONT_SPLY_TP_CD
+			, FST_INS_ID
+			, LST_UPD_ID
+		)
+		SELECT
+			#{contUid}
+			, '40'
+			, 1
+			, '20'
+			,  TRIM(LINK_URL)
+			, 'N'
+			, '80'
+			, #{mbrId} /* 최초등록아이디 */
+			, #{mbrId} /* 최종수정아이디 */
+		FROM
+			ESG_DB.BT_RSS_INFO
+		WHERE
+			TRIM(LINK_URL) = TRIM(#{linkUrl})
+	</insert>
+
+	<!-- 신규 뉴스 토픽정보 등록 -->
+	<insert id="insertRssTpic" parameterType="camelcasemap">
+		INSERT INTO ESG_DB.DP_CONT_TPIC_INFO(
+			CONT_UID
+			, TPIC_UID
+			, DP_YN
+			, DP_SEQ
+			, DP_FIX_YN
+			, FST_INS_ID
+			, LST_UPD_ID
+		)
+		VALUES (
+			#{contUid}
+			, #{tpicUid}
+			, 'Y'
+			, 999
+			, 'N'
+			, #{mbrId}
+			, #{mbrId}
+		)
+	</insert>
+
+	<!-- 신규 뉴스 일괄등록 -->
+	<insert id="insertRssBatch" parameterType="camelcasemap">
+		INSERT INTO ST_CONT_INFO(
+		CONT_UID /* 콘텐츠채번 */
+		, CONT_UNO /* 콘텐츠고유번호(뉴스, 컨텐츠업로드, 삼일발간물) */
+		, CONT_KIND_CD /* 콘텐츠종류코드(10: 문서, 20: 영상, 30: 영상(원포인트레슨) ,40: 뉴스) */
+		, CONT_RMTHD_CD /* 콘텐츠등록방식코드(10: 컨텐츠업로드, 20: 아웃링크, 30: 콘텐츠업로드, 40: 임베드코드(URL)입력) */
+		, CONT_NM /* 콘텐츠명 */
+		, PBLCN_DTE /* 발행일자 */
+		, PBLCN_YY /* 발행YY */
+		, PBLCN_MM /* 발행MM */
+		, PBLCN_DD /* 발행DD */
+		, SPLY_LANG_CD /* 제공언어코드(10: 국문, 20: 영문, 30: 기타) */
+		, CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드(10: 삼일발간물, 20: 기준/가이드라인, 30: 법/제도, 40: 보고/연구, 50: 교육/안내) */
+		, CONT_TP_MCLSF_CD /* 콘텐츠유형중분류코드(10: 뉴스레터, 20: 인사이트레포트) */
+		, TASK_CLSF_CD /* 업무분류코드(10: ESG경영관리, 20: 실행, 30: 전략계획) */
+		, USE_YN /* 사용여부 */
+		, DP_YN /* 전시여부 */
+		, DP_TP_CD /* 전시유형코드(10: 전체공개, 20: 일부공개, 30: 비전시) */
+		, SRCH_PSBLTY_YN /* 검색가능여부 */
+		, CONT_SUMRY /* 콘텐츠요약 */
+		, CONT_ST_CD /* 콘텐츠상태코드(10: 사용중, 20: 사용중지) */
+		, SRC_UID /* 출처채번 */
+		, FST_INS_ID /* 최초등록아이디 */
+		, LST_UPD_ID /* 최종수정아이디 */
+		, LINK_URL /* 링크주소(RSS피드) */
+		)
+		SELECT
+		NEXTVAL('ST_CONT_INFO_SQ01') /* 콘텐츠채번 */
+		, CONCAT('CMIP', LPAD(NEXTVAL('ST_CONT_INFO_SQ02'), 5, '0'))/* 콘텐츠고유번호(뉴스, 컨텐츠업로드, 삼일발간물) */
+		, '40' /* 콘텐츠종류코드(10: 문서, 20: 영상, 30: 영상(원포인트레슨) ,40: 뉴스) */
+		, '10' /* 콘텐츠등록방식코드(10: 컨텐츠업로드, 20: 아웃링크, 30: 콘텐츠업로드, 40: 임베드코드(URL)입력) */
+		,  <![CDATA[TTL]]>          /* 콘텐츠명 */
+		, DATE_FORMAT(PBLCN_DT, '%Y%m%d') /* 발행일자 */
+		, DATE_FORMAT(PBLCN_DT, '%y') /* 발행YY */
+		, DATE_FORMAT(PBLCN_DT, '%m') /* 발행MM */
+		, DATE_FORMAT(PBLCN_DT, '%d') /* 발행DD */
+		, '10' /* 제공언어코드(10: 국문, 20: 영문, 30: 기타) */
+		, '10' /* 콘텐츠유형대분류코드(10: 삼일발간물, 20: 기준/가이드라인, 30: 법/제도, 40: 보고/연구, 50: 교육/안내) */
+		, '10' /* 콘텐츠유형중분류코드(10: 뉴스레터, 20: 인사이트레포트) */
+		, '10' /* 업무분류코드(10: ESG경영관리, 20: 실행, 30: 전략계획) */
+		, 'Y' /* 사용여부 */
+		, 'N' /* 전시여부 */
+		, '10' /* 전시유형코드(10: 전체공개, 20: 일부공개, 30: 비전시) */
+		, 'Y' /* 검색가능여부 */
+		, <![CDATA[SUMRY]]>          /* 콘텐츠요약 */
+		, '10' /* 콘텐츠상태코드(10: 사용중, 20: 사용중지) */
+		, '12' /* 출처채번 */
+		, #{mbrId} /* 최초등록아이디 */
+		, #{mbrId} /* 최종수정아이디 */
+		, LINK_URL /* 링크주소(RSS피드) */
+		FROM BT_RSS_INFO
+		WHERE LINK_URL IN
+		<foreach item="url" index="index" collection="chkRssInfo" open="(" separator="," close=")">
+			#{url}
+		</foreach>
+	</insert>
+
+</mapper>

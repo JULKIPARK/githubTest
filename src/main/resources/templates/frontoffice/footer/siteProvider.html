@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(function(){
+			/*<![CDATA[*/
+				var tabId = /*[[${tabId}]]*/;
+				if(tabId!=null){
+					fnMoveTab(tabId);
+				} else {
+                    fnMoveTab('esg');
+                }
+			/*]]>*/
+		});
+	</script>
+	<script type="text/javascript">
+		$(function(){
+			/* 이메일 복서 */
+			$('.pe-introduce .pe-list .e-mail > A').on('click', function(e){
+				e.preventDefault();
+				var email = $(e.target)[0].innerText.replace('이메일 주소 복사하기', '');
+
+				var temp = $("<input>");
+				$("body").append(temp);
+				temp.val(email).select();
+				document.execCommand("copy");
+				temp.remove();
+
+				// $.toast.danger("이메일 주소를 복사하였습니다.");
+
+				// $('#demo-6').click(function(){
+					$.toast.danger({
+						duration: 1000,
+						// container: $('UL.pe-list')[0],
+						animate: 'fade',
+						align: 'top',
+						// opacity: '0.7',
+						position: '100%',
+						text: '이메일 주소를 복사하였습니다.'
+					});
+				// })
+
+				$('DIV.toast-container').css('top', '50% !important');
+
+			})
+		});
+		
+		function fnMoveTab(id){
+			$(".tab-cont-wrap .tab-cont").hide();
+			$("." + id + "-cont").show();
+		}
+		
+		function goDisclosureView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'post');
+			frm.attr("action", "/disclosure/disclosureView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭ㄹ
+			frm.appendTo('body');
+			frm.submit();
+		}
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+
+	<!-- 삼일ESG 소개 -->
+	<!-- content -->
+	<section id="esgSection" class="content btmgap sub">
+
+		 <div class="sub-title-a">
+			<div class="ct">
+				<div class="tit">About Us</div>
+				<div class="subs">「삼일ESG」 플랫폼의 목적·역할·구성을 소개하고 삼일PwC에서 제공하는 ESG 자문 및 컨설팅 서비스를 안내합니다.</div>
+			</div>
+			<div class="bgBack"></div>
+			<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+		</div>
+
+         <div class="aboutus-wrap">
+             <div class="tab-scroll">
+                 <ul class="keyword-wrap current-wrap">
+					<li><button type="button" onclick="fnMoveTab('esg');"  class="btn-rd-wh current"><span>삼일ESG 소개</span></button></li>
+					<li><button type="button" onclick="fnMoveTab('service');" class="btn-rd-wh"><span>삼일 서비스 소개</span></button></li>
+					<li><button type="button" onclick="fnMoveTab('consist');" class="btn-rd-wh"><span>사이트 구성 안내</span></button></li>
+					<li><button type="button" onclick="fnMoveTab('contact');" class="btn-rd-wh"><span>Contact Us</span></button></li>
+                 </ul>
+             </div>
+
+			 <div class="tab-cont-wrap">
+				<div class="tab-cont esg-cont">
+					<section class="section default-width pt60">
+						<h4 class="tit-line-left">「삼일ESG」란?</h4>
+						<div class="about-esg">
+							<div class="img"><img src="/assets/img/common/img_aboutesg.png" alt=""> </div>
+							「삼일ESG」는 기업의 ESG 경영활동에 필요한 자원과 최신 ESG 정보∙트렌드를 제공하는 ESG 정보 제공 플랫폼입니다.<br><br>
+							고객, 투자자, 규제기관 등 이해관계자들의 기업에 대한 ESG 요구가 증가하는 환경 속에서 ESG 경영은 
+							기업의 지속가능한 성장을 위한 필수 요소로 자리잡았습니다. 하지만 ESG의 개념이 광범위하고 아직 법적
+							규제 또는 이해관계자들의 판단 기준에 대한 컨센서스가 확립되지 않아 여전히 기업들의 혼란이 가중되고 
+							있습니다.<br><br>
+							「삼일ESG」는 급변하는 ESG 환경 속에서 기업의 ESG 경영활동에 대한 안내자로써 ESG 경영 전반에 대한 가이드를 제공하고 주요 현안을 해결하기 위한 정보와
+							Insight를 제공합니다. 기업의 ESG 대응 현황에 따른 수행 필요 업무 안내, ESG 과제 이행 시 알아야 할 도움말, 공시 또는 평가 대응에 필요한 지식, 최신의 정보와
+							트렌드, 그리고 기업의 ESG 역량 내재화를 위한 교육자료를 한 곳에서 편리하게 확인할 수 있습니다. 오랜 경력과 전문성을 자랑하는 삼일PwC ESG 
+							전문 인력의 자문 및 컨설팅 서비스에 대한 안내도 함께 확인할 수 있습니다.<br><br>
+							「삼일ESG」는 ESG 정보 제공을 통해 기업의 ESG 업무 수행을 지원하고 지속가능한 사회의 구성에 기여하고자 합니다. 기업이 이끌고 「삼일ESG」가 뒷받침하는 지속
+							가능한 미래를 위해 ‘더 최신의’ ‘더 다양한’ ‘더 신뢰할 수 있는’ 가이드와 정보를 제공하겠습니다.
+						</div>
+						<!-- //about-esg -->
+						
+						<!-- 디자인수정 09.19-->
+						<section class="section default-width pt60 w100">
+							<h4 class="tit-line-left">「삼일ESG」목적과 역할</h4>
+							<!-- <div class="purpose-wrap" hidden>
+								
+								<div class="role-wrap ct">
+									<p class="tit">ESG 경영 기업</p>
+									<ul>
+										<li>
+											<strong>What to do?</strong>
+											<p>환경·사회적 이슈에 대응하고 <strong>ESG 경영</strong>을 시행하기 위해 <strong>무엇을 해야 하는가</strong></p>
+										</li>
+										<li>
+											<strong>How to do?</strong>
+											<p><strong>규제, 평가, 공시 등</strong> <br />다양한 요구사항에 <strong>어떻게 대응해야 하는가</strong></p>
+										</li>
+										<li>
+											<strong>What to know?</strong>
+											<p><strong>새롭게 등장하는 규제와 현안</strong>은 무엇인가 <strong>확인해야 할 ESG 트렌드</strong>가 있는가</p>
+										</li>
+									</ul>
+								</div>
+								
+								<div class="rd-wrap gray rd-wrap-1">
+									<p>ESG 경영 기업의 다양한 Needs</p>
+								</div>
+								
+								<div class="role-wrap other">
+									<p class="tit">「삼일ESG」 서비스</p>
+									<ul>
+										<li class="pad2 height">ESG 주요 이슈별<br/>핵심개념 및<br/>전문가 의견, 추천 콘텐츠</li>
+										<li>ESG 과제 실행을 돕는 <br>정보 큐레이션</li>
+										<li>ESG 공시&amp;평가 대응<br> 해설과 참고자료</li>
+										<li>최신 뉴스, 주요 일정 안내</li>
+										<li>ESG 교육 커리큘럼, <br>교육 영상 / 자료</li>
+									</ul>
+								</div>
+								
+								<div class="rd-wrap gray rd-wrap-2">
+									<p>삼일 내 다양한 ESG 전문 지식, 정보 통합</p>
+								</div>
+								
+								<div class="role-wrap">
+									<p class="tit">삼일ESG 플랫폼 전문가</p>
+									<ul>
+										<li class="pad1">
+											<strong>삼일PwC</strong>
+											<ul class="bul-square dkgray">
+												<li>Assurance</li>
+												<li>Deal</li>
+												<li>Tax</li>
+											</ul>
+										</li>
+										<li class="pad1">
+											<strong>PwC컨설팅</strong>
+											<ul class="bul-square dkgray">
+												<li>Financial Services</li>
+												<li>Finance, Risk &amp; Compliance</li>
+											</ul>
+										</li>
+										<li class="pad1"><strong>삼일거버넌스센터</strong></li>
+										<li class="pad1"><strong>삼일아카데미</strong></li>
+										<li class="pad1"><strong>삼일인포마인</strong><span>(삼일i닷컴)</span></li>
+									</ul>
+								</div>
+							</div> -->
+	   
+							<div class="mo_purpose-wrap js-img-extension">
+							   <img src="/assets/img/common/purpose.png">
+	   
+							</div>
+						</section>
+						<!-- 디자인수정 여기까지 09.19-->
+					</section>					
+				</div>
+				<div class="tab-cont service-cont">
+					<section class="section default-width pt60">
+						<h4 class="tit-line-left">삼일에서 제공하는 ESG 서비스</h4>
+						<p class="sub-txt">삼일PwC는 기업이 ESG 경영활동을 위한 전략∙계획∙분야별 과제 실행∙공시∙인증을 지원하고자 자문과 컨설팅 서비스를 제공합니다.</p>
+						
+						
+						<div class="service-list-wrap">
+							<div class="service-list">
+								<div class="group">
+									<div class="tit">서비스<br/>소개</div>
+									<div class="desc">
+										<p class="ctg">01. ESG 전략・계획</p>
+										<div class="primary-wrap">
+											ESG 경영전략과 목표 수립, ESG 실행 과제와 중장기 계획, ESG 경영활동을 위한 관리체계 수립을 지원하는 컨설팅 서비스를 제공합니다. 
+										</div>
+									</div>
+									<!-- //desc -->
+								</div>
+								<div class="group">
+									<div class="tit">서비스<br/>세부 유형</div>
+									<div class="desc">
+										<ul>
+											<li class="h217">
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 연계 경영전략 수립 컨설팅
+															<ul>
+																<li>ESG 비전 ∙ 전략 수립 및 핵심 가치체계 재정립</li>
+																<li>중장기 로드맵 수립</li>
+																<li>목표, 세부 과제 수립 등</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+											<li class="h217">
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 관리체계 수립 컨설팅
+															<ul>
+																<li>Rule &amp; Policy 설정, 재정비</li>
+																<li>영역별 KPI 정의 등</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<!-- //desc -->
+								</div>
+								<!-- //group -->
+							</div>
+							<!-- //service-list-->
+							<div class="service-list">
+								<div class="group">
+									<div class="tit">서비스<br/>소개</div>
+									<div class="desc">
+										<p class="ctg">02. ESG 과제이행</p>
+										<div class="primary-wrap">
+											ESG 주제별 정책과 프로그램 기획·운영, 
+											모니터링과 성과측정 등 ESG 실행 전반에 대한 자문을 제공하며, ESG 시스템 기획·설계·구축을 지원합니다.
+										</div>
+									</div>
+									<!-- //desc -->
+								</div>
+								<div class="group">
+									<div class="tit">서비스<br/>세부 유형</div>
+									<div class="desc">
+										<ul>
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 주제별 과제, 이행 방안 수립 컨설팅
+															<ul>
+																<li>환경 : Net Zero 전략 및 이행방안 수립, 이니셔티브 대응 등</li>
+																<li>사회 : 지속가능 공급망 구축 등</li>
+																<li>거버넌스 : ESG 관점의 내부 회계 관리 제도 개편 등</li>
+																<li>지속가능 금융 : ESG 기반의 투자체계 수립, ESG 채권 발행 등</li>
+																<li>ESG Tax : ESG 관련 세제 대응 등</li>
+																<li>ESG Deal : ESG 목적의 M&A, 실사 자문 등</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>사회적 가치 영향 평가 컨설팅 </li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 관리체계 수립 컨설팅
+															<ul>
+																<li>ESG 비전 ∙ 전략 수립 및 핵심 가치체계 재정립</li>
+																<li>중장기 로드맵 수립</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<!-- //desc -->
+								</div>
+								<!-- //group -->
+							</div>
+							<!-- //service-list-->
+							<div class="service-list">
+								<div class="group">
+									<div class="tit">서비스<br/>소개</div>
+									<div class="desc">
+										<p class="ctg">03. ESG 공시・인증</p>
+										<div class="primary-wrap">
+											투명한 ESG 정보 공시, 객관적인 ESG 등급 평가, 공시 신뢰성 확보를 위한 제3자 인증을 지원합니다.
+										</div>
+									</div>
+									<!-- //desc -->
+								</div>
+								<div class="group">
+									<div class="tit">서비스<br/>세부 유형</div>
+									<div class="desc">
+										<ul class="auto">
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 공시 지원
+															<ul>
+																<li>지속가능경영보고서 작성 자문</li>
+																<li>지속적 발간을 위한 내부 프로세스 정립과 작성 교육체계 수립</li>
+																<li>CSRD 등 규제에 따른 공시 대응</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>외부기관 ESG 평가 대응 지원
+															<ul>
+																<li>기업내부현황 진단 및 대응 방안</li>
+																<li>외부 평가 대응 프로세스 및 개선 전략 수립</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<div class="inner-group">
+													<ul class="bul-square">
+														<li>ESG 정보에 대한 제3자 인증
+															<ul>
+																<li>지속가능경영보고서 제3자 인증</li>
+																<li>ESG채권 발행 사전/사후 외부 검토</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<!-- //desc -->
+								</div>
+								<!-- //group -->
+							</div>
+							<!-- //service-list-->
+						</div>
+					</section>
+					<section class="section default-width pt60">
+						<h4 class="tit-line-left">삼일 조직별 ESG 서비스</h4>
+						<p class="sub-txt">삼일PwC의 조직별 주요 자문 분야는 다음과 같습니다.</p>
+						<div class="service-list mt48">
+							<div class="group">
+								<div class="tit mt0 bg01">삼일 <br>PwC</div>
+								<ul class="list">
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/services/esg-platform.html" target="_blank">Assurance</a></strong>
+										<p><span>ESG 전략∙관리체계 수립, ESG 주제별 실행과제 및 계획 수립, ESG 공시·평가 대응, ESG 공시 제3자 인증 등</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/deal.html" target="_blank">Deal</a></strong>
+										<p><span>ESG 채권 발행 지원, ESG 실사 지원</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/tax.html" target="_blank">Tax</a></strong>
+										<p><span>ESG 관련 세제 컨설팅 (탄소국경세제도(CBAM) 대응 등)</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/services/governance-center.html" target="_blank">거버넌스센터</a></strong>
+										<p><span>거버넌스 업무 전반에 대한 자문, 거버넌스 전문가 리포트, 거버넌스 주제 세미나 개최</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/services/esg-platform.html" target="_blank">Financial Services</a></strong>
+										<p><span>기후리스크 관리 및 모니터링 체계 수립, 금융배출량 측정 및 감축 전략 수립</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.pwc.com/kr/ko/services/esg-platform.html" target="_blank">Finance, Risk & Compliance</a></strong>
+										<p><span>글로벌 ESG 규제 대응, ESG 통합 관리 시스템 구축 지원</span></p>
+									</li>
+								</ul>
+							</div>
+							
+							<!-- //group -->
+							<div class="group">
+								<div class="tit mt0 bg03">삼일아카데미<br>삼일인포마인</div>
+								<ul class="list">
+									<li>
+										<strong class="label"><a href="https://www.samilacademy.com/main/main.do" target="_blank">Samil Link</a></strong>
+										<p><span>온/오프라인 ESG 교육 프로그램 운영, ESG 분야별 자료와 영상 제공, ESG 세미나 개최 등</span></p>
+									</li>
+									<li>
+										<strong class="label"><a href="https://www.samili.com/" target="_blank">삼일아이닷컴</a></strong>
+										<p><span>ESG 관련 세무, 회계 정보 제공, ESG 세미나 개최 등</span></p>
+									</li>
+								</ul>
+							</div>
+							<!-- //group -->
+						</div>
+						 <!-- //service-list -->
+					</section>
+				</div>
+				<div class="tab-cont consist-cont">
+					<div class="default-width pt60 site-map-a">
+						<div class="site-map-area">
+							<h3>ESG 진단・계획</h3>
+							<div class="info">기업의 ESG 경영활동 대응 수준을 확인하고, 각 단계별 필요 활동을 안내 받고 싶은 고객에게 유용합니다.</div>
+							<ul class="">
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/diagnosis/selfDiagnosisView">ESG 자가진단<span class="blind">페이지 이동</span></a>
+											<ul class="">
+												<li>현재의 ESG 경영활동 수준 진단</li>
+												<li>진단 결과에 따른 필요한 ESG 업무 활동 확인</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/diagnosis/businessInfo">ESG 경영활동 가이드<span class="blind">페이지 이동</span></a>
+											<ul class="">
+												<li>ESG 경영활동 프로세스 소개</li>
+												<li>각 단계별 세부 활동에 대한 개념, 필요 역량, 추천 콘텐츠 확인</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!--//site-map-area-->
+						<div class="site-map-area">
+							<h3>ESG 실행</h3>
+							<div class="info">환경·사회·거버넌스·금융<br/>ESG Tax·ESG Deal 각 영역별 과제 실행을 위해 주요 토픽별 핵심 개념과 자료를 모았습니다.</div>
+							<ul class="">
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/environmentView">환경<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>환경 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>기후변화</span>
+												<span>온실가스</span>
+												<span>에너지전환</span>
+												<span>자원 및 순환경제</span>
+												<span>오염과 폐기물</span>
+												<span>생물다양성</span>
+												<span>친환경제품 및 기술</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/socialView">사회<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>사회 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>인적자본</span>
+												<span>인권</span>
+												<span>공급망관리</span>
+												<span>지역사회</span>
+												<span>소비자 및 고객</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/governanceView">거버넌스<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>거버넌스 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>이사회</span>
+												<span>위험관리</span>
+												<span>윤리경영</span>
+												<span>주주권리</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/financeView">금융<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>지속가능 금융 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>기후리스크</span>
+												<span>금융배출량</span>
+												<span>ESG 채권</span>
+												<span>ESG 투자</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+								
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/esgTaxView">ESG Tax<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>ESG Tax 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>탄소국경세</span>
+												<span>환경세 - 세제혜택</span>
+												<span>세무 투명성</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+								
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="/action/esgDealView">ESG Deal<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>ESG Deal 토픽에 대한 개념 및 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>ESG M&A</span>
+												<span>ESG 실사</span>
+												<span>책임투자</span>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!--//site-map-area-->
+						<div class="site-map-area">
+							<h3>ESG 공시・인증</h3>
+							<div class="info">ESG 공시와 인증, 평가 등급 개선을 준비하는데 유용한 원문 자료 및 해설, 추천 콘텐츠를 확인하실 수 있습니다.</div>
+							<ul class="">
+								<li class="list">
+									<ul class="bul-square">
+										<li>
+											<a href="javascript:javascript:goDisclosureView(1);">ESG 공시<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>주요 공시 기준별 프레임워크 소개</li>
+												<li>각 기준서 원문, 해설/사례, 추천 콘텐츠</li>
+											</ul>
+											<div class="ctg-txt">
+												<span>GRI</span>
+												<span>IFRS</span>
+												<span>CSRD</span>
+												<span>TCFD</span>
+												<span>TNFD</span>
+												<span>SEC</span>
+											</div>
+										</li>
+									</ul>
+									
+								</li>
+								<li class="list">
+									<ul class="">
+										<li>
+											<ul class="bul-square">
+												<li><a href="javascript:goDisclosureView(2);">ESG 평가<span class="blind">페이지 이동</span></a>
+													<ul>
+														<li>주요 평가기관 안내</li>
+														<li>주요 평가요소 및 산업별 고려사항</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="">
+										<li>
+											<ul class="bul-square">
+												<li><a href="javascript:goDisclosureView(3);">ESG 인증<span class="blind">페이지 이동</span></a>
+													<ul>
+														<li>ESG 인증의 기본 개념 및 인증 방법, 프로세스 안내</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!--//site-map-area-->
+						<div class="site-map-area">
+							<h3>ESG 자료・동향</h3>
+							<div class="info">ESG 규제 동향, 전문가 의견, <br />대응 현황 등 ESG 관련 다양한 콘텐츠를 유형별, 토픽별로 확인할 수 있습니다.</div>
+							<ul class="">
+								<li class="list">
+									<ul class="bul-square">
+										<li><a href="/trend/insightsList">삼일 인사이트<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>주요 ESG현안에 대한 삼일 PwC의 심층 리포트 및 세미나 영상</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li><a href="/trend/bbsList">ESG 자료실<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>ESG 기준/가이드라인</li>
+												<li>ESG 관련 연구 및 보고자료</li>
+												<li>세미나, 웨비나 등 미디어 영상</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li><a href="/trend/esgNewsList">ESG 뉴스<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>ESG 관련 주요 뉴스를 매일 업데이트하여  제공</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li class="list">
+									<ul class="bul-square">
+										<li><a href="/trend/educationList">ESG 교육<span class="blind">페이지 이동</span></a>
+											<ul>
+												<li>기업 맞춤형 교육 커리큘럼 안내</li>
+												<li>삼일 세미나를 통한 핵심 이슈 교육 영상 제공</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!--//site-map-area-->
+					</div>
+				</div>
+				<div class="tab-cont contact-cont">
+					<section class="section default-width pt60">
+						<h4 class="tit-line-left">삼일ESG 전문가 소개</h4>
+						
+						<dl class="pe-introduce">
+							<dd>
+								<ul class="pe-list">
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-1.png"></div>
+										<div class="txA">
+											<div class="name">스티븐 강 <span>Partner</span></div>
+											<div class="wh">ESG Platform Leader</div>
+											<div class="tel">02 709 4788</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													steven.c.kang@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">
+															이메일 주소 복사하기
+														</div>
+													</span>
+												</a>
+												
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-2.png"></div>
+										<div class="txA">
+											<div class="name">권미엽 <span>Partner</span></div>
+											<div class="wh">Assurance</div>
+											<div class="tel">02 709 7938</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													miyop.kwon@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-3.png"></div>
+										<div class="txA">
+											<div class="name">이진규 <span>Partner</span></div>
+											<div class="wh">Assurance</div>
+											<div class="tel">02 3781 9105</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													jin-kyu.lee@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-4.png"></div>
+										<div class="txA">
+											<div class="name">이보화 <span>Partner</span></div>
+											<div class="wh">Assurance</div>
+											<div class="tel">02 3781 0124</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													bo-hwa.lee@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-5.png"></div>
+										<div class="txA">
+											<div class="name">심재경 <span>Partner</span></div>
+											<div class="wh">Assurance</div>
+											<div class="tel">02 709 7083</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													jea-kyoung.shim@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-6.png"></div>
+										<div class="txA">
+											<div class="name">김도연 <span>Partner</span></div>
+											<div class="wh">Assurance</div>
+											<div class="tel">02 709 4079</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													kim.doyeon@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-7.png"></div>
+										<div class="txA">
+											<div class="name">소주현 <span>Partner</span></div>
+											<div class="wh">Tax</div>
+											<div class="tel">02 709 8248</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													so.juhyun@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<!-- <li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-8.png"></div>
+										<div class="txA">
+											<div class="name">심수아 <span>Partner</span></div>
+											<div class="wh">Tax</div>
+											<div class="tel">02 3781 3072</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													sooa.shim@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li> -->
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-9.png"></div>
+										<div class="txA">
+											<div class="name">이혜민 <span>Partner</span></div>
+											<div class="wh">Tax</div>
+											<div class="tel">02 3781 1732</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													hye-min.lee@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-10.png"></div>
+										<div class="txA">
+											<div class="name">김홍현 <span>Partner</span></div>
+											<div class="wh">Tax</div>
+											<div class="tel">02 709 3320</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													hong-hyeon.kim@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-19.png"></div>
+										<div class="txA">
+											<div class="name">최윤수 <span>Partner</span></div>
+											<div class="wh">Tax</div>
+											<div class="tel">02 709 8773</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													yoon-su.choi@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-11.png"></div>
+										<div class="txA">
+											<div class="name">곽윤구 <span>Partner</span></div>
+											<div class="wh">Deals</div>
+											<div class="tel">02 3781 2501</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													yun-goo.kwak@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<li>
+										<div class="thum"><img src="/assets/img/common/pe-Thum-12.png"></div>
+										<div class="txA">
+											<div class="name">서용태 <span>Partner</span></div>
+											<div class="wh">Deals</div>
+											<div class="tel">02 3781 2340</div>
+											<div class="e-mail">
+												<a href="" target="_blank">
+													yong-tae.seo@pwc.com
+													<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+												</a>
+											</div>
+										</div>
+									</li>
+									
+									<!--<li>
+									 <div class="thum"><img src="/assets/img/common/pe-Thum-13.png"></div>
+									 <div class="txA">
+										 <div class="name">윤영창 <span>Partner</span></div>
+										 <div class="wh">Finance, Risk &amp; Compliance</div>
+										 <div class="tel">02 709 3354</div>
+										 <div class="e-mail">
+											 <a href="" target="_blank">
+												 youngchang.yun@pwc.com
+												 <span class="link-ico">
+													 <img src="/assets/img/common/mail-link-ico.png">
+													 <div class="copy-hover">이메일 주소 복사하기</div>
+												 </span>
+											 </a>
+										 </div>
+									 </div>
+								 </li>-->
+								 
+								<!-- <li>
+									 <div class="thum"><img src="/assets/img/common/pe-Thum-14.png"></div>
+									 <div class="txA">
+										 <div class="name">차경민 <span>Partner</span></div>
+										 <div class="wh">Finance, Risk &amp; Compliance</div>
+										 <div class="tel">02 3781 9392</div>
+										 <div class="e-mail">
+											 <a href="" target="_blank">
+												 kyung-min.cha@pwc.com
+												 <span class="link-ico">
+													 <img src="/assets/img/common/mail-link-ico.png">
+													 <div class="copy-hover">이메일 주소 복사하기</div>
+												 </span>
+											 </a>
+										 </div>
+									 </div>
+								 </li>-->
+								 
+								 <!--<li>
+									 <div class="thum"><img src="/assets/img/common/pe-Thum-15.png"></div>
+									 <div class="txA">
+										 <div class="name">김진유 <span>Partner</span></div>
+										 <div class="wh">Financial Services</div>
+										 <div class="tel">02 3781 1486</div>
+										 <div class="e-mail">
+											 <a href="" target="_blank">
+												 jin-you.kim@pwc.com
+												 <span class="link-ico">
+													 <img src="/assets/img/common/mail-link-ico.png">
+													 <div class="copy-hover">이메일 주소 복사하기</div>
+												 </span>
+											 </a>
+										 </div>
+									 </div>
+								 </li>-->
+								 
+								<!-- <li>
+									 <div class="thum"><img src="/assets/img/common/pe-Thum-16.png"></div>
+									 <div class="txA">
+										 <div class="name">김의준 <span>Partner</span></div>
+										 <div class="wh">Financial Services</div>
+										 <div class="tel">02 709 8969</div>
+										 <div class="e-mail">
+											 <a href="" target="_blank">
+												 euijun.kim@pwc.com
+												 <span class="link-ico">
+													 <img src="/assets/img/common/mail-link-ico.png">
+													 <div class="copy-hover">이메일 주소 복사하기</div>
+												 </span>
+											 </a>
+										 </div>
+									 </div>
+								 </li>-->
+
+								 <li>
+									<div class="thum"><img src="/assets/img/common/pe-Thum-17.png"></div>
+									<div class="txA">
+										<div class="name">김상협 <span>Partner</span></div>
+										<div class="wh">Deals</div>
+										<div class="tel">02 3781 1737</div>
+										<div class="e-mail">
+											<a href="" target="_blank">
+												sang-hyup.kim@pwc.com
+												<span class="link-ico">
+													<img src="/assets/img/common/mail-link-ico.png">
+													<div class="copy-hover">이메일 주소 복사하기</div>
+												</span>
+											</a>
+										</div>
+									</div>
+								</li>
+
+								<!--<li>
+									<div class="thum"><img src="/assets/img/common/pe-Thum-18.png"></div>
+									<div class="txA">
+										<div class="name">유원석 <span>Partner</span></div>
+										<div class="wh">Industry Solution</div>
+										<div class="tel">02 709 4718</div>
+										<div class="e-mail">
+											<a href="" target="_blank">
+												won-seok.you@pwc.com
+												<span class="link-ico">
+													<img src="/assets/img/common/mail-link-ico.png">
+													<div class="copy-hover">이메일 주소 복사하기</div>
+												</span>
+											</a>
+										</div>
+									</div>
+								</li>-->
+
+								
+								</ul>
+							</dd>
+							
+							<dd>
+								<ul class="pe-list">
+									
+								</ul>
+							</dd>
+						</dl>
+					 
+					</section>
+				</div>
+			 </div>
+         </div>         
+     </section>
+	<!-- //content -->
+	
+	
+	
+	
+		
+	
+</div>
+</html>

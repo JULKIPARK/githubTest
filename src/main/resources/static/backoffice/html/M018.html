@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 활동로그 관리 > 웹사이트 관리 > 활동로그 관리</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->   
+        <!-- wrap -->  
+        <div class="container"> 
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- container -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>활동로그 관리</h3>
+                    <ul class="breadcrumb">
+                        <li>웹사이트 관리 </li>
+                        <li>활동로그 관리</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>상세 검색</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>출처 조회</caption>
+                                    <colgroup>
+                                        <col style="width: 10%;">
+                                        <col style="width: 90%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>기간</th>
+                                            <td>
+                                                <div class="date-select flex">
+                                                    <div class="datepicker-wrap">
+                                                        <input type="text" name="" class="datepicker">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" name="" class="datepicker">
+                                                    </div>
+                                                    <select name="" class="select" title="시간선택">
+                                                        <option value="">시간</option>
+                                                    </select>
+                                                    <select name="" class="select" title="분선택">
+                                                        <option value="">분</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>유입경로</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck01" checked="checked">
+                                                        <label for="ck01">직접 입력</label>
+                                                        <!-- <input type="text" id="" class="write-area" value="" style="margin-left:10px;width: 100px;"> -->
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck02">
+                                                        <label for="ck02">삼일 홈페이지</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck03">
+                                                        <label for="ck03">삼일 인포마인</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck04">
+                                                        <label for="ck04">삼일 거버넌스</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck05">
+                                                        <label for="ck05">네이버</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck06">
+                                                        <label for="ck06">다음</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck07">
+                                                        <label for="ck07">구글</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="route" id="ck08">
+                                                        <label for="ck08">기타</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="route" id="ck09">
+                                                        <label for="ck09">전체선택</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>접속방식</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="radio" name="area" id="area01" checked="checked">
+                                                        <label for="area01">전체</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="area" id="area02">
+                                                        <label for="area02">PC</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" name="area" id="area03">
+                                                        <label for="area03">Mobile</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="card-wrap">
+                    <ul class="card-list">
+                        <li>
+                            <strong class="tit">접속로그</strong>
+                            <div class="desc-area">
+                                <span class="data">2,312</span>
+                                <span class="unit">건</span>
+                            </div>
+                        </li>
+                        <li>
+                            <strong class="tit">접속방식</strong>
+                            <div class="desc-area">
+                                <ul class="inner">
+                                    <li>
+                                        <span>PC</span>
+                                        <div>
+                                            <span class="data">2,312</span>
+                                            <span class="unit">건</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>Mobile</span>
+                                        <div>
+                                            <span class="data">2,312</span>
+                                            <span class="unit">건</span>
+                                        </div>
+                                    </li>
+                               </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <strong class="tit">유입경로</strong>
+                            <div class="desc-area">
+                                <ol class="inner">
+                                    <li>
+                                        <span>① 네이버</span>
+                                        <div>
+                                            <span class="data">2,312</span>
+                                            <span class="unit">건</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>② 구글</span>
+                                        <div>
+                                            <span class="data">2,312</span>
+                                            <span class="unit">건</span>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="result-wrap">
+                    <div class="table-wrap">
+                        <table>
+                            <caption>출처 리스트</caption>
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 16%;">
+                                <col style="width: 16%;">
+                                <col style="width: 16%;">
+                                <col style="width: 16%;">
+                                <col style="width: 16%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>접속일시</th>
+                                    <th>접속IP</th>
+                                    <th>접속방식</th>
+                                    <th>접속경로</th>
+                                    <th>접속ID</th>
+                                    <th>브라우저</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+                                <tr>
+                                    <td>2023.03.25 HH:MM</td>
+                                    <td>101.11.011.1111</td>
+                                    <td>PC</td>
+                                    <td>네이버</td>
+                                    <td>SamilESG31</td>
+                                    <td>CHROME</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->                      
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+</body>
+</html>

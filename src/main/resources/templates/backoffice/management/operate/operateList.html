@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				// 기간의 시/분 옵션
+				for(var i=0; i<24; i++) {
+					var tmpStr = String(i).padStart(2, '0');
+					$('#searchListFrm SELECT.hour').append(`<option value="${tmpStr}">${tmpStr}</option>`);
+				}
+				for(var i=0; i<60; i++) {
+					var tmpStr = String(i).padStart(2, '0');
+					$('#searchListFrm SELECT.minute').append(`<option value="${tmpStr}">${tmpStr}</option>`);
+				}
+
+				// 초기 기간 설정
+				_comLib.setDatePicker("accsSttDte", "accsEndDte", "yy.mm.dd");
+				var stDay = _comLib.preDay(1);
+				$("#searchListFrm INPUT[name=accsSttDte]").val(stDay);
+				$("#searchListFrm INPUT[name=accsEndDte]").val(_comLib.toDay());
+
+				setData();
+			};
+
+			let getData = function (_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var param = {
+					"url": "/sems/management/selectMnuScrList"
+					, "type": "post"
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setData = function () {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+
+				getData(function (data) {
+					var items = data.list;
+
+					// 검색조건::화면
+					var lv1Mnu = "";
+					var lv2Mnu = "";
+					var lv3Mnu = "";
+					var lv1Cd = "";
+					var lv2Cd = "";
+					var lv3Cd = "";
+					items.forEach(item => {
+						if (item.mnuLv1) {
+							if (lv1Mnu != item.mnuLv1) {
+								lv1Mnu = item.mnuLv1;
+								lv1Cd = (item.mnuSrcUid+"").substring(0, 3);
+								$("#searchListFrm SELECT[name=mnuLv1]").append(`<option value="${lv1Cd}">${lv1Mnu}</option>`);
+							}
+						}
+						if (item.mnuLv2) {
+							if (lv2Mnu != item.mnuLv2) {
+								lv2Mnu = item.mnuLv2;
+								lv2Cd = (item.mnuSrcUid+"").substring(0, 5);
+								$("#searchListFrm SELECT[name=mnuLv2]").append(`<option value="${lv2Cd}" class="${lv1Cd}">${lv2Mnu}</option>`);
+							}
+						}
+						if (item.mnuLv3) {
+							if (lv3Mnu != item.mnuLv3) {
+								lv3Mnu = item.mnuLv3;
+								lv3Cd = item.mnuSrcUid+"";
+								$("#searchListFrm SELECT[name=mnuLv3]").append(`<option value="${lv3Cd}" class="${lv2Cd}">${lv3Mnu}</option>`);
+							}
+						}
+					})
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+				$("#cont-section DIV.result-wrap").LoadingOverlay("show");
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/management/selectOperateList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#operateListDiv").replaceWith(fragment);
+						// $("#schdlTotalCountView").text("총 " + _formLib.addComma($("#schdlTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#operatePageNum').val();//현재 선택된 페이지
+						$('#operatePageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#operateTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#operateTotalPage").val() + "</option>");
+							$('#operatePageNum').append(option);
+						}
+
+						$("#cont-section DIV.result-wrap").LoadingOverlay("hide");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 접속ID
+				$("#searchListFrm INPUT[name=mbrIdType]").on('change', function() {
+					if ($("#searchListFrm INPUT[name=mbrIdType]:checked").val() === 'ALL') {
+						$("#searchListFrm INPUT[name=mbrId]").val('').prop('disabled', true);
+					} else {
+						$("#searchListFrm INPUT[name=mbrId]").prop('disabled', false).focus();
+					}
+				}).trigger('change');
+
+				// 화면Lv1
+				$("#searchListFrm SELECT[name=mnuLv1]").on('change', function() {
+					$("#searchListFrm SELECT[name=mnuLv2] OPTION:not([value=''])").hide();
+					$("#searchListFrm SELECT[name=mnuLv3] OPTION:not([value=''])").hide();
+					if ($(this).val()) {
+						$(`#searchListFrm SELECT[name=mnuLv2] OPTION.${$(this).val()}`).show();
+						$(`#searchListFrm SELECT[name=mnuLv2]`).val('');
+						$(`#searchListFrm SELECT[name=mnuLv3]`).val('');
+					}
+				}).trigger('change');
+
+				// 화면Lv2
+				$("#searchListFrm SELECT[name=mnuLv2]").on('change', function() {
+					$("#searchListFrm SELECT[name=mnuLv3] OPTION:not([value=''])").hide();
+					if ($(this).val()) {
+						$(`#searchListFrm SELECT[name=mnuLv3] OPTION.${$(this).val()}`).show();
+						$(`#searchListFrm SELECT[name=mnuLv3]`).val('');
+					}
+				}).trigger('change');
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+					_comLib.setDatePicker("accsSttDte", "accsEndDte", "yy.mm.dd");
+					var stDay = _comLib.preDay(1);
+					$("#searchListFrm INPUT[name=accsSttDte]").val(stDay);
+					$("#searchListFrm INPUT[name=accsEndDte]").val(_comLib.toDay());
+					$("#searchListFrm INPUT[name=mbrIdType]").trigger('change');
+					$("#searchListFrm SELECT[name=mnuLv1]").val('').trigger('change');
+				});
+
+				// 데이터 페이징갯수
+				$("#operatePageSize").on("change", function () {
+					$("#operatePageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#operatePageNum").on("change", function () {
+					getData();
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		$(function () {
+			page.init();
+			list.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="searchListFrm">
+
+		<!-- content -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>활동로그 관리</h3>
+				<ul class="breadcrumb">
+					<li>웸사이트 관리</li>
+					<li>관리자 활동로그 관리</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<div class="search-wrap">
+				<form action="">
+					<fieldset>
+						<legend>상세 검색</legend>
+						<div class="table-wrap">
+							<table class="inner-input">
+								<caption>일정 조회</caption>
+								<colgroup>
+									<col style="width:10%;">
+									<col style="width:40%;">
+									<col style="width:10%;">
+									<col style="width:40%;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th>기간</th>
+									<td>
+										<div class="date-select flex">
+											<div class="datepicker-wrap">
+												<input type="text" id="accsSttDte" name="accsSttDte" class="datepicker" readonly>
+												<select name="accsSttHh" class="select hour" title="">
+													<option value="">시</option>
+												</select>
+												<select name="accsSttMm" class="select minute" title="">
+													<option value="">분</option>
+												</select>
+												<span class="separator"> - </span>
+												<input type="text" id="accsEndDte" name="accsEndDte" class="datepicker" readonly>
+												<select name="accsEndHh" class="select hour" title="">
+													<option value="">시</option>
+												</select>
+												<select name="accsEndMm" class="select minute" title="">
+													<option value="">분</option>
+												</select>
+											</div>
+										</div>
+									</td>
+									<th>접속ID</th>
+									<td>
+										<ul class="flex ck-list">
+											<li>
+												<input type="radio" name="mbrIdType" id="area001" value="ALL" checked>
+												<label for="area001">전체</label>
+											</li>
+											<li>
+												<input type="radio" name="mbrIdType" id="area002" value="10">
+												<label for="area002">특정 ID</label>
+											</li>
+											<li>
+												<input type="text" name="mbrId" title="" class="w100p">
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<th>접속화면</th>
+									<td colspan="3">
+										<select name="mnuLv1" class="select" title="">
+											<option value="">화면 LV1</option>
+										</select>
+										<select name="mnuLv2" class="select" title="">
+											<option value="">화면 LV2</option>
+										</select>
+										<select name="mnuLv3" class="select" title="">
+											<option value="">화면 LV3</option>
+										</select>
+									</td>
+								</tr>
+
+								<tr>
+									<th>접속방식</th>
+									<td colspan="3">
+										<ul class="flex ck-list">
+											<li>
+												<input type="radio" name="deviceTpCd" id="area01" value="ALL" checked>
+												<label for="area01">전체</label>
+											</li>
+											<li>
+												<input type="radio" name="deviceTpCd" id="area02" value="10">
+												<label for="area02">PC</label>
+											</li>
+											<li>
+												<input type="radio" name="deviceTpCd" id="area03" value="20">
+												<label for="area03">Mobile</label>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- //table-wrap -->
+						<div class="btn-wrap">
+							<button type="button" name="doSearch" class="btn-primary">조회</button>
+							<button type="button" name="doInit" class="btn-sub">초기화</button>
+						</div>
+						<!-- //btn-wrap -->
+					</fieldset>
+				</form>
+			</div>
+			<!-- //search-wrap -->
+			<div class="result-wrap">
+				<div class="sorting-wrap">
+					<select name="operatePageSize" id="operatePageSize" class="select" title="데이터 건수">
+						<option value="20">20개</option>
+						<option value="50" selected="selected">50개</option>
+						<option value="100">100개</option>
+						<option value="500">500개</option>
+						<option value="1000">1000개</option>
+					</select>
+					<select name="operatePageNum" id="operatePageNum" class="select" title="페이지 이동선택"><option value="1">1/3</option><option value="2">2/3</option><option value="3">3/3</option></select>
+					<div class="btn-ctl">
+					</div>
+				</div>
+
+				<!-- //sorting-wrap -->
+				<div id="operateListDiv" class="table-wrap ">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="operateTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="operatePageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="operateTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table>
+						<caption>일정목록</caption>
+						<colgroup>
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 10%;">
+							<col style="width: 10%;">
+							<col style="width: *;">
+							<col style="width: 5%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>접속일시</th>
+							<th>접속IP</th>
+							<th>접속방식</th>
+							<th>접속ID</th>
+							<th>접속화면</th>
+							<th>CRUD</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td th:text="${item.accsDt}">[접속일시]</td>
+							<td th:text="${item.deviceIp}">[접속IP]</td>
+							<td th:text="${item.deviceTpCdNm}">[접속방식]</td>
+							<td th:text="${item.mbrId}">[접속ID]</td>
+							<td th:text="${item.mnuLv}" class="left">[접속화면]</td>
+							<td th:text="${item.crudType}">[CRUD]</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td style="text-align: center;" colspan="6">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+
+	</form>
+</div>
+</html>

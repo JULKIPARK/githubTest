@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+				getData();
+				getData2();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				param = {
+					"url": "/sems/custom/selectMemberState"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+						let info = data.avgInfo;
+
+						$('SECTION.section-wrap-left P.date, SECTION.section-wrap-right P.date').empty().append(`기준일시: ${list[0].date}`);
+
+						// 최근1개월 일별
+						let totalAry = [0,0,0];
+						list.forEach(function(item, idx) {
+							totalAry[0] += item.visitCnt;
+							totalAry[1] += item.joinCnt;
+							totalAry[2] += item.askCnt;
+							$('#mbrStateByDaily TABLE TBODY').append(`
+								<tr>
+									<td class="date">${item.date}</td>
+									<td>${item.visitCnt}</td>
+									<td>${item.joinCnt}</td>
+									<td>${item.askCnt}</td>
+								</tr>
+							`);
+						});
+						$('#mbrStateByDaily TABLE TBODY TR.main TD:eq(1)').empty().append(totalAry[0]);
+						$('#mbrStateByDaily TABLE TBODY TR.main TD:eq(2)').empty().append(totalAry[1]);
+						$('#mbrStateByDaily TABLE TBODY TR.main TD:eq(3)').empty().append(totalAry[2]);
+
+						// 최근1년 평균
+						$('SECTION.section-wrap-left UL.statistical LI:eq(0) DIV.data-wrap STRONG').empty().append(info.avgvisitors);
+						$('SECTION.section-wrap-left UL.statistical LI:eq(0) DIV.data-wrap SPAN.up').empty().append(`<i class="blind">증가</i>${list[0].visitCnt}`);
+						$('SECTION.section-wrap-left UL.statistical LI:eq(1) DIV.data-wrap STRONG').empty().append(info.avgmembers);
+						$('SECTION.section-wrap-left UL.statistical LI:eq(1) DIV.data-wrap SPAN.up').empty().append(`<i class="blind">증가</i>${list[0].joinCnt}`);
+						$('SECTION.section-wrap-left UL.statistical LI:eq(2) DIV.data-wrap STRONG').empty().append(info.avgqna);
+						$('SECTION.section-wrap-left UL.statistical LI:eq(2) DIV.data-wrap SPAN.up').empty().append(`<i class="blind">증가</i>${list[0].askCnt}`);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let getData2 = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData2`);
+
+				var formData, param = {};
+				param = {
+					"url": "/sems/custom/selectEsgTgtActResult"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						let list = data.list;
+
+						// Pie Chart
+						const xValues = [];
+						const yValues = [];
+						let etcCnt = 0;
+						let totCnt = 0;
+						list.forEach(function(item, idx) {
+							if (idx < 10) {
+								xValues[idx] = item.cdNm;
+								yValues[idx] = item.cnt;
+							} else {
+								xValues[10] = '기타';
+								etcCnt += item.cnt;
+							}
+							totCnt += item.cnt;
+						});
+						yValues[10] = etcCnt;
+
+						const barColors = [
+							"#d04a02",
+							"#ffb600",
+							"#e0301e",
+							"#eb8c00",
+							"#db536a",
+							"#464646",
+							"#7d2c01",
+							"#996d00",
+							"#861d12",
+							"#8d5400",
+							"#961f33",
+						];
+
+						new Chart("myChart", {
+							type: "pie",
+							data: {
+								labels: xValues,
+								datasets: [{
+									backgroundColor: barColors,
+									data: yValues
+								}]
+							}
+						});
+						$('SECTION.section-wrap-right P.chart-label').empty().append(`※ 진단수행: 총 ${totCnt}건`);
+
+						// Sort
+						list.sort((a, b) => b.cnt - a.cnt);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(0) > STRONG').empty().append(`1위. ${list[0].cdNm}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(0) > DIV > STRONG').empty().append(`${list[0].cnt}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(0) > DIV > SPAN.up').empty().append(`<i class="blind">증가</i>${list[0].todayCnt}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(1) > STRONG').empty().append(`2위. ${list[1].cdNm}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(1) > DIV > STRONG').empty().append(`${list[1].cnt}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(1) > DIV > SPAN.up').empty().append(`<i class="blind">증가</i>${list[1].todayCnt}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(2) > STRONG').empty().append(`3위. ${list[2].cdNm}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(2) > DIV > STRONG').empty().append(`${list[2].cnt}`);
+						$('SECTION.section-wrap-right OL.ranking LI:eq(2) > DIV > SPAN.up').empty().append(`<i class="blind">증가</i>${list[2].todayCnt}`);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+
+		$(function () {
+			page.init();
+			// list.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<section id="cont-section" class="content">
+		<div class="location">
+			<h3>고객현황 대시보드</h3>
+			<ul class="breadcrumb">
+				<li>고객 관리</li>
+				<li>회원통계</li>
+			</ul>
+		</div>
+		<!-- //location -->
+		<div class="section-wrap flex half-wrap">
+			<section class="section-wrap-left">
+				<div class="tit-wrap">
+					<h4 class="tit">회원 현황</h4>
+					<p class="date">기준일시: 2023-08-24</p>
+				</div>
+				<ul class="statistical">
+					<li>
+						<div>
+							<span class="label">월평균 방문자</span>
+							<span class="small">(최근1년)</span>
+						</div>
+						<div class="data-wrap">
+							<strong>2,312</strong><span class="unit">명</span>
+							<span class="up"><i class="blind">증가</i>415</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<span class="label">누적 가입자</span>
+						</div>
+						<div class="data-wrap">
+							<strong>3,312</strong><span class="unit">명</span>
+							<span class="up"><i class="blind">증가</i>15</span>
+						</div>
+					</li>
+					<li>
+						<div>
+							<span class="label">월평균 문의 건</span>
+							<span>(최근1년)</span>
+						</div>
+						<div class="data-wrap">
+							<strong>125</strong><span class="unit">건</span>
+							<span class="up"><i class="blind">증가</i>45</span>
+						</div>
+					</li>
+				</ul>
+				<p class="data-info">(<span class="direction">▲</span>숫자) 금일 증가 수량 </p>
+				<div id="mbrStateByDaily" class="table-wrap black-table">
+					<table>
+						<caption>회원 현황 리스트</caption>
+						<colgroup>
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+							<col style="width: 25%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>일자</th>
+							<th>방문</th>
+							<th>가입</th>
+							<th>문의</th>
+						</tr>
+						</thead>
+					</table>
+					<div class="scroll-y">
+						<table>
+							<caption>회원 현황 리스트</caption>
+							<colgroup>
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+							</colgroup>
+							<tbody>
+							<tr class="main">
+								<td class="date">최근 1개월</td>
+								<td>2,312</td>
+								<td>1,045</td>
+								<td>65</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- //table-wrap -->
+			</section>
+			<section class="section-wrap-right">
+				<div class="tit-wrap">
+					<h4 class="tit">산업별 회원</h4>
+					<p class="date">기준일시: 2023-08-24</p>
+				</div>
+				<ol class="ranking">
+					<li>
+						<strong> 1위. 유통</strong>
+						<div class="data-wrap">
+							<strong>2,312</strong><span class="unit">명</span>
+							<span class="up"><i class="blind">증가</i>415</span>
+						</div>
+					</li>
+					<li>
+						<strong> 2위. 제조 </strong>
+						<div class="data-wrap">
+							<strong>2,312</strong><span class="unit">명</span>
+							<span class="up"><i class="blind">증가</i>415</span>
+						</div>
+					</li>
+					<li>
+						<strong> 3위. 금융</strong>
+						<div class="data-wrap">
+							<strong>2,312</strong><span class="unit">명</span>
+							<span class="up"><i class="blind">증가</i>415</span>
+						</div>
+					</li>
+				</ol>
+				<p class="data-info">※ 산업분류는 GICS 기준 참고. (<span class="direction">▲</span>숫자) 금일 증가 수량 </p>
+				<div class="chart-wrap">
+					<p class="chart-label">※ 진단수행: 총 #,###명</p>
+					<div class="chart-wrap">
+						<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+					</div>
+				</div>
+			</section>
+		</div>
+
+	</section>
+</div>
+</html>

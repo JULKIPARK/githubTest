@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/blankLayout}">
+
+<th:block layout:fragment="script">
+    <script type="text/javascript">
+        $(function () {
+        });
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <!-- content -->
+    <div id="cont-section" class="content">
+        <section class="error-section">
+            <h4 class="tit">페이지를 <span class="primary">찾을 수 없습니다.</span></h4>
+            <p class="sub-tit">요청하신 페이지가 제거되었거나, 이름이 변경되었거나, 일시적으로 사용이 중단되었습니다.</p>
+            <div class="error-cont">
+                <p class="error-main-txt">다시 한번 확인해주세요!</p>
+                <p class="error-sub-txt">지금 입력하신 주소의 페이지는 사라졌거나 다른 페이지로 변경되었습니다. <br>주소를 다시 확인해주세요.</p>
+                <div class="btn-wrap">
+                    <button type="button" class="btn-default" onclick="history.back();">이전 페이지</button>
+                    <button type="button" onclick="location.replace('/sems');" class="btn-primary">삼일 ESG 홈</button>
+                </div>
+                <!-- //btn-wrap -->
+            </div>
+        </section>
+        <!-- //error-section -->
+    </div>
+    <!-- //content -->
+</div>
+</html>

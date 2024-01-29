@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<th:block th:fragment="fragmentByContModPop">
+  <script th:inline="javascript">
+    var fixLessonRows = 4;
+
+    $(function() {
+      datePicker();
+      layerClose();
+      tab();
+      fnInitView();
+      fnInitEventByContModPop();
+    });
+
+    function fnInitView() {
+      _comLib.setDatePicker("dpSttDte","dpEndDte", "yy-mm-dd");
+      _comLib.setDatePicker("dpEndDte", null, "yy-mm-dd");
+      // setSchDate();
+    }
+
+    // 조회기간 설정
+    function setSchDate(){
+      var stDay = _comLib.preMonth($('input:radio[name=period]:checked').val());
+      $("#dpSttDte").val(stDay);
+      $("#dpEndDte").val(_comLib.toDay());
+    }
+
+    function fnInitEventByContModPop() {
+      // todo 토픽 영역은 픽스되면 하자!!
+      $('#divTopic').hide();
+
+      // 콘텐츠 종류 선택시 하위 활성화
+      $('#trContRmthdCd').hide();
+      $('#trUploadDoc').hide();
+      $('#trUploadMov').hide();
+      $('#trUploadEmbed').hide();
+      $('#trUrlLink').hide();
+      $('#divLesson').hide();
+
+      if ([[${item.contKindCd}]] === '10') {
+        if ([[${item.contRmthdCd}]] === '10') {
+          $('#trUploadDoc').show();
+          $('#trUploadMov').hide();
+          $('#trUploadEmbed').hide();
+          $('#trUrlLink').hide();
+          $('#linkUrl1').attr('disabled', 'disabled');
+          $('#linkUrl2').attr('disabled', 'disabled');
+          $('#vodQuntyHh1').attr('disabled', 'disabled');
+          $('#vodQuntyMi1').attr('disabled', 'disabled');
+          $('#vodQuntySec1').attr('disabled', 'disabled');
+          $('#vodQuntyHh2').attr('disabled', 'disabled');
+          $('#vodQuntyMi2').attr('disabled', 'disabled');
+          $('#vodQuntySec2').attr('disabled', 'disabled');
+        }
+
+        if ([[${item.contRmthdCd}]] === '20') {
+          $('#trUploadDoc').hide();
+          $('#trUploadMov').hide();
+          $('#trUploadEmbed').hide();
+          $('#trUrlLink').show();
+          $('#linkUrl1').removeAttr('disabled');
+          $('#linkUrl2').attr('disabled', 'disabled');
+          $('#vodQuntyHh1').attr('disabled', 'disabled');
+          $('#vodQuntyMi1').attr('disabled', 'disabled');
+          $('#vodQuntySec1').attr('disabled', 'disabled');
+          $('#vodQuntyHh2').attr('disabled', 'disabled');
+          $('#vodQuntyMi2').attr('disabled', 'disabled');
+          $('#vodQuntySec2').attr('disabled', 'disabled');
+        }
+      }
+
+      // 콘텐츠 종류 : 영상
+      if ([[${item.contKindCd}]] === '20') {
+        if ([[${item.contRmthdCd}]] === '10') {
+          $('#trUploadDoc').hide();
+          $('#trUploadMov').show();
+          $('#trUploadEmbed').hide();
+          $('#trUrlLink').hide();
+          $('#linkUrl2').attr('disabled', 'disabled');
+          $('#vodQuntyHh1').removeAttr('disabled');
+          $('#vodQuntyMi1').removeAttr('disabled');
+          $('#vodQuntySec1').removeAttr('disabled');
+          $('#linkUrl1').attr('disabled', 'disabled');
+          $('#vodQuntyHh2').attr('disabled', 'disabled');
+          $('#vodQuntyMi2').attr('disabled', 'disabled');
+          $('#vodQuntySec2').attr('disabled', 'disabled');
+        }
+
+        if ([[${item.contRmthdCd}]] === '30') {
+          $('#trUploadDoc').hide();
+          $('#trUploadMov').hide();
+          $('#trUploadEmbed').show();
+          $('#trUrlLink').hide();
+          $('#linkUrl2').removeAttr('disabled');
+          $('#vodQuntyHh2').removeAttr('disabled');
+          $('#vodQuntyMi2').removeAttr('disabled');
+          $('#vodQuntySec2').removeAttr('disabled');
+          $('#linkUrl1').attr('disabled', 'disabled');
+          $('#vodQuntyHh1').attr('disabled', 'disabled');
+          $('#vodQuntyMi1').attr('disabled', 'disabled');
+          $('#vodQuntySec1').attr('disabled', 'disabled');
+        }
+      }
+
+      if ([[${item.contKindCd}]] === '30') {
+        $('#trUploadDoc').hide();
+        $('#trUploadMov').hide();
+        $('#trUploadEmbed').hide();
+        $('#trUrlLink').hide();
+        $('#divLesson').show();
+        $('#linkUrl1').attr('disabled', 'disabled');
+        $('#linkUrl2').attr('disabled', 'disabled');
+        $('#vodQuntyHh1').attr('disabled', 'disabled');
+        $('#vodQuntyMi1').attr('disabled', 'disabled');
+        $('#vodQuntySec1').attr('disabled', 'disabled');
+        $('#vodQuntyHh2').attr('disabled', 'disabled');
+        $('#vodQuntyMi2').attr('disabled', 'disabled');
+        $('#vodQuntySec2').attr('disabled', 'disabled');
+      }
+
+      $('#btnCallSrcSearchPop').bind('click', function(){
+        // 출처검색팝업호출
+        fnShowBySrcSearchPop();
+      });
+
+      $('input:radio[name="dpTpCd"]').bind('change', function() {
+        if ($('input:radio[name="dpTpCd"]:checked').val() === '10') {
+          $('#dpSttDte').removeAttr('disabled');
+          $('#dpSttHh').removeAttr('disabled');
+          $('#dpSttMi').removeAttr('disabled');
+          $('#dpEndDte').removeAttr('disabled');
+          $('#dpEndHh').removeAttr('disabled');
+          $('#dpEndMi').removeAttr('disabled');
+          $('#pirdStngUseYn').removeAttr('disabled');
+        }
+        if ($('input:radio[name="dpTpCd"]:checked').val() === '20') {
+          $('#dpSttDte').removeAttr('disabled');
+          $('#dpSttHh').removeAttr('disabled');
+          $('#dpSttMi').removeAttr('disabled');
+          $('#dpEndDte').removeAttr('disabled');
+          $('#dpEndHh').removeAttr('disabled');
+          $('#dpEndMi').removeAttr('disabled');
+          $('#pirdStngUseYn').removeAttr('disabled');
+        }
+        if ($('input:radio[name="dpTpCd"]:checked').val() === '30') {
+          $('#dpSttDte').attr('disabled', 'disabled');
+          $('#dpSttHh').attr('disabled', 'disabled');
+          $('#dpSttMi').attr('disabled', 'disabled');
+          $('#dpEndDte').attr('disabled', 'disabled');
+          $('#dpEndHh').attr('disabled', 'disabled');
+          $('#dpEndMi').attr('disabled', 'disabled');
+          $('#pirdStngUseYn').attr('disabled', 'disabled');
+        }
+      });
+
+      $('#contTpLclsfCd').on('change', function(){
+        if ( $(this).val() === '10' ) {
+          $('#contTpMclsfCd').removeAttr('disabled');
+        } else {
+          $('#contTpMclsfCd').attr('disabled', 'disabled');
+        }
+      });
+
+      $('#btnSaveByContModPop').bind('click', function () {
+        if ($('#srcUid').val() === '') {
+          alert('출처를 선택해 주세요.');
+          return;
+        }
+
+        if ($('#dmstcYn').val() === '') {
+          alert('출처를 선택해 주세요.');
+          return;
+        }
+
+        var formData = new FormData($("#frmByContModPop")[0]);
+
+        $.ajax({
+          type:'POST',
+          enctype:'multipart/form-data',
+          url : "/sems/contents/upsertByContRegPop",
+          data : formData,
+          dataType: 'json',
+          processData:false,
+          contentType:false,
+          cache:false,
+          success:function(res){
+            alert("저장에 성공하셨습니다.");
+          },error:function(res){
+            alert("오류 발생.\n관리자에게 문의해주세요.");
+          }
+        });
+      });
+
+      // child popup event call!!
+      // fnInitEventsBySrcSearchPop();
+    }
+
+    function fnApplyData(params) {
+      if (params !== '') {
+        var applyArr = params.split(',');
+
+        $('#srcUid').val(applyArr[0]);
+        $('#srcNm').val(applyArr[1]);
+        $('#dmstcYn').val(applyArr[2]);
+        $('#dmstcYnNm').val(applyArr[3]);
+      }
+    }
+
+    function fnAddRow() {
+      fixLessonRows++;
+
+      // todo 행추가는 있는데 행삭제는 기획서에 없는데 어케해야 할까?
+      var addTrHtml = `<tr id="trLesson_${fixLessonRows}">
+        <td class="">
+                        <textarea name="lesnNm" id="lesnNm_${fixLessonRows}" cols="" rows=""
+                                  title="레슨명">4. ESG 공시기준 업데이트</textarea>
+        </td>
+        <td class="">
+          <div class="fileUpload">
+            <input type="hidden" name="uploadLessonsUid" id="uploadLessonsUid_${fixLessonRows}"/>
+            <input type="text" id="filePath_${fixLessonRows}" class="url" placeholder="" disabled="disabled">
+              <label for="uploadLessons_${fixLessonRows}">파일 선택</label>
+              <input type="file" name="uploadLessons" id="uploadLessons_${fixLessonRows}" class="upload">
+          </div>
+          <div class="time-wrap flex">
+            <input type="text" name="vodQuntyHh" id="vodQuntyHh_${fixLessonRows}" value="HH" class="time"
+                   disabled="disabled" title="시간">:
+              <input type="text" name="vodQuntyMi" id="vodQuntyMi_${fixLessonRows}" value="MM" class="time"
+                     disabled="disabled" title="분">:
+                <input type="text" name="vodQuntySec" id="vodQuntySec_${fixLessonRows}" value="SS" class="time"
+                       disabled="disabled" title="초">
+          </div>
+        </td>
+        <td class="">
+                                                    <textarea name="vodComnt" id="vodComnt_${fixLessonRows}"
+                                                              cols="" rows="">
+    탄소 배출량 최신 트렌드
+    탄소중립 전략 수립, 탄소감축 실행과 공시
+    TCFD 기반 기후위험 공시
+    친환경 분류, Taxonomy 대응
+    LCA 기반 제품 탄소량 산출
+                                                    </textarea>
+        </td>
+      </tr>`;
+
+      // tbodyLesson - tbody 영역에 tr dynamic add row!
+      $('#tbodyLesson').append(addTrHtml);
+    }
+  </script>
+
+  <!-- modal-wrap -->
+  <div id="mainByContModPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+    <div class="dimmed"></div>
+    <div class="xycenter">
+      <section class="modal-area large">
+        <div class="modal-head">
+          <h2 class="tit">컨텐츠 상세 조회</h2>
+          <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+        </div>
+        <section class="modal-cont">
+          <div class="search-wrap">
+            <form id="frmByContModPop">
+              <input type="hidden" name="contUid" id="contUid" th:value="${#strings.defaultString(item.contUid, '')}"/>
+              <input type="hidden" name="contKindCd" id="contKindCd" th:value="${#strings.defaultString(item.contKindCd, '')}"/>
+              <input type="hidden" name="contRmthdCd" id="contRmthdCd" th:value="${#strings.defaultString(item.contRmthdCd, '')}"/>
+              <input type="hidden" name="atacFileUid" id="atacFileUid" th:value="${#strings.defaultString(item.atacFileUid, '')}"/>
+              <fieldset>
+                <legend>컨텐츠 상세 조회</legend>
+                <div class="table-wrap">
+                  <table class="inner-input">
+                    <caption>컨텐츠 상세 조회</caption>
+                    <colgroup>
+                      <col style="width: 13%;">
+                      <col style="width: 27%;">
+                      <col style="width: 10%;">
+                      <col style="width: 20%;">
+                      <col style="width: 10%;">
+                      <col style="width: 20%;">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                      <th>컨텐츠 종류</th>
+                      <td th:text="${#strings.defaultString(item.contKindCdNm, ' ')}"></td>
+                      <th>등록방식</th>
+                      <td th:text="${#strings.defaultString(item.contRmthdCdNm, ' ')}"></td>
+                      <th>컨텐츠번호</th>
+                      <td th:text="${#strings.defaultString(item.contUno, ' ')}">CDIA00012</td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <label for="contNm">컨텐츠명</label>
+                      </th>
+                      <td colspan="3">
+                        <input type="text" name="contNm" id="contNm" class="w100p" th:value="${#strings.defaultString(item.contNm, '')}">
+                      </td>
+                      <th><label for="contStCd">등록상태</label> </th>
+                      <td>
+                        <select name="contStCd" id="contStCd" class="select">
+                          <option value="10" th:selected="${#strings.defaultString(item.contStCd, '') eq '10'}">사용중</option>
+                          <option value="20" th:selected="${#strings.defaultString(item.contStCd, '') eq '20'}">사용중지</option>
+                        </select>
+                      </td>
+                    </tr>
+<!--                    th:if="${item.contUno != null}" th:value="${item.contUno}"-->
+                    <!-- 문서 컨텐츠업로드일때 노출// -->
+                    <tr id="trUploadDoc">
+                      <th>업로드 파일</th>
+                      <td>
+                        <div class="fileUpload">
+                          <input type="hidden" name="uploadFileUid" id="uploadFileUid" th:value="${#strings.defaultString(item.atacDtlUid, '')}"/>
+                          <input type="text" name="filePath" id="filePath" class="url" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].orgnlFileNm, '')} : ''" value="문서 컨텐츠 업로드형.pdf">
+                          <label for="uploadFile">파일 선택</label>
+                          <input type="file" name="uploadFile" id="uploadFile" class="upload">
+                        </div>
+                      </td>
+                      <th><label for="contSplyTpCd">제공형태</label></th>
+                      <td>
+                        <input type="text" name="contSplyTpCd" id="contSplyTpCd" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].contSplyTpCd, '')} : ''" disabled="disabled">
+                      </td>
+                      <th><label for="pageCnt">페이지 수</label></th>
+                      <td>
+                        <input type="text" name="pageCnt" id="pageCnt" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].pageCnt, '0')} : ''" disabled="disabled">
+                      </td>
+                    </tr>
+                    <!-- //문서 컨텐츠업로드일때 노출 -->
+                    <!-- 아웃링크일때 노출// -->
+                    <tr id="trUrlLink">
+                      <th>링크(URL)</th>
+                      <td colspan="5">
+                        <div class="fileUpload">
+                          <input type="text" name="linkUrl" id="linkUrl1" class="url" th:value="${item.contRmthdCd == '20'} ? ${#strings.defaultString(itemApndList[0].linkUrl, '')} : ''">
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- //아웃링크일때 노출 -->
+                    <!-- 영상 컨텐츠업로드일때 노출// -->
+                    <tr id="trUploadMov">
+                      <th>업로드 파일</th>
+                      <td>
+                        <div class="fileUpload">
+                          <input type="hidden" name="uploadFileUid" id="uploadFileUid" th:value="${#strings.defaultString(item.atacDtlUid, '')}"/>
+                          <input type="text" name="filePath" id="filePath" class="url" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].orgnlFileNm, '')} : ''" value="영상 컨텐츠업로드일때 노출.pdf">
+                          <label for="uploadFile">파일 선택</label>
+                          <input type="file" name="uploadFile" id="uploadFile" class="upload">
+                        </div>
+                      </td>
+                      <th><label for="contSplyTpCd">제공형태</label></th>
+                      <td>
+                        <input type="text" name="contSplyTpCd" id="contSplyTpCd" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].contSplyTpCd, '')} : ''" disabled="disabled">
+                      </td>
+                      <th>영상분량</th>
+                      <td>
+                        <div class="time-wrap flex">
+                          <input type="text" name="vodCtQuntyHh" id="vodQuntyHh1" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].vodQuntyHh, '')} : ''" class="time" disabled="disabled" title="시간">:
+                          <input type="text" name="vodCtQuntyMi" id="vodQuntyMi1" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].vodQuntyMi, '')} : ''" class="time" disabled="disabled" title="분">:
+                          <input type="text" name="vodCtQuntySec" id="vodQuntySec1" th:value="${item.contRmthdCd == '10'} ? ${#strings.defaultString(itemApndList[0].vodQuntySec, '')} : ''" class="time" disabled="disabled" title="초">
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- //영상 컨텐츠업로드일때 노출 -->
+                    <!-- 영상-임베드코드(URL) 입력일때 노출// -->
+                    <tr id="trUploadEmbed">
+                      <th><label for="linkUrl2">소스코드(URL)</label></th>
+                      <td colspan="3">
+                        <div class="url-area flex">
+<!--                        <div class="fileUpload">-->
+                          <input type="text" name="linkUrl" id="linkUrl2" th:value="${item.contRmthdCd == '30'} ? ${#strings.defaultString(itemApndList[0].linkUrl, '')} : ''"><button type="button" class="btn-play"><span>미리보기</span></button>
+                        </div>
+                      </td>
+                      <th>영상분량</th>
+                      <td>
+                        <div class="time-wrap flex">
+                          <input type="text" name="vodCtQuntyHh" id="vodQuntyHh2" th:value="${item.contRmthdCd == '30'} ? ${#strings.defaultString(itemApndList[0].vodQuntyHh, '')} : ''" class="time" disabled="disabled" title="시간">:
+                          <input type="text" name="vodCtQuntyMi" id="vodQuntyMi2" th:value="${item.contRmthdCd == '30'} ? ${#strings.defaultString(itemApndList[0].vodQuntyMi, '')} : ''" class="time" disabled="disabled" title="분">:
+                          <input type="text" name="vodCtQuntySec" id="vodQuntySec2" th:value="${item.contRmthdCd == '30'} ? ${#strings.defaultString(itemApndList[0].vodQuntySec, '')} : ''" class="time" disabled="disabled" title="초">
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- //영상-임베드코드(URL) 입력일때 노출 -->
+                    <tr>
+                      <th>
+                        <label for="srcNm">출처</label>
+                      </th>
+                      <td>
+                        <div class="inputbtn-wrap">
+                          <input type="hidden" name="srcUid" id="srcUid" th:value="${#strings.defaultString(item.srcUid, '')}">
+                          <input type="text" id="srcNm" th:if="${item.srcNm != null}" th:value="${item.srcNm}">
+                          <button type="button" id="btnCallSrcSearchPop" class="btn-srch"><span class="blind">검색</span></button>
+                        </div>
+                      </td>
+                      <th><label for="dmstcYnNm">국내/해외</label></th>
+                      <td>
+                        <input type="hidden" name="dmstcYn" th:value="${#strings.defaultString(item.dmstcYn, '')}">
+                        <input type="text" name="dmstcYnNm" id="dmstcYnNm" th:value="${#strings.defaultString(item.dmstcYnNm, '')}" class="">   <!--  disabled="disabled" 동적으로 값 넣을때 이거 있으면 안들어 갈텐데... -->
+                      </td>
+                      <th><label for="splyLangCd">제공 언어</label></th>
+                      <td>
+                        <select name="splyLangCd" id="splyLangCd" class="select">
+                          <option value="" th:selected="${#strings.defaultString(item.splyLangCd, '') eq ''}">선택</option>
+                          <option value="10" th:selected="${#strings.defaultString(item.splyLangCd, '') eq '10'}">국문</option>
+                          <option value="20" th:selected="${#strings.defaultString(item.splyLangCd, '') eq '20'}">영문</option>
+                          <option value="30" th:selected="${#strings.defaultString(item.splyLangCd, '') eq '30'}">기타</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>발간 일자</th>
+                      <td>
+                        <div class="flex date-publication">
+                          <select name="pblcnGbCd" id="pblcnGbCd" class="type select">
+                            <option value="01" th:selected="${#strings.defaultString(item.pblcnGbCd, '') eq '01'}">연도</option>
+                            <option value="02" th:selected="${#strings.defaultString(item.pblcnGbCd, '') eq '02'}">월</option>
+                            <option value="03" th:selected="${#strings.defaultString(item.pblcnGbCd, '') eq '03'}">일자</option>
+                          </select>
+                          <input type="text" name="pblcnYy" id="pblcnYy" class="year" th:value="${#strings.defaultString(item.pblcnYy, '')}" title="연도">
+                          <input type="text" name="pblcnMm" id="pblcnMm" class="month" th:value="${#strings.defaultString(item.pblcnMm, '')}" disabled="disabled" title="월">
+                          <input type="text" name="pblcnDd" id="pblcnDd" class="day" th:value="${#strings.defaultString(item.pblcnDd, '')}" disabled="disabled" title="일자">
+                        </div>
+                      </td>
+                      <th>유형분류</th>
+                      <td th:text="${#strings.defaultString(item.contTpLclsfCdNm, ' ')}">기준/가이드라인</td>
+                      <th>유형세분류</th>
+                      <td th:text="${#strings.defaultString(item.contTpMclsfCdNm, ' ')}">-</td>
+                    </tr>
+                    <tr>
+                      <th>업무 분류</th>
+                      <td th:text="${#strings.defaultString(item.taskClsfCdNm, ' ')}">공시</td>
+                      <th>주제 분류</th>
+                      <td colspan="3" th:text="${#strings.defaultString(item.tpicMnuCdNm, ' ')}">ESG일반</td>
+                    </tr>
+                    <tr>
+                      <th>전시 여부</th>
+                      <td>
+                        <ul class="flex ck-list">
+                          <li>
+                            <input type="radio" name="dpTpCd" id="radio16" value="10" th:checked="${#strings.defaultString(item.dpTpCd, '') eq '10'}">
+                            <label for="radio16">전체공개</label>
+                          </li>
+                          <li>
+                            <input type="radio" name="dpTpCd" id="radio17" value="20" th:checked="${#strings.defaultString(item.dpTpCd, '') eq '20'}">
+                            <label for="radio17">비공개</label>
+                          </li>
+                          <li>
+                            <input type="radio" name="dpTpCd" id="radio18" value="30" th:checked="${#strings.defaultString(item.dpTpCd, '') eq '30'}">
+                            <label for="radio18">일부공개</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <th>전시 기간</th>
+                      <td colspan="3">
+                        <div class="date-select flex date-ck-mix">
+                          <div class="datepicker-wrap flex">
+                            <input type="text" name="dpSttDte" id="dpSttDte" class="datepicker" th:value="${#strings.defaultString(item.dpSttDte, '')}">
+                            <input type="text" name="dpSttHh" value="00" class="time" th:value="${#strings.defaultString(item.dpSttHh, '')}">:<input type="text" class="time" name="dpSttMi" th:value="${#strings.defaultString(item.dpSttMi, '')}">
+                            <span class="separator"> - </span>
+                            <input type="text" name="dpEndDte" id="dpEndDte" class="datepicker" th:value="${#strings.defaultString(item.dpEndDte, '')}">
+                            <input type="text" name="dpEndHh" value="23" class="time" th:value="${#strings.defaultString(item.dpEndHh, '')}">:<input type="text" class="time" name="dpEndMi" th:value="${#strings.defaultString(item.dpEndMi, '')}">
+                          </div>
+                          <input type="checkbox" name="pirdStngUseYn" id="pirdStngUseYn" value="Y" th:checked="${#strings.defaultString(item.pirdStngUseYn, '') eq 'Y'}"><label for="pirdStngUseYn">기간설정사용</label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>일부 공개 대상</th>
+                      <td>
+                        <ul class="flex ck-list">
+                          <li>
+                            <input type="checkbox" name="rlsTgtCd" id="ck01" value="10" th:checked="${#strings.contains(#strings.defaultString(item.rlsTgtCds, ''), '10')}">
+                            <label for="ck01">그룹 A</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="rlsTgtCd" id="ck02" value="20" th:checked="${#strings.contains(#strings.defaultString(item.rlsTgtCds, ''), '20')}">
+                            <label for="ck02">그룹 B</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="rlsTgtCd" id="ck03" value="30" th:checked="${#strings.contains(#strings.defaultString(item.rlsTgtCds, ''), '30')}">
+                            <label for="ck03">그룹 C</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <th>다운로드 가능</th>
+                      <td colspan="3">
+                        <ul class="flex ck-list">
+                          <li>
+                            <input type="radio" name="dwnldPsbltyYn" id="radio14" value="Y" th:checked="${#strings.defaultString(item.dwnldPsbltyYn, '') eq 'Y'}">
+                            <label for="radio14">가능</label>
+                          </li>
+                          <li>
+                            <input type="radio" name="dwnldPsbltyYn" id="radio15" value="N" th:checked="${#strings.defaultString(item.dwnldPsbltyYn, '') eq 'N'}">
+                            <label for="radio15">불가</label>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>검색 가능 여부</th>
+                      <td>
+                        <ul class="flex ck-list">
+                          <li>
+                            <input type="radio" name="srchPsbltyYn" id="radio12" value="Y" th:checked="${#strings.defaultString(item.srchPsbltyYn, '') eq 'Y'}">
+                            <label for="radio12">가능</label>
+                          </li>
+                          <li>
+                            <input type="radio" name="srchPsbltyYn" id="radio13" value="N" th:checked="${#strings.defaultString(item.srchPsbltyYn, '') eq 'N'}">
+                            <label for="radio13">불가</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <th>태그 키워드</th>
+                      <input type="hidden" name="tagKwrd" th:value="${#strings.defaultString(item.tagKwrds, '')}">
+                      <td colspan="3" th:text="${#strings.defaultString(item.tagKwrds, ' ')}">GRI, 공시, 보고, 공시기준, 공시보고, 지속가능경영보고서, SR</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- //table-wrap -->
+                <div id="divTopic" class="table-wrap">
+                  <table class="table-type-mix line-gray">
+                    <caption>ESG 토픽 선택</caption>
+                    <colgroup>
+                      <col style="width: *;">
+                      <col style="width: 17%;">
+                      <col style="width: 17%;">
+                      <col style="width: 17%;">
+                      <col style="width: 17%;">
+                      <col style="width: 19%;">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                      <th rowspan="2">ESG 토픽</th>
+                      <th>E(환경)</th>
+                      <th>S(사회)</th>
+                      <th>G(거버넌스)</th>
+                      <th>F(금융)</th>
+                      <th>공시</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <ul class="ck-list">
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-a">
+                            <label for="ck04-a">온실가스</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-b">
+                            <label for="ck04-b">Scope3</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-c">
+                            <label for="ck04-c">탄소국경세</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-d">
+                            <label for="ck04-d">친환경제품/서비스</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-e">
+                            <label for="ck04-e">생물다향성</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-f">
+                            <label for="ck04-f">에너지전환</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-g">
+                            <label for="ck04-g">순환경제</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck04-h">
+                            <label for="ck04-h">자연자본</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul class="ck-list">
+                          <li>
+                            <input type="checkbox" name="esg" id="ck05-a">
+                            <label for="ck05-a">인적자본 (Human Capital)</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck05-b">
+                            <label for="ck05-b">인권 (Human Rights)</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck05-c">
+                            <label for="ck05-c">공급망 관리</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul class="ck-list">
+                          <li>
+                            <input type="checkbox" name="esg" id="ck06-a">
+                            <label for="ck06-a">이사회</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck06-b">
+                            <label for="ck06-b">내부통제</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck06-c">
+                            <label for="ck06-c">윤리경영</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck06-d">
+                            <label for="ck06-d">주주관리</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul class="ck-list">
+                          <li>
+                            <input type="checkbox" name="esg" id="ck07-a">
+                            <label for="ck07-a">기후리스크</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck07-b">
+                            <label for="ck07-b">지속가능채권</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck07-c">
+                            <label for="ck07-c">ESG투자</label>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul class="ck-list">
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-a">
+                            <label for="ck08-a">IFRS / ISSB</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-b">
+                            <label for="ck08-b">CSRD / ESRS</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-c">
+                            <label for="ck08-c">EU Taxonomy</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-d">
+                            <label for="ck08-d">지속가능공급망 실사지침
+                            </label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-e">
+                            <label for="ck08-e">SEC 기후공시 의무화
+                            </label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-f" checked="checked">
+                            <label for="ck08-f">GRI</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-g">
+                            <label for="ck08-g">TCFD</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-h">
+                            <label for="ck08-h">TNFD</label>
+                          </li>
+                          <li>
+                            <input type="checkbox" name="esg" id="ck08-i">
+                            <label for="ck08-i">ESG인증</label>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- //table-wrap -->
+                <div class="table-wrap">
+                  <table class="line-gray">
+                    <caption>컨텐츠 등록</caption>
+                    <colgroup>
+                      <col style="width: 13%;">
+                      <col style="width: 37%;">
+                      <col style="width: 13%;">
+                      <col style="width: 37%;">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                      <th>대표 이미지<br>(000*0000)</th>
+                      <td>
+                        <div class="thum-upload-wrap flex">
+                          <div class="thumbnail">
+                            <img th:src="${#strings.defaultString(item.cnvnFileFpath, '')}" alt="대표 이미지">
+                          </div>
+                          <div class="btn-upload-wrap">
+                            <input type="hidden" name="uploadImageUid" id="uploadImageUid" th:value="${#strings.defaultString(item.atacDtlUid, '')}"/>
+                            <input type="file" name="uploadImage" id="uploadImage" class="upload">
+                          </div>
+                        </div>
+                      </td>
+                      <th>메모 (컨텐츠 요약)</th>
+                      <td>
+                        <textarea name="contSumry" id="contSumry" th:text="${#strings.defaultString(item.contSumry, ' ')}" cols="" rows=""></textarea>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- //table-wrap -->
+                <!-- 영상 원포인트레슨 선택시 노출 -->
+                <div id="divLesson" class="table-wrap">
+                  <table class="lesson-table line-gray">
+                    <caption>컨텐츠 등록</caption>
+                    <colgroup>
+                      <col style="width: 33%;">
+                      <col style="width: 33%;">
+                      <col style="width: 34%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                      <th colspan="3">
+                        <div class="inner-btn">
+                          영상 레슨 등록
+                        </div>
+                      </th>
+                    </tr>
+                    <tr>
+                      <th>레슨명</th>
+                      <th>영상 파일 업로드</th>
+                      <th>영상 설명</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyLesson" class="lesson-list">
+                    <th:block th:each="itemApnd, stat : ${itemApndList}">
+                      <tr id="trLesson_${stat.count}">
+                        <input type="hidden" name="seqNo" id="seqNo_${stat.count}" th:value="${#strings.defaultString(itemApnd.seqNo, '')}"/>
+                        <td class="">
+                          <textarea name="lesnNm" id="lesnNm_${stat.count}" cols="" rows="" title="레슨명" th:text="${#strings.defaultString(itemApnd.lesnNm, '')}">1. Opening</textarea>
+                        </td>
+                        <td class="">
+                          <div class="fileUpload">
+                            <input type="hidden" name="uploadLessonsUid" id="uploadLessonsUid_${stat.count}" th:value="${#strings.defaultString(itemApnd.atacDtlUid, '')}"/>
+                            <input type="text" id="filePath_${stat.count}" class="url" placeholder="" th:value="${#strings.defaultString(itemApnd.orgnlFileNm, '')}">    <!--  disabled="disabled" -->
+                            <label for="uploadLessons_${stat.count}">파일 선택</label>
+                            <input type="file" name="uploadLessons" id="uploadLessons_${stat.count}" class="upload">
+                          </div>
+                          <div class="time-wrap flex">
+                            <input type="text" name="vodQuntyHh" id="vodQuntyHh_${stat.count}" th:value="${#strings.defaultString(itemApnd.vodQuntyHh, '')}" class="time" disabled="disabled" title="시간">:
+                            <input type="text" name="vodQuntyMi" id="vodQuntyMi_${stat.count}" th:value="${#strings.defaultString(itemApnd.vodQuntyMi, '')}" class="time" disabled="disabled" title="분">:
+                            <input type="text" name="vodQuntySec" id="vodQuntySec_${stat.count}" th:value="${#strings.defaultString(itemApnd.vodQuntySec, '')}" class="time" disabled="disabled" title="초">
+                          </div>
+                        </td>
+                        <td class="">
+                                                    <textarea name="vodComnt" id="vodComnt_${stat.count}" cols="" rows="" th:text="${#strings.defaultString(itemApnd.vodComnt, '')}">
+    탄소 배출량 최신 트렌드
+    탄소중립 전략 수립, 탄소감축 실행과 공시
+    TCFD 기반 기후위험 공시
+    친환경 분류, Taxonomy 대응
+    LCA 기반 제품 탄소량 산출
+                                                    </textarea>
+                        </td>
+                      </tr>
+                    </th:block>
+                    </tbody>
+                  </table>
+                  <div class="btn-add-wrap">
+                    <button type="button" id="btnAddRowByContRegPop" th:onclick="fnAddRow()" class="btn-add"><span>행 추가</span></button>
+                  </div>
+                </div>
+                <!-- //영상 원포인트레슨 선택시 노출 -->
+                <div class="btn-wrap">
+                  <button type="button" id="btnSaveByContModPop" class="btn-primary">저장</button>
+<!--                  <button type="button" id="btnCopyByContModPop" class="btn-isave">복사</button>-->
+                  <button type="button" id="btnCloseByContModPop" class="btn-sub btn-close ">닫기</button>
+                </div>
+                <!-- //btn-wrap -->
+              </fieldset>
+            </form>
+          </div>
+          <!-- //search-wrap -->
+        </section>
+        <!--//modal-cont-->
+      </section>
+      <!--//modal-area-->
+    </div>
+    <!--//xycenter-->
+  </div>
+  <!--//modal-wrap-->
+</th:block>
+<!-- layout:fragment-->
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/blankLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+		});
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+	<!-- content -->
+	<div id="cont-section" class="content">
+		<section class="error-section">
+			<div class="error-header">
+				<div class="inner">
+					<div class="logo">
+						<a href="/"><img src="/assets/img/common/logo_type2.svg"></a>
+					</div>
+				</div>
+			</div>
+			<div class="error-container-top">
+				<div class="inner">
+					<h4 class="tit">서비스에 <span class="primary">접속할 수 없습니다.</span></h4>
+					<p class="sub-tit">죄송합니다. 기술적인 문제로 일시적으로 접속되지 않았습니다. 잠시 후 다시 이용 부탁드리며 이용에 불편을 드린 점 사과드립니다.</p>
+				</div>
+			</div>
+			<div class="error-cont">
+				<div class="inner">
+					<p class="error-main-txt">잠시 후 다시 확인해주세요!</p>
+					<p class="error-sub-txt">지금 이 서비스와 연결할 수 없습니다. 문제를 해결하기 위해 열심히 노력하고 있습니다.<br>잠시 후 다시 확인해주세요.<br>(500 Error: 내부 서버 오류)</p>
+					<div class="btn-wrap">
+						<button type="button" class="btn-white" onclick="history.back();">이전 페이지</button>
+						<button type="button" onclick="location.replace('/');" class="btn-primary">삼일 ESG 홈</button>
+					</div>
+					<!-- //btn-wrap -->
+				</div>
+			</div>
+		</section>
+		<!-- //error-section -->
+	</div>
+	<!-- //content -->
+</div>
+</html>

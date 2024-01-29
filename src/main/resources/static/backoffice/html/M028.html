@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 컨텐츠 관리 > 컨텐츠 공통 > 출처 검색</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <section class="modal-area small">
+                <div class="modal-head">
+                    <h2 class="tit">출처 검색</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <section class="modal-cont">
+                    <div class="search-wrap">
+                        <form action="">
+                            <fieldset>
+                                <legend>출처 검색</legend>
+                                <div class="table-wrap">
+                                    <table>
+                                        <caption>소속 리스트</caption>
+                                        <colgroup>
+                                            <col style="width: 30%;">
+                                            <col style="width: *;">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th>출처명</th> 
+                                                <td>
+                                                    <div class="selectinput-wrap">
+                                                        <select name="" class="select" title="출처명/번호선택">
+                                                            <option value="">출처명</option>
+                                                            <option value="">출처번호</option>
+                                                        </select>
+                                                        <input type="text" placeholder="" title="입력">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>국내/해외</th>
+                                                <td>
+                                                    <ul class="flex ck-list">
+                                                        <li>
+                                                            <input type="radio" name="area2" id="area04">
+                                                            <label for="area04">전체</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="area2" id="area05">
+                                                            <label for="area05">국내</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="area2" id="area06">
+                                                            <label for="area06">해외</label>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                                <div class="btn-wrap">
+                                    <button type="button" class="btn-primary">검색</button>
+                                    <button type="button" class="btn-sub">신규 출처 추가</button>
+                                </div>
+                                <!-- //btn-wrap -->
+                            </fieldset>
+                        </form>
+                    </div>
+                    <!--//search-wrap-->
+                    <div class="result-wrap">
+                        <div class="table-wrap ">
+                            <table>
+                                <caption>출처 검색 리스트</caption>
+                                <colgroup>
+                                    <col style="width: 10%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: *;">
+                                    <col style="width: 20%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>NO</th>
+                                        <th>출처번호</th>
+                                        <th>출처명</th>
+                                        <th>국내/해외</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td><a href="javascript:void(0);" class="link">SK12345</a></td>
+                                        <td class="left">삼일회계법인</td>
+                                        <td>국내</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><a href="javascript:void(0);" class="link">SK12356</a></td>
+                                        <td class="left">대한상공회의소</td>
+                                        <td>국내</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><a href="javascript:void(0);" class="link">SF00097</a></td>
+                                        <td class="left">삼일회계법인</td>
+                                        <td>국내</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td><a href="javascript:void(0);" class="link">SK12345</a></td>
+                                        <td class="left">Carbon Trust Standard for Water</td>
+                                        <td>해외</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nodata" colspan="4">nodata</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- //table-wrap -->
+                    </div>
+                    <!-- //result-list -->
+                    <div class="btn-wrap">
+                        <button type="button" class="btn-sub btn-close">닫기</button>
+                    </div>
+                    <!-- //btn-wrap -->
+                </section>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap--> 
+</body>
+</html>

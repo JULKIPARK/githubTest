@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+	<section class="section-group">
+		<div class="tit-line-wrap">
+			<h4 class="tit-line-left">웹컨텐츠</h4><span class="data" th:text="${webTotal + '건'}"></span>
+		</div>
+		<ul class="list total-search-list">
+			<li th:each="result, status : ${webContentsList}">
+				<a th:href="${result.web_path}">
+					<div class="info-wrap">
+						<p class="bul-square" th:text="${result.menu_nm}"></p>
+						<p class="subject" th:utext="${result.page_title}"></p>
+						<p class="desc" th:utext="${result.page_content}"></p>
+					</div>
+				</a>
+			</li>
+		</ul>
+		
+        <div class="nodata center" th:if="${webTotal == 0}" style="margin-top:50px;">
+		    <b>검색결과가 없습니다.</b>
+        </div>
+		
+		<div class="btn-more-wrap" th:if="${webTotal > 0}">
+			<button type="button" class="btn-white arrow-after" id="WEBCONTENTS" onclick="goCategory('WEBCONTENTS')"><span>관련 웹컨텐츠 더보기</span></button>
+		</div>
+	</section>
+	
+	<section class="section-group">
+		<div class="tit-line-wrap">
+			<h4 class="tit-line-left">문서</h4><span class="data" th:text="${docTotal + '건'}"></span>
+		</div>
+		<ul class="list total-search-list">
+			<li th:each="result, status : ${docList}">
+				<a href="javascript:void(0);" class="content_pop" th:data-kind="${result.cont_kind_cd}" th:data-uid="${result.cont_uid}" th:data-cd="${result.cont_rmthd_cd}">
+<!--				<a th:href="@{${result.link_url}}">-->
+					<div class="info-wrap">
+						<p class="bul-square" th:utext="${result.cont_tp_lclsf_nm}"></p>
+						<p class="subject" th:utext="${result.cont_nm}"></p>
+						<div class="info-area">
+							<span class="writer" th:text="${result.src_nm}"></span>
+							
+							<!-- 발간일 -->
+							<span class="date"
+									th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 4 }"
+									th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}"
+		          					th:text="${'| ' + year}">
+							</span>
+							<span class="date"
+									th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 6 }"
+									th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+		          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}"
+		          					th:text="${'| ' + year + '.' + month}">
+							</span>
+							<span class="date"
+									th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 8 }"
+									th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+		          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}, 
+		          					 		day=${#strings.substring(result.pblcn_dte, 6, 8)}"
+		          					th:text="${'| ' + year + '.' + month + '.' + day}">
+							</span>
+								
+						</div>
+						<!--
+						<ul class="ctg-txt">
+							<li th:text="${result.task_clsf_nm}"></li>
+							<li>ESG 일반</li> 토픽 색인
+							<li>GRI</li> 토픽 색인
+						</ul>
+						-->
+						<ul class="hashtag">
+							<li th:each="kwrd_arry : ${#strings.arraySplit(result.kwrd_arry, ',')}">
+								<span class="beage" th:text="${'#' + kwrd_arry}"></span>
+							</li>
+						</ul>					
+						<p class="desc" th:utext="${result.document}"></p> 
+					</div>
+				</a>
+			</li>
+		</ul>
+				
+		<div class="nodata center" th:if="${docTotal == 0}" style="margin-top:50px;">
+			<div></div>
+            <b>검색결과가 없습니다.</b>
+        </div>
+		
+		<div class="btn-more-wrap" th:if="${docTotal > 0}">
+			<button type="button" class="btn-white arrow-after" id="DOC" onclick="goCategory('DOC')"><span>관련 자료 더보기</span></button>
+		</div>
+	</section>
+	
+	<section class="section-group">
+		<div class="tit-line-wrap">
+			<h4 class="tit-line-left">뉴스</h4><span class="data" th:text="${newsTotal + '건'}"></span>
+		</div>
+		<div class="thumbnail-wrap">
+			<ul class="row-list total-search-list">
+				<li th:each="result, status : ${newsList}">
+					<a href="javascript:void(0);" class="content_pop" th:data-kind="${result.cont_kind_cd}" th:data-uid="${result.cont_uid}" th:data-cd="${result.cont_rmthd_cd}">
+<!--					<a th:href="@{${result.link_url}}">-->
+						<div class="img-wrap">
+							<span class="thumbnail"><img th:src="${result.img_url}"></span>
+						</div>
+						<div class="info-wrap ">
+							<p class="subject" th:utext="${result.cont_nm}"></p>
+							<div class="info-area">
+								<span class="writer" th:text="${result.src_nm}"></span>
+								
+								<!-- 발간일 -->
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 4 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}"
+			          					th:text="${year}">
+								</span>
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 6 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+			          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}"
+			          					th:text="${year + '.' + month}">
+								</span>
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 8 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+			          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}, 
+			          					 		day=${#strings.substring(result.pblcn_dte, 6, 8)}"
+			          					th:text="${year + '.' + month + '.' + day}">
+								</span>				
+								
+							</div>
+							<div class="desc" th:utext="${result.cn}"></div>
+						</div>
+					</a>
+				</li>				
+			</ul>
+		</div>
+		
+		<div class="nodata center" th:if="${newsTotal == 0}" style="margin-top:50px;">
+			<div></div>
+        	<b>검색결과가 없습니다.</b>
+        </div>
+		
+		<div class="btn-more-wrap" th:if="${newsTotal > 0}">
+			<button type="button" class="btn-white arrow-after" id="NEWS" onclick="goCategory('NEWS')"><span>관련 뉴스 더보기</span></button>
+		</div>
+	</section>
+	<section class="section-group">
+		<div class="tit-line-wrap">
+			<h4 class="tit-line-left">미디어</h4><span class="data" th:text="${mediaTotal + '건'}"></span>
+		</div>
+		<div class="thumbnail-wrap">
+			<ul class="list grid4">
+				<li th:each="result, status : ${mediaList}">
+					<a href="javascript:void(0);" class="content_pop" th:data-kind="${result.cont_kind_cd}" th:data-uid="${result.cont_uid}" th:data-cd="${result.cont_rmthd_cd}">
+<!--					<a th:href="@{${result.link_url}}">-->
+						<div class="img-wrap">
+							<span class="thumbnail"><img th:src="${result.tumnl_fpath}"></span>
+							<span class="time" th:text="${result.vod_qunty_hh} + ':' + ${result.vod_qunty_mi} + ':' + ${result.vod_qunty_sec}"></span> <!-- 만약 시/분 이 없는 상황이면, ::이 그대로 노출 되기 때문에 if문으로 분기 돌려야할 것 같음 -->
+							<span class="ico-play"><i class="blind">play</i></span>
+						</div>
+						<div class="info-wrap">							
+							<ul class="ctg-txt">
+								<li th:text="${result.task_clsf_nm}"></li>
+								<li th:text="${result.sbjt_gb_nm}"></li>
+								<!--<li th:each="tpic_nm_arry : ${#strings.arraySplit(result.tpic_nm_arry, ',')}" th:text="${tpic_nm_arry}"></li>-->
+							</ul>
+							<p class="subject ellipsis"  th:utext="${result.cont_nm}"></p>
+							<p class="n-hashtag" th:each="kwrd_arry : ${#strings.arraySplit(result.kwrd_arry, ',')}" th:if="${not #strings.isEmpty(kwrd_arry)}" th:text="${'# ' + kwrd_arry}"></p>
+							<div class="info-area">
+								<span class="writer" th:utext="${result.src_nm}"></span>
+								
+								<!-- 발간일 -->
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 4 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}"
+			          					th:text="${year}">
+								</span>
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 6 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+			          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}"
+			          					th:text="${year + '.' + month}">
+								</span>
+								<span class="date"
+										th:if="${#strings.length(#strings.trim(result.pblcn_dte)) == 8 }"
+										th:with="year=${#strings.substring(result.pblcn_dte, 0, 4)}, 
+			          					 		month=${#strings.substring(result.pblcn_dte, 4, 6)}, 
+			          					 		day=${#strings.substring(result.pblcn_dte, 6, 8)}"
+			          					th:text="${year + '.' + month + '.' + day}">
+								</span>
+							</div>
+						</div>
+					</a>
+				</li>													
+			</ul>
+		</div>
+		
+		<div class="nodata center" th:if="${mediaTotal == 0}" style="margin-top:50px;">
+			<div></div>
+            <b>검색결과가 없습니다.</b>
+        </div>
+		
+		<div class="btn-more-wrap" th:if="${mediaTotal > 0}">
+			<button type="button" class="btn-white arrow-after" id="MEDIA" onclick="goCategory('MEDIA')"><span>관련 미디어 영상 더보기</span></button>
+		</div>
+	</section>
+</body>
+
+</html>

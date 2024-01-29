@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+    
+    <!-- konan js  -->
+	<script type="text/javascript" src="/assets/js/search/search.js"></script><!-- KS Events -->
+	<script type="text/javascript" src="/assets/js/search/search.ksf.js"></script><!-- KSF Events -->
+
+    <script>
+        $(function () {
+            tab();
+        })
+    </script>
+
+</th:block>
+	
+<div layout:fragment="content">
+	<!-- 검색엔진 form -->
+	<form id="historyForm" action="main" method="get">	
+		<input type="hidden" id="category" name="category" th:value="${params.category}" />
+		<input type="hidden" id="kwd" name="kwd" th:value="${params.kwd}" />
+		<input type="hidden" id="preKwd" name="preKwd" th:value="${params.preKwd}" />
+		<input type="hidden" id="date" name="date" th:value="${params.date}" />
+		<input type="hidden" id="startDate" name="startDate" th:value="${params.startDate}" />
+		<input type="hidden" id="endDate" name="endDate" th:value="${params.endDate}" />
+		<input type="hidden" id="originalQuery" name="originalQuery" th:value="${params.originalQuery}" />
+		<input type="hidden" id="previousQuery" name="previousQuery" th:value="${params.previousQuery}"/>
+		<input type="hidden" id="categorize" name="categorize" value="true"/>
+		<input type="hidden" id="page" name="page" value="0"/>
+		<input type="hidden" id="pageSize" name="pageSize" value="${params.pageSize}" />	
+		<input type="hidden" id="pageNum" name="pageNum" th:value="${params.pageNum}" />
+		<input type="hidden" id="offSet" name="offSet" th:value="${params.offSet}" />
+		<input type="hidden" id="sort" name="sort" th:value="${params.sort}" />
+		<input type="hidden" id="fields" name="fields" th:value="${param.fields}" />
+		<input type="hidden" id="nowDate" name="nowDate" th:value="${params.nowDate}" />	
+		
+		<!-- 필터 -->
+		<input type="hidden" id="dmstc_yn" name="dmstc_yn" th:value="${params.dmstc_yn}" />	
+		<input type="hidden" id="sply_lang_cd" name="sply_lang_cd" th:value="${params.sply_lang_cd}" />	
+		<input type="hidden" id="pblcn_yy" name="pblcn_yy" th:value="${params.pblcn_yy}" />	
+		<input type="hidden" id="vod_qunty_mi" name="vod_qunty_mi" th:value="${params.vod_qunty_mi}" />	
+		
+		<input type="hidden" id="env" name="env" th:value="${params.env}" />
+		<input type="hidden" id="esgKwdList" name="esgKwdList" th:value="${params.esgKwdList}" />
+	</form>
+
+
+            <section class="content btmgap">
+                <h3 class="blind">통합검색</h3>
+                <div class="total-wrap default-width">
+					<!-- top search -->
+                    <div class="total-search-inner" th:include="frontoffice/search/common/topSearch"></div>
+                    
+                    <!-- recommand (추천검색어) -->
+                    <div class="organic-keyword" th:if="${not #strings.equals(recommandResult,'')}" th:include="frontoffice/search/module/recommand"></div>
+                    
+                    <div class="tab-wrap default-width gap-top">
+
+                        <ul class="tab-list under">
+                            <li><button type="button" id="TOTAL" onclick="goCategory('TOTAL')" class=""><span th:text="${'전체 (' + total + ')'}"></span></button></li>
+                            <li><button type="button" id="WEBCONTENTS" onclick="goCategory('WEBCONTENTS')" class=""><span th:text="${'웹 컨텐츠  (' + webTotal + ')'}"></span></button></li>
+                            <li><button type="button" id="DOC" onclick="goCategory('DOC')" class=""><span th:text="${'문서 (' + docTotal + ')'}"></span></button></li>
+                            <li><button type="button" id="NEWS" onclick="goCategory('NEWS')" class=""><span th:text="${'뉴스 (' + newsTotal + ')'}"></span></button></li>
+                            <li><button type="button" id="MEDIA" onclick="goCategory('MEDIA')" class=""><span th:text="${'미디어 (' + mediaTotal + ')'}"></span></button></li>
+                        </ul>
+ 						
+ 						<!-- 전체 검색 결과 없을 때 -->
+ 						<div class="tab-cont" th:if="${total == 0}">
+                            <div class="cont current">
+                                <section class="section-group">
+                                    <div class="nodata center">
+                                        <b>검색결과가 없습니다.</b>
+                                        <h5 class="mar_t30">검색어를 다시 확인해주세요.</h5>
+                                    </div>
+                                </section>                          
+                           </div>                           
+                        </div>
+ 						
+ 
+ 						<!-- 전체 검색 결과 있을 때 -->
+                        <div class="tab-cont" th:switch="${params.category}" th:if="${total > 0}">					
+							<!--All--> 
+                        	<div class="cont current" th:case="'TOTAL'" th:include="frontoffice/search/result/resultTotal"></div>
+                        	
+                        	
+                        	<!--web content -->
+                        	<div class="cont current" th:case="'WEBCONTENTS'">
+								<section class="section-group" th:if="${webTotal > 0}" th:include="frontoffice/search/result/resultWebcontents"></section> <!-- 검색결과 있을 때 -->
+								
+								<div class="tab-cont" th:if="${webTotal == 0}"> <!-- 검색결과 없을 때 -->
+							        <div class="cont current">
+							            <section class="section-group">
+							                <div class="nodata center">
+							                    <b>검색결과가 없습니다.</b>
+							                    <h5 class="mar_t30">검색어를 다시 확인해주세요.</h5>
+							                </div>
+							            </section>                          
+							       </div>                           
+							    </div>
+							</div>
+                        	
+                        	
+                        	<!--doc (+filter) -->
+                            <div class="cont current" th:case="'DOC'">
+                                <div class="result-list-wrap" th:if="${docTotal > 0}"> <!-- 검색결과 있을 때 -->
+                                    <section class="filter-wrap" th:include="frontoffice/search/common/filterDoc"></section>
+                                    <div class="result-list" th:include="frontoffice/search/result/resultDoc"></div>
+                                </div>
+                                
+                                <div class="tab-cont" th:if="${docTotal == 0}"> <!-- 검색결과 없을 때 -->
+							        <div class="cont current">
+							            <section class="section-group">
+							                <div class="nodata center">
+							                    <b>검색결과가 없습니다.</b>
+							                    <h5 class="mar_t30">검색어를 다시 확인해주세요.</h5>
+							                </div>
+							            </section>                          
+							       </div>                           
+							    </div>                                                
+                            </div>
+	                        
+                            
+                            <!--news -->
+                       		<div class="cont current" th:case="'NEWS'" >
+							   	<div class="result-list content-search-news" th:if="${newsTotal > 0}" th:include="frontoffice/search/result/resultNews"></div>
+							   	
+							   	<div class="tab-cont" th:if="${newsTotal == 0}">
+							        <div class="cont current">
+							            <section class="section-group">
+							                <div class="nodata center">
+							                    <b>검색결과가 없습니다.</b>
+							                    <h5 class="mar_t30">검색어를 다시 확인해주세요.</h5>
+							                </div>
+							            </section>                          
+							       </div>                           
+							    </div>
+							 </div>
+                            
+                            
+                            <!--media (+filter) -->
+	                        <div class="cont current" th:case="'MEDIA'">                            
+	                            <div class="result-list-wrap" th:if="${mediaTotal > 0}"> <!-- 검색결과 있을 때 -->
+	                                <section class="filter-wrap" th:include="frontoffice/search/common/filterMedia"></section>
+	                                <div class="result-list" th:include="frontoffice/search/result/resultMedia"></div>
+	                            </div>
+	                                                        
+                            	<div class="tab-cont" th:if="${mediaTotal == 0}"> <!-- 검색결과 없을 때 -->
+							        <div class="cont current">
+							            <section class="section-group">
+							                <div class="nodata center">
+							                    <b>검색결과가 없습니다.</b>
+							                    <h5 class="mar_t30">검색어를 다시 확인해주세요.</h5>
+							                </div>
+							            </section>                          
+							       </div>                           
+							    </div> 
+	                        </div>
+	                        
+	                          							
+                       </div>
+                        <!-- //tab-cont -->
+                    </div>
+                    <!-- //tab-wrap -->
+                </div>
+            </section>
+            <!-- //content -->  
+       
+</div>
+		
+
+<script>
+    $(function () {
+        tab();
+    })
+</script>
+</html>

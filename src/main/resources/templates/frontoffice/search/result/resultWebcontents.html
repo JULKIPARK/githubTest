@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+
+		<div class="tit-line-wrap">
+			<h4 class="tit-line-left">웹컨텐츠</h4><span class="data" th:text="${webTotal + '건'}"></span>
+		</div>
+		<ul class="list total-search-list">
+			<li th:each="result, status : ${webContentsList}">
+				<a th:href="${result.web_path}">
+					<div class="info-wrap">
+						<p class="bul-square" th:text="${result.menu_nm}"></p>
+						<p class="subject" th:utext="${result.page_title}"></p>
+						<p class="desc" th:utext="${result.page_content}"></p>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<!-- paging -->
+		<div class="paging">
+			<ul class="pagination">
+				<li class="btn first"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateFirstPage} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">처음</span></a></li>
+				<li class="btn prev"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.prePage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">이전</span></a></li>				
+				<li th:each="page: ${PageInfo.navigatepageNums}" th:class="${page == PageInfo.pageNumber ? 'page-item on' : 'page-item'}">
+                	<a th:text="${page}" href="#" th:onclick="'javascript:gotopage(' + ${page-1} + '); return false;'" class="page-link"></a>
+            	</li>
+
+				<li class="btn next"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.nextPage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">다음</span></a></li>
+				<li class="btn last"><a href="#" th:onclick="'javascript:gotopage(' + ${PageInfo.navigateLastPage-1} + '); return false;'" class="page-link"><span class="blind"
+							style="display:inline;">마지막</span></a></li>
+			</ul>
+		</div>
+		<!-- //paging -->
+
+</body>
+</html>

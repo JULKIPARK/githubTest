@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.custom.mapper.CsMapper">
+
+	<!-- 문의 · 요청 목록 조회 -->
+	<select id="selectCsList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			CAI.ASK_UID /* 문의채번 */
+			, CAI.ASK_TP_CD /* 문의유형코드 */
+			, ESG_DB.fnCommCdNm('ASK_TP_CD', CAI.ASK_TP_CD) ASK_TP_NM /* 문의유형명 */
+			, CAI.ASK_TTL /* 문의제목 */
+			, CAI.ASK_ST_CD /* 문의상태코드 */
+			, ESG_DB.fnCommCdNm('ASK_ST_CD', CAI.ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+			, CAI.ASK_CN /* 문의내용 */
+			, CAI.MBR_ID /* 회원아이디 */
+			, CAI.ASK_MAIL /* 문의이메일 */
+			, CAI.COMP_NM /* 회사명 */
+			, CAI.COPR_UID /* 소속채번 */
+			, FORMAT(DATEADD(HOUR, 9, CAI.FST_INS_DT),'yyyy.MM.dd') FST_INS_DT /* 최초등록일 */
+			, CAI.FST_INS_ID /* 최초등록아이디 */
+			, (SELECT MBR_NM FROM ESG_DB.MB_MBR_INFO WHERE MBR_ID = CAI.FST_INS_ID) AS FST_INS_MBR_NM /* 등록자 */
+			, CAI.LST_UPD_DT /* 최종수정일 */
+			, CAI.LST_UPD_ID /* 최종수정아이디 */
+		FROM
+			ESG_DB.CS_ASK_INFO CAI /* 문의정보 */
+		<where>
+			<!-- 검색조건 : 등록일자 기간 -->
+			<if test="schStrtDate != null and !schStrtDate.equals('')">
+				AND FORMAT(DATEADD(HOUR, 9, CAI.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]> #{schStrtDate}
+			</if>
+			<if test="schEndDate != null and !schEndDate.equals('')">
+				AND FORMAT(DATEADD(HOUR, 9, CAI.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[<=]]> #{schEndDate}
+			</if>
+
+			<!-- 검색조건 : 처리상태 -->
+			<if test="schAskStRdo != null and !schAskStRdo.equalsIgnoreCase('ALL')">
+				AND CAI.ASK_ST_CD <![CDATA[=]]> #{schAskStRdo}
+			</if>
+
+			<!-- 검색조건 : 문의유형 -->
+			<if test="schAskTpChk != null and !schAskTpChk.equals('') and !schAskTpChk.equalsIgnoreCase('ALL')">
+				AND CAI.ASK_TP_CD IN
+				<foreach item="askTpCd" index="index" collection="askTpCdList" separator=","
+					open="(" close=")">
+					#{askTpCd}
+				</foreach>
+			</if>
+
+			<!-- 검색조건 : 검색어 -->
+			<choose>
+				<!-- 제목 -->
+				<when test="schSrcOpt.equals('01')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND CAI.ASK_TTL LIKE CONCAT('%', #{schSrcWrd}, '%')
+					</if>
+				</when>
+
+				<!-- 등록자 -->
+				<when test="schSrcOpt.equals('02')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND CAI.FST_INS_ID IN (
+							SELECT MBR_ID
+							FROM ESG_DB.MB_MBR_INFO
+							WHERE MBR_NM LIKE CONCAT('%', #{schSrcWrd}, '%')
+						)
+					</if>
+				</when>
+
+				<!-- 소속 -->
+				<when test="schSrcOpt.equals('03')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND CAI.COMP_NM LIKE CONCAT('%', #{schSrcWrd}, '%')
+					</if>
+				</when>
+			</choose>
+		</where>
+		ORDER BY
+			CAI.ASK_UID DESC
+	</select>
+
+	<!-- 문의 · 요청 상세 조회 -->
+	<select id="selectViewByCsDetailEditPop" parameterType="string" resultType="camelcasemap">
+		SELECT
+			CAI.ASK_UID /* 문의채번 */
+			, CAI.ASK_TP_CD /* 문의유형코드 */
+			, ESG_DB.fnCommCdNm('ASK_TP_CD', CAI.ASK_TP_CD) ASK_TP_NM /* 문의유형명 */
+			, CAI.ASK_TTL /* 문의제목 */
+			, CAI.ASK_ST_CD /* 문의상태코드 */
+			, ESG_DB.fnCommCdNm('ASK_ST_CD', CAI.ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+			, CAI.ASK_CN /* 문의내용 */
+			, CAI.MBR_ID /* 회원아이디 */
+			, CAI.ASK_MAIL /* 문의이메일 */
+			, CAI.COMP_NM /* 회사명 */
+			, CAI.COPR_UID /* 소속채번 */
+			, FORMAT(DATEADD(HOUR, 9, CAI.FST_INS_DT), 'yyyy.MM.dd') AS FST_INS_DT /* 최초등록일 */
+			, CAI.FST_INS_ID /* 최초등록아이디 */
+			, (SELECT MBR_NM FROM ESG_DB.MB_MBR_INFO WHERE MBR_ID = CAI.FST_INS_ID) AS FST_INS_MBR_NM /* 등록자 */
+			, CAI.LST_UPD_DT /* 최종수정일 */
+			, CAI.LST_UPD_ID /* 최종수정아이디 */
+			, ANI.ANSR_UID /* 답변채번 */
+			, ANI.ANSR_CN /* 답변내용 */
+		     , ANI.ATAC_FILE_FPATH
+			, ANI.ANSR_MEMO /* 답변메모 */
+		FROM
+			ESG_DB.CS_ASK_INFO CAI /* 문의정보 */
+			LEFT JOIN ESG_DB.CS_ANSR_INFO ANI /* 답변정보 */
+				ON ANI.ASK_UID = CAI.ASK_UID
+		WHERE
+			CAI.ASK_UID = #{askUid} /* 문의채번 */
+	</select>
+
+	<!-- 문의정보 수정 -->
+	<update id="updateAskInfoToAskStCdByAskUid" parameterType="hashMap">
+		UPDATE ESG_DB.CS_ASK_INFO
+		SET
+			ASK_ST_CD = #{askStCd}
+			, LST_UPD_DT = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_UPD_ID = #{fstInsId} /* 최종수정아이디 lstUpdId */
+		WHERE
+			ASK_UID = #{askUid}
+	</update>
+
+	<!-- 답변정보 등록 -->
+	<insert id="insertAnsrInfo" parameterType="camelcasemap">
+		<selectKey keyProperty="ansrUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'CS_ANSR_INFO_SQ01'
+		</selectKey>
+
+		INSERT INTO ESG_DB.CS_ANSR_INFO (
+			ANSR_UID /* 답변채번 */
+			, ANSR_CN /* 답변내용 */
+			, ANSR_MEMO /* 답변메모 */
+			, ASK_UID /* 문의채번 */
+			, FST_INS_DT /* 최초등록일 */
+			, FST_INS_ID /* 최초등록아이디 */
+			, LST_UPD_DT /* 최종수정일 */
+			, LST_UPD_ID /* 최종수정아이디 */
+			, ATAC_FILE_FPATH
+		) VALUES (
+		    #{ansrUid}
+			, #{ansrCn}
+			, #{ansrMemo}
+			, #{askUid}
+			, CURRENT_TIMESTAMP /* 최초등록일 */
+			, #{fstInsId} /* 최초등록아이디 fstInsId */
+			, CURRENT_TIMESTAMP /* 최종수정일 */
+			, #{lstUpdId} /* 최종수정아이디 lstUpdId */
+			, #{atacFileFpath}
+		)
+	</insert>
+
+	<!-- 답변정보 수정 -->
+	<update id="updateAnsrInfo" parameterType="hashMap">
+		UPDATE ESG_DB.CS_ANSR_INFO
+		SET
+			ANSR_CN = #{ansrCn}
+			, ANSR_MEMO = #{ansrMemo}
+			, LST_UPD_DT = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_UPD_ID = #{lstUpdId} /* 최종수정아이디 lstUpdId */
+			<if test="atacFileFpath != null and atacFileFpath.equals('')">
+				, ATAC_FILE_FPATH = #{atacFileFpath}
+			</if>
+		WHERE
+			ANSR_UID = #{ansrUid}
+	</update>
+
+</mapper>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorate="~{frontoffice/layout/subwrapLayout}">
+<th:block layout:fragment="script">
+
+    <script type="text/javascript">
+
+        $(window).on('load', function () {
+            sortVal();
+        });			
+		
+      $(function () {
+        // 화면 초기화
+        fnInitView();
+        
+        var cate = $('#category').val();
+        if(cate == 'TOTAL'){
+          $('#category').val('SAMIL');
+        }
+        
+		var fields = $('#fields').val();
+		if(fields == '') {
+			$('#fields').val('title');
+		}
+		
+        tabOffsetAuto();
+      });
+
+      // 화면 초기화
+      function fnInitView() {
+        tab();
+      }
+
+      function tabOffsetAuto() {
+        let winW = $(window).width();
+        if($(window).width() < 1180){
+          const btnLeft = $('.tab-list .current').offset().left;
+          const btnW = $('.tab-list .current').outerWidth(true);
+          $('.tab-list').scrollLeft($('.tab-list').scrollLeft() + btnLeft + -$(window).width()/2 + btnW/2);
+        }
+      }
+
+	  $(function() {
+		  /* 이메일 복서 */
+		  $('.pe-introduce .pe-list .e-mail > A').on('click', function(e){
+			  e.preventDefault();
+			  var email = $(e.target)[0].innerText.replace('이메일 주소 복사하기', '');
+
+			  var temp = $("<input>");
+			  $("body").append(temp);
+			  temp.val(email).select();
+			  document.execCommand("copy");
+			  temp.remove();
+
+			  // $.toast.danger("이메일 주소를 복사하였습니다.");
+
+			  // $('#demo-6').click(function(){
+			  $.toast.danger({
+				  duration: 1000,
+				  // container: $('UL.pe-list')[0],
+				  animate: 'fade',
+				  align: 'top',
+				  // opacity: '0.7',
+				  position: '100%',
+				  text: '이메일 주소를 복사하였습니다.'
+			  });
+			  // })
+
+			  $('DIV.toast-container').css('top', '50% !important');
+
+		  })
+	  });
+    </script>
+    	
+	<!-- konan js  -->
+	<script type="text/javascript" src="/assets/js/search/search.js"></script><!-- KS Events -->
+
+
+  </th:block>
+
+  <div layout:fragment="content">
+    <!-- content -->
+    <section class="content btmgap content-esg-insights">
+      <div class="tit-head">
+        <div class="group">
+          <h3>삼일 인사이트</h3>
+          <p class="txt">ESG 관련하여 삼일에서 발간한 뉴스레터, 보고서, 영상자료를 조회하고 열람하실 수 있습니다.</p>
+        </div>
+        <span class="square"></span>
+      </div>
+      <div class="esg04-wrap">
+        <div class="gray-bg-wrap">
+          <div class="serch-wrap default-width">
+            <div class="total-search-inner">
+              <!--<form action="" class="">-->
+			  <form id="historyForm" action="insightsList" method="get">
+			  	<!-- konan form -->
+                <input type="hidden" id="category" name="category" th:value="${params.category}" />
+				<input type="hidden" id="kwd" name="kwd" th:value="${params.kwd}" />
+				<input type="hidden" id="preKwd" name="preKwd" th:value="${params.preKwd}" />
+				<input type="hidden" id="date" name="date" th:value="${params.date}" />
+				<input type="hidden" id="startDate" name="startDate" th:value="${params.startDate}" />
+				<input type="hidden" id="endDate" name="endDate" th:value="${params.endDate}" />
+				<input type="hidden" id="originalQuery" name="originalQuery" th:value="${params.originalQuery}" />
+				<input type="hidden" id="previousQuery" name="previousQuery" th:value="${params.previousQuery}" />
+				<input type="hidden" id="categorize" name="categorize" value="true" />
+				<input type="hidden" id="page" name="page" value="0" />
+				<input type="hidden" id="pagfnInitData eSize" name="pageSize" value="${params.pageSize}" />
+				<input type="hidden" id="pageNum" name="pageNum" th:value="${params.pageNum}" />
+				<input type="hidden" id="offSet" name="offSet" th:value="${params.offSet}" />
+				<input type="hidden" id="sort" name="sort" th:value="${params.sort}" />
+				<input type="hidden" id="fields" name="fields" th:value="${params.fields}" />
+				<input type="hidden" id="nowDate" name="nowDate" th:value="${params.nowDate}" />				
+				<!--필터 -->
+				<input type="hidden" id="dmstc_yn" name="dmstc_yn" th:value="${params.dmstc_yn}" />
+				<input type="hidden" id="sply_lang_cd" name="sply_lang_cd" th:value="${params.sply_lang_cd}" />
+				<input type="hidden" id="pblcn_yy" name="pblcn_yy" th:value="${params.pblcn_yy}" />
+				<input type="hidden" id="vod_qunty_mi" name="vod_qunty_mi" th:value="${params.vod_qunty_mi}" />
+				<input type="hidden" id="sbjt_gb_nm" name="sbjt_gb_nm" th:value="${params.sbjt_gb_nm}" />
+				<input type="hidden" id="task_clsf_nm" name="task_clsf_nm" th:value="${params.task_clsf_nm}" />
+				
+				<input type="hidden" id="env" name="env" th:value="${params.env}" />
+				<input type="hidden" id="esgKwdList" name="esgKwdList" th:value="${params.esgKwdList}" />
+                
+                
+                
+                <fieldset>
+                  <legend>검색</legend>
+                  <div class="total-search">
+                    <select>
+                      <option>자료명</option>
+                      <option>자료명+본문</option>
+                      <option>출처</option>
+                      <option>키워드</option>
+                    </select>
+                    <input type="text" class="txt" id="search_kwd" name="search_kwd" th:value="${params.kwd}" placeholder="검색어를 입력하세요" />
+                    <button type="button" class="btn-total-search" onclick="submitOther();">검색</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+
+            <ul class="keyword-wrap current-wrap ml16">
+              <li><button type="button" class="btn-rd-wh" id="title" onclick="click_field(this);"><span>자료명</span></button></li>
+              <li><button type="button" class="btn-rd-wh" id="til_cont" onclick="click_field(this);"><span>자료명 + 본문</span></button></li>
+              <li><button type="button" class="btn-rd-wh" id="src" onclick="click_field(this);"><span>출처</span></button></li>
+              <li><button type="button" class="btn-rd-wh" id="choose_kwd" onclick="click_field(this);"><span>키워드</span></button></li>
+            </ul>
+            <!-- //total-search -->
+          </div>
+          <!-- serch-wrap -->
+        </div>
+        <!-- gray-bg-wrap-->
+        <div class="tab-wrap default-width gap-top">
+          <ul class="tab-list under">
+            <li><button type="button" id="SAMIL" onclick="goCategory('SAMIL')" class=""><span th:text="${'인사이트 리포트 (' + samilTotal + ')'}">인사이트 리포트</span></button></li>
+            <li><button type="button" id="MEDIA" onclick="goCategory('MEDIA')" class=""><span th:text="${'미디어 영상 (' + mediaTotal + ')'}">미디어 영상</span></button></li>
+            <li><button type="button" id="NEWS" onclick="goCategory('NEWS')" class=""><span th:text="${'뉴스레터 (' + newsTotal + ')'}">뉴스레터</span></button></li>
+            <li><button type="button" id="PLATFORM" onclick="goCategory('PLATFORM')" class=""><span>ESG 전문가 리스트</span></button></li>
+          </ul>
+          
+          <div class="tab-cont" th:switch="${params.category}">			  
+            <div class="cont current" th:case="'SAMIL'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/insight/insight_filter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/insight/insight_samil"></div>
+                <!-- //result-list -->
+              </div>
+            </div>
+            
+            <div class="cont current" th:case="'MEDIA'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/insight/insight_mediaFilter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/insight/insight_media"></div>
+                <!-- //result-list -->
+              </div>
+            </div>
+            
+            <div class="cont current" th:case="'NEWS'" th:include="frontoffice/trend/insight/insight_news"></div>
+            
+            <div class="cont current aboutus-wrap" th:case="'PLATFORM'">
+                        <section class="professional">
+                            <h4 class="tit">삼일ESG 전문가 소개</h4>
+							<dl class="pe-introduce">
+								<dd>
+									<ul class="pe-list">
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-1.png"></div>
+											<div class="txA">
+												<div class="name">스티븐 강 <span>Partner</span></div>
+												<div class="wh">ESG Platform Leader</div>
+												<div class="tel">02 709 4788</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														steven.c.kang@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">
+															이메일 주소 복사하기
+														</div>
+													</span>
+													</a>
+
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-2.png"></div>
+											<div class="txA">
+												<div class="name">권미엽 <span>Partner</span></div>
+												<div class="wh">Assurance</div>
+												<div class="tel">02 709 7938</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														miyop.kwon@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-3.png"></div>
+											<div class="txA">
+												<div class="name">이진규 <span>Partner</span></div>
+												<div class="wh">Assurance</div>
+												<div class="tel">02 3781 9105</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														jin-kyu.lee@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-4.png"></div>
+											<div class="txA">
+												<div class="name">이보화 <span>Partner</span></div>
+												<div class="wh">Assurance</div>
+												<div class="tel">02 3781 0124</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														bo-hwa.lee@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-5.png"></div>
+											<div class="txA">
+												<div class="name">심재경 <span>Partner</span></div>
+												<div class="wh">Assurance</div>
+												<div class="tel">02 709 7083</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														jea-kyoung.shim@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-6.png"></div>
+											<div class="txA">
+												<div class="name">김도연 <span>Partner</span></div>
+												<div class="wh">Assurance</div>
+												<div class="tel">02 709 4079</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														kim.doyeon@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-7.png"></div>
+											<div class="txA">
+												<div class="name">소주현 <span>Partner</span></div>
+												<div class="wh">Tax</div>
+												<div class="tel">02 709 8248</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														so.juhyun@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<!-- <li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-8.png"></div>
+											<div class="txA">
+												<div class="name">심수아 <span>Partner</span></div>
+												<div class="wh">Tax</div>
+												<div class="tel">02 3781 3072</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														sooa.shim@pwc.com
+														<span class="link-ico">
+															<img src="/assets/img/common/mail-link-ico.png">
+															<div class="copy-hover">이메일 주소 복사하기</div>
+														</span>
+													</a>
+												</div>
+											</div>
+										</li> -->
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-9.png"></div>
+											<div class="txA">
+												<div class="name">이혜민 <span>Partner</span></div>
+												<div class="wh">Tax</div>
+												<div class="tel">02 3781 1732</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														hye-min.lee@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-10.png"></div>
+											<div class="txA">
+												<div class="name">김홍현 <span>Partner</span></div>
+												<div class="wh">Tax</div>
+												<div class="tel">02 709 3320</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														hong-hyeon.kim@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-19.png"></div>
+											<div class="txA">
+												<div class="name">최윤수 <span>Partner</span></div>
+												<div class="wh">Tax</div>
+												<div class="tel">02 709 8773</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														yoon-su.choi@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-11.png"></div>
+											<div class="txA">
+												<div class="name">곽윤구 <span>Partner</span></div>
+												<div class="wh">Deals</div>
+												<div class="tel">02 3781 2501</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														yun-goo.kwak@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-12.png"></div>
+											<div class="txA">
+												<div class="name">서용태 <span>Partner</span></div>
+												<div class="wh">Deals</div>
+												<div class="tel">02 3781 2340</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														yong-tae.seo@pwc.com
+														<span class="link-ico">
+														<img src="/assets/img/common/mail-link-ico.png">
+														<div class="copy-hover">이메일 주소 복사하기</div>
+													</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<!--<li>
+										 <div class="thum"><img src="/assets/img/common/pe-Thum-13.png"></div>
+										 <div class="txA">
+											 <div class="name">윤영창 <span>Partner</span></div>
+											 <div class="wh">Finance, Risk &amp; Compliance</div>
+											 <div class="tel">02 709 3354</div>
+											 <div class="e-mail">
+												 <a href="" target="_blank">
+													 youngchang.yun@pwc.com
+													 <span class="link-ico">
+														 <img src="/assets/img/common/mail-link-ico.png">
+														 <div class="copy-hover">이메일 주소 복사하기</div>
+													 </span>
+												 </a>
+											 </div>
+										 </div>
+									 </li>-->
+
+										<!-- <li>
+											 <div class="thum"><img src="/assets/img/common/pe-Thum-14.png"></div>
+											 <div class="txA">
+												 <div class="name">차경민 <span>Partner</span></div>
+												 <div class="wh">Finance, Risk &amp; Compliance</div>
+												 <div class="tel">02 3781 9392</div>
+												 <div class="e-mail">
+													 <a href="" target="_blank">
+														 kyung-min.cha@pwc.com
+														 <span class="link-ico">
+															 <img src="/assets/img/common/mail-link-ico.png">
+															 <div class="copy-hover">이메일 주소 복사하기</div>
+														 </span>
+													 </a>
+												 </div>
+											 </div>
+										 </li>-->
+
+										<!--<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-15.png"></div>
+											<div class="txA">
+												<div class="name">김진유 <span>Partner</span></div>
+												<div class="wh">Financial Services</div>
+												<div class="tel">02 3781 1486</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														jin-you.kim@pwc.com
+														<span class="link-ico">
+															<img src="/assets/img/common/mail-link-ico.png">
+															<div class="copy-hover">이메일 주소 복사하기</div>
+														</span>
+													</a>
+												</div>
+											</div>
+										</li>-->
+
+										<!-- <li>
+											 <div class="thum"><img src="/assets/img/common/pe-Thum-16.png"></div>
+											 <div class="txA">
+												 <div class="name">김의준 <span>Partner</span></div>
+												 <div class="wh">Financial Services</div>
+												 <div class="tel">02 709 8969</div>
+												 <div class="e-mail">
+													 <a href="" target="_blank">
+														 euijun.kim@pwc.com
+														 <span class="link-ico">
+															 <img src="/assets/img/common/mail-link-ico.png">
+															 <div class="copy-hover">이메일 주소 복사하기</div>
+														 </span>
+													 </a>
+												 </div>
+											 </div>
+										 </li>-->
+
+										<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-17.png"></div>
+											<div class="txA">
+												<div class="name">김상협 <span>Partner</span></div>
+												<div class="wh">Deals</div>
+												<div class="tel">02 3781 1737</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														sang-hyup.kim@pwc.com
+														<span class="link-ico">
+													<img src="/assets/img/common/mail-link-ico.png">
+													<div class="copy-hover">이메일 주소 복사하기</div>
+												</span>
+													</a>
+												</div>
+											</div>
+										</li>
+
+										<!--<li>
+											<div class="thum"><img src="/assets/img/common/pe-Thum-18.png"></div>
+											<div class="txA">
+												<div class="name">유원석 <span>Partner</span></div>
+												<div class="wh">Industry Solution</div>
+												<div class="tel">02 709 4718</div>
+												<div class="e-mail">
+													<a href="" target="_blank">
+														won-seok.you@pwc.com
+														<span class="link-ico">
+															<img src="/assets/img/common/mail-link-ico.png">
+															<div class="copy-hover">이메일 주소 복사하기</div>
+														</span>
+													</a>
+												</div>
+											</div>
+										</li>-->
+
+
+									</ul>
+								</dd>
+
+								<dd>
+									<ul class="pe-list">
+
+									</ul>
+								</dd>
+							</dl>
+
+
+<!--							<div class="table-wrap table-pro">-->
+<!--                                <table>-->
+<!--                                    <caption>-->
+<!--                                        삼일PwC-->
+<!--                                    </caption>-->
+<!--                                    <colgroup>-->
+<!--                                        <col style="width: 20%"/>-->
+<!--                                        <col style="width: 50%"/>-->
+<!--                                        <col style="width: 30%"/>-->
+<!--                                    </colgroup>-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>성명</th>-->
+<!--                                        <th>소속 및 직함</th>-->
+<!--                                        <th>문의하기</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tbody>-->
+<!--                                    <tr>-->
+<!--                                        <td>스티븐 강</td>-->
+<!--                                        <td class="subject">ESG Platform Leader</td>-->
+<!--                                        <td><a href="mailto:steven.c.kang@pwc.com"-->
+<!--                                               class="line">steven.c.kang@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>권미엽</td>-->
+<!--                                        <td class="subject">ESG Platform - Assurance Partner</td>-->
+<!--                                        <td><a href="mailto:miyop.kwon@pwc.com" class="line">miyop.kwon@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>이진규</td>-->
+<!--                                        <td class="subject">ESG Platform - Assurance Partner</td>-->
+<!--                                        <td><a href="mailto:jin-kyu.lee@pwc.com" class="line">jin-kyu.lee@pwc.com</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>이보화</td>-->
+<!--                                        <td class="subject">ESG Platform - Assurance Partner</td>-->
+<!--                                        <td><a href="mailto:bo-hwa.lee@pwc.com" class="line">bo-hwa.lee@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>심재경</td>-->
+<!--                                        <td class="subject">ESG Platform - Assurance Partner</td>-->
+<!--                                        <td><a href="mailto:jea-kyoung.shim@pwc.com" class="line">jea-kyoung.shim@pwc.com</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>김도연</td>-->
+<!--                                        <td class="subject">ESG Platform - Assurance Partner</td>-->
+<!--                                        <td><a href="mailto:kim.doyeon@pwc.com" class="line">kim.doyeon@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>소주현</td>-->
+<!--                                        <td class="subject">ESG Platform - Tax Partner</td>-->
+<!--                                        <td><a href="mailto:so.juhyun@pwc.com" class="line">so.juhyun@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    &lt;!&ndash;<tr>-->
+<!--                                        <td>심수아</td>-->
+<!--                                        <td class="subject">ESG Platform - Tax Partner</td>-->
+<!--                                        <td><a href="mailto:sooa.shim@pwc.com" class="line">sooa.shim@pwc.com</a></td>-->
+<!--                                    </tr>&ndash;&gt;-->
+
+<!--                                    <tr>-->
+<!--                                        <td>이혜민</td>-->
+<!--                                        <td class="subject">ESG Platform - Tax Partner</td>-->
+<!--                                        <td><a href="mailto:hye-min.lee@pwc.com" class="line">hye-min.lee@pwc.com</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>김홍현</td>-->
+<!--                                        <td class="subject">ESG Platform - Tax Partner</td>-->
+<!--                                        <td><a href="mailto:hong-hyeon.kim@pwc.com"-->
+<!--                                               class="line">hong-hyeon.kim@pwc.com</a></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                      <td>최윤수</td>-->
+<!--                                      <td class="subject">ESG Platform - Tax Partner</td>-->
+<!--                                      <td><a href="mailto:yun-su.choi@pwc.com" class="line">yun-su.choi@pwc.com</a>-->
+<!--                                      </td>-->
+<!--                                    </tr>-->
+
+
+<!--                                    <tr>-->
+<!--                                        <td>곽윤구</td>-->
+<!--                                        <td class="subject">ESG Platform - Deals Partner</td>-->
+<!--                                        <td><a href="mailto:yun-goo.kwak@pwc.com" class="line">yun-goo.kwak@pwc.com</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>서용태</td>-->
+<!--                                        <td class="subject">ESG Platform - Deals Partner</td>-->
+<!--                                        <td><a href="mailto:yong-tae.seo@pwc.com" class="line">yong-tae.seo@pwc.com</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                      <td>김상협</td>-->
+<!--                                      <td class="subject">ESG Platform - Deals Partner</td>-->
+<!--                                      <td><a href="mailto:sang-hyup.kim@pwc.com" class="line">sang-hyup.kim@pwc.com</a>-->
+<!--                                      </td>-->
+<!--                                  </tr>-->
+<!--                                    </tbody>-->
+<!--                                </table>-->
+<!--                            </div>-->
+                        </section>
+                    </div>
+          </div>
+          <!-- //tab-cont -->
+        </div>
+        <!-- //tab-wrap -->
+      </div>
+      <!-- //esg04-wrap -->
+    </section>
+    <!-- //content -->
+  </div>
+</html>

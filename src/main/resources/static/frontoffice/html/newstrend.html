@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>Samil ESG - CSRD 공시 대상 Self Check</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-a pp-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/pwc.css" />
+    <link rel="stylesheet" href="../css/sub.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/include.css" />
+    <link rel="stylesheet" href="../css/response.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <script>
+      $       (function(){
+      			$('.menu04').addClass("on");
+      		});
+
+
+              $(function(){
+                  tab();
+
+                  /*<![CDATA[*/
+                      var tabId = "tabId"+/*[[${tabId}]]*/;
+                      $("#"+tabId).addClass("current");
+                      $("#tab"+/*[[${tabId}]]*/).show();
+                  /*]]>*/
+
+                  $(".keyword-wrap li button").on('click',function(){
+                      var num = $(this).closest("li").index();
+                      $(".keyword-wrap li button").removeClass("current");
+                      $(this).addClass("current");
+                      $(".tab-cont .contMain").hide();
+                      $(".tab-cont .contMain").eq(num).show();
+                  })
+              });
+    </script>
+  </head>
+  <body>
+    <div class="wrap">
+      <header id="header" class="header_sj">
+        <div class="top">
+          <ul class="top-menu util">
+            <li th:if="${session.FoMbrInfo == null}"><a href="/frontoffice/common/join">회원가입</a></li>
+            <li th:if="${session.FoMbrInfo == null}"><a href="/frontoffice/common/login">로그인</a></li>
+            <li th:unless="${session.FoMbrInfo == null}"><a href="/frontoffice/common/logout">로그아웃</a></li>
+            <li th:unless="${session.FoMbrInfo == null}"><a href="/frontoffice/mypage/mypageListView">마이페이지</a></li>
+            <li th:unless="${session.FoMbrInfo == null}"><a href="/frontoffice/qna/qnaListView">Q&A</a></li>
+            <li><a href="/frontoffice/footer/siteProvider">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="bottom">
+          <div class="logo">
+            <a href="/frontoffice"><img src="../img/common/logo_type2.png" /></a>
+          </div>
+          <ul class="menu">
+            <li class="menu01">
+              <p></p>
+              <a href="/frontoffice/diagnosis/selfDiagnosisView">ESG 진단 &middot; 계획</a>
+            </li>
+            <li class="menu02">
+              <p></p>
+              <a href="/frontoffice/action/environmentView">ESG 실행</a>
+            </li>
+            <li class="menu03">
+              <p></p>
+              <a href="javascript:goDisclosureView(1)">ESG 공시 &middot; 인증</a>
+            </li>
+            <li class="menu04">
+              <p></p>
+              <a href="/frontoffice/trend/insightsList">ESG 자료 &middot; 동향</a>
+            </li>
+          </ul>
+
+          <div class="search-btn btn-search">
+            <div class="tx">Search</div>
+            <div class="icon"><img src="../img/common/icon_search_wh.png" /></div>
+          </div>
+
+          <div class="m-rt-menu">
+            <button class="mo-search-btn">
+              <img src="/frontoffice/img/common/ico_search_m.svg" class="btn-search" />
+              <img src="/frontoffice/img/common/btn_close_40.png" class="btn-close total-btn-close" />
+            </button>
+            <button type="button" class="btn-menu">메뉴 열기</button>
+          </div>
+        </div>
+
+        <div class="dropmenu">
+          <div class="dropmenu-head">
+            <a href="/frontoffice"><img src="/frontoffice/img/common/logo_type2.svg" /></a>
+            <button type="button" class="btn-close">메뉴 닫기</button>
+          </div>
+          <dl class="dropmenuList">
+            <dd class="dropmenu1">
+              <button type="button" class="btn-m-toggle">ESG 진단 &middot; 계획</button>
+              <ul class="">
+                <li><a href="/frontoffice/diagnosis/selfDiagnosisView">ESG 자가진단</a></li>
+                <li><a href="/frontoffice/diagnosis/businessInfo">ESG 경영 가이드</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu2">
+              <button type="button" class="btn-m-toggle">ESG 실행</button>
+              <ul class="">
+                <li><a href="/frontoffice/action/environmentView">환경</a></li>
+                <li><a href="/frontoffice/action/socialView">사회 </a></li>
+                <li><a href="/frontoffice/action/governanceView">거버넌스</a></li>
+                <li><a href="/frontoffice/action/financeView">금융</a></li>
+                <li><a href="/frontoffice/action/esgTaxView">ESG Tax</a></li>
+                <li><a href="/frontoffice/action/esgDealView">ESG Deal</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu3">
+              <button type="button" class="btn-m-toggle">ESG 공시 &middot; 인증</button>
+              <ul class="">
+                <li><a href="javascript:goDisclosureView(1)">ESG 공시</a></li>
+                <li><a href="/frontoffice/disclosure/appraisalView">ESG 평가</a></li>
+                <li><a href="/frontoffice/disclosure/certificationView">ESG 인증</a></li>
+              </ul>
+            </dd>
+
+            <dd class="dropmenu4">
+              <button type="button" class="btn-m-toggle">ESG 자료 &middot; 동향</button>
+              <ul class="">
+                <li><a href="/frontoffice/trend/insightsList">삼일 인사이트</a></li>
+                <li><a href="/frontoffice/trend/bbsList">ESG 자료</a></li>
+                <li><a href="/frontoffice/trend/esgNewsList">ESG 뉴스</a></li>
+                <li><a href="/frontoffice/trend/educationList">ESG 교육</a></li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="dropmenu-foot util">
+            <ul class="my-menu-list">
+              <!--로그인했을때-->
+              <li th:unless="${session.FoMbrInfo == null}" class="bor-btn left">
+                <a href="/frontoffice/qna/qnaListView"
+                  >Q&A<span><img src="/frontoffice/img/common/ico_arrow_24_2d.png" /></span
+                ></a>
+              </li>
+              <li th:unless="${session.FoMbrInfo == null}" class="back-btn left">
+                <a href="/frontoffice/mypage/mypageListView"
+                  >마이페이지<span><img src="/frontoffice/img/common/ico_arrow_right.png" /></span
+                ></a>
+              </li>
+
+              <!--로그인안했을떄-->
+              <li th:if="${session.FoMbrInfo == null}" class="back-btn"><a href="/frontoffice/common/login">로그인</a></li>
+            </ul>
+
+            <ul class="foot-menu">
+              <!--로그인안했을떄-->
+              <li><a href="/frontoffice/footer/siteProvider">About Us</a></li>
+              <li th:unless="${session.FoMbrInfo == null}"><a href="/frontoffice/common/logout">로그아웃</a></li>
+
+              <!--로그인안했을떄-->
+              <li th:if="${session.FoMbrInfo == null}"><a href="/frontoffice/common/join">회원가입</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <!-- //content -->
+      <section id="container" class="sub content">
+        <div class="sub-title-a">
+          <div class="ct">
+            <div class="tit">ESG 뉴스 트렌드</div>
+            <div class="subs">100여개 언론사의 최근 7일 간 뉴스정보를 분석하여 ESG 키워드를 도출하고 관련 뉴스를 제공합니다.</div>
+          </div>
+          <div class="bgBack"></div>
+          <div class="bg"><img src="../img/common/bg_tit.png" /></div>
+        </div>
+
+        <div class="newstrend default-width">
+          <section class="newsKeyword">
+            <h4 class="tit-line-left">뉴스 키워드 분석</h4>
+
+            <div class="tab-scroll">
+              <ul class="keyword-wrap current-wrap">
+                <li>
+                  <button type="button" id="tabId1" class="current btn-rd-wh"><span>1위. 보고서</span></button>
+                </li>
+                <li>
+                  <button type="button" id="tabId2" class="btn-rd-wh"><span>2위. 지배구조</span></button>
+                </li>
+                <li>
+                  <button type="button" id="tabId3" class="btn-rd-wh"><span>3위. ESG 분야별 성과</span></button>
+                </li>
+                <li>
+                  <button type="button" id="tabId4" class="btn-rd-wh"><span>4위. MSCI</span></button>
+                </li>
+                <li>
+                  <button type="button" id="tabId5" class="btn-rd-wh"><span>5위. 탄소중립</span></button>
+                </li>
+              </ul>
+            </div>
+
+            <div class="tab-cont">
+              <div id="tab1" class="contMain" style="display: block">
+                <dl class="keyword-list-a">
+                  <dd>
+                    <div class="tit-a">
+                      <div class="tit">키워드 관련 Hit 뉴스</div>
+                      <div class="op-a art">※ 조회 수 기준</div>
+                    </div>
+
+                    <ul class="hit-news">
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="num">1</div>
+                          <div class="subj">시총 200대 기업 지속가능보고서 공시율 75.5%..</div>
+                          <div class="date">2023.08.07</div>
+                        </a>
+                      </li>
+                    </ul>
+                  </dd>
+
+                  <dd>
+                    <div class="tit-a">
+                      <div class="tit">키워드 관련 뉴스 추이</div>
+                      <div class="op-a sign">뉴스건수</div>
+                    </div>
+
+                    <div class="chart">Chart</div>
+                  </dd>
+                </dl>
+              </div>
+
+              <div id="tab2" class="contMain" style="display: none">tab2</div>
+
+              <div id="tab3" class="contMain" style="display: none">tab3</div>
+
+              <div id="tab4" class="contMain" style="display: none">tab4</div>
+
+              <div id="tab5" class="contMain" style="display: none">tab5</div>
+            </div>
+          </section>
+
+          <section class="topic">
+            <h4 class="tit-line-left">ESG 토픽별 뉴스 추이</h4>
+            <div class="arl-box">ESG 주요 토픽별 뉴스 기사 건수 변화를 통해 최근 어떤 토픽과 관련된 사건이나 관심이 증가했는지 확인할 수 있습니다.</div>
+            <dl class="chart-list">
+              <dd>
+                <div class="chart">Chart</div>
+                <table cellpadding="0" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>구분</th>
+                      <th>비중</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td><span class="red"></span>환경</td>
+                      <td class="right">29%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="yellow"></span>사회</td>
+                      <td class="right">28%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="hoppink"></span>거버넌스</td>
+                      <td class="right">15%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="orange"></span>금융</td>
+                      <td class="right">7%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="purple"></span>ESG Tax</td>
+                      <td class="right">4%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="blue"></span>ESG Deal</td>
+                      <td class="right">3%</td>
+                    </tr>
+
+                    <tr>
+                      <td><span class="green"></span>ESG 공시</td>
+                      <td class="right">13%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </dd>
+
+              <dd>
+                <div class="tab-scroll">
+                  <ul class="keyword-wrap current-wrap">
+                    <li>
+                      <button type="button" id="tabId6" class="current btn-rd-wh"><span>환경(E)</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId7" class="btn-rd-wh"><span>사회(S)</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId8" class="btn-rd-wh"><span>거버넌스(G)</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId9" class="btn-rd-wh"><span>금융</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId10" class="btn-rd-wh"><span>ESG Tax</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId10" class="btn-rd-wh"><span>ESG Deal</span></button>
+                    </li>
+                    <li>
+                      <button type="button" id="tabId10" class="btn-rd-wh"><span>ESG 공시</span></button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="chart">chart</div>
+              </dd>
+            </dl>
+          </section>
+        </div>
+      </section>
+
+      <!-- //content -->
+
+      <footer id="footer">
+        <div class="floating-wrap">
+          <button type="button" class="onlineBtn"><span>온라인 문의</span></button>
+        </div>
+
+        <div class="container">
+          <div class="footLogo">
+            <img src="../img/common/logo_wh.svg" />
+          </div>
+
+          <div class="copyA">
+            <div class="copy">&copy; 2015 - 2023 PwC. Samil PricewaterhouseCoopers. All rights reserved.</div>
+            <ul class="footMenu">
+              <li><a href="javascript:$('#agressPop').addClass('show')">이용약관</a></li>
+              <li><a href="javascript:$('#polishPop').addClass('show')">개인정보처리방침</a></li>
+              <li><a href="javascript:$('#popDisclaimerView').addClass('show')">Legal Disclaimer</a></li>
+              <li><a href="/frontoffice/common/withdrawalView" class="line">회원탈퇴</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

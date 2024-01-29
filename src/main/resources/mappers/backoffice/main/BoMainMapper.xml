@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.main.mapper.BoMainMapper">
+
+	<!-- 오늘의 할 일 -->
+	<select id="selectToDo" resultType="camelcasemap">
+		SELECT
+			FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd') AS 'TODAY'
+			, (CASE DATEPART(WEEKDAY, DATEADD(HOUR, 9, GETDATE()))
+				   WHEN 1 THEN N'일요일'
+				   WHEN 2 THEN N'월요일'
+				   WHEN 3 THEN N'화요일'
+				   WHEN 4 THEN N'수요일'
+				   WHEN 5 THEN N'목요일'
+				   WHEN 6 THEN N'금요일'
+				   WHEN 7 THEN N'토요일'
+			   END) AS 'DAYOFWEEK'
+			, (
+				  /* 신규문의 */
+				  SELECT
+					  COUNT(1)
+				  FROM
+					  ESG_DB.CS_ASK_INFO /* 문의정보 */
+				  WHERE
+						  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]>
+						  FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+			) AS ASK_CNT
+			, (
+				  /* 신규회원 */
+				  SELECT
+					  COUNT(1) MAIN_CNT
+				  FROM
+					  ESG_DB.MB_MBR_INFO /* 회원정보 */
+				  WHERE
+						  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]>
+						  FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+			) AS MBR_CNT
+			, (
+				  /* 신규뉴스 */
+				  SELECT
+					  COUNT(1) MAIN_CNT
+				  FROM
+					  ESG_DB.BT_RSS_INFO /* RSS정보 */
+				  WHERE
+						  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]>
+						  FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+			) AS RSS_CNT
+	</select>
+
+	<!-- 회원 현황 -->
+	<select id="selectMbrState" resultType="camelcasemap">
+		WITH
+			DATES AS (
+				SELECT
+					DATEADD(DAY, -6, CONVERT(date, DATEADD(HOUR, 9, GETDATE()))) AS DATE
+
+				UNION ALL
+
+				SELECT
+					DATEADD(DAY, 1, DATE)
+				FROM
+					DATES
+				WHERE
+					DATE <![CDATA[<]]> CONVERT(date, DATEADD(HOUR, 9, GETDATE()))
+			)
+		SELECT
+			FORMAT(DATE, 'yyyy.MM.dd') AS DATE
+			, (/* 방문수 */
+				  SELECT
+					  COUNT(1)
+				  FROM (
+					  SELECT
+						  SESN_ID
+					  FROM
+						  ESG_DB.ST_ACCS_LOG
+					  WHERE
+						  ACCS_URI NOT LIKE '/sems%'
+						  AND FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+					  GROUP BY
+						  SESN_ID
+				  ) AS T1
+			  ) AS VISIT_CNT
+			, (/* 가입수 */
+				SELECT
+					COUNT(1)
+				FROM
+					ESG_DB.MB_MBR_INFO
+				WHERE
+					FORMAT(DATEADD(HOUR, 9, JOIN_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+			) AS JOIN_CNT
+			, (/* 가입수 */
+				SELECT
+					COUNT(1)
+				FROM
+					ESG_DB.CS_ASK_INFO
+				WHERE
+					FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') = FORMAT(DATE, 'yyyy.MM.dd')
+			) AS ASK_CNT
+		FROM
+			DATES
+		ORDER BY
+			DATE DESC
+		OPTION (MAXRECURSION 0)
+	</select>
+
+	<!-- 회원형황 집계 -->
+	<select id="selectMbrStateSum" resultType="camelcasemap">
+		SELECT
+			N'최근 7일' AS DATE
+			, (
+				  /* 방문수 */
+				  SELECT
+					  COUNT(1)
+				  FROM (
+						   SELECT
+							   SESN_ID
+						   FROM
+							   ESG_DB.ST_ACCS_LOG
+						   WHERE
+							   ACCS_URI NOT LIKE '/sems%'
+							   AND FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') BETWEEN FORMAT(
+							  DATEADD(DAY, -7, DATEADD(HOUR, 9, GETDATE())),
+							  'yyyy.MM.dd') AND FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+						   GROUP BY
+							   SESN_ID
+					   ) AS T1
+			) AS VISIT_CNT
+			, (/* 가입수 */
+				  SELECT
+					  COUNT(1)
+				  FROM
+					  ESG_DB.MB_MBR_INFO
+				  WHERE
+					  FORMAT(DATEADD(HOUR, 9, JOIN_DT), 'yyyy.MM.dd') BETWEEN FORMAT(
+							  DATEADD(DAY, -6, DATEADD(HOUR, 9, GETDATE())),
+							  'yyyy.MM.dd') AND FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+			) AS JOIN_CNT
+			, (/* 문의수 */
+				  SELECT
+					  COUNT(1)
+				  FROM
+					  ESG_DB.CS_ASK_INFO
+				  WHERE
+					  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') BETWEEN FORMAT(
+							  DATEADD(DAY, -6, DATEADD(HOUR, 9, GETDATE())),
+							  'yyyy.MM.dd') AND FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM.dd')
+			) AS ASK_CNT
+
+		UNION ALL
+
+		SELECT
+			N'이번달' AS DATE
+			, (
+				  /* 방문수 */
+				  SELECT
+					  COUNT(1)
+				  FROM (
+						   SELECT
+							   SESN_ID
+						   FROM
+							   ESG_DB.ST_ACCS_LOG
+						   WHERE
+							   ACCS_URI NOT LIKE '/sems%'
+							   AND FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM') = FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM')
+						   GROUP BY
+							   SESN_ID
+					   ) AS T1
+			) AS VISIT_CNT
+			, (/* 가입수 */
+				  SELECT
+					  COUNT(1)
+				  FROM
+					  ESG_DB.MB_MBR_INFO
+				  WHERE
+						  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM') = FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM')
+			) AS JOIN_CNT
+			, (/* 가입수 */
+				  SELECT
+					  COUNT(1)
+				  FROM
+					  ESG_DB.CS_ASK_INFO
+				  WHERE
+						  FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM') = FORMAT(DATEADD(HOUR, 9, GETDATE()), 'yyyy.MM')
+			) AS ASK_CNT
+	</select>
+
+	<!-- 온라인 문의 현황 -->
+	<select id="selectAskCtCnt" resultType="camelcasemap">
+        SELECT
+            ESG_DB.FNCOMMCDNM('ASK_ST_CD', ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+            , COUNT(ASK_ST_CD) ASK_ST_CD_CNT /* 문의상태별 카운트 */
+        FROM
+            ESG_DB.CS_ASK_INFO /* 문의정보 */
+        WHERE
+            ASK_ST_CD = 10 /* 문의상태코드(10:미확인, 20:처리중(IT), 30:처리중(Biz), 40:부서전달, 50:완료) */
+        GROUP BY
+            ASK_ST_CD
+
+        UNION ALL
+
+        SELECT
+            ESG_DB.FNCOMMCDNM('ASK_ST_CD', ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+            , COUNT(ASK_ST_CD) ASK_ST_CD_CNT /* 문의상태별 카운트 */
+        FROM
+            ESG_DB.CS_ASK_INFO /* 문의정보 */
+        WHERE
+            ASK_ST_CD = 20 /* 문의상태코드(10:미확인, 20:처리중(IT), 30:처리중(Biz), 40:부서전달, 50:완료) */
+        GROUP BY
+            ASK_ST_CD
+
+        UNION ALL
+
+        SELECT
+            ESG_DB.FNCOMMCDNM('ASK_ST_CD', ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+            , COUNT(ASK_ST_CD) ASK_ST_CD_CNT /* 문의상태별 카운트 */
+        FROM
+            ESG_DB.CS_ASK_INFO /* 문의정보 */
+        WHERE
+            ASK_ST_CD = 30 /* 문의상태코드(10:미확인, 20:처리중(IT), 30:처리중(Biz), 40:부서전달, 50:완료) */
+        GROUP BY
+            ASK_ST_CD
+
+        UNION ALL
+
+        SELECT
+            ESG_DB.FNCOMMCDNM('ASK_ST_CD', ASK_ST_CD) ASK_ST_NM /* 문의상태명 */
+            , COUNT(ASK_ST_CD) ASK_ST_CD_CNT /* 문의상태별 카운트 */
+        FROM
+            ESG_DB.CS_ASK_INFO /* 문의정보 */
+        WHERE
+            ASK_ST_CD = 40 /* 문의상태코드(10:미확인, 20:처리중(IT), 30:처리중(Biz), 40:부서전달, 50:완료) */
+        GROUP BY
+            ASK_ST_CD
+    </select>
+
+	<!-- 미확인 온라인 문의 -->
+	<select id="selectUnconfirmedAskList" resultType="camelcasemap">
+        SELECT
+            ASK_UID /* 문의채번 */
+            , ASK_TP_CD /* 문의유형코드 */
+            , ESG_DB.FNCOMMCDNM('ASK_TP_CD', ASK_TP_CD) ASK_TP_NM /* 문의유형명 */
+            , ASK_TTL /* 문의제목 */
+            , ASK_ST_CD /* 문의상태코드 */
+            , ASK_CN /* 문의내용 */
+            , MBR_ID /* 회원아이디 */
+            , ASK_MAIL /* 문의이메일 */
+            , COMP_NM /* 회사명 */
+            , COPR_UID /* 소속채번 */
+            , FORMAT(DATEADD(HOUR, 9, FST_INS_DT), 'yyyy.MM.dd') FST_INS_DT /* 최초등록일 */
+        FROM
+            ESG_DB.CS_ASK_INFO /* 문의정보 */
+        WHERE
+            ASK_ST_CD = '10' /* 문의상태코드(10:미확인, 20:처리중(IT), 30:처리중(Biz), 40:부서전달, 50:완료) */
+        ORDER BY
+            FST_INS_DT DESC
+    </select>
+
+</mapper>

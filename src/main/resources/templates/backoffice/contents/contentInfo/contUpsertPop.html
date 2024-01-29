@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<th:block th:fragment="fragmentByContUpsertPop">
+    <script type="text/javascript">
+        // onLoad
+        $(function () {
+            // fnShowByContUpsertPop('');
+        });
+
+        function fnShowByContUpsertPop(contUid) {
+            let param = {
+                "url": "/sems/contents/selectShowToModeByContentUpsertPop"
+                , "type": "post"
+                , "data": {"contUid": contUid}
+                , "async": false
+                , "callback": function (fragment) {
+                    console.log('Loading...');
+
+                    if (contUid === '') {
+                        $("#fragmentByContRegPop").replaceWith(fragment);
+                        $("#mainByContRegPop").replaceWith(fragment);
+                        $("#mainByContRegPop").css("zIndex", 900);
+                        $('#mainByContRegPop').addClass('show');
+                        $('#mainByContModPop').removeClass('show');
+                    } else {
+                        $("#fragmentByContModPop").replaceWith(fragment);
+                        $("#mainByContModPop").replaceWith(fragment);
+                        $('#mainByContRegPop').removeClass('show');
+                        $("#mainByContModPop").css("zIndex", 900);
+                        $('#mainByContModPop').addClass('show');
+                    }
+
+                    $('.dimmed').removeAttr('style');
+                }
+            };
+            _comLib.callAjax(param);
+        }
+    </script>
+
+    <!-- 콘텐츠 등록 fragment -->
+    <div id="fragmentByContRegPop"></div>
+    <!-- 콘텐츠 상세 fragment -->
+    <div id="fragmentByContModPop"></div>
+
+    <!-- 출처검색 popup fragment-->
+<!--    <th:block th:replace="/sems/contents/contentInfo/srcSearchPop :: framentBySrcSearchPop"></th:block>-->
+
+
+</th:block>
+
+</html>

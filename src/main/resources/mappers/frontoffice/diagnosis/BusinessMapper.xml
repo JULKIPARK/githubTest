@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.frontoffice.diagnosis.mapper.BusinessMapper">
+
+    <!-- 사용자 정보 조회 -->
+    <select id="selectContList" parameterType="camelcasemap" resultType="camelcasemap">
+        /* selectContList */
+		SELECT
+			CONT.CONT_UID			/* 콘텐츠채번 */
+			, CONT.CONT_UNO			/* 콘텐츠고유번호 */
+			, CONT.CONT_KIND_CD		/* 콘텐츠종류코드 */
+			, CONT.CONT_RMTHD_CD	/* 콘텐츠등록방식코드 */
+			, CONT.CONT_NM			/* 콘텐츠명 */
+			, CONT.PBLCN_DTE		/* 발행일자 */
+			, CONT.PBLCN_GB_CD		/* 발행구분코드 */
+			, TRIM(CONT.PBLCN_YY) AS PBLCN_YY			/* 발행YY */
+			, TRIM(CONT.PBLCN_MM) AS PBLCN_MM		/* 발행MM */
+			, TRIM(CONT.PBLCN_DD)	AS PBLCN_DD		/* 발행DD */
+			, CONT.DMSTC_YN			/* 국내여부 */
+			, CONT.SPLY_LANG_CD		/* 제공언어코드 */
+			, CONT.CONT_TP_LCLSF_CD	/* 콘텐츠유형대분류코드 */
+			, CONT.CONT_TP_MCLSF_CD	/* 콘텐츠유형중분류코드 */
+			, CONT.TASK_CLSF_CD		/* 업무분류코드 */
+			, CONT.TPIC_MNU_CD		/* 토픽메뉴코드 */
+			, CONT.USE_YN			/* 사용여부 */
+			, CONT.DP_YN			/* 전시여부 */
+			, CONT.DP_TP_CD			/* 전시유형코드 */
+			, CONT.DP_STT_DT		/* 전시시작일 */
+			, CONT.DP_END_DT		/* 전시종료일 */
+			, CONT.PIRD_STNG_USE_YN	/* 기간설정사용여부 */
+			, CONT.DWNLD_PSBLTY_YN	/* 다운로드가능여부 */
+			, CONT.SRCH_PSBLTY_YN	/* 검색가능여부 */
+			, CONT.CONT_SUMRY		/* 콘텐츠요약 */
+			, CONT.CONT_ST_CD		/* 콘텐츠상태코드 */
+			, CONT.KWRD_ARRY		/* 키워드배열 */
+			, CONT.RLS_TGT_CD_ARRY	/* 공개대상코드배열 */
+			, CONT.SRC_UID			/* 출처채번 */
+			, CONT.ATAC_FILE_UID	/* 첨부파일채번 */
+			, CONT.LINK_URL			/* 링크주소 */
+			, ESG_DB.fnCommCdNm('TASK_CLSF_CD',CONT.TASK_CLSF_CD) AS  TASK_CLSF_NM
+			, ESG_DB.fnCommCdNm('SBJT_GB_CD',CONT.SBJT_GB_CD) AS  SBJT_GB_NM
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD',CONT.CONT_KIND_CD) AS  CONT_KIND_NM
+			, APND.LINK_URL			/* 링크주소 */
+			, APND.NWIN_YN			/* 새창여부 */
+			, APND.CONT_SPLY_TP_CD	/* 콘텐츠제공유형코드 */
+			, TRIM(APND.VOD_QUNTY_HH) AS VOD_QUNTY_HH	/* 영상분량시 */
+			, TRIM(APND.VOD_QUNTY_MI) AS VOD_QUNTY_MI		/* 영상분량분 */
+			, TRIM(APND.VOD_QUNTY_SEC)	AS VOD_QUNTY_SEC/* 영상분량초 */
+			, ISNULL(RSS.IMG_URL ,ATAC.CNVN_FILE_FPATH) AS IMG_URL
+		FROM ESG_DB.ST_CONT_INFO CONT	/* 콘텐츠정보 */
+		INNER JOIN ESG_DB.ST_CONT_APND_INFO APND	/* 콘텐츠부가정보 */
+			ON CONT.CONT_UID = APND.CONT_UID 	/* 콘텐츠채번 */
+			AND APND.SEQ_NO = 1
+		LEFT OUTER JOIN ESG_DB.BT_RSS_INFO RSS
+			ON CONT.LINK_URL = RSS.LINK_URL
+		LEFT OUTER JOIN ESG_DB.CM_ATAC_DTL_INFO ATAC
+			ON CONT.ATAC_FILE_UID = ATAC.ATAC_FILE_UID AND ATAC.ATAC_TP_CD='40' AND ATAC.DP_YN='Y' AND ATAC.USE_YN='Y'
+		INNER JOIN ESG_DB.DP_CONT_TPIC_INFO TP 	/* 콘텐츠토픽정보 */
+			ON CONT.CONT_UID = TP.CONT_UID 	/* 콘텐츠채번 */
+			AND TP.TPIC_UID = #{tpicUid}
+		    AND TP.DP_YN  = 'Y'
+		INNER JOIN ESG_DB.DP_TPIC_INFO TPIC 	/* 토픽정보 */
+			ON TP.TPIC_UID = TPIC.TPIC_UID	/* 콘텐츠채번 */
+		WHERE 1=1
+
+		AND CONT.USE_YN ='Y'
+		AND CONT.DP_YN='Y'
+		/*ORDER BY CONT.CONT_UID DESC*/
+		ORDER BY TP.DP_SEQ ASC
+    </select>
+
+</mapper>

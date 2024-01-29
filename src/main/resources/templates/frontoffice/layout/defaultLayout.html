@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>SamilESG </title>
+    <meta charset="utf-8">
+    <link rel="icon" href="/assets/img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="삼일 ESG">
+    <meta property="og:image" content="/assets/img/common/og.jpg">
+    <meta property="og:site_name" content="삼일 ESG">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="400">
+    <th:block th:replace="frontoffice/fragments/config :: configFragment"></th:block>
+    <script>
+        var _session_id = null;
+        var _session_email = null;
+        var _session_agress = null;
+        var _session_nm = null;
+
+    </script>
+    <script th:inline="javascript" th:if="${session.FoMbrInfo != null}">
+        /*<![CDATA[*/
+        _session_id = /*[[${session.FoMbrInfo.mbrId}]]*/ null;
+        _session_email = /*[[${session.FoMbrInfo.compMail}]]*/ null;
+        _session_agress = /*[[${session.FoMbrInfo.nsltAgreYn}]]*/ null;
+        _session_nm = /*[[${session.FoMbrInfo.mbrNm}]]*/ null;
+        /*]]>*/
+    </script>
+</head>
+
+<body>
+<div class="wrap">
+    <!-- header fragment -->
+    <th:block th:replace="frontoffice/fragments/header :: headerFragment"></th:block>
+
+    <!-- content fragment -->
+    <th:block layout:fragment="content"></th:block>
+
+    <!-- footer fragment -->
+    <th:block th:replace="frontoffice/fragments/footer :: footerFragment"></th:block>
+</div>
+
+<!-- popup fragment -->
+<th:block layout:fragment="popup"></th:block>
+</body>
+<script id="tmpl_auto" type="text/x-jquery-tmpl">
+    <li>
+        <a href="javascript:void(0);">
+            <span class="word ellipsis">${keyWd}</span>
+            <span class="date">${date}</span>
+        </a>
+        <button type="button" class="btn-close autoDel" data-val="${keyWd}"><span class="blind">삭제</span></button>
+    </li>
+</script>
+<script id="tmpl_auto2" type="text/x-jquery-tmpl">
+    <li>
+        <div class="h-keyword">${keyWd}</div>
+        <div class="date">${date}</div>
+        <div class="delete autoDel" data-val="${keyWd}"><img src="/assets/img/common/btn_del.png"></div>
+    </li>
+</script>
+
+
+<script id="tmpl_contentPop" type="text/x-jquery-tmpl">
+    <div class="dimmed"></div>
+    <div class="center">
+        <section class="modal-area w761">
+        <div class="modal-head left">
+            <h2 class="tit f20">${contNm}</h2>
+            <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+        </div>
+        <div class="modal-cont">
+            <div class="data-detail-wrap">
+            {{if contKindCd == "20"  }}
+            <div class="data-player flex">
+            {{/if}}
+                <div class="data-list">
+                    <dl>
+                    <dt>컨텐츠 번호..</dt>
+                    <dd>${contUno}</dd>
+                    <dt>유형 분류</dt>
+                    <dd>${contTpLclsfNm}{{if contTpMclsfNm != null && contTpMclsfNm != ''}}/${contTpMclsfNm}{{/if}}</dd>
+                    <dt>자료 출처</dt>
+                    <dd>${srcNm}</dd>
+                    <dt>발간 일자</dt>
+                    <dd>${pblcnYy}{{if pblcnMm != null && pblcnMm != ''}}.${pblcnMm}{{if pblcnDd != null && pblcnDd != ''}}.${pblcnDd}{{/if}}{{/if}}</dd>
+                    <dt>제공 언어</dt>
+                    <dd>${splyLangNm}</dd>
+                    {{if contKindCd == "10"  }}
+                    <dt>제공 형태</dt>
+                    <dd>${contSplyTpNm}</dd>
+                    {{/if}}
+                    </dl>
+                </div>
+                {{if contKindCd == "20"  }}
+                <div class="player-wrap">
+                    <div class="img-wrap">
+                        {{if contKindCd == "20"   && ( contSplyTpCd == "90" || contSplyTpCd == "95" ) }}
+                        <a href="javascript:void(0);" class="_mmovice_pop" data-link="${linkUrl}" data-title="${contNm}" data-lclsf="${contTpLclsfCd}">
+                        {{else contKindCd == "20"   && contSplyTpCd == "20"  }}
+                        <a href="javascript:void(0);" class="_movice_pop" data-link="https://samilesg.blob.core.windows.net${movieUrl}"  data-title="${contNm}" data-lclsf="${contTpLclsfCd}">
+                        {{else}}
+                        <a href="javascript:void(0);">
+                        {{/if}}
+                            <span class="thumbnail"><img src="{{if imgUrl }}https://samilesg.blob.core.windows.net${imgUrl}{{else}}/assets/img/common/noimage.png{{/if}}" ></span>
+                            <span class="time">{{if vodQuntyHh }} ${vodQuntyHh} : {{/if}}{{if vodQuntyMi }}${vodQuntyMi} : {{/if}}${vodQuntySec}</span>
+                            <span class="ico-play"><i class="blind">play</i></span>
+                        </a>
+                    </div>
+                </div>
+                {{/if}}
+            {{if contKindCd == "20"  }}
+            </div>
+            {{/if}}
+            <div class="ctg-wrap">
+                <p class="bul-square">
+                     <span>${taskClsfNm}</span>
+                     {{if sbjtGbNm }}<span>${sbjtGbNm}</span>{{/if}}
+                <ul class="hashtag">
+                {{each(i, sub) kwrdInfo}}
+                <li><span class="beage"># ${sub.tagKwrd}</span></li>
+                {{/each}}
+                </ul>
+            </div>
+            </div>
+            <div class="btn-wrap flex" {{if contKindCd == "20" && contTpLclsfCd != "10"}}style="justify-content:center;"{{/if}}>
+            {{if contKindCd == "10" || contKindCd =="20"}}
+                {{if contKindCd == "10"  && contRmthdCd != "20" && contSplyTpCd == "30" }}
+                    <button type="button" class="btn-primary small _pub_pop" data-link="http://www.samilesg.com:8083/static/s3/index.html?token=undefined&content_url=${linkUrl}&user_id='+_session_id+'&book_id=${contUid}"><span>뷰어보기</span></button>
+                {{else contKindCd == "10"  && contRmthdCd != "20" && contSplyTpCd == "10" }}
+                    <button type="button" class="btn-primary small _pub_pop" data-link="${linkUrl}"><span>뷰어보기</span></button>
+                {{else contKindCd == "20"   && ( contSplyTpCd == "90" || contSplyTpCd == "95" ) }}
+
+                {{else contKindCd == "20"   && contSplyTpCd == "20" }}
+
+                {{/if}}
+                {{if contSplyTpCd == "30" && fileUrl != null && fileUrl != "" && dwnldPsbltyYn == "Y" }}
+                <button type="button" class="btn-primary small _pub_pop" data-link="https://samilesg.blob.core.windows.net${fileUrl}"><span>다운로드</span></button>
+                {{/if}}
+            {{/if}}
+            {{if contKindCd == "10" && contRmthdCd =="20"}}
+                <button type="button" onclick="window.open('${linkUrl}')" class="btn-primary small ico-link"><span>링크연결</span></button>
+            {{/if}}
+            </div>
+        </div>
+        </section>
+    </div>
+
+</script>
+<script id="tmpl_contentNewsPop" type="text/x-jquery-tmpl">
+
+    <div class="dimmed"></div>
+    <div class="center">
+        <section class="modal-area news-area w1024">
+            <div class="modal-head left">
+                <h2 class="tit">${contNm}</h2>
+                <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+            </div>
+
+            <div class="modal-cont">
+                <section class="news-wrap">
+                    <div class="news-head">
+                        <div class="title">${ttl}</div>
+                        <ul class="op-line">
+                            <li>${wrtrNm}</li>
+                            <li>${pblcnYy}{{if pblcnMm != ''}}.${pblcnMm}{{if pblcnDd != ''}}.${pblcnDd}{{/if}}{{/if}}</li>
+                        </ul>
+                    </div>
+
+                <div class="news-content scroll-area">
+                    <p>{{html cn}}</p>
+                </div>
+
+                <div class="btn-wrap ask-btn" style="border-top: 2px solid #D04A02; padding-top: 20px;">
+                        <button type="button" class="btn-primary btn-close small w170"><span>확인</span></button>
+                    </div>
+                </section>
+
+            </div>
+        </section>
+
+    </div>
+
+</script>
+</html>

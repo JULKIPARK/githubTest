@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		
+		
+		$(function(){
+			tab();
+			
+			/*<![CDATA[*/
+				var tabId = "tabId"+/*[[${tabId}]]*/;
+				$("#"+tabId).addClass("current");
+				$("#tab"+/*[[${tabId}]]*/).show();
+			/*]]>*/
+			
+ 			$(".keyword-wrap li button").on('click',function(){
+ 				var num = $(this).closest("li").index();
+ 				$(".keyword-wrap li button").removeClass("current");
+ 				$(this).addClass("current");
+ 				$(".tab-cont .contMain").hide();
+ 				$(".tab-cont .contMain").eq(num).show();
+ 		    })  
+		});
+		
+		$(function(){
+ 			$('.menu03').addClass("on");
+		});
+	</script>
+	
+</th:block>
+
+
+	
+	
+						
+		<div layout:fragment="content">
+			<!-- content -->
+			 <section class="content">
+                <!--20230901 문구추가//-->
+                <div class="tit-head">
+                    <div class="group">
+                        <h3>ESG 평가</h3>
+                        <p class="txt">ESG 주요 평가기관을 소개하고, 산업별 중요 평가항목을 정리하였습니다.</p>
+                    </div>
+                    <span class="square"></span>
+                </div>
+                
+                <div class="tab-scroll">
+                    <ul class="keyword-wrap current-wrap">
+                        <li><button type="button" id="tabId1" class="current btn-rd-wh"><span>주요 평가기관</span></button></li>
+                        <li><button type="button" id="tabId2" class="btn-rd-wh"><span>주요 평가 요소</span></button></li>
+                        <li><button type="button" id="tabId3" class="btn-rd-wh"><span>산업별 고려사항</span></button></li>
+                    </ul>
+                </div>
+                
+                
+                <div class="tab-cont">
+                	<!--//20230901 문구추가-->
+                	 <div class="esg05-wrap pt60 contMain" id="tab1">
+                	   	<section class="section">
+                   	   		 <div class="default-width pb60">
+                   	        	<!--20230901 수정//-->
+                   	        	<h3 class="tit-line-left">ESG 주요 평가 기관</h3>
+                   	        	<h3 class="sutTit">기업의 ESG 경영활동을 평가하는 다양한 국내외 기관 중 대표적인 기관을 소개합니다.</h3>
+                   	        	<!--//20230901 수정-->
+                   	        	<div class="table-wrap mar_t30">
+                   	        	    <table class="line">
+                   	        	        <caption>ESG 주요 평가 기관</caption>
+                   	        	        <!--20230901 col 수정//-->
+                   	        	        <colgroup>
+                   	        	            <col style="width: 6%;">
+                   	        	            <col style="width: 28%;">
+                   	        	            <col style="width: 41%">
+                   	        	            <col style="width: 25%">
+                   	        	        </colgroup>
+                   	        	        <!--//20230901 수정-->
+                   	        	        <thead>
+                   	        	            <tr>
+                   	        	                <th colspan="2">구분</th>
+                   	        	                <th>설명</th>
+                   	        	                <th>관련 URL</th>
+                   	        	            </tr>
+                   	        	        </thead>
+                   	        	        <tbody>
+                   	        	            <tr>
+                   	        	                <td rowspan="3">국내</td>
+                   	        	                <td class="lf">
+                   	        	                    <strong>KCGS</strong>
+                   	        	                    <p>한국 ESG 기준원</p>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>국내 기업과 자본·금융시장의 지속가능한 발전을 위해 기업 및 금융회사 지배구조 개선을 위한 다각도 지원</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>책임 투자를 위한 세부 원칙과 기준 제·개정 지원</li>
+                   	        	                        <li>ESG 평가 및 분석</li>
+                   	        	                        <li>책임 투자 및 의안분석 자문 서비스</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="http://www.cgs.or.kr/" class="btn-file">한국ESG기준원</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>한국 ESG 연구소</strong>
+                   	        	                    
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>다양한 출처(지속가능보고서, 각종 정보공개 시스템 등)의 정보를 종합하여 책임투자를 위한 ESG 평가정보, 자문서비스, 솔루션을 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>투자자의 합리적 의사결정과 책임투자 지원을 위한 비재무적 성과 (환경, 사회, 지배구조)와 리스크 평가 제공</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="http://www.kesgresearch.com/" class="btn-file">한국ESG연구소</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>서스틴베스트</strong>
+                   	        	                    
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>ESG 평가와 데이터, 펀드 운용 전략과 수탁자 책임 활동을 위한 종합 리서치 & 자문 서비스를 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>투자자 관점의 ESG 전문회사로서 데이터에 기반한 ESG 분석 정보 제공</li>
+                   	        	                        <li>자체 개발한 평가모형으로 재무적 요소 뿐 아니라 비재무적 ESG 요소까지 고려한 지속가능한 투자 의사결정을 지원</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://sustinvest.com/" class="btn-file">서스틴베스트</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            <!--국외 table 전체수정 09.19-->
+                   	        	            <tr>
+                   	        	                <td rowspan="9">국외</td>
+                   	        	                <td class="lf">
+                   	        	                    <strong>MSCI</strong>
+                   	        	                    <p>Morgan Stanley Capital International</p>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>모건스텐리의 자회사로서 글로벌 투자를 위한 의사결정 지원 도구 및 서비스를 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>국가별 상장기업들의 ESG 위험과 기회에 대한 관리 수준을 측정하여 MSCI ESG 평가등급으로 제공</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.msci.com/zh/esg-ratings" class="btn-file">MSCI</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>S&P</strong>
+                   	        	                    <p>Standard and Poor’s</p>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>1999년 다우존 지속가능경영지수(DJSI, Dow Jones Sustainability Indices)를 개발해 매년 평가 결과 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>전 세계 상위 기업을 대상으로 경제적 성과, 환경 및 사회 성과 등을 종합적으로 고려해 지속가능성을 분석</li>
+                   	        	                        <li>피평가기업이 설문에 답변한 내용을 기반으로 평가하며, 공통 평가 항목과 산업별 항목으로 구분하여 산업별 특성에 따라 가중치 부여 평가</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.spglobal.com/esg/solutions/data-intelligence-esg-scores" class="btn-file">S&P</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>CDP</strong>
+                   	        	                    <p>Carbon Disclosure Project</p>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>기업의 환경 지속가능성을 측정하여 탄소배출 등급을 평가</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>매년 수천개의 기업, 도시, 주, 지역을 지원하여 기후 변화, 물 안보 및 산림에 대한 위험과 기회를 측정</li>
+                   	        	                        <li>글로벌 환경 공시 시스템을 운영</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.cdp.net/" class="btn-file">CDP</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>EcoVadis</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>기업의 지속가능성을 평가하는 대표적인 국제 조사기구로 2007년부터 공급망 내 기업 대상 환경 및 사회적 성과를 평가·제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>160여개 국가, 200여개 산업, 7만5000여개 기업들을 대상으로 환경, 노동·인권, 윤리, 지속가능성 조달 등 4가지 주요 항목을 평가</li>
+                   	        	                        <li>유엔글로벌콤팩트 10대 원칙, 국제노동기구(ILO) 협약, GRI 기준, 유엔 기업과 인권 이행 원칙 등 국제 지속가능성 기준에 기초</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://ecovadis.com/" class="btn-file">EcoVadis</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>Sustainalytics</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>글로벌 펀드 평가회사 모닝스타가 인수한 후, Sustainalytics의 ESG 평가방법론을 활용하여 모든 펀드, 주식, 자산 분석에 ESG 요소 통합</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+                   	        	                        <li>지속가능채권 가이드라인 검증기관으로 기업 및 금융기관이 ESG 채권을 발생할 때 평가와 인증을 수행</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.sustainalytics.com/" class="btn-file">Sustainalytics</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>FTSE Russell</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>2001년 ESG 평가를 바탕으로 한 지수인 ‘FTSE4Good’을 시작하였으며, 유럽 시장을 대표하는 지수</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>공개된 정보를 기반으로 평가하여 분기별로 지수에 편입된 기업을 발표</li>
+                   	        	                        <li>현재 14개 주제별로 300개 이상의 지표 포함</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.ftserussell.com/products/indices/ftse4good" class="btn-file">FTSE Russell</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>RepRisk</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>1998년 설립된 ESG 데이터 평가기관</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>공개된 정보 기반으로 ESG 리스크가 기업의 재무가치에 미치는 영향을 축정하여 등급으로 제공</li>
+                   	        	                        <li>GRI, SASB, UNGC 등 글로벌 ESG 표준 의거 28개의 ESG 이슈, 58개 하위 주제로 ESG 리스크를 측정</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.reprisk.com" class="btn-file">RepRisk</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>Vigeo Eiris</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>2002년 설립된 지속가능금융 분야 전문 기업으로 ESG 평가, 데이터, 분석도구 등을 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>2019년 4월 신용평가기관 무디스(Moody’s)가 인수</li>
+                   	        	                        <li>Vigeo Eiris의 ESG 평가체계는 환경, 사회 및 거버넌스 요소가 서로 관련 있고 보완적이라는 시각에 따라 각 요소를 분리하지 않음</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.moodys.com/web/en/us/capabilities/esg.html" class="btn-file">S&P</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <tr>
+                   	        	                <td class="lf">
+                   	        	                    <strong>Bloomberg</strong>
+                   	        	                </td>
+                   	        	                <td class="lf">
+                   	        	                    <p class="txt"><strong>10년 이상 전 세계 기업의 ESG 공시 데이터를 제공하고 있으며, 2020년 8월 이후 ESG Score 서비스도 제공</strong></p>
+                   	        	                    <ul class="bul-square">
+                   	        	                        <li>102개국 11,700개 이상의 기업에서 공개한 정보를 검증하여 블룸버그 터미널에 ESG 데이터를 공개하고 있음</li>
+                   	        	                        <li>ESG 데이터를 기반으로 자체 평가한 ESG Score를 MSCI, Sustainalytics 등 주요 ESG 평가기관 자료와 함께 제공</li>
+                   	        	                    </ul>
+                   	        	                </td>
+                   	        	                <td class="align-ct">
+                   	        	                    <a href="https://www.bloomberg.com/professional/product/esg-data/" class="btn-file">Bloomberg</a>
+                   	        	                </td>
+                   	        	            </tr>
+                   	        	            
+                   	        	            <!--국외 table 전체수정 09.19 여기까지-->
+                   	        	            
+                   	        	            
+                   	        	            
+                   	        	        </tbody>
+                   	        	    </table>
+                   	        	</div>
+							</div>
+                   	   		 
+                   		</section>
+               		 </div>
+                	
+                	<div class="esg05-wrap pt60 contMain" id="tab2" style="display:none;">
+                	    <section class="section">
+                	        <div class="default-width pb60">
+                            	<!--20230901 수정//-->
+                            	<h3 class="tit-line-left">ESG 주요 평가요소</h3>
+                            	<h3 class="sutTit">다양한 평가기관에서 개별적인 평가방밥론과 평가항목으로 평가를 수행하고 있으나, 각 ESG 토픽에서 일반적으로 중요하게 고려하는 평가항목을 설명합니다.</h3>
+                            	<!--//20230901 수정-->
+                            	<div class="table-wrap mar_t30">
+                            	    <table class="line sj_line">
+                            	        <caption>ESG 주요 평가 기관</caption>
+                            	        <!--20230901 col 수정//-->
+                            	        <colgroup>
+                            	            <col style="width: 8%;">
+                            	            <col style="width: 46%;">
+                            	            <col style="width: 46%">
+                            	        </colgroup>
+                            	        <!--//20230901 수정-->
+                            	        <thead>
+                            	            <tr>
+                            	                <th>구분</th>
+                            	                <th>평가요소</th>
+                            	                <th>추가적인 ESG 토픽정보</th>
+                            	            </tr>
+                            	        </thead>
+                            	        
+                            	        <tbody>
+                            	            <tr>
+                            	                <td rowspan="7">E(환경)</td>
+                            	                <td class="lf" rowspan="5">
+                            	                    <div class="subj">기후변화</div>
+                            	                </td>
+                            	                <td class="lf">
+                            	                	<div class="subs">기후변화는 오늘날 우리 세계가 직면한 가장 시급한 문제 중 하나입니다. 기업은 탄소 배출을 체계적으로 감축하여 기후변화에 대응하고, 녹색 성장을 경제 성장의 새로운 모멘텀으로 받아들이는 자세가 필요합니다. </div>
+
+
+                            	                   	<dl class="p-listA">
+                            	                   		<dt>주요평가항목</dt>
+                            	                   		<dd>
+                            	                   			<div class="subjLine">
+                            	                   				<div class="subj">01.기후변화 거버넌스</div>
+                            	                   				<div class="toggleBtn">
+                            	                   					<img src="/assets/img/common/viewPlus.png" class="plus">
+                            	                   					<img src="/assets/img/common/viewMinus.png" class="minus">
+                            	                   				</div>
+                            	                   			</div>
+                            	                   			<div class="subs">이사회와 경영진은 기후 관련 문제와 탄소중립에 대한 책임과 감독을 수행하고 있습니까?</div>
+                            	                   		</dd>
+                            	                   		
+                            	                   		<dd>
+                            	                   			<div class="subjLine">
+                            	                   				<div class="subj">02.기후변화 대응 목표</div>
+                            	                   				<div class="toggleBtn">
+                            	                   					<img src="/assets/img/common/viewPlus.png" class="plus">
+                            	                   					<img src="/assets/img/common/viewMinus.png" class="minus">
+                            	                   				</div>
+                            	                   			</div>
+                            	                   			<div class="subs">기후 관련 중장기 목표를 설정하고 목표 이행을 위한 로드맵과 배출량 감축 목표가 공개되어 있습니까?</div>
+                            	                   		</dd>
+                            	                   		
+                            	                   		<dd>
+                            	                   			<div class="subjLine">
+                            	                   				<div class="subj">03.환경 성과 연계</div>
+                            	                   				<div class="toggleBtn">
+                            	                   					<img src="/assets/img/common/viewPlus.png" class="plus">
+                            	                   					<img src="/assets/img/common/viewMinus.png" class="minus">
+                            	                   				</div>
+                            	                   			</div>
+                            	                   			<div class="subs">경영진 또는 임원의 핵심성과지표(KPI)에 기후 관련 지표가 포함되며, 성과에 따른 인센티브가 제공됩니까?</div>
+                            	                   		</dd>
+                            	                   		
+                            	                   		<dd>
+                            	                   			<div class="subjLine">
+                            	                   				<div class="subj">04.기후변화 위험 관리</div>
+                            	                   				<div class="toggleBtn">
+                            	                   					<img src="/assets/img/common/viewPlus.png" class="plus">
+                            	                   					<img src="/assets/img/common/viewMinus.png" class="minus">
+                            	                   				</div>
+                            	                   			</div>
+                            	                   			<div class="subs">기후변화와 관련된 위험 및 기회를 식별하고 평가하며, 이에 대한 대응 전략과 재무적 영향을 어떻게 관리하고 공개하고 있습니까?</div>
+                            	                   		</dd>
+                            	                   		
+                            	                   		<dd>
+                            	                   			<div class="subjLine">
+                            	                   				<div class="subj">05.시나리오 분석</div>
+                            	                   				<div class="toggleBtn">
+                            	                   					<img src="/assets/img/common/viewPlus.png" class="plus">
+                            	                   					<img src="/assets/img/common/viewMinus.png" class="minus">
+                            	                   				</div>
+                            	                   			</div>
+                            	                   			<div class="subs">기후변화 시나리오 분석을 통해 기후 변화의 재무적 영향을 측정하고, 그 결과를 공개하고 있습니까?</div>
+                            	                   		</dd>
+                            	                   	</dl>
+                            	                </td>
+                            	              	
+                            	              	<td>
+                            	              		<a href="" class="p-btn">환경 > 기후변화</a>
+                            	              	</td>
+                            	            </tr>
+                            	           
+                            	            
+                            	        </tbody>
+                            	    </table>
+                            	</div>
+                       		 </div>
+                	        
+                	    </section>
+                	</div>
+                </div>
+                 <!-- //esg04-wrap -->
+            </section>
+            <!-- //content -->  
+            <div class="floating-wrap">
+ 
+                <button type="button"><span>온라인 문의</span></button>
+            </div>
+           
+ 
+</div>
+</html>

@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.contents.mapper.DocumentMapper">
+
+	<!-- 콘텐츠정보 목록 조회 -->
+	<select id="selectContentList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SCI.CONT_UID /* 콘텐츠채번 */
+			, SCI.CONT_KIND_CD /* 콘텐츠종류코드 */
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD', SCI.CONT_KIND_CD) AS CONT_KIND_CD_NM /* 콘텐츠종류코드명 */
+			, SCI.CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, ESG_DB.fnCommCdNm('CONT_RMTHD_CD', SCI.CONT_RMTHD_CD) AS CONT_RMTHD_CD_NM /* 콘텐츠등록방식코드명 */
+			, SCI.CONT_ST_CD /* 콘텐츠상태코드 */
+			, ESG_DB.fnCommCdNm('CONT_ST_CD', SCI.CONT_ST_CD) AS CONT_ST_CD_NM /* 콘텐츠상태코드명 */
+			, SCI.CONT_UNO /* 콘텐츠고유번호 */
+			, SCI.CONT_NM /* 콘텐츠명 */
+			, SCI.SRC_UID /* 출처채번 */
+			, SSI.SRC_NM /* 출처 */
+			, SCI.DMSTC_YN /* 국내여부 */
+			, CASE SCI.DMSTC_YN
+				WHEN 'Y' THEN N'국내'
+				WHEN 'N' THEN N'해외'
+			END AS DMSTC_YN_NM /* 국내여부명 */
+			, SCI.SPLY_LANG_CD /* 제공언어코드 */
+			, ESG_DB.fnCommCdNm('SPLY_LANG_CD', SCI.SPLY_LANG_CD) AS SPLY_LANG_CD_NM /* 제공언어코드명 */
+			, SCI.CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드 */
+			, ESG_DB.fnCommCdNm('CONT_TP_LCLSF_CD', SCI.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_CD_NM /* 콘텐츠유형대분류코드명 */
+			, SCI.CONT_TP_MCLSF_CD /* 콘텐츠유형중분류코드 */
+			, ESG_DB.fnCommCdNm('CONT_TP_MCLSF_CD', SCI.CONT_TP_MCLSF_CD) AS CONT_TP_MCLSF_CD_NM /* 콘텐츠유형중분류코드명 */
+			, SCI.TASK_CLSF_CD /* 업무분류코드 */
+			, ESG_DB.fnCommCdNm('TASK_CLSF_CD', SCI.TASK_CLSF_CD) AS TASK_CLSF_CD_NM /* 업무분류코드명 */
+			, SCI.SBJT_GB_CD /* 주제분류코드 */
+			, ESG_DB.fnCommCdNm('SBJT_GB_CD', SCI.SBJT_GB_CD) AS SBJT_GB_CD_NM /* 주제분류코드명 */
+			, SCAI.CONT_SPLY_TP_CD /* 콘텐츠제공유형코드 */
+			, ESG_DB.fnCommCdNm('CONT_SPLY_TP_CD', SCAI.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_CD_NM /* 콘텐츠제공유형코드명 */
+			, SCI.DP_TP_CD /* 전시유형코드 */
+			, ESG_DB.fnCommCdNm('DP_TP_CD', DP_TP_CD) AS DP_TP_CD_NM /* 전시유형코드명 */
+			, SCI.RLS_TGT_CD_ARRY /* 공개대상코드배열 */
+			, ESG_DB.fnGetCdNmArry('MBR_GB_CD', SCI.RLS_TGT_CD_ARRY, SCI.CONT_UID) AS RLS_TGT_CD_NM_ARRY	/* 공개대상코드명배열 */
+			, SCI.DWNLD_PSBLTY_YN /* 다운로드가능여부 */
+			, CASE SCI.DWNLD_PSBLTY_YN
+				WHEN 'Y' THEN N'가능'
+				WHEN 'N' THEN N'불가'
+			END AS DWNLD_PSBLTY_YN_NM /* 다운로드가능여부 */
+			, SCI.SRCH_PSBLTY_YN /* 검색가능여부 */
+			, CASE SCI.SRCH_PSBLTY_YN
+				WHEN 'Y' THEN N'가능'
+				WHEN 'N' THEN N'불가'
+			END AS SRCH_PSBLTY_YN_NM /* 검색가능여부 */
+			, (
+				SELECT
+					STRING_AGG(DTI.TPIC_NM, ', ') WITHIN GROUP (ORDER BY DTI.DP_SEQ)
+				FROM
+					ESG_DB.DP_CONT_TPIC_INFO DCTI
+					LEFT JOIN ESG_DB.DP_TPIC_INFO DTI
+						ON DTI.TPIC_UID = DCTI.TPIC_UID
+				WHERE
+					DCTI.CONT_UID = SCI.CONT_UID
+			) AS TPIC_NM_ARRY /* 토픽명배열 */
+			, FORMAT(DATEADD(HOUR, 9, SCI.FST_INS_DT), 'yyyy.MM.dd') AS FST_INS_DT /* 등록일 */
+			, (SELECT MBR_NM FROM ESG_DB.MB_MBR_INFO WHERE MBR_ID = SCI.FST_INS_ID) AS FST_INS_MBR_NM /* 등록자 */
+			, FORMAT(DATEADD(HOUR, 9, SCI.LST_UPD_DT), 'yyyy.MM.dd') AS LST_UPD_DT /* 수정일 */
+			, (SELECT MBR_NM FROM ESG_DB.MB_MBR_INFO WHERE MBR_ID = SCI.LST_UPD_ID) AS LST_UPD_MBR_NM /* 수정자 */
+		FROM
+			ESG_DB.ST_CONT_INFO SCI
+			LEFT JOIN ESG_DB.ST_CONT_APND_INFO SCAI
+				ON SCAI.CONT_UID = SCI.CONT_UID
+			LEFT JOIN ESG_DB.ST_SRC_INFO SSI
+				ON SSI.SRC_UID = SCI.SRC_UID
+		<where>
+			SCI.USE_YN = 'Y'
+			AND SCI.CONT_TP_LCLSF_CD <![CDATA[<>]]> '60'
+			AND (
+				SCI.CONT_KIND_CD IN ('10', '20')
+				OR (
+					SCI.CONT_KIND_CD = '30' AND SCAI.SEQ_NO = 0
+				)
+			)
+
+			<!-- 검색조건 : 등록일/수정일 -->
+			<choose>
+				<!-- 등록일 -->
+				<when test="schJoinType != null and schJoinType.equals('01')">
+					<if test="schStrtDate != null and !schStrtDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, SCI.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]>
+						#{schStrtDate}
+					</if>
+					<if test="schEndDate != null and !schEndDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, SCI.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[<=]]>
+						#{schEndDate}
+					</if>
+				</when>
+				<!-- 수정일 -->
+				<when test="schJoinType != null and schJoinType.equals('02')">
+					<if test="schStrtDate != null and !schStrtDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, SCI.LST_UPD_DT), 'yyyy.MM.dd') <![CDATA[>=]]>
+						#{schStrtDate}
+					</if>
+					<if test="schEndDate != null and !schEndDate.equals('')">
+						AND FORMAT(DATEADD(HOUR, 9, SCI.LST_UPD_DT), 'yyyy.MM.dd') <![CDATA[<=]]>
+						#{schEndDate}
+					</if>
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 등록자/수정자 -->
+			<choose>
+				<!-- 등록자 -->
+				<when test="schOprtOpt != null and schOprtOpt.equals('01')">
+					<if test="schOprtWrd != null and !schOprtWrd.equals('')">
+						AND SCI.FST_INS_ID IN (
+						SELECT MBR_ID
+						FROM ESG_DB.MB_MBR_INFO
+						WHERE MBR_NM LIKE CONCAT('%', #{schOprtWrd}, '%')
+						)
+					</if>
+				</when>
+				<!-- 수정자 -->
+				<when test="schOprtOpt != null and schOprtOpt.equals('02')">
+					<if test="schOprtWrd != null and !schOprtWrd.equals('')">
+						AND SCI.LST_UPD_ID IN (
+						SELECT MBR_ID
+						FROM ESG_DB.MB_MBR_INFO
+						WHERE MBR_NM LIKE CONCAT(#{schOprtWrd}, '%')
+						)
+					</if>
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 등록상태 -->
+			<if test="schContSt != null and !schContSt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_ST_CD <![CDATA[=]]> #{schContSt}
+			</if>
+
+			<!-- 검색조건 : 콘텐츠명/번호 -->
+			<choose>
+				<!-- 콘텐츠명 -->
+				<when test="schContentOpt != null and schContentOpt.equals('01')">
+					<if test="schContentWrd != null and !schContentWrd.equals('')">
+						AND SCI.CONT_NM LIKE CONCAT('%', #{schContentWrd}, '%')
+					</if>
+				</when>
+				<!-- 콘텐츠번호 -->
+				<when test="schContentOpt != null and schContentOpt.equals('02')">
+					<if test="schContentWrd != null and !schContentWrd.equals('')">
+						AND SCI.CONT_UNO LIKE CONCAT('%', #{schContentWrd}, '%')
+					</if>
+				</when>
+				<!-- 조건없음 안함 = pass -->
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<!-- 검색조건 : 콘텐츠종류 -->
+			<if test="schContKindOpt != null and !schContKindOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_KIND_CD <![CDATA[=]]> #{schContKindOpt}
+			</if>
+
+			<!-- 검색조건 : 콘텐츠등록방식 -->
+			<if test="schContRmthdOpt != null and !schContRmthdOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_RMTHD_CD <![CDATA[=]]> #{schContRmthdOpt}
+			</if>
+
+			<!-- 검색조건 : 출처명/번호 -->
+			<choose>
+				<!-- 출처명 -->
+				<when test="schSrcOpt != null and schSrcOpt.equals('01')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND SCI.SRC_UID IN (
+						SELECT SRC_UID
+						FROM ESG_DB.ST_SRC_INFO
+						WHERE SRC_NM LIKE CONCAT('%', #{schSrcWrd}, '%')
+						)
+					</if>
+				</when>
+				<!-- 출처번호 -->
+				<when test="schSrcOpt != null and schSrcOpt.equals('02')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND SCI.SRC_UID IN (
+						SELECT SRC_UID
+						FROM ESG_DB.ST_SRC_INFO
+						WHERE SRC_UNO LIKE CONCAT('%', #{schSrcWrd}, '%')
+						)
+					</if>
+				</when>
+				<when test="schSrcOpt != null and schSrcOpt.equals('00')">
+					<if test="schSrcUid != null and !schSrcUid.equals('')">
+						AND SCI.SRC_UID = #{schSrcUid}
+					</if>
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 국내여부 -->
+			<if test="schDmstcChk != null and !schDmstcChk.equalsIgnoreCase('ALL')">
+				AND SCI.DMSTC_YN <![CDATA[=]]> #{schDmstcChk}
+			</if>
+
+			<!-- 검색조건 : 제공언어 -->
+			<if test="schSplyLangOpt != null and !schSplyLangOpt.equalsIgnoreCase('ALL')">
+				AND SCI.SPLY_LANG_CD <![CDATA[=]]> #{schSplyLangOpt}
+			</if>
+
+			<!-- 검색조건 : 유형대분류 -->
+			<if test="schContTpLclsfOpt != null and !schContTpLclsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_TP_LCLSF_CD <![CDATA[=]]> #{schContTpLclsfOpt}
+			</if>
+
+			<!-- 검색조건 : 유형중분류 -->
+			<if test="schContTpMclsfOpt != null and !schContTpMclsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_TP_MCLSF_CD <![CDATA[=]]> #{schContTpMclsfOpt}
+			</if>
+
+			<!-- 검색조건 : 업무 분류 -->
+			<if test="schTaskClsfOpt != null and !schTaskClsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.TASK_CLSF_CD <![CDATA[=]]> #{schTaskClsfOpt}
+			</if>
+
+			<!-- 검색조건 : 주제 분류 -->
+			<if test="schTopicOpt != null and !schTopicOpt.equalsIgnoreCase('ALL')">
+				AND SCI.SBJT_GB_CD <![CDATA[=]]> #{schTopicOpt}
+			</if>
+
+			<!-- 검색조건 : 전시유형 -->
+			<if test="schDpTpRdo != null and !schDpTpRdo.equalsIgnoreCase('ALL')">
+				AND SCI.DP_TP_CD <![CDATA[=]]> #{schDpTpRdo}
+			</if>
+
+			<!-- 검색조건 : 일부공개대상 -->
+			<if test="schRlsTgtChk != null and !schRlsTgtChk.equals('')">
+				<foreach item="rlsTgtCd" index="index" collection="schRlsTgtList" separator=""
+					open=""
+					close="">
+					AND CHARINDEX(#{rlsTgtCd}, SCI.RLS_TGT_CD_ARRY) > 0
+				</foreach>
+			</if>
+
+			<!-- 검색조건 : 다운로드가능여부 -->
+			<if test="schDwnldPsbltyRdo != null and !schDwnldPsbltyRdo.equalsIgnoreCase('ALL')">
+				AND SCI.DWNLD_PSBLTY_YN <![CDATA[=]]> #{schDwnldPsbltyRdo}
+			</if>
+
+			<!-- 검색조건 : 검색가능여부 -->
+			<if test="schSrchPsbltyRdo != null and !schSrchPsbltyRdo.equalsIgnoreCase('ALL')">
+				AND SCI.SRCH_PSBLTY_YN <![CDATA[=]]> #{schSrchPsbltyRdo}
+			</if>
+
+			<!-- 검색조건 : ESG 토픽 (메뉴) -->
+			<if test="schTpicMnuOpt != null and !schTpicMnuOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_UID IN (
+				SELECT CONT_UID
+				FROM ESG_DB.DP_CONT_TPIC_INFO
+				WHERE TPIC_UID IN (
+				SELECT TPIC_UID
+				FROM ESG_DB.DP_TPIC_INFO
+				WHERE TPIC_MNU_CD <![CDATA[=]]> #{schTpicMnuOpt}
+
+				<!-- 검색조건 : ESG 토픽 (토픽명) -->
+				<if test="schTpicNmOpt != null and !schTpicNmOpt.equalsIgnoreCase('ALL')">
+					AND TPIC_UID <![CDATA[=]]> #{schTpicNmOpt}
+				</if>
+				)
+				)
+			</if>
+
+			<!-- 태그키워드 -->
+			<if test="schKwrd != null and !schKwrd.equals('')">
+				AND SCI.KWRD_ARRY LIKE CONCAT('%', #{schKwrd}, '%')
+			</if>
+		</where>
+		ORDER BY
+			SCI.CONT_UID DESC
+	</select>
+
+	<!-- 출처 목록 조회 -->
+	<select id="selectSrcSearchPopList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SSI.SRC_UID /* 출처채번 */
+			, SSI.SRC_UNO /* 출처고유번호 */
+			, SSI.SRC_NM /* 출처명 */
+			, SSI.DMSTC_YN /* 국내여부 */
+			, CASE SSI.DMSTC_YN
+				WHEN 'Y' THEN N'국내'
+				WHEN 'N' THEN N'해외'
+			END AS DMSTC_YN_NM /* 국내여부명 */
+			, SSI.FST_INS_DT /* 최초등록일 */
+			, SSI.FST_INS_ID /* 최초등록아이디 */
+			, SSI.LST_UPD_DT /* 최종수정일 */
+			, SSI.LST_UPD_ID /* 최종수정아이디 */
+		FROM
+			ESG_DB.ST_SRC_INFO SSI /* 출처정보 */
+		<where>
+			<!-- 검색조건 : 출처명/번호 -->
+			<choose>
+				<!-- 출처명 -->
+				<when test="schSrcOptBySrcSearchPop.equals('01')">
+					<if test="schSrcWrdBySrcSearchPop != null and !schSrcWrdBySrcSearchPop.equals('')">
+						AND SSI.SRC_NM LIKE CONCAT('%', #{schSrcWrdBySrcSearchPop}, '%')
+					</if>
+				</when>
+				<!-- 출처번호 -->
+				<when test="schSrcOptBySrcSearchPop.equals('02')">
+					<if test="schSrcWrdBySrcSearchPop != null and !schSrcWrdBySrcSearchPop.equals('')">
+						AND SSI.SRC_UNO LIKE CONCAT('%', #{schSrcWrdBySrcSearchPop}, '%')
+					</if>
+				</when>
+				<!-- 조건없음 안함 = pass -->
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<!-- 검색조건 : 국내/해외 -->
+			<if test="schDmstcChkBySrcSearchPop != null and !schDmstcChkBySrcSearchPop.equalsIgnoreCase('ALL')">
+				AND SSI.DMSTC_YN = #{schDmstcChkBySrcSearchPop} /* 국내여부 */
+			</if>
+		</where>
+		ORDER BY
+			SSI.FST_INS_DT DESC
+	</select>
+
+	<!-- 컨텐츠  > 문서 등록 -->
+	<insert id="insertDocInfo" parameterType="camelcasemap">
+		<selectKey keyProperty="contUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'ST_CONT_INFO_SQ01'
+		</selectKey>
+		INSERT INTO ESG_DB.ST_CONT_INFO ( /* 콘텐츠정보 */
+			CONT_UID /* 콘텐츠채번 */
+			, CONT_UNO /* 콘텐츠고유번호 */
+			, CONT_KIND_CD /* 콘텐츠종류코드 */
+			, CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, CONT_NM /* 콘텐츠명 */
+			, PBLCN_DTE /* 발행일자 */
+			, PBLCN_GB_CD /* 발행구분코드 */
+			, PBLCN_YY /* 발행YY */
+			, PBLCN_MM /* 발행MM */
+			, PBLCN_DD /* 발행DD */
+			, DMSTC_YN /* 국내여부 */
+			, SPLY_LANG_CD /* 제공언어코드 */
+			, CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드 */
+			, CONT_TP_MCLSF_CD /* 콘텐츠유형중분류코드 */
+			, TASK_CLSF_CD /* 업무분류코드 */
+			, USE_YN /* 사용여부 */
+			, DP_YN /* 전시여부 */
+			, DP_TP_CD /* 전시유형코드 */
+			<if
+				test="dpSttDte != null and !dpSttDte.equals('') and dpSttHh != null and !dpSttHh.equals('') and dpSttMi != null and !dpSttMi.equals('')">
+				, DP_STT_DT /* 전시시작일 */
+			</if>
+			<if
+				test="dpEndDte != null and !dpSttDte.equals('') and dpEndDte != null and !dpEndDte.equals('') and dpEndMi != null and !dpEndMi.equals('')">
+				, DP_END_DT /* 전시종료일 */
+			</if>
+			, PIRD_STNG_USE_YN /* 기간설정사용여부 */
+			, DWNLD_PSBLTY_YN /* 다운로드가능여부 */
+			, SRCH_PSBLTY_YN /* 검색가능여부 */
+			, CONT_SUMRY /* 콘텐츠요약 */
+			, CONT_ST_CD /* 콘텐츠상태코드 */
+			, KWRD_ARRY /* 키워드배열 */
+			, RLS_TGT_CD_ARRY /* 공개대상코드배열 */
+			, SRC_UID /* 출처채번 */
+			, ATAC_FILE_UID /* 첨부파일채번 */
+			, FST_INS_DT /* 최초등록일 */
+			, FST_INS_ID /* 최초등록아이디 */
+			, LST_UPD_DT /* 최종수정일 */
+			, LST_UPD_ID /* 최종수정아이디 */
+			, SBJT_GB_CD /* 주제분류코드 */
+			, LINK_URL /* 링크주소(RSS피드) */
+		) VALUES (
+			#{contUid} /* 콘텐츠채번 */
+			, (CASE
+				WHEN #{contKindCd} = '10' /* 문서 */
+					THEN CASE
+						WHEN #{contRmthdCd} = '10' /* 컨텐츠업로드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CDIP')
+									ELSE ESG_DB.fnGetContUno('CDIA')
+							END
+						WHEN #{contRmthdCd} = '20' /* 아웃링크 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CDOP')
+									ELSE ESG_DB.fnGetContUno('CDOA')
+							END
+						WHEN #{contRmthdCd} = '30' /* 임베드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CDOP')
+									ELSE ESG_DB.fnGetContUno('CDOA')
+							END
+					END
+				WHEN #{contKindCd} = '20' /* 영상 */
+					THEN CASE
+						WHEN #{contRmthdCd} = '10' /* 컨텐츠업로드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMIP')
+									ELSE ESG_DB.fnGetContUno('CMIA')
+							END
+						WHEN #{contRmthdCd} = '20' /* 아웃링크 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMOP')
+									ELSE ESG_DB.fnGetContUno('CMOA')
+							END
+						WHEN #{contRmthdCd} = '30' /* 임베드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMOP')
+									ELSE ESG_DB.fnGetContUno('CMOA')
+							END
+					END
+				WHEN #{contKindCd} = '30' /* 영상 */
+					THEN CASE
+						WHEN #{contRmthdCd} = '10' /* 컨텐츠업로드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMIP')
+									ELSE ESG_DB.fnGetContUno('CMIA')
+							END
+						WHEN #{contRmthdCd} = '20' /* 아웃링크 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMOP')
+									ELSE ESG_DB.fnGetContUno('CMOA')
+							END
+						WHEN #{contRmthdCd} = '30' /* 임베드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CMOP')
+									ELSE ESG_DB.fnGetContUno('CMOA')
+							END
+					END
+				WHEN #{contKindCd} = '40' /* 뉴스 */
+					THEN CASE
+						WHEN #{contRmthdCd} = '10' /* 컨텐츠업로드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CNIP')
+									ELSE ESG_DB.fnGetContUno('CNIA')
+							END
+						WHEN #{contRmthdCd} = '20' /* 아웃링크 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CNOP')
+									ELSE ESG_DB.fnGetContUno('CNOA')
+							END
+						WHEN #{contRmthdCd} = '30' /* 임베드 */
+							THEN CASE
+								WHEN #{contTpLclsfCd} = '10' /* 삼일 */
+									THEN ESG_DB.fnGetContUno('CNOP')
+									ELSE ESG_DB.fnGetContUno('CNOA')
+							END
+					END
+			END) /* 콘텐츠고유번호 */
+			, #{contKindCd} /* 콘텐츠종류코드 */
+			, #{contRmthdCd} /* 콘텐츠등록방식코드 */
+			, #{contNm} /* 콘텐츠명 */
+			, CONCAT(#{pblcnYy}, #{pblcnMm}, #{pblcnDd}) /* 발행일자 */
+			, #{pblcnGbCd} /* 발행구분코드 */
+			, #{pblcnYy} /* 발행yy */
+			, #{pblcnMm} /* 발행mm */
+			, #{pblcnDd} /* 발행dd */
+			, #{dmstcYn} /* 국내여부 */
+			, #{splyLangCd} /* 제공언어코드 */
+			, #{contTpLclsfCd} /* 콘텐츠유형대분류코드 */
+			, #{contTpMclsfCd} /* 콘텐츠유형중분류코드 */
+			, #{taskClsfCd} /* 업무분류코드 */
+			, 'Y' /* 사용여부 useYn */
+			, (
+				CASE
+					WHEN #{dpTpCd} = '30' THEN 'N'
+					ELSE 'Y'
+				END
+			)	/* 전시여부 dpYn */
+			, #{dpTpCd} /* 전시유형코드 */
+			<if
+				test="dpSttDte != null and !dpSttDte.equals('') and dpSttHh != null and !dpSttHh.equals('') and dpSttMi != null and !dpSttMi.equals('')">
+				, CONVERT(datetime, CONVERT(varchar, CONCAT(#{dpSttDte}, ' ', #{dpSttHh}, ':', #{dpSttMi}), 102)) /* 전시시작일 */
+
+			</if>
+			<if
+				test="dpEndDte != null and !dpSttDte.equals('') and dpEndDte != null and !dpEndDte.equals('') and dpEndMi != null and !dpEndMi.equals('')">
+				, CONVERT(datetime, CONVERT(varchar, CONCAT(#{dpEndDte}, ' ', #{dpEndHh}, ':', #{dpEndMi}), 102)) /* 전시종료일 */
+			</if>
+			, #{pirdStngUseYn} /* 기간설정사용여부 pirdStngUseYn */
+			, #{dwnldPsbltyYn} /* 다운로드가능여부 */
+			, #{srchPsbltyYn} /* 검색가능여부 */
+			, #{contSumry} /* 콘텐츠요약 */
+			, '10' /* 콘텐츠상태코드 contStCd */
+			, #{tagKwrd} /* 키워드배열 */
+			, #{rlsTgtCds} /* 공개대상코드배열 */
+			, #{srcUid} /* 출처채번 */
+			, #{atacFileUid} /* 첨부파일채번 */
+			, GETDATE() /* 최초등록일 */
+			, #{fstInsId} /* 최초등록아이디 */
+			, GETDATE() /* 최종수정일 */
+			, #{lstUpdId} /* 최종수정아이디 */
+			, #{sbjtGbCd} /* 주제분류코드 */
+			, #{linkUrl} /* 링크주소(RSS피드) */
+		)
+	</insert>
+
+	<insert id="insertContApndInfo" parameterType="java.util.List">
+		INSERT INTO ESG_DB.ST_CONT_APND_INFO (
+			CONT_UID /* 콘텐츠채번 */
+			, CONT_KIND_CD /* 콘텐츠종류코드 */
+			, SEQ_NO /* 순번 */
+			, CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, LINK_URL /* 링크주소 */
+			, NWIN_YN /* 새창여부 */
+			, CONT_SPLY_TP_CD /* 콘텐츠제공유형코드 */
+			, VOD_QUNTY_HH /* 영상분량시 */
+			, VOD_QUNTY_MI /* 영상분량분 */
+			, VOD_QUNTY_SEC /* 영상분량초 */
+			, PAGE_CNT /* 페이지수 */
+			, LESN_NM /* 레슨명 */
+			, VOD_COMNT /* 영상설명 */
+			, ATAC_FILE_UID /* 첨부파일채번 */
+			, ATAC_DTL_UID
+			, FST_INS_DT /* 최초등록일 */
+			, FST_INS_ID /* 최초등록아이디 */
+			, LST_UPD_DT /* 최종수정일 */
+			, LST_UPD_ID /* 최종수정아이디 */
+		) VALUES
+		<foreach item="item" index="index" collection="list" separator=",">
+			(
+				#{item.contUid} /* 콘텐츠채번 */
+				, #{item.contKindCd} /* 콘텐츠종류코드 */
+				, #{item.seqNo} /* 순번 */
+				, #{item.contRmthdCd} /* 콘텐츠등록방식코드 */
+				, #{item.linkUrl} /* 링크주소 */
+				, #{item.nwinYn} /* 새창여부 */
+				, #{item.contSplyTpCd} /* 콘텐츠제공유형코드 */
+				, #{item.vodQuntyHh} /* 영상분량시 */
+				, #{item.vodQuntyMi} /* 영상분량분 */
+				, #{item.vodQuntySec} /* 영상분량초 */
+				, #{item.pageCnt} /* 페이지수 */
+				, #{item.lesnNm} /* 레슨명 */
+				, #{item.vodComnt} /* 영상설명 */
+				, #{item.atacFileUid} /* 첨부파일채번 */
+				, #{item.atacDtlUid} /* 첨부파일채번 */
+				, CURRENT_TIMESTAMP /* 최초등록일 */
+				, #{item.fstInsId} /* 최초등록아이디 */
+				, CURRENT_TIMESTAMP /* 최종수정일 */
+				, #{item.lstUpdId} /* 최종수정아이디 */
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertContTpicInfo" parameterType="camelcasemap">
+		INSERT INTO ESG_DB.DP_CONT_TPIC_INFO (
+			CONT_UID
+			, TPIC_UID
+			, DP_YN
+			, DP_SEQ
+			, DP_FIX_YN
+			, FST_INS_ID
+			, LST_UPD_ID
+		) VALUES (
+			#{contUid}
+			, #{tpicUid}
+			, 'Y'
+			, 999
+			, 'N'
+			, #{fstInsId}
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<!-- 콘텐츠정보 조회 -->
+	<select id="selectContentView" parameterType="int" resultType="camelcasemap">
+		SELECT
+			SCI.CONT_UID /* 콘텐츠채번 */
+			, SCI.CONT_KIND_CD /* 콘텐츠종류코드 */
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD', SCI.CONT_KIND_CD) AS CONT_KIND_CD_NM /* 콘텐츠종류코드명 */
+			, SCI.CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, ESG_DB.fnCommCdNm('CONT_RMTHD_CD', SCI.CONT_RMTHD_CD) AS CONT_RMTHD_CD_NM /* 콘텐츠등록방식코드명 */
+			, SCI.CONT_UNO /* 콘텐츠고유번호 */
+			, SCI.CONT_NM /* 콘텐츠명 */
+			, SCI.CONT_ST_CD /* 콘텐츠상태코드 */
+			, SCI.SRC_UID /* 출처채번 */
+			, SSI.SRC_NM /* 출처 */
+			, SSI.DMSTC_YN
+			, CASE SCI.DMSTC_YN
+				WHEN 'Y' THEN N'국내'
+				WHEN 'N' THEN N'해외'
+			END AS DMSTC_YN_NM /* 국내여부명 */
+			, SCI.SPLY_LANG_CD /* 제공언어코드 */
+			, SCI.PBLCN_GB_CD /* 자 */
+			, SCI.PBLCN_YY /* 발행YY */
+			, SCI.PBLCN_MM /* 발행MM */
+			, SCI.PBLCN_DD /* 발행DD */
+			, ESG_DB.fnCommCdNm('CONT_TP_LCLSF_CD', SCI.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_CD_NM /* 콘텐츠유형대분류코드명 */
+			, ESG_DB.fnCommCdNm('CONT_TP_MCLSF_CD', SCI.CONT_TP_MCLSF_CD) AS CONT_TP_MCLSF_CD_NM /* 콘텐츠유형중분류코드명 */
+			, ESG_DB.fnCommCdNm('TASK_CLSF_CD', SCI.TASK_CLSF_CD) AS TASK_CLSF_CD_NM /* 업무분류코드명 */
+			, ESG_DB.fnCommCdNm('SBJT_GB_CD', SCI.SBJT_GB_CD) AS SBJT_GB_CD_NM /* 주제분류코드명 */
+			, SCI.DP_TP_CD /* 전시유형코드 */
+			, SCI.PIRD_STNG_USE_YN /* 기간설정사용여부 */
+			, FORMAT(SCI.DP_STT_DT, 'yyyy.MM.dd HH:mm') AS DP_STT_DT /* 전시시작일시 */
+			, FORMAT(SCI.DP_END_DT, 'yyyy.MM.dd HH:mm') AS DP_END_DT /* 전시종료일시 */
+			, SCI.RLS_TGT_CD_ARRY /* 공개대상코드배열 */
+			, SCI.DWNLD_PSBLTY_YN /* 다운로드가능여부 */
+			, SCI.SRCH_PSBLTY_YN /* 검색가능여부 */
+			, SCI.KWRD_ARRY /* 키워드배열 */
+		    , SCI.CONT_SUMRY
+			, SCI.ATAC_FILE_UID
+			, SCI.LINK_URL
+			, (
+				SELECT
+					CONCAT('https://samilesg.blob.core.windows.net', CNVN_FILE_FPATH)
+				FROM
+					ESG_DB.CM_ATAC_DTL_INFO
+				WHERE
+					ATAC_FILE_UID = SCI.ATAC_FILE_UID
+					AND ATAC_TP_CD = '40'
+			) AS THUMBNAIL
+		FROM
+			ESG_DB.ST_CONT_INFO SCI
+			LEFT JOIN ESG_DB.ST_SRC_INFO SSI ON
+				SSI.SRC_UID = SCI.SRC_UID
+		<where>
+			SCI.USE_YN = 'Y'
+			AND SCI.CONT_TP_LCLSF_CD <![CDATA[<>]]> '60'
+			AND SCI.CONT_UID = #{contUid}
+		</where>
+		ORDER BY
+			SCI.CONT_UID DESC
+	</select>
+
+	<!-- 콘텐츠추가정보 조회 -->
+	<select id="selectApndContentList" parameterType="int" resultType="camelcasemap">
+		SELECT
+			SCAI.CONT_UID
+			, SCAI.CONT_KIND_CD
+			, SCAI.SEQ_NO
+			, SCAI.CONT_RMTHD_CD
+			, SCAI.LINK_URL
+			, SCAI.CONT_SPLY_TP_CD
+			, ESG_DB.fnCommCdNm('CONT_SPLY_TP_CD', SCAI.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_CD_NM
+			, SCAI.PAGE_CNT
+			, SCAI.VOD_QUNTY_HH
+			, SCAI.VOD_QUNTY_MI
+			, SCAI.VOD_QUNTY_SEC
+			, SCAI.LESN_NM
+			, SCAI.VOD_COMNT
+			, SCAI.ATAC_FILE_UID
+		    , SCAI.ATAC_DTL_UID
+			, CADI.ORGNL_FILE_NM
+			, CASE
+				WHEN CADI.CNVN_FILE_FPATH IS NULL THEN NULL
+				ELSE CONCAT('https://samilesg.blob.core.windows.net', CADI.CNVN_FILE_FPATH)
+			END AS CNVN_FILE_FPATH
+		     , CADI.TUMNL_FPATH
+			, (
+				SELECT
+					CONCAT('https://samilesg.blob.core.windows.net', CNVN_FILE_FPATH)
+				FROM
+					ESG_DB.CM_ATAC_DTL_INFO
+				WHERE
+					ATAC_FILE_UID = SCAI.ATAC_FILE_UID
+					AND ATAC_TP_CD = '40'
+			) AS THUMBNAIL
+		FROM
+			ESG_DB.ST_CONT_APND_INFO SCAI
+			LEFT JOIN ESG_DB.CM_ATAC_DTL_INFO CADI ON
+				CADI.ATAC_FILE_UID = SCAI.ATAC_FILE_UID
+-- 				AND CADI.ATAC_DTL_UID = SCAI.ATAC_DTL_UID
+				AND CADI.ATAC_TP_CD <![CDATA[<>]]> '40'
+		<where>
+			SCAI.CONT_UID = #{contUid}
+		</where>
+		ORDER BY
+			SCAI.SEQ_NO ASC
+	</select>
+
+	<!-- 콘텐츠 상세 토픽 목록 조회 -->
+	<select id="selectContentTopicList" parameterType="int" resultType="camelcasemap">
+		SELECT
+			TPIC_INFO.CONT_UID
+			, TPIC_INFO.TPIC_UID
+			, TPIC_INFO.DP_SEQ
+			, FORMAT(DATEADD(HOUR, 9, TPIC_INFO.FST_INS_DT), 'yyyy.MM.dd HH:mm:ss') AS FST_INS_DT
+			, FORMAT(DATEADD(HOUR, 9, TPIC_INFO.LST_UPD_DT), 'yyyy.MM.dd HH:mm:ss') AS LST_UPD_DT
+		FROM
+			ESG_DB.DP_CONT_TPIC_INFO TPIC_INFO
+		WHERE
+			TPIC_INFO.DP_YN = 'Y'
+			AND TPIC_INFO.CONT_UID = #{contUid}
+		ORDER BY
+			TPIC_INFO.TPIC_UID, DP_SEQ
+	</select>
+
+	<!-- 첨부파일 목록 조회 -->
+	<select id="selectAtacFileList" parameterType="java.util.List" resultType="camelcasemap">
+		SELECT
+			ATAC_FILE_UID /* 첨부파일채번 */
+			, CNVN_FILE_FPATH /* 변환파일전체경로 */
+		FROM
+			ESG_DB.CM_ATAC_DTL_INFO
+		WHERE
+			ATAC_FILE_UID IN (
+				SELECT
+					ATAC_FILE_UID /* 대표이미지 */
+				FROM
+					ESG_DB.ST_CONT_INFO
+				WHERE
+					CONT_UID IN(
+						<foreach collection="list" item="item" separator=",">
+							#{item}
+						</foreach>
+					) /* 콘텐츠채번 */
+
+				UNION ALL
+
+				SELECT
+					ATAC_FILE_UID /* 컨텐츠 첨부파일 */
+				FROM
+					ESG_DB.ST_CONT_APND_INFO
+				WHERE
+					CONT_UID IN (
+						<foreach collection="list" item="item" separator=",">
+							#{item}
+						</foreach>
+					) /* 콘텐츠채번 */
+			)
+	</select>
+
+	<!-- 콘텐츠정보(ST_CONT_INFO) 삭제 -->
+	<delete id="deleteStContInfo" parameterType="java.util.List">
+		DELETE FROM ESG_DB.ST_CONT_INFO
+		WHERE CONT_UID IN (
+			<foreach collection="list" item="item" separator=",">
+				#{item}
+			</foreach>
+		)
+	</delete>
+
+	<!-- 콘텐츠부가정보(ST_CONT_APND_INFO) 삭제 -->
+	<delete id="deleteStContApndInfo" parameterType="java.util.List">
+		DELETE FROM ESG_DB.ST_CONT_APND_INFO
+		WHERE CONT_UID IN (
+			<foreach collection="list" item="item" separator=",">
+				#{item}
+			</foreach>
+		)
+	</delete>
+	<delete id="deleteStContApndInfoOne" parameterType="java.util.List">
+		DELETE FROM ESG_DB.ST_CONT_APND_INFO
+		WHERE CONT_UID = #{contUid} AND SEQ_NO = #{seqNo}
+	</delete>
+
+	<!-- 콘텐츠토픽정보(DP_CONT_TPIC_INFO) 삭제 -->
+	<delete id="deleteDpContTpicInfo" parameterType="java.util.List">
+		DELETE FROM ESG_DB.DP_CONT_TPIC_INFO
+		WHERE CONT_UID IN (
+			<foreach collection="list" item="item" separator=",">
+				#{item}
+			</foreach>
+		)
+	</delete>
+
+	<!-- 첨부상세정보(CM_ATAC_DTL_INFO) 삭제 -->
+	<delete id="deleteCmAtacDtlInfo" parameterType="java.util.List">
+		DELETE FROM ESG_DB.CM_ATAC_DTL_INFO
+		WHERE ATAC_FILE_UID IN (
+			<foreach collection="list" item="item" separator=",">
+				#{item.atacFileUid}
+			</foreach>
+		) /* 첨부파일채번 */
+	</delete>
+
+	<!-- 컨텐츠  > 문서 수정 -->
+	<insert id="updateDocInfo" parameterType="camelcasemap">
+		UPDATE ESG_DB.ST_CONT_INFO
+		SET
+			CONT_NM = #{contNm}
+			, CONT_ST_CD = #{contStCd}
+			, SRC_UID = #{srcUid}
+			, DMSTC_YN = #{dmstcYn}
+			, SPLY_LANG_CD = #{splyLangCd}
+			, PBLCN_GB_CD = #{pblcnGbCd}
+			, PBLCN_YY = #{pblcnYy}
+			, PBLCN_MM = #{pblcnMm}
+			, PBLCN_DD = #{pblcnDd}
+			, PBLCN_DTE = CONCAT(#{pblcnYy}, #{pblcnMm}, #{pblcnDd})
+			, DP_TP_CD = #{dpTpCd}
+			, DP_YN = (
+				CASE
+					WHEN #{dpTpCd} = '30' THEN 'N'
+					ELSE 'Y'
+				END
+			)
+			, RLS_TGT_CD_ARRY = #{rlsTgtCds}
+			, PIRD_STNG_USE_YN = #{pirdStngUseYn}
+			<if test="pirdStngUseYn != null and pirdStngUseYn.equalsIgnoreCase('N')">
+				, DP_STT_DT = NULL
+				, DP_END_DT = NULL
+			</if>
+			<if test="pirdStngUseYn != null and pirdStngUseYn.equalsIgnoreCase('Y')">
+				<if test="dpSttDte != null and !dpSttDte.equals('') and dpSttHh != null and !dpSttHh.equals('') and dpSttMi != null and !dpSttMi.equals('')">
+					, DP_STT_DT = CONVERT(datetime, CONVERT(varchar, CONCAT(#{dpSttDte}, ' ', #{dpSttHh}, ':', #{dpSttMi}), 102))
+				</if>
+				<if test="dpEndDte != null and !dpSttDte.equals('') and dpEndDte != null and !dpEndDte.equals('') and dpEndMi != null and !dpEndMi.equals('')">
+				, DP_END_DT = CONVERT(datetime, CONVERT(varchar, CONCAT(#{dpEndDte}, ' ', #{dpEndHh}, ':', #{dpEndMi}), 102))
+			</if>
+			</if>
+			, DWNLD_PSBLTY_YN = #{dwnldPsbltyYn}
+			, KWRD_ARRY = #{tagKwrd}
+			, SRCH_PSBLTY_YN = #{srchPsbltyYn}
+			, CONT_SUMRY = #{contSumry}
+			, ATAC_FILE_UID = #{atacFileUid}
+			, LST_UPD_DT = GETDATE()
+			, LST_UPD_ID = #{lstUpdId}
+			, LINK_URL = #{linkUrl}
+		WHERE
+			CONT_UID = #{contUid}
+	</insert>
+
+	<insert id="updateContApndInfo" parameterType="camelcasemap">
+		UPDATE ESG_DB.ST_CONT_APND_INFO
+		SET
+			LINK_URL = #{linkUrl}
+			, CONT_SPLY_TP_CD = #{contSplyTpCd} /* 콘텐츠제공유형코드 */
+			, VOD_QUNTY_HH = #{vodQuntyHh} /* 영상분량시 */
+			, VOD_QUNTY_MI = #{vodQuntyMi} /* 영상분량분 */
+			, VOD_QUNTY_SEC = #{vodQuntySec} /* 영상분량초 */
+			, PAGE_CNT= #{pageCnt} /* 페이지수 */
+			, LESN_NM = #{lesnNm} /* 레슨명 */
+			, VOD_COMNT = #{vodComnt} /* 영상설명 */
+			, LST_UPD_DT = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_UPD_ID = #{lstUpdId} /* 최종수정아이디 */
+		WHERE
+			CONT_UID = #{contUid}
+			AND SEQ_NO = #{seqNo}
+	</insert>
+
+	<delete id="deleteContTpicInfo" parameterType="int">
+		DELETE FROM ESG_DB.DP_CONT_TPIC_INFO
+		WHERE CONT_UID = #{contUid}
+	</delete>
+
+
+
+
+
+
+
+	<!-- 문서 · 영상 관리 수정 -->
+	<update id="updateDocumentView" parameterType="camelcasemap">
+		UPDATE
+			ST_CONT_INFO /* 콘텐츠정보 */
+		SET
+			CONT_UNO           = #{contUno} /* 콘텐츠고유번호 */
+			, CONT_KIND_CD     = #{contKindCd} /* 콘텐츠종류코드 */
+			, CONT_RMTHD_CD    = #{contRmthdCd} /* 콘텐츠등록방식코드 */
+			, CONT_NM          = #{contNm} /* 콘텐츠명 */
+			, PBLCN_DTE        = #{pblcnDte} /* 발행일자 */
+			, PBLCN_YY         = #{pblcnYy} /* 발행YY */
+			, PBLCN_MM         = #{pblcnMm} /* 발행MM */
+			, PBLCN_DD         = #{pblcnDd} /* 발행DD */
+			, DMSTC_YN         = #{dmstcYn} /* 국내여부 */
+			, SPLY_LANG_CD     = #{splyLangCd} /* 제공언어코드 */
+			, CONT_TP_LCLSF_CD = #{contTpLclsfCd} /* 콘텐츠유형대분류코드 */
+			, CONT_TP_MCLSF_CD = #{contTpMclsfCd} /* 콘텐츠유형중분류코드 */
+			, TASK_CLSF_CD     = #{taskClsfCd} /* 업무분류코드 */
+			, USE_YN           = #{useYn} /* 사용여부 */
+			, DP_YN            = #{dpYn} /* 전시여부 */
+			, DP_TP_CD         = #{dpTpCd} /* 전시유형코드 */
+			, DP_STT_DT        = #{dpSttDt} /* 전시시작일 */
+			, DP_END_DT        = #{dpEndDt} /* 전시종료일 */
+			, PIRD_STNG_USE_YN = #{pirdStngUseYn} /* 기간설정사용여부 */
+			, DWNLD_PSBLTY_YN  = #{dwnldPsbltyYn} /* 다운로드가능여부 */
+			, SRCH_PSBLTY_YN   = #{srchPsbltyYn} /* 검색가능여부 */
+			, CONT_SUMRY       = #{contSumry} /* 콘텐츠요약 */
+			, CONT_ST_CD       = #{contStCd} /* 콘텐츠상태코드 */
+			, KWRD_ARRY        = #{kwrdArry} /* 키워드배열 */
+			, RLS_TGT_CD_ARRY  = #{rlsTgtCdArry} /* 공개대상코드배열 */
+			, SRC_UID          = #{srcUid} /* 출처채번 */
+			, ATAC_FILE_UID    = #{atacFileUid} /* 첨부파일채번 */
+			, LST_UPD_DT       = CURRENT_TIMESTAMP /* 최종수정일 */
+			, LST_UPD_ID       = #{lstUpdId} /* 최종수정아이디 */
+		WHERE
+			CONT_UID = #{contUid} /* 콘텐츠채번 */
+	</update>
+
+	<!-- 문서 · 영상 관리 삭제 -->
+	<delete id="deleteDocumentView" parameterType="camelcasemap">
+		DELETE
+		FROM
+			ST_CONT_INFO /* 콘텐츠정보 */
+		WHERE
+			CONT_UID = #{contUid} /* 콘텐츠채번 */
+	</delete>
+
+</mapper>

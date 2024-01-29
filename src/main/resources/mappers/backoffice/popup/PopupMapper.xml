@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.popup.mapper.PopupMapper">
+
+	<!-- 콘텐츠정보 목록 조회 -->
+	<select id="selectContentList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SCI.CONT_UID /* 콘텐츠채번 */
+			, SCI.CONT_KIND_CD /* 콘텐츠종류코드 */
+			, ESG_DB.fnCommCdNm('CONT_KIND_CD', SCI.CONT_KIND_CD) AS CONT_KIND_CD_NM /* 콘텐츠종류코드명 */
+			, SCI.CONT_UNO /* 콘텐츠고유번호 */
+			, SCI.CONT_NM /* 콘텐츠명 */
+			, SCI.SRC_UID /* 출처채번 */
+			, SSI.SRC_NM /* 출처 */
+			, SCI.SPLY_LANG_CD /* 제공언어코드 */
+			, ESG_DB.fnCommCdNm('SPLY_LANG_CD', SCI.SPLY_LANG_CD) AS SPLY_LANG_CD_NM /* 제공언어코드명 */
+			, SCI.CONT_TP_LCLSF_CD /* 콘텐츠유형대분류코드 */
+			, ESG_DB.fnCommCdNm('CONT_TP_LCLSF_CD', SCI.CONT_TP_LCLSF_CD) AS CONT_TP_LCLSF_CD_NM /* 콘텐츠유형대분류코드명 */
+			, SCI.CONT_TP_MCLSF_CD /* 콘텐츠유형중분류코드 */
+			, ESG_DB.fnCommCdNm('CONT_TP_MCLSF_CD', SCI.CONT_TP_MCLSF_CD) AS CONT_TP_MCLSF_CD_NM /* 콘텐츠유형중분류코드명 */
+			, SCI.TASK_CLSF_CD /* 업무분류코드 */
+			, ESG_DB.fnCommCdNm('TASK_CLSF_CD', SCI.TASK_CLSF_CD) AS TASK_CLSF_CD_NM /* 업무분류코드명 */
+			, SCI.SBJT_GB_CD /* 주제분류코드 */
+			, ESG_DB.fnCommCdNm('SBJT_GB_CD', SCI.SBJT_GB_CD) AS SBJT_GB_CD_NM /* 주제분류코드명 */
+			, SCI.CONT_RMTHD_CD /* 콘텐츠등록방식코드 */
+			, ESG_DB.fnCommCdNm('CONT_RMTHD_CD', SCI.CONT_RMTHD_CD) AS CONT_RMTHD_CD_NM /* 콘텐츠등록방식코드명 */
+			, SCAI.CONT_SPLY_TP_CD /* 콘텐츠제공유형코드 */
+			, ESG_DB.fnCommCdNm('CONT_SPLY_TP_CD', SCAI.CONT_SPLY_TP_CD) AS CONT_SPLY_TP_CD_NM /* 콘텐츠제공유형코드명 */
+		FROM
+			ESG_DB.ST_CONT_INFO SCI
+			LEFT JOIN ESG_DB.ST_CONT_APND_INFO SCAI
+				ON SCAI.CONT_UID = SCI.CONT_UID
+			LEFT JOIN ESG_DB.ST_SRC_INFO SSI
+				ON SSI.SRC_UID = SCI.SRC_UID
+		<where>
+			SCI.USE_YN = 'Y'
+
+			<!-- 검색조건 : 콘텐츠명/번호 -->
+			<choose>
+				<!-- 콘텐츠명 -->
+				<when test="schContentOpt != null and schContentOpt.equals('01')">
+					<if test="schContentWrd != null and !schContentWrd.equals('')">
+						AND SCI.CONT_NM LIKE CONCAT('%', #{schContentWrd}, '%')
+					</if>
+				</when>
+				<!-- 콘텐츠번호 -->
+				<when test="schContentOpt != null and schContentOpt.equals('02')">
+					<if test="schContentWrd != null and !schContentWrd.equals('')">
+						AND SCI.CONT_UNO LIKE CONCAT('%', #{schContentWrd}, '%')
+					</if>
+				</when>
+				<!-- 조건없음 안함 = pass -->
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<!-- 검색조건 : 콘텐츠종류 -->
+			<if test="schContKindOpt != null and !schContKindOpt.equalsIgnoreCase('ALL')">
+				<if test="schContKindOpt == '10'">
+					AND SCI.CONT_KIND_CD <![CDATA[=]]> #{schContKindOpt}
+				</if>
+				<if test="schContKindOpt == '20'">
+					AND SCI.CONT_KIND_CD IN ('20', '30')
+				</if>
+			</if>
+
+			<!-- 검색조건 : 콘텐츠등록방식 -->
+			<if test="schContRmthdOpt != null and !schContRmthdOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_RMTHD_CD <![CDATA[=]]> #{schContRmthdOpt}
+			</if>
+
+			<!-- 검색조건 : 출처명/번호 -->
+			<choose>
+				<!-- 출처명 -->
+				<when test="schSrcOpt != null and schSrcOpt.equals('01')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND SCI.SRC_UID IN (
+							SELECT SRC_UID
+							FROM ESG_DB.ST_SRC_INFO
+							WHERE SRC_NM LIKE CONCAT('%', #{schSrcWrd}, '%')
+						)
+					</if>
+				</when>
+				<!-- 출처번호 -->
+				<when test="schSrcOpt != null and schSrcOpt.equals('02')">
+					<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+						AND SCI.SRC_UID IN (
+							SELECT SRC_UID
+							FROM ESG_DB.ST_SRC_INFO
+							WHERE SRC_UNO LIKE CONCAT('%', #{schSrcWrd}, '%')
+						)
+					</if>
+				</when>
+				<when test="schSrcOpt != null and schSrcOpt.equals('00')">
+					<if test="schSrcUid != null and !schSrcUid.equals('')">
+						AND SCI.SRC_UID = #{schSrcUid}
+					</if>
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 국내여부 -->
+			<if test="schDmstcChk != null and !schDmstcChk.equalsIgnoreCase('ALL')">
+				AND SCI.DMSTC_YN <![CDATA[=]]> #{schDmstcChk}
+			</if>
+
+			<!-- 검색조건 : 유형대분류 -->
+			<if test="schContTpLclsfOpt != null and !schContTpLclsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_TP_LCLSF_CD <![CDATA[=]]> #{schContTpLclsfOpt}
+			</if>
+
+			<!-- 검색조건 : 유형중분류 -->
+			<if test="schContTpMclsfOpt != null and !schContTpMclsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.CONT_TP_MCLSF_CD <![CDATA[=]]> #{schContTpMclsfOpt}
+			</if>
+
+			<!-- 검색조건 : 업무 분류 -->
+			<if test="schTaskClsfOpt != null and !schTaskClsfOpt.equalsIgnoreCase('ALL')">
+				AND SCI.TASK_CLSF_CD <![CDATA[=]]> #{schTaskClsfOpt}
+			</if>
+
+			<!-- 검색조건 : 주제 분류 -->
+			<if test="schTopicOpt != null and !schTopicOpt.equalsIgnoreCase('ALL')">
+				AND SCI.SBJT_GB_CD <![CDATA[=]]> #{schTopicOpt}
+			</if>
+
+			<!-- 검색조건 : 컨텐츠번호다중 -->
+			<if test="schContUnos != null and !schContUnos.equalsIgnoreCase('')">
+				AND SCI.CONT_UNO IN (
+					<foreach item="contUno" index="index" collection="schContUnoList" separator=","
+						open="" close="">
+						#{contUno}
+					</foreach>
+				)
+			</if>
+
+			<!-- NOT IN 조건 : 토픽 -->
+			<if test="notInTpicUid != null and !notInTpicUid.equalsIgnoreCase('')">
+				AND SCI.CONT_UID NOT IN (
+					SELECT CONT_UID
+					FROM ESG_DB.DP_CONT_TPIC_INFO
+					WHERE TPIC_UID = #{notInTpicUid}
+				)
+			</if>
+		</where>
+		ORDER BY
+			SCI.CONT_UID DESC
+	</select>
+
+</mapper>

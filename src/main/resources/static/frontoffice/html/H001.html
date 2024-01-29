@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>삼일 ESG 플랫폼</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/pwc.css" />
+    <link rel="stylesheet" href="../css/slick.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+    <script type="text/javascript" src="../js/slick.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#">본문 바로가기</a>
+        <a href="#">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <div class="head-top inner">
+                <h1 class="logo"><a href="javascript:void(0);"><span class="blind">Samil ESG</span></a></h1>
+                <ul class="util">
+                    <li><a href="">회원가입</a></li>
+                    <li><a href="">로그인</a></li>
+                    <li><a href="">마이페이지</a></li>
+                    <li><a href="">About Us</a></li>
+                </ul>
+                <nav id="nav" class="menu-wrap">
+                    <h2 class="blind">전체메뉴 목록</h2>
+                    <ul class="menu">
+                        <li class=""><a href="javascript:void(0);" class="depth1">ESG 진단 &middot; 계획</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">ESG 자가진단</a></li>
+                                <li><a href="javascript:void(0);">ESG 경영 가이드</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">ESG 실행</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">환경</a></li>
+                                <li><a href="javascript:void(0);">사회 </a></li>
+                                <li><a href="javascript:void(0);">거버넌스</a></li>
+                                <li><a href="javascript:void(0);">금융</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">ESG 공시 &middot; 인증</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">ESG 공시</a></li>
+                                <li><a href="javascript:void(0);">ESG 평가</a></li>
+                                <li><a href="javascript:void(0);">ESG 인증</a></li> 
+                            </ul>
+                        </li>
+                        <li class=""><a href="javascript:void(0);" class="depth1">ESG 자료 &middot; 동향</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">삼일 인사이트</a></li> 
+                                <li><a href="javascript:void(0);">ESG 자료</a></li> 
+                                <li><a href="javascript:void(0);">ESG 뉴스</a></li> 
+                                <li><a href="javascript:void(0);">ESG 교육</a></li> 
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="search-wrap"><button type="button" class="btn-search"><span>Search</span></button></div>
+                <div class="m-nav-wrap">
+                    <button type="button" class="btn-menu"><span class="blind">전체메뉴</span></button>
+                    <button type="button" class="btn-menu-close"><span class="blind">전체메뉴닫기</span></button>
+                    <div class="mo-menu-wrap">
+                        <div class="head-wrap">
+                            <div class="head-btn-wrap">
+                                <!-- <button type="button" class="btn-primary"><span>로그인</span></button> -->
+                                <button type="button" class="btn-whiteline"><span>Q&amp;A</span></button>
+                                <button type="button" class="btn-primary arrow"><span>마이페이지</span></button>
+                            </div>
+                            <!--//head-btn-wrap-->
+                            <ul class="m-util">
+                                <li><a href="javascript:void(0);">About Us</a></li>
+                                <li><a href="javascript:void(0);">로그아웃</a></li>
+                            </ul>
+                        </div>
+                        <!--//head-wrap-->
+                        <div class="m-nav">
+                            <ul class="">
+                                <li class=""><a href="javascript:void(0);" class="depth1">ESG 진단 · 계획</a>
+                                    <ul class="depth2-wrap">
+                                        <li><a href="javascript:void(0);">ESG 자가진단</a></li>
+                                        <li><a href="javascript:void(0);">ESG 경영 가이드</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);" class="depth1">ESG 실행</a>
+                                    <ul class="depth2-wrap">
+                                        <li><a href="javascript:void(0);">환경</a></li>
+                                        <li><a href="javascript:void(0);">사회 </a></li>
+                                        <li><a href="javascript:void(0);">거버넌스</a></li>
+                                        <li><a href="javascript:void(0);">금융</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);" class="depth1">ESG 공시 · 인증</a>
+                                    <ul class="depth2-wrap">
+                                        <li><a href="javascript:void(0);">ESG 공시</a></li>
+                                        <li><a href="javascript:void(0);">ESG 평가</a></li>
+                                        <li><a href="javascript:void(0);">ESG 인증</a></li> 
+                                    </ul>
+                                </li>
+                                <li class=""><a href="javascript:void(0);" class="depth1">ESG 자료 · 동향</a>
+                                    <ul class="depth2-wrap">
+                                        <li><a href="javascript:void(0);">삼일 인사이트</a></li> 
+                                        <li><a href="javascript:void(0);">ESG 자료</a></li> 
+                                        <li><a href="javascript:void(0);">ESG 뉴스</a></li> 
+                                        <li><a href="javascript:void(0);">ESG 교육</a></li> 
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-close-wrap">
+                    <button type="button" class="btn-close"><span class="blind">닫기</span></button>
+                </div>
+            </div>
+            <!-- //head-top -->
+        </header>
+        <!--// header -->
+        <!-- container -->
+        <div class="container">
+            <div class="visult"><img src="../../frontoffice/img/common/visual_main.png" alt=""></div>
+            <div class="total-search-wrap"> 
+                <div class="total-search-inner">
+                    <strong class="tit">필요한 정보가 있으신가요?</strong>
+                    <form action="" class="wide">
+                        <fieldset>
+                            <legend>통합검색</legend>
+                            <div class="total-search">
+                                <!-- 20230826 디자인 재반영 -->
+                                <div class="select-box-wrap">
+                                    <button type="button">통합검색</button>
+                                    <div class="select-list">
+                                        <ul>
+                                            <li><a href="javascript:void(0);" class="checked">통합검색</span></a></li><!--선택시 checked-->
+                                            <li><a href="javascript:void(0);">제목</a></li>
+                                            <li><a href="javascript:void(0);">내용</a></li>
+                                            <li><a href="javascript:void(0);">출처</a></li>
+                                            <li><a href="javascript:void(0);">키워드 선택</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- //select-wrap -->
+                                <input type="text" class="txt" placeholder="검색어를 입력하세요">
+                                <button type="button" class="btn-total-search"><span class="blind">검색</span></button>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <div class="auto-layer" style="display: none;"><!--  default "display: block; 제거 혹은 none 처리  -->
+                        <div class="auot-list">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis"> default "display: block; 제거 혹은 none 처리</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis">ESG 공시</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis">한줄이상 말줄임 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis">공급망 관리</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis">공급망 관리</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="word ellipsis">공급망 관리</span>
+                                        <span class="date">10.03</span>
+                                    </a>
+                                    <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div  class="layer-foot">
+                            <button type="button"><span class="line">전체 삭제</span></button>
+                            <button type="button"><span>최근 검색어 <i class="line">끄기</i></span></button>
+                        </div>
+                        <!-- /layer-foot -->
+                    </div>
+                    <div class="select-box-wrap">
+                        <button type="button">
+                            <span class="num">1</span>
+                            <span class="txt">ISSB</span>
+                        </button>
+                        <div class="select-list">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0);" class="checked"><!--선택시 checked-->
+                                        <span class="num">1</span>
+                                        <span class="txt">ISSB</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="num">2</span>
+                                        <span class="txt">ESG 공시</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="num">3</span>
+                                        <span class="txt">GRI</span>
+                                     </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="num">4</span>
+                                        <span class="txt">EU Taxonomy</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="num">4</span>
+                                        <span class="txt">공급망 관리</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- //select-wrap -->
+                </div>
+                <!-- //total-search -->
+            </div>
+            <!-- //total-search-wrap -->
+            <div class="quick-menu">
+                <ul class="inner">
+                    <li><a href="javascript:void(0);">삼일 ESG<br> 플랫폼 소개</a></li>
+                    <li><a href="javascript:void(0);">ESG<br> 경영 자가진단</a></li>
+                    <li><a href="javascript:void(0);">GRI<br> 해설 및 사례</a></li>
+                    <li><a href="javascript:void(0);">삼일 ESG<br> 세미나 &amp; 교육</a></li>
+                </ul>
+            </div>
+            <!-- content -->
+            <div id="content" class="main-wrap">
+                <div class="article-wrap innergap">
+                    <section class="news-wrap left-area">
+                        <h3 class="tit">ESG News</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="list-wrap">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="thumbnail"><img src="../../frontoffice/img/temp/img_01.png" alt="ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로"></span>
+                                        <strong class="tit ellipsis">ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로</strong>
+                                        <p class="desc">국제지속성가능성기준위원회(ISSB)가 환경·사회·지배구조(ESG) 첫 번째 공시기준을 확정 발표했다. 의무 공시는 2025년부터다. 다만 기업들이 부담을 호소했던 Scope3 말줄임 3줄처리 말줄임 3줄처리말줄임 3줄처리말줄임 3줄처리말줄임 3줄처리말줄임 3줄처리</p>
+                                        <p class="date">2023-06-30</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="thumbnail"><img src="../../frontoffice/img/temp/img_02.png" alt="ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로"></span>
+                                        <strong class="tit ellipsis">ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로</strong>
+                                        <p class="date">2023-06-30</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <span class="thumbnail"><img src="../../frontoffice/img/temp/img_02.png" alt="ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로"></span>
+                                        <strong class="tit ellipsis">ISSB, 글로벌 ESG 공시 최종안 발표.. 25년 적용키로</strong>
+                                        <p class="date">2023-06-30</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    <!-- //news-wrap -->
+                    <section class="calendar-wrap right-area">
+                        <h3 class="tit">ESG Calendar</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="tab-wrap">
+                            <ul class="tab-list">
+                                <li><button type="button" class="current"><span>2023.05</span></button></li>
+                                <li><button type="button" class=""><span>2023.06</span></button></li>
+                                <li><button type="button" class=""><span>2023.07</span></button></li>
+                            </ul>
+                            <div class="tab-cont">
+                                <div class="cont calendar-list current">
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0);" class="top">
+                                                <span class="month">6월</span>
+                                                <span class="badge">발표</span>
+                                                <p class="subject">ISSB ESG 공시 최종안 발표 예정</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="month">2일</span>
+                                                <span class="badge">교육</span>
+                                                <p class="subject">대한상의 ESG 아카데미 [Advance] 교육과정</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="month">3일</span>
+                                                <span class="badge">행사</span>
+                                                <p class="subject">ESG 공시기준 제정과 기업의 대응 전략 세미나</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="month">15일</span>
+                                                <span class="badge">행사</span>
+                                                <p class="subject">한국 생산성본부 산업별 온라인 ESG 세미나</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="month">28일</span>
+                                                <span class="badge">행사</span>
+                                                <p class="subject">제 24차 대한상의 ESG 경영 온라인 포럼</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="month">30일</span>
+                                                <span class="badge">교육</span>
+                                                <p class="subject">대한상의 ESG 아카데미 [Advance] 교육과정</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- //cont calendar-list -->
+                                <div class="cont">
+                                    2
+                                </div>
+                                <div class="cont">
+                                    3
+                                </div>
+                            </div>
+                            <!-- //tab-cont -->
+                        </div>
+                    </section>
+                    <!-- //calendar-wrap -->
+                </div>
+                <!-- //article-wrap -->
+                <div class="info-wrap innergap">
+                    <section class="insight-wrap left-area">
+                        <h3 class="tit">삼일 인사이트</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="tab-wrap">
+                            <ul class="tab-list">
+                                <li><button type="button" class="current"><span>인사이트 리포트</span></button></li>
+                                <li><button type="button"><span>미디어</span></button></li>
+                            </ul>
+                            <div class="tab-cont">
+                                <div class="cont current">
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="img"><img src="../img/temp/img_04.png" alt="EU 기업 지속 가능성 보고 지침 주요 내용"></span>
+                                                <strong class="subject">EU 기업 지속 가능성 보고 지침 주요 내용 EU 기업 지속 가능성 보고 지침 주요 내용</strong>
+                                                <ul class="hashtag">
+                                                    <li><span class="beage"># 공시</span></li>
+                                                    <li><span class="beage"># ESG일반</span></li>
+                                                    <li><span class="beage"># 지속가능경영</span></li>
+                                                    <li><span class="beage"># GRI</span></li>
+                                                </ul>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="img"><img src="../img/temp/img_05.png" alt="ESG 경영 4대 트렌드"></span>
+                                                <strong class="subject">ESG 경영 4대 트렌드</strong>
+                                                <ul class="hashtag">
+                                                    <li><span class="beage"># 공시</span></li>
+                                                    <li><span class="beage"># ESG일반</span></li>
+                                                    <li><span class="beage"># 지속가능경영</span></li>
+                                                    <li><span class="beage"># GRI</span></li>
+                                                </ul>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="img"><img src="../img/temp/img_06.png" alt="넷제로 경제지수 2023"></span>
+                                                <strong class="subject">넷제로 경제지수 2023</strong>
+                                                <ul class="hashtag">
+                                                    <li><span class="beage"># 공시</span></li>
+                                                    <li><span class="beage"># ESG일반</span></li>
+                                                    <li><span class="beage"># 지속가능경영</span></li>
+                                                    <li><span class="beage"># GRI</span></li>
+                                                </ul>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- //tab-cont -->
+                        </div>
+                        <!-- //tab-wrap -->
+                    </section>
+                    <!-- //insight-wrap -->
+                    <section class="explanation-wrap right-area">
+                        <h3 class="tit">ESG 공시 기준서 해설 / 사례</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="slide-wrap">
+                            <div class="ul img-slide"> 
+                                <div class="li"><a href="javascriptvoid(0);"><span class="img"><img src="../img/temp/img_07.png" alt=""></span></a></div>    
+                                <div class="li"><a href="javascriptvoid(0);"><span class="img"><img src="../img/temp/img_07.png" alt=""></span></a></div>   
+                                <div class="li"><a href="javascriptvoid(0);"><span class="img"><img src="../img/temp/img_07.png" alt=""></span></a></div>     
+                                <div class="li"><a href="javascriptvoid(0);"><span class="img"><img src="../img/temp/img_07.png" alt=""></span></a></div>                                                                                         
+                            </div>
+                            <div class="ul slider-for"> 
+                                <div class="li">
+                                    <a href="javascript:void(0);"> 
+                                        <strong class="tit">GRI (Global Reporting Initiative)</strong>
+                                        <p class="desc">1GRI에 대한 국문 번역본 및 삼일의 ESG 전문가가 작성한  해설과 사례를 확인해보세요.</p>
+                                    </a>
+                                </div>  
+                                <div class="li">
+                                    <a href="javascript:void(0);">
+                                        <strong class="tit">GRI (Global Reporting Initiative)</strong>
+                                        <p class="desc">2GRI에 대한 국문 번역본 및 삼일의 ESG 전문가가 작성한  해설과 사례를 확인해보세요.</p>
+                                    </a>
+                               </div>  
+                               <div class="li">
+                                    <a href="javascript:void(0);">
+                                        <strong class="tit">GRI (Global Reporting Initiative)</strong>
+                                        <p class="desc">3GRI에 대한 국문 번역본 및 삼일의 ESG 전문가가 작성한  해설과 사례를 확인해보세요.</p>
+                                    </a>
+                                </div>  
+                                <div class="li">
+                                    <a href="javascript:void(0);">
+                                        <strong class="tit">GRI (Global Reporting Initiative)</strong>
+                                        <p class="desc">4GRI에 대한 국문 번역본 및 삼일의 ESG 전문가가 작성한  해설과 사례를 확인해보세요.</p>
+                                    </a>
+                                </div>                                                                                              
+                             </div>
+                        </div>
+                        <!--//slideWrap-->
+                    </section>
+                    <!-- //explanation-wrap -->
+                </div>
+                <!-- //info-wrap -->
+                <section class="curation-wrap">
+                    <div class="inner">
+                        <h3 class="tit">ESG 토픽</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="topic-wrap slide-wrap">
+                            <div class="ul curation-slide">
+                                <div class="li environmental">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg">Environmental</span>
+                                        <strong class="tit">Scope3</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li social">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg ">Social</span>
+                                        <strong class="tit">공급망 관리</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li governance">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg ">Governance</span>
+                                        <strong class="tit">내부 통제</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li financial">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg">Financial</span>
+                                        <strong class="tit">기후 리스크</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li environmental">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg">Environmental</span>
+                                        <strong class="tit">Scope3</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li social">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg ">Social</span>
+                                        <strong class="tit">공급망 관리</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li governance">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg ">Governance</span>
+                                        <strong class="tit">내부 통제</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                                <div class="li financial">
+                                    <a href="javascript:void(0);">
+                                        <span class="ctg">Financial</span>
+                                        <strong class="tit">기후 리스크</strong>
+                                        <p class="desc">직접적인 제품 생산 외 협력업체와 물류는 물론 제품 사용과 폐기 과정에서 발생하는 외부 배출을 의미하는 Scope3에 대한 컨텐츠 모음</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- //topic-wrap -->
+                    </div>
+                </section>
+                <!-- //curation-wrap -->
+                <div class="esg-wrap innergap">
+                    <section class="reference-wrap left-area">
+                        <h3 class="tit">ESG 자료실</h3>
+                        <button class="btn-more"><span class="blind">더보기</span></button>
+                        <div class="tab-wrap">
+                            <ul class="tab-list">
+                                <li><button type="button"  class="current"><span>기준 &middot; 가이드 라인</span></button></li>
+                                <li><button type="button" class=""><span>법 &middot; 제도</span></button></li>
+                                <li><button type="button" class=""><span>연구 &middot; 보고</span></button></li>
+                            </ul>
+                            <div class="tab-cont">
+                                <div class="cont current">
+                                    <ol>
+                                        <li><a href="javascript:void(0);"><span class="num">1</span>GRI 1: Foundation 2021 말줄임처리 말줄임처리 말줄임처리 말줄임처리</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">2</span>GRI 2: General Disclosures 2021</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">3</span>GRI 3: Material Topics 2021</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">4</span>GRI 11: Oil and Gas Sector 2021</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">5</span>GRI 12: Coal Sector 2022</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">6</span>GRI 13: Agriculture, Aquaculture and Fishing</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">7</span>SASB : Apparel, Accessories & Footwear</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">8</span>SASB : Building Products & Furnishings</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">9</span>SASB : Household & Personal Products</a></li>
+                                        <li><a href="javascript:void(0);"><span class="num">10</span>SASB : Household & Personal Products</a></li>
+                                    </ol>
+                                </div>
+                                <div class="cont">
+                                   2
+                                </div>
+                                <div class="cont">
+                                   3
+                                </div>
+                            </div>
+                            <!-- //tab-cont -->
+                        </div>
+                        <!-- //tab-wrap -->
+                    </section>
+                    <!-- //reference -->
+                    <section class="right-area">
+                       <!--기존퍼블리싱 <div class="head-area">
+                            <h3>ESG 관련 뉴스레터 <br>구독 신청</h3>
+                            <button type="button"><span>구독신청</span></button>
+                        </div>
+                        <p class="sub-tit">지속가능한 미래를 위한 준비,<br>ESG 경영관리 플랫폼</p>
+                        <p class="txt">오래 오래 더 행복한 내일을 위한 시작, ESG 진단.</p>여기까지-->
+                        
+                        <dl class="banner-list">
+                        	<dd class="bn1">
+                        		<a href="#">
+                        			<div class="subj">삼일PwC 거버너스센터</div>
+                        			<div class="subs">최적의 기업지배구조를 향한<br/>기업의 여정에 함께 합니다.</div>
+                        		</a>
+                        	</dd>
+                        	
+                        	<dd class="bn2">
+                        		<a href="#">
+                        			<div class="subj">Samil Link</div>
+                        			<div class="subs">삼일 아카데미 통합플랫폼의 새이름!<br/>강사와 수강생이 함께 성장하는<br/>Collaboration Learning 플랫폼</div>
+                        		</a>
+                        	</dd>
+                        	
+                        	<dd class="newsletter">
+                        		<div class="tx-a">뉴스레터 <br/>구독 신청</div>
+                        		<div class="btn">
+                        			<a href="#">
+                        				<div class="tx">구독신청</div>
+                        				<div class="arrow"><img src="../img/common/letter-arrow.png"></div>
+                        			</a>
+                        		</div>
+                        	</dd>
+                        </dl>
+                    </section>
+                </div>
+            </div>
+            <!-- //content -->  
+            <div class="floating-wrap">
+                <button type="button"><span>온라인 문의</span></button>
+            </div>
+        </div>
+        <!-- //container -->
+        <footer id="footer">
+            <div class="inner">
+                <a href="javascript:void(0);" class="foot-logo"><span class="blind">로고</span></a>
+                <p class="copyright">&copy; 2023 PwC Korea. All rights reserved.</p>
+                <nav class="fnb">
+                    <ul>
+                        <li><a href="javascript:void(0);">개인정보처리방침</a></li>
+                        <li><a href="javascript:void(0);">Cookie policy</a></li>
+                        <li><a href="javascript:void(0);">Legal disclaimer</a></li>
+                        <li><a href="javascript:void(0);">About site provider</a></li>
+                        <li><a href="javascript:void(0);">Site map</a></li>
+                        <li><a href="javascript:void(0);" class="line">회원 탈퇴</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </footer>
+    </div>
+    <!-- //wrap -->
+    <script>
+        $(function () {
+            tab();
+        })
+    </script>  
+        <div class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+            <div class="dimmed"></div>
+            <div class="right">
+                <section class="modal-area">
+                    <div class="modal-cont">
+                        <h2 class="tit">통합검색</h2>
+                        <button type="button" class="total-btn-close btn-close"><i class="blind">닫기</i></button>
+                        <div class="layer-total-search">
+                            <div class="total-search-inner">
+                                <form action="">
+                                    <fieldset>
+                                        <legend>통합검색</legend>
+                                        <div class="total-search">
+                                            <div class="select-box-wrap">
+                                                <button type="button">통합검색</button>
+                                                <div class="select-list">
+                                                    <ul>
+                                                        <li><a href="javascript:void(0);" class="checked">통합검색</span></a></li><!--선택시 checked-->
+                                                        <li><a href="javascript:void(0);">제목</a></li>
+                                                        <li><a href="javascript:void(0);">내용</a></li>
+                                                        <li><a href="javascript:void(0);">출처</a></li>
+                                                        <li><a href="javascript:void(0);">키워드 선택</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- //select-wrap -->
+                                            <input type="text" class="txt" placeholder="검색어를 입력하세요">
+                                            <button type="button" class="btn-total-search"><span class="blind">검색</span></button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                        <!--//layer-total-search-->
+                        <div class="word-list-wrap">
+                            <div class="word-list">
+                                <h3 class="tit">최근검색어</h3>
+                                <button type="button" class="btn-all-del line"><span>전체삭제</span></button>
+                                <div class="auot-list">
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis"> default "display: block; 제거 혹은 none 처리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">ESG 공시</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">한줄이상 말줄임 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="word ellipsis">공급망 관리</span>
+                                                <span class="date">10.03</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button type="button" class="btn-history-off"><span>최근 검색어<i class="line">끄기</i></span></button>
+                            </div>
+                            <div class="word-list">
+                                <h3 class="tit">인기 검색어</h3>
+                                <p class="date-txt">10.03 10:00 기준</p>
+                                <div class="auot-list">
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">1</span>
+                                                <span class="word ellipsis">ESG</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">2</span>
+                                                <span class="word ellipsis">ESG 공시</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">3</span>
+                                                <span class="word ellipsis">한줄이상 말줄임 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리 공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">4</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">5</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">6</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">7</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">8</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">9</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <span class="num">10</span>
+                                                <span class="word ellipsis">공급망 관리</span>
+                                            </a>
+                                            <button type="button" class="btn-close"><span class="blind">삭제</span></button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //modal-cont -->
+                </section>       
+                <!--//modal-area--> 
+            </div> 
+        </div>
+        <!--//modal-wrap--> 
+</body>
+</html>

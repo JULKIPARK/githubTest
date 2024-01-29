@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(function(){
+			$('.menu03').addClass("on");
+		});
+ 	
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+            <!-- content -->
+            <section class="content btmgap sub content-esg-certification">
+                
+                 <div class="sub-title-a">
+					<div class="ct">
+						<div class="tit">ESG 인증</div>
+						<div class="subs">ESG 인증 프로세스 및 기준을 확인하실 수 있습니다.</div>
+					</div>
+					<div class="bgBack"></div>
+					<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+				</div>
+                
+                
+                <section class="section section1 default-width pt60">
+                    <h4 class="tit-line-left">ESG 인증의 개념</h4>
+                    <div class="txt-line-box">
+                        <p>기업이 공개하는 ESG 관련 정보의 신뢰성을 제고하여 투자자와 이해관계자의 판단을 지원하기 위해서는, 독립적인 제3자가 검증된 방법론에 따라 지속가능성 관련 지표와 성과를 인증하여야 합니다. 현재 국내 규제 상 ESG 공시에 대한 인증이 의무는 아니지만, 국내・외 공시와 인증 의무화 추세에 따라 ESG 인증에 대한 준비가 필요합니다.</p>
+                    </div>
+                </section>
+                <section class="section section2 default-width pt60">
+                    <h4 class="tit-line-left">공시 기준별 ESG 인증 의무화 일정(안)</h4>
+                    <div class="table-style-wrap w147 pc-show">
+                        <dl class="table-style th-style">
+                            <dt class="th">구분</dt>
+                            <dd class="th mar_l30">ISSB</dd>
+                            <dd class="th mar_l30">CSRD (EU)</dd>
+                            <dd class="th mar_l30">SEC (미국)</dd>
+                        </dl>
+                        <dl class="table-style">
+                            <dt class="th"><span>인증 요구 수준</span></dt>
+                            <dd class="td">                                
+                                <ul class="bul-square">
+                                    <li>공시 내용 전반에 외부 감사 필요</li>
+                                    <li>세부 사항은 개별 국가 관할</li>
+                                </ul>
+                            </dd>
+                            <dd class="td">
+                                <ul class="bul-square">
+                                    <li><strong class="txt-primary">외부기관 인증 필요</strong><span class="f16">재무감사 제공자 인증 금지</span></li>
+                                </ul>
+                            </dd>
+                            <dd class="td">
+                                <ul class="bul-square">
+                                    <li><strong class="txt-primary">Scope 1・2 공시에 한해 인증 필요</strong><span class="f16">재무감사 제공자 인증 가능</span></li>
+                                </ul>
+                            </dd>
+                        </dl>
+
+
+                        <dl class="table-style">
+                            <dt class="th"><span>인증 도입 시기</span></dt>
+                            <dd class="td">
+                                <ul class="bul-square">
+                                    <li>개별 국가 관할</li>
+                                </ul>
+                            </dd>
+                            <dd class="td">
+                                <ul class="bul-square">
+                                    <li>2024년~: 제한적 확신 수준</li>
+                                    <li>합리적 확신 수준의 인증으로의 확대여부 추후 결정 예정</li>
+                                </ul>
+                                
+                            </dd>
+                            <dd class="td">
+                                <ul class="bul-square">
+                                    <li>최초 도입 해: 제한적 확신 수준</li>
+                                    <li>최초 도입 2년 후: 합리적 확신 수준</li>
+                                </ul>
+
+                            </dd>
+                        </dl>
+                        <dl class="table-style ">
+                            <dt class="th"><span>국내</span></dt>
+                            <dd class="td align-center">
+                                <ul class="bul-square">
+                                    <li>2023년 10월 기준, ESG 공시 인증 의무에 관한 논의 진행 중 </li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="table-style-wrap m-show">
+                        <div class="article">
+                            <h5>ISSB</h5>
+                            <div class="row">
+                                <h6>인증 요구 수준</h6>
+                                <ul>
+                                    <li>공시 내용 전반에 외부 감사 필요</li>
+                                    <li>세부 사항은 개별 국가 관할</li>
+                                </ul>
+                            </div>
+                            <div class="row">
+                                <h6>인증 도입 시기</h6>
+                                <ul>
+                                    <li>개별 국가 관할</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="article">
+                            <h5>CSRD (EU)</h5>
+                            <div class="row">
+                                <h6>인증 요구 수준</h6>
+                                <p><strong>외부기관 인증 필요</strong><br />재무감사 제공자 인증 금지</p>
+                            </div>
+                            <div class="row">
+                                <h6>인증 도입 시기</h6>
+                                <p><strong>2024년~: 제한적 확신 수준</strong></p>
+                                <p><strong>합리적 확신 수준의 인증으로의 확대여부 추후 결정 예정</strong></p>
+                            </div>
+                        </div>
+                        <div class="article">
+                            <h5>SEC (미국)</h5>
+                            <div class="row">
+                                <h6>인증 요구 수준</h6>
+                                <p><strong>Scope 1-2 공시에 한해 인증 필요</strong><br />재무감사 제공자 인증 금지</p>
+                            </div>
+                            <div class="row">
+                                <p><strong>최초 도입 해: 제한적 확신 수준</strong></p>
+                                <p><strong>최초 도입 2년 후: 합리적 확신 수준 </strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notice-box">
+                        2023년 10월 기준, ESG 공시 인증 의무에 관한 논의 진행 중 
+                    </div>
+                    <ul class="foot-guide-list">
+                        <li>1. 제한적 확신 수준 : 중대한 위반 사항이 발견되지 않았다는 정도의 인증</li>
+                        <li>2. 합리적 확신 수준 : 재무감사에 준한 수준의 인증으로, 제한적 검증보다 강화된 긍정적 의사 표시 형태의 인증</li>
+                    </ul>
+                </section>
+                <section class="section section3 default-width pt60">
+                    <h4 class="tit-line-left">ESG 인증 절차</h4>
+                    <div class="curve-list-wrap">
+                        <ul class="curve-list1 bul-square">
+                            <li><strong>검증 대상 데이터 산출</strong>
+                                <ul>
+                                    <li>지속가능성 관련 활동 성과 정리, 주요 ESG 보고 지표값 산출</li>
+                                </ul>
+                            </li>
+                            <li><strong>지속가능 공시인증 의뢰</strong>
+                                <ul>
+                                    <li>독립적이고 자격을 갖춘 기관에 의뢰</li>
+                                    <li>검증 근거 자료 송부</li>
+                                </ul>
+                            </li>
+                            <li><strong>인증기관의 서면 인증</strong>
+                                <ul>
+                                    <li>지속가능경영보고서 작성 근거 자료에 대한 서면 인증 (인증 기준 부합 여부 판별)</li>
+                                </ul>
+                            </li>
+                            <li><strong>인증기관의 실사 진행</strong>
+                                <ul>
+                                    <li>자료 산출 시스템 및 데이터 확인</li>
+                                    <li>담당자 인터뷰 진행</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="curve-list2 bul-square">
+                            <li><strong>인증기관의 인증경과, 개선의견 송달</strong>
+                                <ul>
+                                    <li>인증 개요, 결과 및 개선필요사항 전달</li>
+                                </ul>
+                            </li>
+                            <li><strong>보고내용 수정·보완</strong>
+                                <ul>
+                                    <li>개선의견서 기반 보완조치 시행 후 재검토 요청</li>
+                                </ul>
+                            </li>
+                            <li><strong>인증결과를 포함한 지속가능성 공시 보고</strong>
+                                <ul>
+                                    <li>인증 범위, 방법론 등 관련 정보 게시 필요</li>
+                                </ul>
+                            </li>
+                        </ul>                        
+                    </div>
+                    <div class="foot-curve-list">
+                        <h4 class="tit-line-left">인증 주체</h4>
+                        <p>제3자 인증기관은 기업과 독립적이어야 하며, 전문성을 바탕으로 자체 품질관리 기준을 준수하는 기관이어야 합니다.<br>
+                            회계법인, 로펌, 신용평가사, 전문컨설팅사 등 다양한 기관이 ESG 인증을 수행하고 있습니다.</p>
+                    </div>
+                </section>
+                <section class="section section4 default-width pt60">
+                    <h4 class="tit-line-left">주요 ESG 인증 기준 비교</h4>
+                    <div class="table-wrap">
+                        <table class="line">
+                            <caption>기후 공시 규칙안 - 주요 내용</caption>
+                            <colgroup>
+                                <col style="width: 25%;">
+                                <col style="width: 75%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>ESG 인증 기준 </th>
+                                    <th>개념</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="no-bg">ISAE3000</th>
+                                    <td class="lf">
+                                        <ul class="bul-square list-m">
+                                            <li>국제회계사연맹(IFAC) 산하 국제감사인증기준위원회(IAASB)에서 제정한 비재무정보 검증을 위한 기준으로, 주로 회계법인에서 사용</li>
+                                            <li>목적적합성, 완전성, 신뢰성, 중립성, 이해가능성의 5가지 검증 기준을 바탕으로 평가</li>
+                                            <li>검증 수준<br>
+                                                <ul>
+                                                    <li>제한적 확신(Limited Assurance) : ‘해당 보고가 중요하게 위배되어 표시되었다는 점이 발견되지 않았다’ 라는 소극적 확신 형태</li>
+                                                    <li>합리적확신 (Reasonable Assurance) : 인증대상정보가 준거기준에 따라 작성되었다는 의견을 표명하는, 제한적 인증보다 더 높은 수준의 인증. 
+                                                        회사의 내부 통제와 실질적인 테스트를 포함한 광범위한 절차 필요</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="no-bg">ISSA5000</th>
+                                    <td class="lf">
+                                        <ul class="bul-square list-m">
+                                            <li>국제회계사연맹(IFAC) 산하 국제감사인증기준위원회(IAASB)에서 제정 예정인 지속가능성 보고에 대한 인증업무 기준
+                                                (International Standard on Sustainability Assurance 5000, General Requirements)</li>
+                                            <li>2023년 8월 초안 발표, 2023년 12월까지 초안에 대한 피드백을 접수해 2024년 말 최종안 발표 예정</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="no-bg">AA1000AS</th>
+                                    <td class="lf">
+                                        <ul class="bul-square list-m">
+                                            <li>영국의 지속가능성 공시 검증 표준 개발 목적의 비영리기관인 AccountAbility(어카운트어빌리티)에서 제정한 재무∙비재무적 영역을 포괄하는
+                                                방법론으로, 주로 회계법인 외 인증기관에서 사용</li>
+                                            <li>포괄성, 중요성, 대응성, 영향의 4가지 검증 기준에 대한 준수도를 평가</li>
+                                            <li>검증 수준<br>
+                                                <ul>
+                                                    <li>High : 폭넓은 증빙 수립(조직 외부 데이터도 종합적으로 분석), 신뢰성 높음</li>
+                                                    <li>Moderate : 제한적인 증빙(조직 내부 데이터로 범위 제한), 상대적으로 신뢰성 낮음</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wra -->
+                </section>
+            </section>
+            <!-- //content -->                
+            <!-- floating-wrap// -->
+            <div class="floating-wrap">
+                <button type="button"><span>온라인 문의</span></button>
+            </div>
+</div>
+</html>

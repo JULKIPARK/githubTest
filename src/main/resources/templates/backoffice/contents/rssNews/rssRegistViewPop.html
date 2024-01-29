@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="rssRegistViewPop">
+	<script th:inline="javascript">
+		/** 공통코드 */
+		function fnGetCommonData() {
+			var param = {
+				"url": "/sems/contents/rssNewsCommonDataList"
+				, "type": "post"
+				, "async": false
+				, "callback": function (data) {
+					// 업무분류
+					var items = data.taskClsfList;
+					items.forEach(item => {
+						$("#taskClsfCd").append(`<option value="${item.cd}">${item.cdNm}</option>`);
+					})
+
+					// 주제분류
+					items = data.sbjtGbList;
+					items.forEach(item => {
+						$("#sbjtGbCd").append(`<option value="${item.cd}">${item.cdNm}</option>`);
+					})
+
+					// Topic
+					items = data.tpicMnuList;
+					items.forEach(item => {
+						$("#esgTopic .topicMenuTitle").append(`<th>${item.cdNm}</th>`);
+						var tmpl = '';
+						item.tpiclist.forEach(item2 => {
+							tmpl += `
+								<li>
+									<input type="checkbox" name="tpicUid" id="ck04-${item2.tpicUid}" value="${item2.tpicUid}">
+									<label for="ck04-${item2.tpicUid}">${item2.tpicNm}</label>
+								</li>
+							`;
+						})
+						$("#esgTopic .topicList").append(`<td><ul class="ck-list">${tmpl}</ul></td>`);
+					})
+				}
+			};
+
+			_comLib.callAjax(param);
+		}
+
+		function fnSetEvent() {
+			// 전시여부 변경
+			$("INPUT[type=radio][name=dpTpCd]").on('change', function (e) {
+				$("INPUT[type=checkbox][name=mbrGbCd]").prop("disabled", ($(this).val() !== "20"));
+			});
+
+			// 기간설정사용
+			$("INPUT[type=checkbox][name=pirdStngUseYn]").on('change', function (e) {
+				$("INPUT[name=dpSttDt], INPUT[name=dpSttDt01], INPUT[name=dpSttDt02], INPUT[name=dpEndDt], INPUT[name=dpEndDt01], INPUT[name=dpEndDt02]").prop("disabled", !$(this).prop("checked"));
+			});
+
+			//등록 버튼
+			$("#btnRssReg").bind("click", function () {
+				// Validation
+				if (!$("SELECT[name=taskClsfCd]").val()) {
+					alert("업무 분류를 선택해 주세요.");
+					return;
+				}
+				if (!$("SELECT[name=sbjtGbCd]").val()) {
+					alert("주제 분류를 선택해 주세요.");
+					return;
+				}
+				if ($("INPUT[name=dpTPCd]:checked").val() === "20" && !$("INPUT[name=mbrGbCd]:checked").length) {
+					alert("일부공개 대상을 선택해 주세요.");
+					return;
+				}
+				if ($("INPUT[name=pirdStngUseYn]").prop("checked") && (
+						!$.trim($("INPUT[name=dpSttDt]").val())
+						|| !$.trim($("INPUT[name=dpSttDt01]").val())
+						|| !$.trim($("INPUT[name=dpSttDt02]").val())
+						|| !$.trim($("INPUT[name=dpEndDt]").val())
+						|| !$.trim($("INPUT[name=dpEndDt01]").val())
+						|| !$.trim($("INPUT[name=dpEndDt02]").val())
+				)) {
+					alert("기간을 설정해주세요.");
+					return;
+				}
+
+				var formData, param = {};
+				formData = _formLib.getFormData("registContFrm");
+				console.log(formData);
+
+				param = {
+					"url": "/sems/contents/insertRss"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						alert('등록 요청이 정상적으로 처리되었습니다.');
+						$("#rssRegistViewPop").removeClass("show");
+						fnSelectRssNewsList();
+					}
+				};
+				_comLib.callAjax(param);
+			});
+
+			//취소 버튼
+			$("#btnRssCancel").bind("click", function () {
+				$("#rssRegistViewPop").removeClass("show");
+			});
+		}
+
+		//RSS뉴스정보 상세 보기
+		function fnRssRegistViewPop(linkUrl) {
+			$("#registContFrm").resetForm();
+			var param = {
+				"url": "/sems/contents/rssRegistView"
+				, "type": "post"
+				, "data": {"linkUrl": linkUrl}
+				, "async": false
+				, "callback": function (data) {
+					var info = data.item;
+
+					function fnSetDefault() {
+						$("#registContFrm").resetForm();
+						$("#btnRssReg, #btnRssInit").show();
+
+						$("INPUT[name=linkUrl]").val(info.linkUrl);
+						$("#contUno").val(info.contUno)
+						$("#regTtl").val(info.ttl);					//뉴스제목
+						$("#regPblcnDt").val(info.pblcnDt);			//발간일자
+						$("#regImgUrl").attr("src", info.imgUrl);	//대표 이미지
+						$("#regSplyBzentyNm").val(info.splyBzentyNm);//제공업체명
+						$("#regWrtrNm").val(info.wrtrNm);			//작성자
+						$("#regSumry").val(info.sumry);				//뉴스 요약
+						$("#regCn").val(info.cn);					//뉴스 전문
+
+						// 기등록된 건일 경우
+						if (info.contUno) {
+							console.log("등록완료 건")
+							$("INPUT[name=contUid]").val(info.contUid);
+							$("SELECT[name=taskClsfCd]").val(info.taskClsfCd);
+							$("SELECT[name=sbjtGbCd]").val(info.sbjtGbCd);
+							$("INPUT[name=dpTpCd][value=" + info.dpTpCd + "]").prop('checked', true).trigger("change");
+							// ToDo : 일부공개대상 적용
+							$("INPUT[name=pirdStngUseYn][value=" + info.pirdStngUseYn + "]").prop('checked', true).trigger("change");
+							// ToDo : 전시기간 적용
+							$("INPUT[name=srchPsbltyYn][value=" + info.srchPsbltyYn + "]").prop('checked', true);
+							$("INPUT[name=kwrdArry]").val(info.kwrdArry);
+							if (info.conttpiclist) {
+								info.conttpiclist.forEach((item) => {
+									$("INPUT[name=tpicUid][value='"+item.tpicUid+"']").prop("checked", true);
+								});
+							}
+							// 등록,초기화 버튼 숨김
+							$("#btnRssReg, #btnRssInit").hide();
+						}
+					}
+
+					fnSetDefault();
+
+					//초기화 버튼
+					$("#btnRssInit").unbind("click").bind("click", function () {
+						if (confirm("입력 또는 선택한 항목이 초기화 됩니다.\n초기화 하시겠습니까?")) {
+							fnSetDefault();
+						}
+					});
+
+					$("#rssRegistViewPop").addClass("show");
+				}
+			};
+
+			_comLib.callAjax(param);
+		}
+
+		$(function () {
+			fnGetCommonData();
+
+			fnSetEvent();
+		});
+	</script>
+
+	<div id="rssRegistViewPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">신규 입수 뉴스 등록</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="form-content">
+						<form id="registContFrm">
+							<input type="hidden" name="linkUrl">
+							<fieldset>
+								<legend>신규 입수 뉴스 등록</legend>
+								<div class="search-wrap">
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>신규 입수 뉴스 등록</caption>
+											<colgroup>
+												<col style="width: 125px;">
+												<col style="width: 45%;">
+												<col style="width: 10%;">
+												<col style="width: 35%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th>컨텐츠 종류</th>
+													<td>뉴스</td>
+													<th><label for="number">컨텐츠번호</label></th>
+													<td><input type="text" value="" id="contUno" disabled="disabled">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>신규 입수 뉴스 등록</caption>
+											<colgroup>
+												<col style="width: 125px;">
+												<col style="width: 45%;">
+												<col style="width: 10%;">
+												<col style="width: 35%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th colspan="4" class="ct">뉴스 정보(RSS)</th>
+												</tr>
+												<tr>
+													<th>뉴스제목</th>
+													<td><textarea id="regTtl" name="contNm" cols="" rows="" readonly>대한상의 ESG경영 포럼, 애그테크 관심 급부상…인증 문제 해결이 과제</textarea>
+													</td>
+													<th rowspan="3">대표 이미지</th>
+													<td rowspan="3">
+														<div class="thumbnail">
+															<img id="regImgUrl"
+																 src="/assets/assets/img/temp/thumbnail.png"
+																 alt="대표 이미지">
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<th>발간일자</th>
+													<td><input type="text" id="regPblcnDt" name="pblcnDte" readonly
+															   value="2023-07-03 15:48:44" title="발간일자"></td>
+												</tr>
+												<tr>
+													<th>작성자</th>
+													<td>
+														<div class="input-wrap">
+															<input type="hidden" name="srcUid" value="232">
+															<input type="text" id="regSplyBzentyNm" disabled
+																   value="임팩트온" title="작성자"><input type="text"
+																								   id="regWrtrNm"
+																								   disabled
+																								   value="변종용 editor"
+																								   title="작성자">
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<th>뉴스 요약</th>
+													<td colspan="3">
+                                                    <textarea name="" id="regSumry" cols="" rows="" class="h100"
+															  disabled="disabled" title="뉴스 요약"></textarea>
+													</td>
+												</tr>
+												<tr>
+													<th>뉴스 전문</th>
+													<td colspan="3">
+                                                    <textarea name="" id="regCn" cols="" rows="" class="h100"
+															  disabled="disabled" title="뉴스 전문"></textarea>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>컨텐츠 등록 정보</caption>
+											<colgroup>
+												<col style="width: 125px;">
+												<col style="width: 32%;">
+												<col style="width: 10%;">
+												<col style="width: 49%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th colspan="4" class="ct">
+														컨텐츠 등록 정보
+														<input type="hidden" name="contUid"/>
+													</th>
+												</tr>
+												<tr>
+													<th><label for="taskClsfCd">업무 분류<span class="required"><i
+															class="필수입력"></i></span></label>
+													</th>
+													<td>
+														<select name="taskClsfCd" id="taskClsfCd" class="select">
+															<option value="">선택</option>
+														</select>
+													</td>
+													<th><label for="sbjtGbCd">주제 분류<span class="required"><i
+															class="필수입력"></i></span></label>
+													</th>
+													<td>
+														<select name="sbjtGbCd" id="sbjtGbCd" class="select">
+															<option value="">선택</option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<th>전시 여부<span class="required"><i class="필수입력"></i></span></th>
+													<td>
+														<ul class="flex ck-list">
+															<li>
+																<input type="radio" name="dpTpCd" id="dpTPCd4"
+																	   value="40" checked>
+																<label for="dpTPCd4">전체열람</label>
+															</li>
+															<li>
+																<input type="radio" name="dpTpCd" id="dpTPCd1"
+																	   value="10">
+																<label for="dpTPCd1">전체공개</label>
+															</li>
+															<li>
+																<input type="radio" name="dpTpCd" id="dpTPCd2"
+																	   value="20">
+																<label for="dpTPCd2">일부공개</label>
+															</li>
+															<li>
+																<input type="radio" name="dpTpCd" id="dpTPCd3"
+																	   value="30">
+																<label for="dpTPCd3">비전시</label>
+															</li>
+														</ul>
+													</td>
+													<th>전시 기간</th>
+													<td>
+														<div class="date-select flex date-ck-mix">
+															<div class="datepicker-wrap flex">
+																<input type="text" name="dpSttDt" class="datepicker"
+																	   disabled>
+																<input type="text" name="dpSttDt01" value="00"
+																	   class="time" disabled>:<input
+																	type="text" name="dpSttDt02" class="time" value="00"
+																	disabled>
+																<span class="separator"> - </span>
+																<input type="text" name="dpEndDt" class="datepicker"
+																	   disabled>
+																<input type="text" name="dpEndDt01" value="23"
+																	   class="time" disabled>:<input
+																	type="text" name="dpEndDt02" class="time" value="59"
+																	disabled>
+															</div>
+															<input type="checkbox" id="period05" name="pirdStngUseYn"
+																   value="Y"><label for="period05">기간설정사용</label>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<th>일부공개대상<span class="required"><i class="필수입력"></i></span></th>
+													<td colspan="3">
+														<ul class="flex ck-list">
+															<li>
+																<input type="checkbox" name="mbrGbCd" id="ck01"
+																	   value="10" disabled>
+																<label for="ck01">그룹 A</label>
+															</li>
+															<li>
+																<input type="checkbox" name="mbrGbCd" id="ck02"
+																	   value="20" disabled>
+																<label for="ck02">그룹 B</label>
+															</li>
+															<li>
+																<input type="checkbox" name="mbrGbCd" id="ck03"
+																	   value="30" disabled>
+																<label for="ck03">그룹 C</label>
+															</li>
+															<li>
+																<input type="checkbox" name="mbrGbCd" id="ck04"
+																	   value="40" disabled>
+																<label for="ck04">그룹 D</label>
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>검색가능여부</th>
+													<td>
+														<ul class="flex ck-list">
+															<li>
+																<input type="radio" name="srchPsbltyYn" id="radio11"
+																	   checked="checked" value="Y">
+																<label for="radio11">가능</label>
+															</li>
+															<li>
+																<input type="radio" name="srchPsbltyYn" id="radio12"
+																	   value="N">
+																<label for="radio12">불가</label>
+															</li>
+														</ul>
+													</td>
+													<th><label for="txt01">태그 키워드</label></th>
+													<td>
+														<input type="text" name="kwrdArry" class="w100p" id="txt01"
+															   placeholder="우선순위에 따라 콤마로 구분하여 입력하세요 (최대 100자)">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
+									<div class="table-wrap">
+										<table id="esgTopic" class="table-type-mix line-gray">
+											<caption>ESG 토픽 선택</caption>
+											<!--											<colgroup>-->
+											<!--												<col style="width:10%;">-->
+											<!--												<col style="width: 17%;">-->
+											<!--												<col style="width: 17%;">-->
+											<!--												<col style="width: 17%;">-->
+											<!--												<col style="width: 17%;">-->
+											<!--												<col style="width: 17%;">-->
+											<!--											</colgroup>-->
+											<tbody>
+												<tr class="topicMenuTitle">
+													<th rowspan="2" style="width: 125px;">ESG 토픽</th>
+												</tr>
+												<tr class="topicList">
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //table-wrap -->
+								<div class="btn-wrap">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+									<button type="button" id="btnRssReg" class="btn-primary">등록</button>
+									<button type="button" id="btnRssInit" class="btn-sub">초기화</button>
+									</th:block>
+									<button type="button" id="btnRssCancel" class="btn-default">취소</button>
+									<!-- 팝업을 닫고 싶을때 btn-close -->
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+</th:block>
+</html>

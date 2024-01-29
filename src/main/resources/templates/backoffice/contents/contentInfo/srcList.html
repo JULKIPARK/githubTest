@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function() {
+			let moduleNm = "page";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function(_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function() {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function() {
+			let moduleNm = "list";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/contents/selectSrcList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#srcListDiv").replaceWith(fragment);
+						$("#srcTotalCountView").text(
+							"총 " + _formLib.addComma($("#srcTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#srcPageNum').val();//현재 선택된 페이지
+						$('#srcPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#srcTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $(
+								"<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+									"#srcTotalPage").val() + "</option>");
+							$('#srcPageNum').append(option);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록일/수정일
+				$("#searchListFrm SELECT[name=schJoinType]").on("change", function() {
+					$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").prop("disabled", ($(this).val() === "N"));
+					if ($(this).val() !== "N") {
+						_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+						var stDay = _comLib.prevYear(1);
+						$("#schStrtDate").val(stDay);
+						$("#schEndDate").val(_comLib.toDay());
+					} else {
+						$("#schStrtDate").val("");
+						$("#schEndDate").val("");
+					}
+				}).trigger("change");
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function() {
+					$("#srcPageNum").val('1');
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function() {
+					$("#searchListFrm").resetForm();
+				});
+
+				// 데이터 페이징갯수
+				$("#srcPageSize").on("change", function() {
+					$("#srcPageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#srcPageNum").on("change", function() {
+					getData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#srcListDiv TBODY TD.srcUidTd A', function() {
+					view.openPop($(this).data('id'));
+				});
+
+				// 엑셀 다운로드
+				$("#searchListFrm #btnExcelDown").on('click', function() {
+					if (!confirm("다운로드 하시겠습니까?")) return;
+
+					var data = "";
+					var formObj = $('<form></form>');
+					var formData = _formLib.getFormData("searchListFrm");
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/contents/selectSrcListExcelDown");
+					formObj.append($('<input/>', {type: 'hidden', name: 'schJoinType', value: formData.schJoinType}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schStrtDate', value: formData.schStrtDate}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schOprtOpt', value: formData.schOprtOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schOprtWrd', value: formData.schOprtWrd}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcOpt', value: formData.schSrcOpt}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcWrd', value: formData.schSrcWrd}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schDmstcChk', value: formData.schDmstcChk}));
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function() {
+			let moduleNm = "view";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function(_srcUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_srcUid})`);
+
+				setData(_srcUid, function() {
+					$('#srcDetailEditPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				})
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 데이터 페이징갯수
+				$("#srcDetailEditPopPageSize").on("change", function() {
+					$("#srcDetailEditPopPageNum").val('1');
+					getApndData();
+				});
+
+				// 데이터 페이지
+				$("#srcDetailEditPopPageNum").on("change", function() {
+					getApndData();
+				});
+
+				// 콘텐츠 상세
+				$("#srcDetailEditPopFrm").on('click', '#srcDetailEditPopListDiv TD.contUnoTd A', function() {
+					contentView.openPop($(this).data("id"));
+				});
+
+				// 엑셀 다운로드
+				$("#srcDetailEditPopFrm BUTTON[name=doExcelDown]").on('click', function() {
+					if (!confirm("다운로드 하시겠습니까?")) return;
+
+					var data = "";
+					var formObj = $('<form></form>');
+					var formData = _formLib.getFormData("srcDetailEditPopFrm");
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/contents/selectDocumentListExcelDown");
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcOpt', value: "00"}));
+					formObj.append($('<input/>', {type: 'hidden', name: 'schSrcUid', value: formData.srcUid}));
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+
+				// 저장버튼
+				$("#srcDetailEditPopFrm BUTTON[name=doSave]").unbind('click').on("click", function() {
+					saveData();
+				});
+			};
+
+			let setData = function(_srcUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_srcUid})`);
+
+				getData(_srcUid, function(data) {
+					var info = data.item;
+
+					$("#srcDetailEditPopFrm INPUT[name=srcUid]").val(info.srcUid);
+					$("#srcDetailEditPopFrm INPUT[name=srcNm]").val(info.srcNm);
+					$("#srcDetailEditPopFrm #srcUnoTd")[0].innerHTML = info.srcUno;
+					$("#srcDetailEditPopFrm #dmstcYnNmTd")[0].innerHTML = info.dmstcYnNm;
+					$("#srcDetailEditPopFrm #contTotCntTd")[0].innerHTML = info.contTotCnt + '개';
+					$("#srcDetailEditPopFrm #contDocCntTd")[0].innerHTML = info.contDocCnt + '개';
+					$("#srcDetailEditPopFrm #contMovCntTd")[0].innerHTML = info.contMovCnt + '개';
+
+					_callback();
+				});
+				getApndData();
+			};
+
+			let getData = function(_srcUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_srcUid})`);
+
+				var param = {
+					"url": "/sems/contents/selectSrcView"
+					, "type": "post"
+					, "data": {"srcUid": _srcUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+
+				_comLib.callAjax(param);
+			};
+
+			let getApndData = function() {
+				console.log(`[MODULE] ${moduleNm} -> getApndData`);
+
+				var formData, param = {};
+				formData = {
+					"viewName" : "backoffice/contents/contentInfo/srcDetailEditPop :: #srcDetailEditPopListDiv"
+					, "schSrcOpt": "00"
+					, "schSrcUid" : $("#srcDetailEditPopFrm INPUT[name=srcUid]").val()
+					, "docPageSize" : $("#srcDetailEditPopFrm SELECT[name=srcDetailEditPopPageSize]").val()
+					, "docPageNum" : $("#srcDetailEditPopFrm SELECT[name=srcDetailEditPopPageNum]").val()
+				};
+
+				param = {
+					"url": "/sems/contents/selectDocumentList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#srcDetailEditPopListDiv").replaceWith(fragment);
+
+						//페이징처리
+						var currPage = $('#srcDetailEditPopPageNum').val();//현재 선택된 페이지
+						$('#srcDetailEditPopPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#srcDetailEditPopTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#srcDetailEditPopTotalPage").val() + "</option>");
+							$('#srcDetailEditPopPageNum').append(option);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#srcDetailEditPopFrm")[0]);
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/contents/updateSrcView"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#srcDetailEditPop").removeClass("show");
+						list.getData();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+				, getApndData
+			};
+		})();
+
+		/* 데이터 입력 모듈 */
+		let regist = (function() {
+			let moduleNm = "regist";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 컨텐츠등록 버튼
+				$("#cont-section BUTTON[name=doSrcRegist]").on('click', function() {
+					openPop();
+				});
+
+				// 등록버튼
+				$("#frmBySrcUpsertPopBySrcList BUTTON[name=doRegist]").on("click", function() {
+					// 출처명
+					if ($('#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]').val() === '') {
+						alert('출처명을 입력해 주세요.');
+						$('#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]').focus();
+						return;
+					}
+
+					saveData();
+				});
+			};
+
+			let openPop = function() {
+				console.log(`[MODULE] ${moduleNm} -> openPop`);
+
+				$("#frmBySrcUpsertPopBySrcList").resetForm();
+				$("#mainBySrcUpsertPopBySrcList").addClass("show");
+				$("#frmBySrcUpsertPopBySrcList INPUT[name=srcNm]").focus();
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#frmBySrcUpsertPopBySrcList")[0]);
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/contents/insertSrcView"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#mainBySrcUpsertPopBySrcList").removeClass("show");
+						$("#srcPageNum").val('1');
+						list.getData();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+			};
+		})();
+
+		$(function() {
+			page.init();
+			list.init();
+			view.init();
+			regist.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+	<form id="searchListFrm">
+		<!-- content -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>출처 조회</h3>
+				<ul class="breadcrumb">
+					<li>컨텐츠 관리</li>
+					<li>컨텐츠 정보관리</li>
+					<li>출처 조회</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<div class="search-wrap">
+				<fieldset>
+					<legend>상세 검색</legend>
+					<div class="table-wrap">
+						<table class="inner-input">
+							<caption>출처 조회</caption>
+							<colgroup>
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>등록일/수정일</th>
+								<td>
+									<div class="date-select flex">
+										<select name="schJoinType" id="schJoinType" class="select" title="기간설정 선택">
+											<option value="N">기간설정 안함</option>
+											<option value="01">등록일</option>
+											<option value="02">수정일</option>
+										</select>
+										<div class="datepicker-wrap">
+											<input type="text" name="schStrtDate" id="schStrtDate" class="datepicker" disabled="disabled">
+											<span class="separator"> - </span>
+											<input type="text" name="schEndDate" id="schEndDate" class="datepicker" disabled="disabled">
+										</div>
+									</div>
+								</td>
+								<th>등록자/수정자</th>
+								<td>
+									<div class="selectinput-wrap">
+										<select name="schOprtOpt" id="schOprtOpt" class="select" title="검색기준">
+											<option value="01">등록자</option>
+											<option value="02">수정자</option>
+										</select>
+										<input type="text" name="schOprtWrd" id="schOprtWrd" placeholder=""
+											   title="이름 입력">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>출처명/번호</th>
+								<td>
+									<div class="selectinput-wrap">
+										<select name="schSrcOpt" id="schSrcOpt" class="select" title="검색기준">
+											<option value="01">출처명</option>
+											<option value="02">출처번호</option>
+										</select>
+										<input type="text" name="schSrcWrd" id="schSrcWrd" placeholder=""
+											   title="이름 입력">
+									</div>
+								</td>
+								<th>국내/해외</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schDmstcChk" value="ALL" id="radio01"
+												   checked="checked">
+											<label for="radio01">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schDmstcChk" value="Y" id="radio02">
+											<label for="radio02">국내</label>
+										</li>
+										<li>
+											<input type="radio" name="schDmstcChk" value="N" id="radio03">
+											<label for="radio03">해외</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+					<div class="btn-wrap">
+						<button type="button" id="btnSearch" name="doSearch" class="btn-primary">조회</button>
+						<button type="button" id="btnReset" name="doInit" class="btn-sub">초기화</button>
+					</div>
+					<!-- //btn-wrap -->
+				</fieldset>
+			</div>
+			<!-- //search-wrap -->
+			<div class="result-wrap">
+				<div class="total">
+					<span class="lable">출처 리스트</span> - <strong id="srcTotalCountView">총
+					123건</strong>
+					<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+					<button type="button" id="btnAddBySrcList" name="doSrcRegist" class="btn-del"><span>신규 출처 추가</span></button>
+					</th:block>
+				</div>
+				<!-- total -->
+				<div class="sorting-wrap">
+					<select name="srcPageSize" id="srcPageSize" class="select" title="데이터 건수">
+						<option value="20">20개</option>
+						<option value="50">50개</option>
+						<option value="100" selected="selected">100개</option>
+						<option value="500">500개</option>
+						<option value="1000">1000개</option>
+					</select>
+					<select name="srcPageNum" id="srcPageNum" class="select" title="페이지 이동선택">
+					</select>
+					<div class="btn-ctl">
+						<button type="button" id="btnExcelDown" class="btn-download">다운로드</button>
+					</div>
+				</div>
+				<!-- //sorting-wrap -->
+				<div id="srcListDiv" class="table-wrap ">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="srcTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="srcPageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="srcTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table>
+						<caption>출처 리스트</caption>
+						<colgroup>
+							<col style="width: 5%;">
+							<col style="width: 15%;">
+							<col style="width: *;">
+							<col style="width: 10%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>NO</th>
+							<th>출처번호</th>
+							<th>출처명</th>
+							<th>국내/해외</th>
+							<th>컨텐츠 수 합계</th>
+							<th>문서 컨텐츠 수</th>
+							<th>영상 컨텐츠 수</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td th:text="${stat.count}">1</td>
+							<td class="srcUidTd">
+								<a th:text="${item.srcUno}" th:attr="data-id=${item.srcUid}" class="link">SK12345</a>
+							</td>
+							<td class="left" th:text="${item.srcNm}">삼일회계법인</td>
+							<td th:text="${item.dmstcYnNm}">국내</td>
+							<td th:text="${item.contTotCnt}">102</td>
+							<td th:text="${item.contDocCnt}">102</td>
+							<td th:text="${item.contMovCnt}">0</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td style="text-align: center;" colspan="7">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+	</form>
+
+	<!-- 출처상세 popup fragment-->
+	<th:block th:replace="/backoffice/contents/contentInfo/srcDetailEditPop :: srcDetailEditPopFragment"></th:block>
+
+	<!-- 출처등록 popup fragment-->
+	<th:block th:replace="/backoffice/contents/contentInfo/srcUpsertPopBySrcList :: fragmentBySrcUpsertPopBySrcList"></th:block>
+
+</div>
+</html>

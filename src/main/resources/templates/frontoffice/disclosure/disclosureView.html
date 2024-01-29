@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		var isLogin0 = "";
+		$(function () {
+			var $doc = $(document);
+			tab2();
+
+			/*<![CDATA[*/
+			var isLogin = /*[[${isLogin}]]*/;
+			isLogin0 = isLogin;
+			var tabId = "tabId" +/*[[${tabId}]]*/;
+			var idx = $("#" + tabId).attr("data");
+			$("#" + tabId).addClass("current");
+			fnSelectDpTpicApndInfo(idx);
+			/*]]>*/
+
+			$(".keyword-wrap li button").on('click', function () {
+				var tabId = $(this).attr("data");
+				$(".keyword-wrap li button").removeClass("current");
+				$(this).addClass("current");
+				fnSelectDpTpicApndInfo(tabId);
+				$(".vw_nm").html($(this).html());
+				console.log($(this).html());
+				if ($(this).html() == '<span>GRI</span>') {
+					$(".vw_nm2").html('상세보기 (원문·해설)');
+				} else if ($(this).html() == '<span>ISSB</span>') {
+					$(".vw_nm2").html('상세보기 (원문·국문)');
+				} else {
+					$(".vw_nm2").html('상세보기');
+				}
+
+				$(".tab-list li button").eq(0).click();
+				//로드시 탭 active 설정
+				activeTabEvent();
+			})
+			$("#" + tabId).click();
+
+			// 이벤트 설정
+			$doc.on("click", ".result01Link", function (e) {
+				e.preventDefault();
+				$("#csrdResult01").addClass("show");
+			});
+			$doc.on("click", ".result02Link", function (e) {
+				e.preventDefault();
+				$("#csrdResult02").addClass("show");
+			});
+			$doc.on("click", ".result03Link", function (e) {
+				e.preventDefault();
+				_formLib.initFormData('savefrm');
+				$("#Qcsrd03,#Qcsrd04").hide();
+				fnOpenPop("targetViewPopup");
+			});
+
+			$doc.on("click", "#csrd_init", function (e) {
+				e.preventDefault();
+				if (isLogin == "N") {
+					alert("로그인 후 이용할 수 있습니다.")
+					return;
+				}
+				_formLib.initFormData('savefrm');
+				$("#Qcsrd03,#Qcsrd04").hide();
+				fnOpenPop("targetViewPopup");
+			});
+			$doc.on("click", "BUTTON[name=doCsrd]", function () {
+				if (isLogin0 !== 'Y') {
+					alert("로그인 후 이용할 수 있습니다.")
+					return;
+				}
+				fnOpenPop('targetViewPopup');
+				return false;
+			});
+
+		});
+
+		$(function () {
+			$('.menu03').addClass("on");
+		});
+
+		$(function () {
+			// 화면 초기화
+			fnInitView();
+
+			// 기본 데이터 조회
+			fnInitData();
+
+			// 이벤트 설정
+			fnInitEvent();
+
+			//로드시 탭 active 설정
+			activeTabEvent();
+
+			tabOffsetAuto();
+		});
+
+		$(window).on('resize', function () {
+			//activeTabEvent();
+		});
+
+		//토픽 토픽부가정보 조회
+		function fnSelectDpTpicApndInfo(tpicUid) {
+			$.post("/disclosure/selectTpicApndInfo", {tpicUid: tpicUid}, function (data) {
+				var info1 = data.info1;
+				var info2 = data.info2;
+				var info3 = data.info3;
+
+				// if (info1.sumryComnt == "") {
+				if (info1.apndTtl == "") {
+					$("#tab_vw1").html(info1.apndCn).show();
+					$("#tab_vw2").hide();
+				} else {
+					$("#tab_vw1").hide();
+					$("#tab_vw2").show();
+					// $("#apndCn").html(info1.apndCn);//부가내용
+					$("#apndCn").html(info1.apndTtl);//부가내용
+					$("#sumryComnt").html(info1.apndCn);//요약
+				}
+				if (info2 != null) {
+					$("#info_30").html(info2.apndCn);//부가내용
+					if (isLogin0 !== 'Y') {
+						$('#info_30 .btn-login-view').remove();
+					}
+				}
+				if (info3 != null) {
+					$("#info_50").html(info3.apndCn);//부가내용
+				}
+				fnSelectEnvironmentList(tpicUid);
+			});
+		}
+
+		//컨텐츠 목록조회
+		function fnSelectEnvironmentList(tpicUid) {
+			$.post("/disclosure/selectContList", {tpicUid: tpicUid}, function (data) {
+				var pwcInsightsList = data.pwcInsightsList;	//삼일 인사이트 목록
+				var trendList = data.trendList;				//최신동향 목록
+				var videoList = data.videoList;				//ESG 영상모음 목록
+				var standardList = data.standardList;		//ESG 자료모음 >> 기준/가이드 라인 목록
+				var researchList = data.researchList;		//ESG 자료모음 >> 연구/보고 목록
+				var lawList = data.lawList;					//ESG 자료모음 >> 법/제도 목록
+				var apndList = data.apndList;				//코멘트 리스트
+				var spcalList = data.spcalList;				//전문가 리스트
+
+				//삼일 인사이트
+				$("#pwcInsightsList").html("");
+				$("#tmpl_contents").tmpl(pwcInsightsList).appendTo("#pwcInsightsList");
+				//최신동향
+				$("#trendList").html("");
+				$("#tmpl_news").tmpl(trendList).appendTo("#trendList");
+				//ESG 영상모음
+				$("#videoList").html("");
+				$("#tmpl_video").tmpl(videoList).appendTo("#videoList");
+
+				$("#standardList").html("");
+				$("#tmpl_etc1").tmpl(data).appendTo("#standardList");
+				$("#researchList").html("");
+				$("#tmpl_etc2").tmpl(data).appendTo("#researchList");
+				$("#lawList").html("");
+				$("#tmpl_etc3").tmpl(data).appendTo("#lawList");
+
+			});
+		}
+
+		function fnInitView() {
+			//ESG 관심 영역 checkbox 생성
+			$.post("/common/selectCodeList", {"grpCd": "INDSTY_LCLS_CD"}, function (data) {
+				var list = data.list;
+				var innerHtml = "<option value=''>선택</option>";
+				$.each(list, function (index, item) {
+					if (item.cd != 'L' && item.cd != 'P' && item.cd != 'U' && item.cd != 'V'
+						&& item.cd != 'T') {
+						innerHtml += "<option value='" + item.cd + "'>" + item.cdNm + "</option>";
+					}
+				});
+				$("#regIndstyLclsCd").append(innerHtml);
+			});
+
+		}
+
+		// 기본 데이터 조회
+		function fnInitData() {
+		}
+
+		// 이벤트 설정
+		function fnInitEvent() {
+
+			$("#csrd_next1").bind("click", function () {
+				fnOpenPop("csrdViewPopup01");
+			});
+
+			$("#csrd_pre2").bind("click", function () {
+				fnOpenPop("targetViewPopup");
+			});
+			$("#csrd_next2").bind("click", function () {
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				fnOpenPop("csrdViewPopup02");
+
+			});
+			$("#csrd_pre3").bind("click", function () {
+				fnOpenPop("csrdViewPopup01");
+			});
+			$("#csrd_next3").bind("click", function () {
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				var csrd01 = $("[name=csrd01]:checked").val();
+				var businessScaleCd = $("#businessScaleCd").val();
+				if (csrd01 == "3") {
+					$("#csrd_next4").removeClass("disabled")
+					$("#csrd_next4").click();
+					return;
+				}
+
+				fnOpenPop("csrdViewPopup03");
+			});
+			$("#csrd_pre4").bind("click", function () {
+				fnOpenPop("csrdViewPopup02");
+			});
+			$("#csrd_next4").bind("click", function () { //완료
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				//$("#pop04Div").removeClass("show");
+
+				var formData, param = {};
+				formData = _formLib.getFormData("savefrm");
+
+				param = {
+					"url": "/disclosure/csrdSave"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						if (data.msg == "success") {
+							$("#csrdResult01 .datetime,#csrdResult02 .datetime,#csrdViewPopupResult .datetime").html(
+								data.info.fstInsDt)
+							$("#csrdViewPopupResult .modal-cont").html(data.info.csrdCaseHtml);
+							fnOpenPop("csrdViewPopupResult");
+
+						} else {
+							alert(data.msg);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+
+			});
+
+			$('#csrdViewPopup01 input:radio').on("change", function () {
+				chkNext02();
+			});
+			$('#csrdViewPopup03 input[name=csrd02]').on("change", function () {
+				var csrd01 = $("[name=csrd01]:checked").val();
+				var csrd02 = $("[name=csrd02]:checked").val();
+				var businessScaleCd = $("#businessScaleCd").val();
+				if (csrd01 == "1") {
+					$("#Qcsrd03").hide();
+					$("#Qcsrd04").hide();
+				} else if (csrd01 == "2") {
+					if (csrd02 == "Y") {
+						$("#Qcsrd03").hide();
+						$("#Qcsrd04").show();
+						$("#Qcsrd04 .num").html("04");
+					} else {
+						$("#Qcsrd03").show();
+						$("#Qcsrd04").hide();
+						$("#Qcsrd04 .num").html("05");
+					}
+				}
+
+				$("[name=csrd03]:checked").prop("checked", false);
+				$("[name=csrd04]:checked").prop("checked", false);
+				chkNext03();
+			});
+
+			$('#csrdViewPopup03 input[name=csrd03]').on("change", function () {
+				var csrd01 = $("[name=csrd01]:checked").val();
+				var csrd02 = $("[name=csrd02]:checked").val();
+				var csrd03 = $("[name=csrd03]:checked").val();
+				var businessScaleCd = $("#businessScaleCd").val();
+				if ((businessScaleCd == "SME" || businessScaleCd == "MICRO") && csrd03 == "N") {
+					$("[name=csrd04]:checked").prop("checked", false);
+					$("#Qcsrd04").hide();
+				} else {
+					$("#Qcsrd04").show();
+				}
+				chkNext03();
+			});
+			$('#csrdViewPopup03 input[name=csrd04]').on("change", function () {
+				chkNext03();
+			});
+			//대분류 업종선택 - 중분류 업종 조회
+			$("#regIndstyLclsCd").bind("change", function () {
+				//ESG 관심 영역 checkbox 생성
+				$.post("/common/selectUnderCodeList", {
+					"grpCd": "INDSTY_MCLS_CD",
+					"uprCd": $(this).val()
+				}, function (data) {
+					var list = data.list;
+					$("#regIndstyMclsCd").html("");
+					$("#regIndstySclsCd").html("<option value=''>선택</option>");
+					var innerHtml = "<option value=''>선택</option>";
+					$.each(list, function (index, item) {
+						innerHtml += "<option value='" + item.cd + "'>" + item.cdNm + "</option>";
+					});
+					$("#regIndstyMclsCd").append(innerHtml);
+				});
+				chkNext01();
+			});
+
+			//중분류 업종선택 - 소분류 업종 조회
+			$("#regIndstyMclsCd").bind("change", function () {
+				//ESG 관심 영역 checkbox 생성
+				$.post("/common/selectUnderCodeList", {
+					"grpCd": "INDSTY_SCLS_CD",
+					"uprCd": $(this).val()
+				}, function (data) {
+					var list = data.list;
+					$("#regIndstySclsCd").html("");
+					var innerHtml = "<option value='' data-ref1cd=''>선택</option>";
+					$.each(list, function (index, item) {
+						innerHtml += "<option value='" + item.cd + "' >" + item.cdNm + "</option>";
+					});
+					$("#regIndstySclsCd").append(innerHtml);
+				});
+				chkNext01();
+			});
+
+			//소분류 업종
+			$("#regIndstySclsCd").bind("change", function () {
+				chkNext01();
+			});
+			$("#businessScale1Cd,#businessScale2Cd,#businessScale3Cd").bind("change", function () {
+				chkNext01();
+			});
+		}
+
+		function chkNext01() {
+			var lclsCd = $("#regIndstyLclsCd").val();	//업종 대분류
+			var mclsCd = $("#regIndstyMclsCd").val();	//업종 중분류
+			var sclsCd = $("#regIndstySclsCd").val();	//업종 소분류
+			var businessScale1Cd = $("#businessScale1Cd").val();
+			var businessScale2Cd = $("#businessScale2Cd").val();
+			var businessScale3Cd = $("#businessScale3Cd").val();
+
+			if (lclsCd != '' && mclsCd != '' && sclsCd != '' && businessScale1Cd != ''
+				&& businessScale2Cd != '' && businessScale3Cd != '') {
+				$("#csrd_next3").removeClass("disabled");
+				chkNext01_cd();
+			} else {
+				$("#csrd_next3").addClass("disabled");
+
+			}
+
+		}
+
+		function chkNext02() {
+			$("#csrd_next2").removeClass("disabled");
+		}
+
+		function chkNext03() {
+			var is = true;
+			$('#csrdViewPopup03 .question-list  li  input:radio').each(function () {
+				console.log()
+				if ($(' #csrdViewPopup03 [name="' + $(this).attr("name") + '"]').closest(
+					".question-list").css("display") != "none") {
+					if ($(' #csrdViewPopup03 [name="' + $(this).attr("name") + '"]:checked').length
+						== 0) {
+						console.log("pop03Div", $(this).attr("name"))
+						is = false;
+					}
+				}
+
+			})
+			if (is) {
+				$("#csrd_next4").removeClass("disabled");
+			} else {
+				$("#csrd_next4").addClass("disabled");
+			}
+		}
+
+		function chkNext01_cd() {
+			var businessScaleCd = "";
+			var businessScale1Cd = $("#businessScale1Cd").val();
+			var businessScale2Cd = $("#businessScale2Cd").val();
+			var businessScale3Cd = $("#businessScale3Cd").val();
+			if (businessScale1Cd == "01") //10명 이하
+			{
+				if (businessScale2Cd == "01") {
+					businessScaleCd = "MICRO";
+				} else if (businessScale2Cd == "02") {
+					if (businessScale3Cd == "01") {
+						businessScaleCd = "MICRO";
+					} else {
+						businessScaleCd = "SME";
+					}
+
+				} else if (businessScale2Cd == "03") {
+					if (businessScale3Cd == "01") {
+						businessScaleCd = "MICRO";
+					} else if (businessScale3Cd == "02") {
+						businessScaleCd = "SME";
+					} else {
+						businessScaleCd = "LARGE";
+					}
+				}
+			} else if (businessScale1Cd == "02") //10명 초과 250명 미만
+			{
+				if (businessScale2Cd == "03" && businessScale3Cd == "03") {
+					businessScaleCd = "LARGE";
+				} else {
+					businessScaleCd = "SME";
+				}
+			} else if (businessScale1Cd == "03") //250명 이상 500명 미만
+			{
+				if (businessScale2Cd == "01") {
+					if (businessScale3Cd == "01") {
+						businessScaleCd = "MICRO";
+					} else if (businessScale3Cd == "02") {
+						businessScaleCd = "SME";
+					} else {
+						businessScaleCd = "LARGE";
+					}
+				} else if (businessScale2Cd == "02") {
+					if (businessScale3Cd == "03") {
+						businessScaleCd = "LARGE";
+					} else {
+						businessScaleCd = "SME";
+					}
+
+				} else if (businessScale2Cd == "03") {
+					businessScaleCd = "LARGE";
+				}
+			} else if (businessScale1Cd == "04") //500명 이상
+			{
+				if (businessScale2Cd == "01") {
+					if (businessScale3Cd == "01") {
+						businessScaleCd = "MICRO";
+					} else if (businessScale3Cd == "02") {
+						businessScaleCd = "SME";
+					} else {
+						businessScaleCd = "NFRD";
+					}
+				} else if (businessScale2Cd == "02") {
+					if (businessScale3Cd == "03") {
+						businessScaleCd = "NFRD";
+					} else {
+						businessScaleCd = "SME";
+					}
+
+				} else if (businessScale2Cd == "03") {
+					businessScaleCd = "NFRD";
+				}
+			}
+			$("#businessScaleCd").val(businessScaleCd);
+		}
+
+		function fnOpenPop(showId) {
+			//alert(showId);
+			$(".modal-wrap").removeClass("show");
+			$("#" + showId).addClass("show");
+		}
+
+		function activeTabEvent() {
+			let winW = $(window).width();
+			$('.tab-list').find('li button').removeClass('current');
+			$('.tab-wrap .showmo').hide();
+			if (winW > 767) {
+				$('.tab-list').find('li').eq(0).find('button').addClass('current');
+				$('.tab-wrap .showmo').eq(0).show().addClass('current');
+			} else {
+				$('.tab-list').find('li').eq(1).find('button').addClass('current');
+				$('.tab-wrap .showmo').eq(1).show().addClass('current');
+			}
+		}
+
+		function tab2() {
+			console.log('tab2')
+			$(".tab-wrap .tab-list li button").on("click", function () {
+				var num = $(this).closest("li").index();
+				var group = $(this).parents(".tab-wrap");
+
+				if ($(this).hasClass("current")) {
+					group.closest("li").removeClass("current");
+					group.closest("li").removeClass("m-current");
+					return false;
+				} else {
+					group.find(".tab-list li button").removeClass("current");
+					group.find(".tab-list li button").removeClass("m-current");
+					$(this).addClass("current");
+					group.find(".tab-cont .contBody").hide();
+					group.find(".tab-cont .contBody").eq(num).show();
+					//$('.slider').slick('setPosition');
+					if ($(".img-slide-sub").length) {
+						$(".img-slide-sub").slick("setPosition");
+					}
+					if ($(window).width() < 1180) {
+						const btnLeft = $(this).offset().left;
+						const btnW = $(this).outerWidth(true);
+						$(this).closest('.tab-list').animate({
+							scrollLeft: $(this).closest('.tab-list').scrollLeft() + btnLeft + -$(
+								window).width() / 2 + btnW / 2
+						}, 300);
+					}
+				}
+				selectBox();
+			});
+		}
+
+		function tabOffsetAuto() {
+			let winW = $(window).width();
+			if ($(window).width() < 1180) {
+				const btnLeft = $('.current-wrap .current').offset().left;
+				const btnW = $('.current-wrap .current').outerWidth(true);
+				$('.current-wrap').scrollLeft(
+					$('.current-wrap').scrollLeft() + btnLeft + -$(window).width() / 2 + btnW / 2);
+			}
+		}
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+
+	<section class="content sub content-esg-disclosure">
+		<div class="sub-title-a">
+			<div class="ct">
+				<div class="tit">ESG 공시</div>
+				<div class="subs">ESG 주요 공시 기관별 기준서의 프레임워크를 소개하고, 각 기준서의 해설/사례, 관련 컨텐츠를 제공합니다.</div>
+			</div>
+			<div class="bgBack"></div>
+			<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+		</div>
+
+		<div class="tab-scroll">
+			<ul class="keyword-wrap current-wrap">
+				<li th:each="item, stat : ${list}">
+					<button type="button" th:id="'tabId'+${stat.count}" class=" btn-rd-wh" th:data="${item.tpicUid}">
+						<span>[[${item.tpicNm}]]</span></button>
+				</li>
+			</ul>
+		</div>
+
+		<div class="tab-cont">
+			<div class="contMain" id="tab_vw1"></div>
+			<div class="contMain" id="tab_vw2">
+				<section class="section pt60">
+					<div class="default-width">
+						<h3 class="tit-line-top" id="apndCn"></h3>
+						<div class="txt-bg-box">
+							<p id="sumryComnt"></p>
+						</div>
+						<!-- //txt-bg-box-->
+					</div>
+					<div class="tab-wrap gap-top">
+						<ul class="tab-list under default-width">
+							<li class="s-hide">
+								<button type="button"><span><data class='vw_nm'></data> 프레임워크</span>
+								</button>
+							</li>
+							<li>
+								<button type="button"><span><data class='vw_nm'></data> <data class='vw_nm2'></data></span>
+								</button>
+							</li>
+							<li>
+								<button type="button"><span>관련 컨텐츠 보기</span></button>
+							</li>
+						</ul>
+						<!-- //tab-list -->
+
+						<div class="tab-cont">
+							<div class="contBody s-hide showmo" id="info_50">
+
+							</div>
+							<!-- //cont -->
+							<div class="contBody showmo" id="info_30">
+
+
+							</div>
+							<!-- //cont -->
+							<div class="contBody">
+								<section class="section default-width pt60 pb60">
+									<h4 class="tit-line-left">삼일 인사이트</h4>
+									<div class="thumbnail-wrap">
+										<ul class="list" id="pwcInsightsList">
+
+										</ul>
+
+										<div class="btn-more-wrap">
+											<button type="button" class="btn-white arrow-after" onclick="location.href='/trend/insightsList'">
+												<span>더보기</span>
+											</button>
+										</div>
+
+									</div>
+
+								</section>
+
+								<section class="section default-width pb60">
+									<h4 class="tit-line-left">최신 동향</h4>
+									<div class="news-wrap">
+										<ul id="trendList">
+
+										</ul>
+									</div>
+									<div class="btn-more-wrap mar_t20">
+										<button type="button" class="btn-white arrow-after" onclick="location.href='/trend/esgNewsList'">
+											<span>더보기</span></button>
+									</div>
+								</section>
+
+
+								<section class="section default-width pb60">
+									<h4 class="tit-line-left">ESG 영상모음</h4>
+									<div class="thumbnail-wrap">
+										<ul class="list mo-design-modify-list" id="videoList">
+
+										</ul>
+									</div>
+									<div class="btn-more-wrap">
+										<button type="button" class="btn-white arrow-after" onclick="location.href='/trend/bbsList'">
+											<span>더보기</span>
+										</button>
+									</div>
+								</section>
+
+								<section class="section default-width pb100">
+									<h4 class="tit-line-left">ESG 자료모음</h4>
+									<ol class="data-group-wreap">
+										<li>
+											<strong class="tit">기준/가이드 라인</strong>
+											<ol id="standardList"></ol>
+										</li>
+										<li>
+											<strong class="tit">연구/보고</strong>
+											<ol id="researchList"></ol>
+										</li>
+										<li>
+											<strong class="tit">법/제도</strong>
+											<ol id="lawList"></ol>
+										</li>
+									</ol>
+									<!-- //"data-group-wreap -->
+									<!--20230901버튼추가//-->
+									<div class="btn-more-wrap">
+										<button type="button" class="btn-white arrow-after" onclick="location.href='/trend/bbsList'">
+											<span>더보기</span>
+										</button>
+									</div>
+									<!--//20230901버튼추가-->
+								</section>
+
+							</div>
+							<!-- //cont -->
+						</div>
+						<!-- //tab-list -->
+					</div>
+				</section>
+			</div>
+		</div>
+
+	</section>
+	<!-- //content -->
+	<!-- floating-wrap// -->
+	<div class="floating-wrap">
+		<button type="button"><span>온라인 문의</span></button>
+	</div>
+
+
+</div>
+<!-- popup fragment -->
+<th:block layout:fragment="popup">
+	<form id="savefrm">
+		<input type="hidden" name="businessScaleCd" id="businessScaleCd">
+		<div class="modal-wrap" id="targetViewPopup">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 대상 Self Check</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont">
+						<section class="question-wrap h584">
+							<p class="txt-ct">CSRD 보고 대상 Self Check는 기업 정보에 대한 5개 내외의 간단한 질문을 통해<br>
+								CSRD 공시 대상여부, 공시 시기, 보고 옵션 등의 정보를 확인하실 수 있도록 설계되었습니다.</p>
+							<ul class="self-check-step">
+								<!--20230901 텍스트수정//-->
+								<li>
+									<strong>01. 기업정보 입력</strong> <span>직원수, 자산규모, 순매출액</span>
+								</li>
+								<li>
+									<strong>02. EU 거래정보 입력</strong> <span>거래유형, 상장여부, 매출액 등</span>
+								</li>
+								<li>
+									<strong>03. 결과 확인</strong> <span>대상여부, 공시시기, 보고옵션 등</span>
+								</li>
+								<!--//20230901 텍스트수정-->
+							</ul>
+							<div class="self-white-box">
+								<p class="bul-square">본 자가진단은 일반 기업을 대상으로 작성되었으며 금융 기관, 신용 기관, 보험
+									회사, 공기업(PIE) 등에는 별도의 기준이 적용될 수 있음을 알려드립니다. 공시 적용 대상과 최초 공시 시기는
+									EU 회원국의 법제화 동향에 따라 실제 CSRD 기준과 차이가 존재할 수 있습니다. </p>
+
+								<p class="bul-square">
+									의무공시 시기는 국가별, 기업별로 차이가 있을 수 있으며, 정확한 진단을 위해서는 전문가와 상의가
+									필요합니다. </p>
+							</div>
+						</section>
+						<div class="btn-wrap">
+							<button type="button" class="btn-primary small arrow" id="csrd_next1">
+								<span>진단 시작하기</span>
+							</button>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+
+		<!--//modal-wrap-->
+		<div class="modal-wrap" id="csrdViewPopup01">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 대상 Self Check</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont">
+						<section class="question-wrap h584">
+							<ol class="list-wrap">
+								<li class="question-list">
+									<div class="question">01. 귀하의 회사는 다음 중 어느 유형에 해당됩니까?</div>
+									<ul class="radio-row-list">
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd01_1" value="1" name="csrd01">
+												<label for="csrd01_1"><span>EU 역내 법인</span></label>
+											</div>
+										</li>
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd01_2" value="2" name="csrd01">
+												<label for="csrd01_2"><span>EU 역내 종속기업(Subsidiary, Branch)을 보유한 모기업(parent company)</span></label>
+											</div>
+										</li>
+										<!--  li>
+											<div class="radio-wrap">
+												<input type="radio"  id="csrd01_3" value="3" name="csrd01">
+												<label for="csrd01_3"><span>EU 역내 법인이 없으나 EU와 거래하는 기업</span></label>
+											</div>
+										</li-->
+
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd01_3" value="3" name="csrd01">
+												<label for="csrd01_3"><span>해당 사항 없음</span></label>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ol>
+						</section>
+						<div class="btn-wrap">
+							<button type="button" class="btn-white" id="csrd_pre2"><span>이전</span>
+							</button>
+							<button type="button" class="btn-primary small arrow disabled" id="csrd_next2">
+								<span>다음</span></button>
+						</div>
+
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+		<div class="modal-wrap" id="csrdViewPopup02">
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 대상 Self Check</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<!--누락텍스트추가 09.20-->
+					<div class="modal-cont">
+						<section class="question-wrap h584">
+							<ol class="list-wrap">
+								<li class="question-list">
+									<div class="question">02. 귀하의 회사에 대한 기본 정보를 입력해주십시오.</div>
+									<!--									<div class="label-group">-->
+									<!--										<label class="label">업무 분류</label>-->
+									<!--										<div class="select-flex wide">-->
+									<!--											<select name="regIndstyLclsCd" id="regIndstyLclsCd" class="select"> </select>-->
+									<!--											<select name="regIndstyMclsCd" id="regIndstyMclsCd" class="select">-->
+									<!--												<option value="">선택</option>-->
+									<!--											</select>-->
+									<!--											<select name="regIndstySclsCd" id="regIndstySclsCd" class="select">-->
+									<!--												<option value="">선택</option>-->
+									<!--											</select>-->
+									<!--										</div>-->
+									<!--									</div>-->
+
+									<!-- //label-group -->
+									<div class="label-group">
+										<span class="label">기업 규모</span>
+										<div class="select-flex wide">
+											<select name="businessScale1Cd" id="businessScale1Cd" class="select">
+												<option value="">직원 수</option>
+												<option value="01">10명 이하</option>
+												<option value="02">10명 초과 250명 미만</option>
+												<option value="03">250명 이상 500명 미만</option>
+												<option value="04">500명 이상</option>
+											</select>
+											<select name="businessScale2Cd" id="businessScale2Cd" class="select">
+												<option value="">총 자산 규모</option>
+												<option value="01">350,000 € 미만 (한화 약 5억원 미만)
+												</option>
+												<option value="02">350,000 - 20,000,000 € 미만 (한화 약
+													5억 - 267억원)
+												</option>
+												<option value="03">20,000,000 € 이상 (한화 약 267억원 이상)
+												</option>
+											</select>
+											<select name="businessScale3Cd" id="businessScale3Cd" class="select">
+												<option value="">순 매출액</option>
+												<option value="01">700,000 € 미만 (한화 약 10억원 미만)
+												</option>
+												<option value="02">700,000 – 40,000,000 € 미만 (한화 약
+													10억 - 534억원)
+												</option>
+												<option value="03">40,000,000 € 이상 (한화 약 534억원 이상)
+												</option>
+											</select>
+										</div>
+
+									</div>
+									<!-- //label-group -->
+
+									<div class="sj_arlT">* ‘1 EUR : 1,400 KRW’ 으로 환산된 금액입니다.</div>
+								</li>
+							</ol>
+						</section>
+						<div class="btn-wrap">
+							<button type="button" class="btn-white small arrow" id="csrd_pre3">
+								<span>이전</span></button>
+							<button type="button" class="btn-primary small arrow disabled" id="csrd_next3">
+								<span>다음</span></button>
+						</div>
+					</div>
+					<!--누락텍스트추가 여기까지 09.20-->
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+
+		<div class="modal-wrap" id="csrdViewPopup03">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 대상 Self Check</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont">
+						<!--버튼추가 09.20-->
+						<section class="question-wrap h584">
+							<ol class="list-wrap">
+								<li class="question-list">
+									<div class="question">
+										03. 귀하의 회사는
+										<button type="button" class="btn-tooltip btn-tooltip1">EU
+											규제시장
+										</button>
+										에 채권 또는 주식을 상장하였습니까 ?
+										<div class="tooltip-cont tooltip-cont1">
+											<dl>
+												<dt>EU 규제시장이란?</dt>
+												<dd class="sub-txt">ESMA (European Securities and
+													Markets authority)에 유가 증권이 상장된 기업을 의미합니다. <br>*
+													ESMA 웹사이트에서 EU 규제 시장에 상장되었는지 확인해볼 수 있습니다:
+													<strong><a href="https://registers.esma.europa.eu/publication/searchRegister?core=esma_registers_upreg" target="_blank">[바로가기]</a></strong>
+												</dd>
+											</dl>
+										</div>
+									</div>
+									<ul class="radio-row-list">
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd02_1" name="csrd02" value="Y">
+												<label for="csrd02_1"><span>예</span></label>
+											</div>
+										</li>
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd02_2" name="csrd02" value="N">
+												<label for="csrd02_2"><span>아니오</span></label>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li class="question-list" id="Qcsrd03" style="display: none">
+									<div class="question">
+										<data class="num">04</data>
+										.
+										<button type="button" class="btn-tooltip btn-tooltip2">EU역내 대기업</button>
+										<div class="tooltip-cont tooltip-cont2 tool2">
+											<p class="sub-tit">EU 역내 대기업은 다음 중 두 가지 조건을 충족합니다.</p>
+											<ul class="sub-txt">
+												<li>1] 평균 직원 수 250명 이상</li>
+												<li>2] 총 자산 규모 20,000,000€ (한화 약 267억원) 이상</li>
+												<li>3] 순 매출액 40,000,000€ (한화 약 535억원) 이상</li>
+											</ul>
+										</div>
+										또는 상장된 자회사 또는
+										<button type="button" class="btn-tooltip btn-tooltip3">지사</button>
+										가 1개 이상 있습니까?
+										<div class="tooltip-cont tooltip-cont3 tool3">
+											<p class="sub-tit">지사는 다음 조건을 충족합니다</p>
+											<ul class="sub-txt">
+												<li>순 매출액 40,000,000€ (한화 약 535억원) 이상</li>
+											</ul>
+										</div>
+									</div>
+									<ul class="radio-row-list">
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd03_1" name="csrd03" value="Y">
+												<label for="csrd03_1"><span>예</span></label>
+											</div>
+										</li>
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd03_2" name="csrd03" value="N">
+												<label for="csrd03_2"><span>아니오</span></label>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li class="question-list" id="Qcsrd04" style="display:none;">
+									<div class="question">
+										<data class="num">05</data>
+										. (지난 2개년 회계연도 연속) EU 역내 연결 매출액이 150,000,000€ (한화 약 2000억원)
+										이상입니까?
+									</div>
+									<ul class="radio-row-list">
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd04_1" name="csrd04" value="Y">
+												<label for="csrd04_1"><span>예</span></label>
+											</div>
+										</li>
+										<li>
+											<div class="radio-wrap">
+												<input type="radio" id="csrd04_2" name="csrd04" value="N">
+												<label for="csrd04_2"><span>아니오</span></label>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ol>
+						</section>
+						<!--버튼추가 여기까지 09.20-->
+						<div class="btn-wrap">
+							<button type="button" class="btn-white small arrow" id="csrd_pre4">
+								<span>이전</span></button>
+							<button type="button" class="btn-primary small arrow disabled" id="csrd_next4">
+								<span>완료</span></button>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+
+		<div class="modal-wrap scroll-fixed-modify" id="csrdViewPopupResult">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 대상 Self Check</h2>
+<!--						<p class="datetime">2023.07.12 10:00</p>-->
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont e_pc">
+					</div>
+
+					<div class="modal-cont e_mo mobile-result">
+						<div class="result-tx">
+							귀하의 기업은 EU 역내 대기업으로 <b>2023(FY25) 공시</b> 대상입니다
+						</div>
+
+						<dl class="result-cont">
+							<dt></dt>
+							<dd>
+								<div class="year">2025</div>
+							</dd>
+
+							<dd>
+								<div class="year">2026</div>
+								<ul class="result-list">
+									<li class="pinkbox">
+										<div class="date">2026.1.1 ~</div>
+										<div class="tx-cont">CSRD 공시</div>
+									</li>
+
+									<li class="orangebox">
+										<div class="date">2026.1.1 ~</div>
+										<div class="tx-cont">EU, 제한적 인증기준 체택</div>
+									</li>
+								</ul>
+							</dd>
+
+							<dd>
+								<div class="year">2027</div>
+							</dd>
+
+							<dd>
+								<div class="year">2028</div>
+								<ul class="result-list">
+									<li class="orangebox">
+										<div class="date">2028.10 ~</div>
+										<div class="tx-cont">EU, 합리적 인증기준 체택</div>
+									</li>
+								</ul>
+							</dd>
+
+							<dd>
+								<div class="year">2029</div>
+							</dd>
+						</dl>
+
+						<div class="btn-list">
+							<div class="btn">
+								<div class="subj">공시 예외사항, 유예사항</div>
+								<div class="arrow">
+									<img src="/assets/img/common/ico_schedule_wh.svg"></div>
+							</div>
+
+							<div class="btn">
+								<div class="subj">CSRD 공시 준비사항</div>
+								<div class="arrow">
+									<img src="/assets/img/common/ico_schedule_wh.svg"></div>
+							</div>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+		<!--//modal-wrap-->
+
+		<div class="modal-wrap scroll-fixed-modify" id="csrdResult01">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 예외사항 &middot; 유예사항</h2>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont">
+						<div class="self-check-wrap">
+							<div class="notice-wrap">
+								<p class="tit">CSRD는 기업들의 공시 부담을 완화하기 위해 다양한 공시 옵션을 제공합니다. 장기적으로 가장
+									효과적이고 효율적인 공시 전략을 수립하기 위해 가능한 모든 공시 옵션의 장단점을 파악하는 것이 중요합니다.</p>
+								<ol>
+									<li>
+										<p class="sub-tit">1. Non-EU 모기업 연결 공시 시 법인 예외 가능성</p>
+										<ul class="bul-rd">
+											<li>Non-EU 모기업이 CSRD 공시 규정 혹은 ‘동등하다고 간주되는 방식’ 으로 작성한 연결
+												기준 보고서에 EU 역내 CSRD 공시 대상 법인이 포함 된 경우, 해당 법인은 공시 대상에서
+												제외될 수 있습니다. (** 단, 상장 대기업은 별도 공시 대상입니다)
+											</li>
+											<li>EU에서 2024년 1월까지 Non-EU 모기업 별도 적용 기준을 발표할 예정입니다. 그러나
+												Non-EU 모기업 별도 적용 기준을 CSRD 공시 규정과 동등한 기준으로 간주할지 여부는
+												확정되지 않은 상태입니다. 이에 CSRD 공시 기준에 대한 지속적인 모니터링을 통해 법인 예외
+												가능성을 주시할 필요가 있습니다.
+											</li>
+										</ul>
+									</li>
+									<li>
+										<p class="sub-tit">2. EU 역내 인위적 연결 공시 가능성</p>
+										<ul class="bul-rd">
+											<li>2030년까지 CSRD 공시 대상이 되는 모든 EU역내 기업에 대해 ‘인위적으로‘ 연결 공시를
+												허용하는 유예 기간이 적용됩니다.
+											</li>
+											<li>EU 역내 CSRD 공시 대상 자회사 및 지사가 2개 이상인 경우, 매출액 기준으로 가장 큰
+												자회사가 연결 기준으로 공시하면 그룹 수준의 모기업 연결 공시로 간주됩니다. 해당 연결 공시에
+												포함된 EU 역내 법인은 공시 대상에서 제외될 수 있습니다. (단, 상장 대기업은 별도 공시
+												대상입니다)
+											</li>
+										</ul>
+									</li>
+									<li>
+										<p class="sub-tit">3. 공시 동등성 인정</p>
+										<ul class="bul-rd">
+											<li>2024년 1월까지 CSRD 공시의 산업별 기준, SME(중소기업) 기준, Non-EU 모기업
+												별도 적용 기준이 발표될 예정입니다.
+											</li>
+											<li>타 공시 기준 간 상호운용성과 동등성의 기준이 확정되지 않았으나, 각 국가별 법적 규제가
+												CSRD가 요구하는 공시 수준을 충족하지 못할 가능성이 높습니다. 현재까지 CSRD의 공시
+												범위가 가장 넓기때문에 동등성이 인정되는 타 기준을 찾기 어려울 것으로 보이지만, IFRS의
+												ISSB기준, 미국 SEC 기후공시 의무화 법안 간 상호 운용성이 인정되는 부분을 파악하여
+												공시 대응 전략을 수립할 필요가 있습니다.
+											</li>
+										</ul>
+									</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+					<!--//modal-cont-->
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+
+		<div class="modal-wrap scroll-fixed-modify" id="csrdResult02">
+			<!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+			<div class="dimmed"></div>
+			<div class="center">
+				<section class="modal-area w1024">
+					<div class="modal-head left">
+						<h2 class="tit">CSRD 공시 준비사항</h2>
+						<p class="datetime">2023.07.12 10:00</p>
+						<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+						</button>
+					</div>
+					<div class="modal-cont e_pc">
+						<div class="self-check-wrap">
+							<p class="phase-tit">CSRD 공시 대상인 경우 다음과 같은 단계로 공시를 준비하여야 합니다.</p>
+							<ul class="phase-wrap">
+								<li>
+									<strong>Phase 1</strong>
+									<p class="tit">진단 및 전략 수립</p>
+									<div>
+										<ol>
+											<li><p><span>01.</span>CSRD 공시 요건 진단</p></li>
+											<li><p><span>02.</span>중대성 평가</p></li>
+											<li><p><span>03.</span>Gap 분석 수행</p></li>
+											<li><p><span>04.</span>CSRD 공시 로드맵 및 실행계획 수립</p></li>
+										</ol>
+									</div>
+								</li>
+								<li>
+									<strong>Phase 2</strong>
+									<p class="tit">지속가능 경영 활동 내재화</p>
+									<div>
+										<ol>
+											<li><p><span>05.</span>거버넌스 및 내부 통계 체계 수립</p></li>
+											<li><p><span>06.</span>위험 요소 및 기회 요소 내재화</p></li>
+											<li><p><span>07.</span>데이터 수집 시스템 및 인프라 구축</p></li>
+										</ol>
+									</div>
+								</li>
+								<li>
+									<strong>Phase 3</strong>
+									<p class="tit">이행 및 개선</p>
+									<div>
+										<ol>
+											<li><p><span>08.</span>IT 인프라 운영 및 데이터 수집</p></li>
+											<li><p><span>09.</span>EU Taxonomy 진단</p></li>
+											<li><p><span>10.</span>제3자 인증 준비</p></li>
+											<li><p><span>11.</span>피드백 수렴 및 개선 필요 사항 식별</p></li>
+										</ol>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="modal-cont e_mo mobile-result">
+						<div class="result-tx">
+							CSRD 공시 대상인 경우 다음과 같은 단계로 공시를 준비하여야 합니다.
+						</div>
+
+						<dl class="phase-list">
+							<dd>
+								<div class="step">Phase 1</div>
+								<div class="subjBox">진단 및 전략 수립</div>
+								<ul class="listBox">
+									<li>01. CSRD 공시 요건 진단</li>
+									<li>02. 중대성 평가</li>
+									<li>03. Gap 분석 수행</li>
+									<li>04. CSRD 공시 로드맵 및 실행계획 수립</li>
+								</ul>
+							</dd>
+
+							<dd>
+								<div class="step">Phase 2</div>
+								<div class="subjBox">지속가능 경영 활동 내재화</div>
+								<ul class="listBox">
+									<li>05. 거버넌스 및 내부 통계 체계 수립</li>
+									<li>06. 위험 요소 및 기회 요소 내재화</li>
+									<li>07. 데이터 수집 시스템 및 인프라 구축</li>
+								</ul>
+							</dd>
+
+							<dd>
+								<div class="step">Phase 3</div>
+								<div class="subjBox">지속가능 경영 활동 내재화</div>
+								<ul class="listBox">
+									<li>08. IT 인프라 운영 및 데이터 수집</li>
+									<li>09. EU Taxonomy 진단</li>
+									<li>10. 제3자 인증 준비</li>
+									<li>11. 피드백 수렴 및 개선 필요 사항 식별</li>
+								</ul>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<!--//modal-area-->
+			</div>
+			<!-- //xycenter -->
+		</div>
+	</form>
+
+</th:block>
+</html> 

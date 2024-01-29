@@ -1,0 +1,56 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.1'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+bootWar {
+	archiveName("ROOT.war")
+}
+
+group = 'com.pwc'
+apply plugin: 'war'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	providedCompile 'org.apache.tomcat.embed:tomcat-embed-jasper'
+//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '3.0.0'
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	implementation 'org.codehaus.jackson:jackson-core-asl:1.1.0'
+	implementation 'org.codehaus.jackson:jackson-mapper-asl:1.5.0'
+	implementation 'org.json:json:20211205'
+	implementation 'org.apache.poi:poi:5.2.2'                // .xls 확장자
+	implementation 'org.apache.poi:poi-ooxml:5.2.2'          // .xlsx 확장자
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'xerces:xercesImpl:2.8.1'
+	implementation group: 'javax.ws.rs', name: 'jsr311-api', version: '0.8'
+//	implementation 'mysql:mysql-connector-java'
+//	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+	implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '12.4.1.jre11'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'javax.servlet:jstl:1.2'
+	implementation group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'
+	implementation group: 'org.jdom', name: 'jdom', version: '2.0.0'
+	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */
+	implementation group: 'com.azure', name: 'azure-communication-email', version: '1.0.2'
+	implementation group: 'com.clickhouse', name: 'org.apache.commons.compress', version: '1.9.2'
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	//konan jar
+	implementation 'org.apache.commons:commons-lang3:3.3.2'
+	implementation 'com.google.code.gson:gson:2.8.0'
+}

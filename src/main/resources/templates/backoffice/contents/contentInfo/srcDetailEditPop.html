@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- popup Fragment -->
+<!-- detail form -->
+<th:block th:fragment="srcDetailEditPopFragment">
+	<script type="text/javascript">
+		/* 데이터 상세보기 모듈 */
+		let contentView = (function() {
+			let moduleNm = "contentView";
+
+			let init = function() {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function(_contUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_contUid})`);
+
+				setData(_contUid, function() {
+					$("#viewPopContents").addClass("show");
+				})
+			};
+
+			let setEvent = function() {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 숫자입력
+				$("#docForm INPUT[type=text].inputNumber").on("input", function () {
+					this.value = this.value.replace(/[^0-9]/g, "");
+				});
+
+				// 컨텐츠 종류
+				$("#docForm INPUT[name=contKindCd]").on("change", function() {
+					$("#docForm INPUT[name=contRmthdCd][value='10']").prop("checked", true).trigger('change');
+					($(this).val() === '10') ? $("#docForm #linkLi").show() : $("#docForm #linkLi").hide();
+					($(this).val() === '20') ? $("#docForm #embedLi").show() : $("#docForm #embedLi").hide();
+					($(this).val() === '30') ? $("#docForm #regTypeTr").hide() : $("#docForm #regTypeTr").show();
+				});
+
+				// 등록방식
+				$("#docForm INPUT[name=contRmthdCd]").on('change', function() {
+					$("#docForm #docSourceTr").empty();
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '10' && $(this).val() === '10') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#docContHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '10' && $(this).val() === '20') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#docLinkHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '20' && $(this).val() === '10') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#vodContHtml")[0].innerHTML : null;
+					($("#docForm INPUT[name=contKindCd]:checked").val() === '20' && $(this).val() === '30') ? $("#regPopContents #docForm #docSourceTr")[0].innerHTML = $("#regPopContents TEMPLATE#vodEmbedHtml")[0].innerHTML : null;
+				});
+
+				// 컨텐츠업로드
+				$("#docForm").on('change', 'INPUT[name=uploadFile]', function(e) {
+					var file = e.target.files[0];
+					$('#docForm INPUT[name=uploadFileName]').val(file.name);
+					$('#docForm INPUT[name=contSplyTpCd]').val('');
+					$('#docForm INPUT[name=contSplyTpCdNm]').val('');
+					if (file.type === 'application/pdf') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('10');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('PDF');
+					} else if (file.type === 'application/zip' || file.type === 'application/epub+zip') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('30');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('EPUB');
+					} else if (file.type === 'video/mp4') {
+						$('#docForm INPUT[name=contSplyTpCd]').val('20');
+						$('#docForm INPUT[name=contSplyTpCdNm]').val('MP4');
+
+						var videoPlayer = document.getElementById('videoPlayer');
+						videoPlayer.src = URL.createObjectURL(file);
+						videoPlayer.onloadedmetadata = function() {
+							var duration = videoPlayer.duration;
+
+							var hours = Math.floor(duration / 3600);
+							duration %= 3600;
+							var minutes = Math.floor(duration / 60);
+							var seconds = Math.floor(duration % 60);
+
+							$('#docForm INPUT[name=vodQuntyHh]').val(String(hours).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntyMi]').val(String(minutes).padStart(2, '0'));
+							$('#docForm INPUT[name=vodQuntySec]').val(String(seconds).padStart(2, '0'));
+						};
+					}
+				});
+
+				// 발행일자구분코드
+				$("#docForm SELECT[name=pblcnGbCd]").on('change', function() {
+					$("#docForm INPUT[name=pblcnMm]").prop("readonly", !($(this).val() === '20' || $(this).val() === '30'));
+					$("#docForm INPUT[name=pblcnDd]").prop("readonly", !($(this).val() === '30'));
+					$("#docForm INPUT[name=pblcnMm]:read-only").val("");
+					$("#docForm INPUT[name=pblcnDd]:read-only").val("");
+				});
+
+				// 출처
+				$("#docForm INPUT[name=srcNm], #docForm BUTTON[name=doSrcSearch]").on('click', function() {
+					srcList.openPop();
+				});
+
+				// 유형분류
+				$("#docForm SELECT[name=contTpLclsfCd]").on("change", function() {
+					$("#docForm SELECT[name=contTpMclsfCd]").val("").prop("disabled", ($(this).val() !== "10"));
+				});
+
+				// 전시여부
+				$("#docForm INPUT[name=dpTpCd]").on("change", function() {
+					$("#docForm INPUT[name=rlsTgtCd]").prop("disabled", ($(this).val() !== "20")).prop("checked", false);
+				});
+
+				// 기간설정사용
+				$("#docForm INPUT[name=pirdStngUseYn]").on("change", function() {
+					$("#docForm INPUT[name=dpSttDte], #docForm INPUT[name=dpSttHh], #docForm INPUT[name=dpSttMi], #docForm INPUT[name=dpEndDte], #docForm INPUT[name=dpEndHh], #docForm INPUT[name=dpEndMi]").prop("disabled", !$(this).prop("checked"));
+				});
+
+				// 대표이미지
+				$("#docForm INPUT[name=uploadImage]").on('change', function(e) {
+					var reader = new FileReader();
+					reader.onload = function(){
+						// var output = document.getElementById('previewImage');
+						// console.log($("IMG.previewImage"));
+						// output.src = reader.result;
+
+						$("IMG.previewImage").each((e, item) => {
+							// console.log(item);
+							item.src = reader.result;
+						})
+					};
+					reader.readAsDataURL(e.target.files[0]);
+
+				});
+
+				// 등록버튼
+				$("#viewPopContents #docForm BUTTON[name=doSave]").unbind('click').on("click", function() {
+					saveData();
+				});
+			};
+
+			let setData = function(_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_contUid})`);
+
+				$("#docForm").resetForm();
+				$("#viewPopContents #docForm #previewImage").prop("src", '/sems/assets/img/common/noimage.png');
+
+				getData(_contUid, function(data) {
+					var info = data.item;
+
+					$("#viewPopContents INPUT[name=contUid]").val(info.contUid);
+					$("#viewPopContents INPUT[name=contKindCd]").val(info.contKindCd);
+					$("#viewPopContents INPUT[name=contRmthdCd]").val(info.contRmthdCd);
+					$("#viewPopContents INPUT[name=atacFileUid]").val(info.atacFileUid);
+					$("#viewPopContents #cell_contKindCdNm")[0].innerHTML = info.contKindCdNm;
+					$("#viewPopContents #cell_contRmthdCdNm")[0].innerHTML = info.contRmthdCdNm;
+					$("#viewPopContents #cell_contUno")[0].innerHTML = info.contUno;
+					$("#viewPopContents INPUT[name=contNm]").val(info.contNm);
+					$("#viewPopContents SELECT[name=contStCd]").val(info.contStCd);
+					(info.contKindCd === '10' && info.contRmthdCd === '10') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#docContHtml")[0].innerHTML : null;
+					(info.contKindCd === '10' && info.contRmthdCd === '20') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#docLinkHtml")[0].innerHTML : null;
+					(info.contKindCd === '20' && info.contRmthdCd === '10') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#vodContHtml")[0].innerHTML : null;
+					(info.contKindCd === '20' && info.contRmthdCd === '30') ? $("#viewPopContents #docForm #docSourceTr")[0].innerHTML = $("#viewPopContents TEMPLATE#vodEmbedHtml")[0].innerHTML : null;
+					$("#viewPopContents INPUT[name=contSplyTpCd]").val(info.contapndlist[0].contSplyTpCd);
+					$("#viewPopContents INPUT[name=contSplyTpCdNm]").val(info.contapndlist[0].contSplyTpCdNm);
+					$("#viewPopContents INPUT[name=pageCnt]").val(info.contapndlist[0].pageCnt);
+					$("#viewPopContents INPUT[name=uploadFileName]").val(info.contapndlist[0].orgnlFileNm);
+					$("#viewPopContents INPUT[name=linkUrl]").val(info.contapndlist[0].linkUrl);
+					$("#viewPopContents INPUT[name=srcUid]").val(info.srcUid);
+					$("#viewPopContents INPUT[name=srcNm]").val(info.srcNm);
+					$("#viewPopContents INPUT[name=dmstcYn]").val(info.dmstcYn);
+					$("#viewPopContents INPUT[name=dmstcYnNm]").val(info.dmstcYnNm);
+					$("#viewPopContents SELECT[name=splyLangCd]").val(info.splyLangCd);
+					$("#viewPopContents SELECT[name=pblcnGbCd]").val(info.pblcnGbCd).trigger('change');
+					$("#viewPopContents INPUT[name=pblcnYy]").val(info.pblcnYy);
+					$("#viewPopContents INPUT[name=pblcnMm]").val(info.pblcnMm);
+					$("#viewPopContents INPUT[name=pblcnDd]").val(info.pblcnDd);
+					$("#viewPopContents #cell_contTpLclsfCdNm")[0].innerHTML = info.contTpLclsfCdNm;
+					$("#viewPopContents #cell_contTpMclsfCdNm")[0].innerHTML = info.contTpMclsfCdNm;
+					$("#viewPopContents #cell_taskClsfCdNm")[0].innerHTML = info.taskClsfCdNm;
+					$("#viewPopContents #cell_sbjtGbCdNm")[0].innerHTML = info.sbjtGbCdNm;
+					$("#viewPopContents INPUT[name=dpTpCd][value=" + info.dpTpCd + "]").prop('checked', true).trigger('change');
+					$("#viewPopContents INPUT[name=pirdStngUseYn][value=" + info.pirdStngUseYn + "]").prop('checked', true).trigger('change');
+					// ToDo : 기간설정 날짜 처리
+					if (info.rlsTgtCdArry) {
+						$.each(info.rlsTgtCdArry.split(','), function(i, val) {
+							$("#viewPopContents INPUT[name=rlsTgtCd][value=" + val + "]").prop('checked', true)
+						});
+					}
+					$("#viewPopContents INPUT[name=dwnldPsbltyYn][value=" + info.dwnldPsbltyYn + "]").prop('checked', true);
+					$("#viewPopContents INPUT[name=srchPsbltyYn][value=" + info.srchPsbltyYn + "]").prop('checked', true);
+					$("#viewPopContents #cell_kwrdArry")[0].innerHTML = info.kwrdArry;
+					$("#viewPopContents INPUT:checkbox[name=tpicUid]").prop('checked', false);
+					if (info.conttpiclist) {
+						info.conttpiclist.forEach((item, idx) => {
+							$("#viewPopContents INPUT[name=tpicUid][value="+item.tpicUid+"]").prop('checked', true);
+						})
+					}
+					if (info.thumbnail) {
+						$("#viewPopContents IMG#previewImage").attr("src", info.thumbnail);
+					}
+					$("#viewPopContents textarea[name=contSumry]").val(info.contSumry);
+
+					_callback();
+				});
+			};
+
+			let getData = function(_contUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_contUid})`);
+
+				var param = {
+					"url": "/sems/contents/selectDocumentView"
+					, "type": "post"
+					, "data": {"contUid": _contUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#viewPopContents #docForm")[0]);
+
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/contents/updateDocInfo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$("#viewPopContents").removeClass("show");
+						view.getApndData();
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function() {
+			contentView.init();
+		});
+	</script>
+
+	<!-- modal-wrap -->
+	<div id="srcDetailEditPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">출처 상세 조회</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span>
+					</button>
+				</div>
+				<section class="modal-cont">
+					<div class="form-content">
+						<form id="srcDetailEditPopFrm" action="srcDetailEditPopFrm">
+							<input type="hidden" name="srcUid" id="srcUid">
+							<fieldset>
+								<legend>출처 상세 조회</legend>
+								<div id="srcDetailEditPopListDiv1">
+									<div class="search-wrap">
+										<div class="table-wrap">
+											<table class="inner-input align-left">
+												<caption>출처 상세 조회</caption>
+												<colgroup>
+													<col style="width: 15%;">
+													<col style="width: 20%;">
+													<col style="width: 15%;">
+													<col style="width: 20%;">
+													<col style="width: 15%;">
+													<col style="width: *;">
+												</colgroup>
+												<tbody>
+												<tr>
+													<th>출처명</th>
+													<td><input type="text" id="srcNm" name="srcNm">
+													</td>
+													<th>출처번호</th>
+													<td colspan="3" id="srcUnoTd">F00097</td>
+												</tr>
+												<tr>
+													<th>국내/해외</th>
+													<td colspan="5" id="dmstcYnNmTd">국내</td>
+												</tr>
+												<tr>
+													<th>컨텐츠 수 합계</th>
+													<td id="contTotCntTd">105개</td>
+													<th>문서컨텐츠 수</th>
+													<td id="contDocCntTd">55개</td>
+													<th>영상컨텐츠 수</th>
+													<td id="contMovCntTd">50개</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- //table-wrap -->
+									<div class="result-wrap">
+										<div class="sorting-wrap">
+											<select name="srcDetailEditPopPageSize"
+													id="srcDetailEditPopPageSize" class="select"
+													title="데이터 건수">
+												<option value="20">20개</option>
+												<option value="50" selected="selected">50개</option>
+												<option value="100">100개</option>
+												<option value="500">500개</option>
+												<option value="1000">1000개</option>
+											</select>
+											<select name="srcDetailEditPopPageNum"
+													id="srcDetailEditPopPageNum" class="select"
+													title="페이지 이동선택">
+											</select>
+											<div class="btn-ctl">
+												<button type="button" id="btnDownload"
+														name="doExcelDown" class="btn-download">다운로드
+												</button>
+											</div>
+										</div>
+										<!-- //sorting-wrap -->
+										<div id="srcDetailEditPopListDiv" class="table-wrap ">
+											<!-- 페이징 정보 -->
+											<th:block th:unless="${#lists.isEmpty(list)}">
+												<input type="hidden" id="srcDetailEditPopTotalCount"
+													   th:value="${PageInfo.totalCount}"/>
+												<input type="hidden" id="srcDetailEditPopPageNumber"
+													   th:value="${PageInfo.pageNumber}"/>
+												<input type="hidden" id="srcDetailEditPopTotalPage"
+													   th:value="${PageInfo.totalPage}"/>
+											</th:block>
+											<table>
+												<caption>출처 리스트</caption>
+												<colgroup>
+													<col style="width: 5%;">
+													<col style="width: 5%;">
+													<col style="width: 10%;">
+													<col style="width: *;">
+													<col style="width: 7%;">
+													<col style="width: 10%;">
+													<col style="width: 7%;">
+													<col style="width: 10%;">
+													<col style="width: 10%;">
+													<col style="width: 7%;">
+												</colgroup>
+												<thead>
+												<tr>
+													<th>NO</th>
+													<th>종류</th>
+													<th>컨텐츠 번호</th>
+													<th>컨텐츠명</th>
+													<th>언어</th>
+													<th>유형분류</th>
+													<th>업무분류</th>
+													<th>주제분류</th>
+													<th>등록방식</th>
+													<th>형태</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr th:each="item, stat : ${list}">
+													<td th:text="${stat.count}">1</td>
+													<td th:text="${item.contKindCdNm}">문서</td>
+													<td class="contUnoTd"><a th:text="${item.contUno}" th:attr="data-id=${item.contUid}" class="link">CDIA00012</a></td>
+													<td class="left" th:text="${item.contNm}">GRI 1: Foundation 2021</td>
+													<td th:text="${item.splyLangCdNm}">영문</td>
+													<td th:text="${item.contTpLclsfCdNm}">기준/표준</td>
+													<td th:text="${item.taskClsfCdNm}">공시</td>
+													<td th:text="${item.sbjtGbCdNm}">ESG일반</td>
+													<td th:text="${item.contRmthdCdNm}">컨텐츠업로드</td>
+													<td>E-pub</td>
+												</tr>
+												<tr th:if="${#lists.isEmpty(list)}">
+													<td class="nodata" colspan="10">데이터가 존재하지 않습니다.</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+										<!-- //table-wrap -->
+									</div>
+								</div>
+								<!-- //result-list -->
+								<div class="btn-wrap">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('U')}">
+									<button type="button" id="srcDetailEditPopBtnSave" name="doSave"
+											class="btn-primary">저장
+									</button>
+									</th:block>
+									<button type="button" class="btn-sub btn-close">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+
+	<!-- 컨텐츠 조회 팝업 -->
+	<th:block
+		th:replace="/backoffice/contents/document/documentDetailEditPop :: documentDetailEditPopFragment"></th:block>
+	<!--//modal-wrap-->
+
+	<!-- 콘텐츠 상세 popup fragment-->
+	<!--  <th:block th:replace="/sems/contents/contentInfo/contUpsertPop :: fragmentByContUpsertPop" />-->
+</th:block>
+</html>

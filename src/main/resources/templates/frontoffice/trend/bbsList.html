@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorate="~{frontoffice/layout/subwrapLayout}">
+	
+<th:block layout:fragment="script">
+	
+	<script type="text/javascript">
+    $(window).on('load', function(){
+      sortVal();
+    });									
+		$(function () {
+			// 화면 초기화
+			fnInitView();
+			
+			var cate = $('#category').val();
+        	if(cate == 'TOTAL'){
+				$('#category').val('GUIDE');
+			}
+			
+			var fields = $('#fields').val();
+			if(fields == '') {
+				$('#fields').val('title');
+			}	
+
+      		tabOffsetAuto();
+		});
+
+		// 화면 초기화
+		function fnInitView() {
+			tab();
+		}
+		
+    function tabOffsetAuto() {
+        let winW = $(window).width();
+        if($(window).width() < 1180){
+          const btnLeft = $('.tab-list .current').offset().left;
+          const btnW = $('.tab-list .current').outerWidth(true);
+          $('.tab-list').scrollLeft($('.tab-list').scrollLeft() + btnLeft + -$(window).width()/2 + btnW/2);
+        }
+      }
+      function sortVal() {
+        const urlSearch = new URLSearchParams(location.search);
+        const sort = urlSearch.get('sort');
+
+        switch (sort) {
+          case "pd":
+          $('.sort-news-val').text('발간일 최신순');
+          break;
+          case "c":
+          $('.sort-news-val').text('조회순');
+          break;
+          case "r":
+          $('.sort-news-val').text('정확도순');
+          break;        
+          default:
+          $('.sort-news-val').text('등록일 최신순');
+          break;
+        }
+      }						  
+	</script>
+	
+<!-- konan js  -->
+<script type="text/javascript" src="/assets/js/search/search.js"></script><!-- KS Events -->
+<script type="text/javascript" src="/assets/js/search/search.ksf.js"></script><!-- KSF Events -->
+
+</th:block>
+
+
+  <div layout:fragment="content">
+    <!-- content -->
+    <section class="content btmgap content-esg-bbs">
+      <div class="tit-head">
+        <div class="group">
+          <h3>ESG 자료실</h3>
+          <p class="txt">ESG 관련된 가이드라인, 법/제도, 학술 및 논문자료, 영상 컨텐츠를 자유롭게 조회, 열람하실 수 있습니다.</p>
+        </div>
+        <span class="square"></span>
+      </div>
+      <div class="esg04-wrap">
+        <div class="gray-bg-wrap">
+          <div class="serch-wrap default-width">
+            <div class="total-search-inner">
+              <!--<form action="bbsList" class="">-->
+				<form id="historyForm" action="bbsList" method="get">
+	                <!-- konan form -->
+	                <input type="hidden" id="category" name="category" th:value="${params.category}" />
+					<input type="hidden" id="kwd" name="kwd" th:value="${params.kwd}" />
+					<input type="hidden" id="preKwd" name="preKwd" th:value="${params.preKwd}" />
+					<input type="hidden" id="date" name="date" th:value="${params.date}" />
+					<input type="hidden" id="startDate" name="startDate" th:value="${params.startDate}" />
+					<input type="hidden" id="endDate" name="endDate" th:value="${params.endDate}" />
+					<input type="hidden" id="originalQuery" name="originalQuery" th:value="${params.originalQuery}" />
+					<input type="hidden" id="previousQuery" name="previousQuery" th:value="${params.previousQuery}" />
+					<input type="hidden" id="categorize" name="categorize" value="true" />
+					<input type="hidden" id="page" name="page" value="0" />
+					<input type="hidden" id="pagfnInitData eSize" name="pageSize" value="${params.pageSize}" />
+					<input type="hidden" id="pageNum" name="pageNum" th:value="${params.pageNum}" />
+					<input type="hidden" id="offSet" name="offSet" th:value="${params.offSet}" />
+					<input type="hidden" id="sort" name="sort" th:value="${params.sort}" />
+					<input type="hidden" id="fields" name="fields" th:value="${params.fields}" />
+					<input type="hidden" id="nowDate" name="nowDate" th:value="${params.nowDate}" />				
+					<!--필터 -->
+					<input type="hidden" id="dmstc_yn" name="dmstc_yn" th:value="${params.dmstc_yn}" />
+					<input type="hidden" id="sply_lang_cd" name="sply_lang_cd" th:value="${params.sply_lang_cd}" />
+					<input type="hidden" id="pblcn_yy" name="pblcn_yy" th:value="${params.pblcn_yy}" />
+					<input type="hidden" id="vod_qunty_mi" name="vod_qunty_mi" th:value="${params.vod_qunty_mi}" />
+					<input type="hidden" id="sbjt_gb_nm" name="sbjt_gb_nm" th:value="${params.sbjt_gb_nm}" />
+					<input type="hidden" id="task_clsf_nm" name="task_clsf_nm" th:value="${params.task_clsf_nm}" />
+					
+					<input type="hidden" id="env" name="env" th:value="${params.env}" />
+					<input type="hidden" id="esgKwdList" name="esgKwdList" th:value="${params.esgKwdList}" />
+        
+                
+	                <fieldset>
+	                  <legend>검색</legend>
+	                  <div class="total-search">
+	                    <select>
+	                      <option>자료명</option>
+	                      <option>자료명+본문</option>
+	                      <option>출처</option>
+	                      <option>키워드</option>
+	                    </select>
+	                    <input type="text" class="txt" id="search_kwd" name="search_kwd" th:value="${params.kwd}" placeholder="검색어를 입력하세요" />
+	                    <button type="button" class="btn-total-search" onclick="submitOther();">검색</button>
+                  	
+	                  </div>
+                </fieldset>
+              </form>	
+            </div>
+            <!-- //total-search -->
+
+            <ul class="keyword-wrap current-wrap ml16">
+              <li><button type="button" class="btn-rd-wh" id="title" onclick="click_field(this);"><span>자료명</span></button></li><!-- current -->
+              <li><button type="button" class="btn-rd-wh" id="til_cont" onclick="click_field(this);"><span>자료명 + 본문</span></button></li>
+              <li><button type="button" class="btn-rd-wh" id="src" onclick="click_field(this);"><span>출처</span></button></li>
+              <li><button type="button" class="btn-rd-wh" id="choose_kwd" onclick="click_field(this);"><span>키워드</span></button></li>
+            </ul>
+            
+          </div>
+          <!-- serch-wrap -->
+        </div>
+        <!-- gray-bg-wrap-->
+
+        <div class="tab-wrap default-width gap-top">
+          <ul class="tab-list under">
+            <li><button type="button" id="GUIDE" onclick="goCategory('GUIDE')" class=""><span th:text="${'기준&middot;가이드라인 (' + guideTotal + ')'}"></span></button></li>
+            <li><button type="button" id="LEGAL" onclick="goCategory('LEGAL')" class=""><span th:text="${'법&middot;제도 (' + legalTotal + ')'}"></span></button></li>
+            <li><button type="button" id="REPORT" onclick="goCategory('REPORT')" class=""><span th:text="${'연구&middot;보고 (' + reportTotal + ')'}"></span></button></li>
+            <li><button type="button" id="MEDIA" onclick="goCategory('MEDIA')" class=""><span th:text="${'미디어영상 (' + mediaTotal + ')'}"></span></button></li>
+          </ul>
+          
+          <div class="tab-cont" th:switch="${params.category}">
+            <div class="cont current" th:case="'TOTAL'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/bbs/bbs_filter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/bbs/bbs_guide"></div>
+              </div>
+            </div>
+            <div class="cont current" th:case="'GUIDE'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/bbs/bbs_filter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/bbs/bbs_guide"></div>
+              </div>
+            </div>
+            
+            
+            
+            
+            <div class="cont current" th:case="'LEGAL'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/bbs/bbs_filter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/bbs/bbs_legal"></div>
+              </div>
+            </div>
+            
+            <div class="cont current" th:case="'REPORT'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/bbs/bbs_filter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/bbs/bbs_report"></div>
+              </div>
+            </div>
+            
+            <div class="cont current" th:case="'MEDIA'">
+              <div class="result-list-wrap">
+                <section class="filter-wrap" th:include="frontoffice/trend/bbs/bbs_mediaFilter"></section>
+                <!-- //filter-wrap -->
+                <div class="result-list" th:include="frontoffice/trend/bbs/bbs_media"></div>
+                <!-- //result-list -->
+              </div>
+            </div>
+            
+          </div>
+          <!-- //tab-cont -->
+        </div>
+        <!-- //tab-wrap -->
+      </div>
+      <!-- //esg04-wrap -->
+    </section>
+    <!-- //content -->
+  </div>
+
+    <script>
+        $(function () {
+            tab();
+        })
+    </script>
+
+</html>

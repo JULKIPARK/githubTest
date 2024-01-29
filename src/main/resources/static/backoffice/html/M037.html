@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 컨텐츠 관리 > 컨텐츠 정보관리 > 출처 조회</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->   
+        <!-- wrap -->  
+        <div class="container"> 
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->
+            <!-- container -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>ESG 캘린더 관리</h3>
+                    <ul class="breadcrumb">
+                        <li>운영관리</li>
+                        <li>ESG 캘린더 관리</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="search-wrap">
+                    <form action="">
+                        <fieldset>
+                            <legend>상세 검색</legend>
+                            <div class="table-wrap">
+                                <table class="inner-input">
+                                    <caption>출처 조회</caption>
+                                    <colgroup>
+                                        <col style="width:15%;">
+                                        <col style="width:75%;">
+                                       
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>등록일/수정일</th>
+                                            <td>
+                                                <div class="date-select flex">
+                                                    <div class="datepicker-wrap">
+                                                        <input type="text" name="" class="datepicker">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" name="" class="datepicker">
+                                                    </div>
+
+                                                    <button class="selectMonth">1개월</button>
+                                                    <button class="selectMonth">3개월</button>
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <th>일정 유형</th>
+                                            <td>
+                                                <ul class="flex ck-list">
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area01" checked="checked">
+                                                        <label for="area01">ESG 행사 (포럼, 세미나)</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area02">
+                                                        <label for="area02">ESG 도서/보고서 발간</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area03">
+                                                        <label for="area03">ESG 정책</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area04">
+                                                        <label for="area04">ESG 공시</label>
+                                                    </li>
+
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area05">
+                                                        <label for="area05">ESG 평가</label>
+                                                    </li>
+
+                                                    <li>
+                                                        <input type="checkbox" name="area" id="area06">
+                                                        <label for="area06">기타</label>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>검색</th>
+                                            <td>
+                                                <input type="text" title="검색" class="w100p">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //table-wrap -->
+                            <div class="btn-wrap">
+                                <button type="button" class="btn-primary">조회</button>
+                                <button type="button" class="btn-sub">초기화</button>
+                            </div>
+                            <!-- //btn-wrap -->
+                        </fieldset>
+                    </form>
+                </div>
+                <!-- //search-wrap -->
+                <div class="result-wrap">
+                    <div class="total">
+                        <span class="lable">ESG 일정 목록</span> - <strong>총 12건</strong>
+                        <button type="button" class="btn-del"><span>일정 삭제</span></button>
+                        <button type="button" class="btn-del"><span>+일정 추가</span></button>
+                    </div>
+                   
+                    <!-- //sorting-wrap -->
+                    <div class="table-wrap ">
+                        <table>
+                            <caption>일정목록</caption>
+                            <colgroup>
+                                <col style="width: 5%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                                <col style="width: 35%;">
+                                <col style="width: 15%;">
+                                <col style="width: 15%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"/></th>
+                                    <th>일정</th>
+                                    <th>일정유형</th>
+                                    <th>일정제목</th>
+                                    <th>등록자</th>
+                                    <th>등록일자</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox"/></td>
+                                    <td>2023.03.25</td>
+                                    <td>ESG 행사</td>
+                                    <td class="left pad_lr10"><span class="subject">2023년 OOO ESG 포럼 2023년 OOO ESG 포럼2023년 OOO ESG 포럼2023년 OOO ESG 포럼</span></td>
+                                    <td>ESG 운영자(1)</td>
+                                    <td>2023.01.05</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><input type="checkbox"/></td>
+                                    <td>2023.03.28</td>
+                                    <td>ESG 행사</td>
+                                    <td class="left pad_lr10"><span class="subject">2023년 상반기 OOOOO ESG 컨퍼넌스</span></td>
+                                    <td>ESG 운영자(1)</td>
+                                    <td>2023.01.05</td>
+                                </tr>
+
+                                <tr>
+                                    <td><input type="checkbox"/></td>
+                                    <td>2023.03.28</td>
+                                    <td>ESG 행사</td>
+                                    <td class="left pad_lr10"><span class="subject">회계기준원, ISSB 기준에 대한 OOOO 공표 예정</span></td>
+                                    <td>ESG 운영자(1)</td>
+                                    <td>2023.01.05</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //table-wrap -->    
+                    
+                    <div class="non_sch">
+                        <div class="tit">미확정<br/>주요 일정</div>
+                        <ul class="non_sch_list">
+                            <li>[2분기] OOOO 기준서 추가 발표 예정</li>
+                            <li>[3분기] OOOO 산업별 기준서 추가 발표 예정</li>
+                            <li>[7월] 회계기준원, OOO 지침 공표 예정</li>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <!-- //result-list -->
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+</body>
+</html>

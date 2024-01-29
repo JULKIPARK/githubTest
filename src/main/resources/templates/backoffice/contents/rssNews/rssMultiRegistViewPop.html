@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="rssMultiRegistViewPop">
+	<script th:inline="javascript">
+		//회원정보 상세 보기
+		function fnMbrViewPop(mbrUid) {
+			var param = {
+				"url": "/sems/custom/selectMemberView"
+				, "type": "post"
+				, "data": {"mbrUid": mbrUid}
+				, "async": false
+				, "callback": function (data) {
+					var info = data.item;
+				}
+			};
+
+			_comLib.callAjax(param);
+		}
+	</script>
+	<div class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">신규 입수 뉴스 일괄등록</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+				<section class="modal-cont">
+					<div class="form-content">
+						<form action="">
+							<fieldset>
+								<legend>신규 입수 뉴스 일괄등록</legend>
+								<div class="search-wrap">
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>신규 입수 뉴스 일괄등록</caption>
+											<colgroup>
+												<col style="width: 15%;">
+												<col style="width: 40%;">
+												<col style="width: 10%;">
+												<col style="width: 35%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th>컨텐츠 종류</th>
+													<td>뉴스</td>
+													<th><label for="number">컨텐츠번호</label></th>
+													<td><input type="text" value="" id="number" disabled="disabled">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>신규 입수 뉴스 일괄등록</caption>
+											<colgroup>
+												<col style="width: 18%;">
+												<col style="width: 67%;">
+												<col style="width: 15%;">
+											</colgroup>
+											<thead>
+												<tr>
+													<th colspan="3" class="ct">뉴스 정보(RSS)</th>
+												</tr>
+												<tr>
+													<th class="ct lf-noline">발간일자</th>
+													<th class="ct">뉴스 제목</th>
+													<th class="ct">대표이미지</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td><input type="text" value="2023-07-03 15:48:44" title="발간일자"
+															   disabled="disabled"></td>
+													<td><input type="text" class="w100p"
+															   value="대한상의 ESG 경영 포럼, 애크테크 관심 급부상… 인증 문제 해결이 과제"
+															   title="뉴스 제목" disabled="disabled"></td>
+													<td>
+														<div class="thumbnail small">
+															<img src="/assets/assets/img/temp/thumbnail.png"
+																 alt="대표 이미지">
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td><input type="text" value="2023-07-03 15:48:44" title="발간일자"
+															   disabled="disabled"></td>
+													<td><input type="text" class="w100p"
+															   value="대한상의 ESG 경영 포럼, 애크테크 관심 급부상… 인증 문제 해결이 과제"
+															   title="뉴스 제목" disabled="disabled"></td>
+													<td>
+														<div class="thumbnail small">
+															<img src="/assets/assets/img/temp/thumbnail.png"
+																 alt="대표 이미지">
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td><input type="text" value="2023-07-03 15:48:44" title="발간일자"
+															   disabled="disabled"></td>
+													<td><input type="text" class="w100p"
+															   value="대한상의 ESG 경영 포럼, 애크테크 관심 급부상… 인증 문제 해결이 과제"
+															   title="뉴스 제목" disabled="disabled"></td>
+													<td>
+														<div class="thumbnail small">
+															<img src="/assets/assets/img/temp/thumbnail.png"
+																 alt="대표 이미지">
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
+									<div class="table-wrap">
+										<table class="inner-input align-left line-gray">
+											<caption>컨텐츠 등록 정보</caption>
+											<colgroup>
+												<col style="width: 15%;">
+												<col style="width: 25%;">
+												<col style="width: 10%;">
+												<col style="width: 50%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th colspan="4" class="ct">컨텐츠 등록 정보</th>
+												</tr>
+												<tr>
+													<th><label for="type01">업무 분류<span class="required"><i
+															class="필수입력"></i></span></label></th>
+													<td>
+														<select name="" id="type01" class="select">
+															<option value="">전체</option>
+															<option value="">ESG경영관리</option>
+															<option value="">전략/계획</option>
+															<option value="">실행</option>
+															<option value="">공시</option>
+															<option value="">평가</option>
+														</select>
+													</td>
+													<th><label for="type02">주제 분류<span class="required"><i
+															class="필수입력"></i></span></label></th>
+													<td>
+														<select name="" id="type02" class="select">
+															<option value="">전체</option>
+															<option value="">ESG일반</option>
+															<option value="">환경</option>
+															<option value="">사회</option>
+															<option value="">거버넌스</option>
+															<option value="">금융</option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<th>전시 여부<span class="required"><i class="필수입력"></i></span></th>
+													<td>
+														<ul class="flex ck-list">
+															<li>
+																<input type="radio" name="view" id="radio07">
+																<label for="radio07">전체공개</label>
+															</li>
+															<li>
+																<input type="radio" name="view" id="radio08">
+																<label for="radio08">일부공개</label>
+															</li>
+															<li>
+																<input type="radio" name="view" id="radio09">
+																<label for="radio09">비전시</label>
+															</li>
+														</ul>
+													</td>
+													<th>전시 기간</th>
+													<td>
+														<div class="date-select flex date-ck-mix">
+															<div class="datepicker-wrap flex">
+																<input type="text" name="" class="datepicker">
+																<input type="text" value="00" class="time">:<input
+																	type="text" class="time" value="00">
+																<span class="separator"> - </span>
+																<input type="text" name="" class="datepicker">
+																<input type="text" value="23" class="time">:<input
+																	type="text" class="time" value="59">
+															</div>
+															<input type="checkbox" id="period05"><label for="period05">기간설정사용</label>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<th>일부공개대상<span class="required"><i class="필수입력"></i></span></th>
+													<td colspan="3">
+														<ul class="flex ck-list">
+															<li>
+																<input type="checkbox" name="open" id="ck01">
+																<label for="ck01">그룹 A</label>
+															</li>
+															<li>
+																<input type="checkbox" name="open" id="ck02">
+																<label for="ck02">그룹 B</label>
+															</li>
+															<li>
+																<input type="checkbox" name="open" id="ck03">
+																<label for="ck03">그룹 C</label>
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>검색가능여부</th>
+													<td>
+														<ul class="flex ck-list">
+															<li>
+																<input type="radio" name="view2" id="radio11"
+																	   checked="checked">
+																<label for="radio11">가능</label>
+															</li>
+															<li>
+																<input type="radio" name="view2" id="radio12">
+																<label for="radio12">불가</label>
+															</li>
+														</ul>
+													</td>
+													<th><label for="txt01">태그 키워드</label></th>
+													<td>
+														<input type="text" class="w100p" id="txt01"
+															   placeholder="우선순위에 따라 콤마로 구분하여 입력하세요 (최대 100자)">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
+									<div class="table-wrap">
+										<table class="table-type-mix line-gray">
+											<caption>ESG 토픽 선택</caption>
+											<colgroup>
+												<col style="width: *;">
+												<col style="width: 17%;">
+												<col style="width: 17%;">
+												<col style="width: 17%;">
+												<col style="width: 17%;">
+												<col style="width: 17%;">
+											</colgroup>
+											<tbody>
+												<tr>
+													<th rowspan="2">ESG 토픽<span class="required"><i
+															class="필수입력"></i></span></th>
+													<th>E(환경)</th>
+													<th>S(사회)</th>
+													<th>G(거버넌스)</th>
+													<th>F(금융)</th>
+													<th>공시</th>
+												</tr>
+												<tr>
+													<td>
+														<ul class="ck-list">
+															<li>
+																<input type="checkbox" name="esg" id="ck04-a">
+																<label for="ck04-a">온실가스</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-b">
+																<label for="ck04-b">Scope3</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-c">
+																<label for="ck04-c">탄소국경세</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-d">
+																<label for="ck04-d">친환경제품/서비스</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-e">
+																<label for="ck04-e">생물다향성</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-f">
+																<label for="ck04-f">에너지전환</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-g">
+																<label for="ck04-g">순환경제</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck04-h">
+																<label for="ck04-h">자연자본</label>
+															</li>
+														</ul>
+													</td>
+													<td>
+														<ul class="ck-list">
+															<li>
+																<input type="checkbox" name="esg" id="ck05-a">
+																<label for="ck05-a">인적자본 (Human Capital)</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck05-b">
+																<label for="ck05-b">인권 (Human Rights)</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck05-c">
+																<label for="ck05-c">공급망 관리</label>
+															</li>
+														</ul>
+													</td>
+													<td>
+														<ul class="ck-list">
+															<li>
+																<input type="checkbox" name="esg" id="ck06-a">
+																<label for="ck06-a">이사회</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck06-b">
+																<label for="ck06-b">내부통제</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck06-c">
+																<label for="ck06-c">윤리경영</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck06-d">
+																<label for="ck06-d">주주관리</label>
+															</li>
+														</ul>
+													</td>
+													<td>
+														<ul class="ck-list">
+															<li>
+																<input type="checkbox" name="esg" id="ck07-a">
+																<label for="ck07-a">기후리스크</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck07-b">
+																<label for="ck07-b">지속가능채권</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck07-c">
+																<label for="ck07-c">ESG투자</label>
+															</li>
+														</ul>
+													</td>
+													<td>
+														<ul class="ck-list">
+															<li>
+																<input type="checkbox" name="esg" id="ck08-a">
+																<label for="ck08-a">IFRS / ISSB</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-b">
+																<label for="ck08-b">CSRD / ESRS</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-c">
+																<label for="ck08-c">EU Taxonomy</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-d">
+																<label for="ck08-d">지속가능공급망 실사지침
+																</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-e">
+																<label for="ck08-e">SEC 기후공시 의무화
+																</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-f">
+																<label for="ck08-f">GRI</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-g">
+																<label for="ck08-g">TCFD</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-h">
+																<label for="ck08-h">TNFD</label>
+															</li>
+															<li>
+																<input type="checkbox" name="esg" id="ck08-i">
+																<label for="ck08-i">ESG인증</label>
+															</li>
+														</ul>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //table-wrap -->
+								<div class="btn-wrap">
+									<button type="button" class="btn-primary">등록</button>
+									<button type="button" class="btn-sub">초기화</button>
+									<button type="button" class="btn-default">취소</button><!-- 팝업을 닫고 싶을때 btn-close -->
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+</th:block>
+</html>

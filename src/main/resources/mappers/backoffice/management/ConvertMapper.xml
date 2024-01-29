@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.management.mapper.ConvertMapper">
+
+	<select id="selectContentListForYoutube" resultType="camelcasemap">
+		SELECT
+			SCAI.CONT_UID
+			, REPLACE(SCAI.LINK_URL, CHAR(10), '') AS LINK_URL
+			, REPLACE(REPLACE(SCAI.LINK_URL, 'https://www.youtube.com/embed/', ''), CHAR(10), '') AS YOUTUBE_ID
+		FROM
+			ESG_DB.ST_CONT_APND_INFO SCAI
+		WHERE
+			SCAI.LINK_URL LIKE 'https://www.youtube.com/embed/%'
+		ORDER BY
+			CONT_UID
+	</select>
+
+	<select id="selectContentListForMp4" resultType="camelcasemap">
+		SELECT
+			SCAI.CONT_UID
+			, SCAI.SEQ_NO
+			, CONCAT('https://samilesg.blob.core.windows.net', CADI.CNVN_FILE_FPATH) AS LINK_URL
+		FROM
+			ESG_DB.ST_CONT_APND_INFO SCAI
+			JOIN ESG_DB.CM_ATAC_DTL_INFO CADI
+				ON CADI.ATAC_FILE_UID = SCAI.ATAC_FILE_UID
+				AND CADI.ATAC_DTL_UID = SCAI.ATAC_DTL_UID
+		WHERE
+			CONT_SPLY_TP_CD = '20'
+		ORDER BY
+			CONT_UID
+	</select>
+
+	<update id="updateContentDurationInfo" parameterType="hashMap">
+		UPDATE ESG_DB.ST_CONT_APND_INFO
+		SET
+			VOD_QUNTY_HH = #{vodQuntyHh}
+			, VOD_QUNTY_MI = #{vodQuntyMi}
+			, VOD_QUNTY_SEC = #{vodQuntySec}
+			<if test="linkUrl != null and !linkUrl.equals('')">
+				, LINK_URL = #{linkUrl}
+			</if>
+		WHERE
+			CONT_UID = #{contUid}
+		<if test="seqNo != null and !seqNo.equals('')">
+			AND SEQ_NO = #{seqNo}
+		</if>
+	</update>
+
+</mapper>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="newsTrendNewsListPop">
+	<script th:inline="javascript">
+
+		function fnSetEvent() {
+			// 저장
+			$("BUTTON.btn-primary").on("click", () => {
+				const formData = {newsUid: ""};
+				$("INPUT[name=newsUid]").each((idx, frm) => {
+					formData.newsUid += (formData.newsUid ? ",":"") + $(frm).val() + '|' + ($(frm).prop("checked") ? "Y" : "N")
+				});
+
+				var param = {};
+				param = {
+					"url": "/sems/contents/updateNewsTrendNews"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (data) {
+						alert('전시여부 등록이 완료되었습니다.');
+					}
+				};
+				// console.log(param);
+				_comLib.callAjax(param);
+			});
+		}
+
+		//RSS뉴스정보 상세 보기
+		function fnNewsTrendNewsListPop(keywordUid, keyword) {
+			$("#newsTrendNewsListPop").addClass("show");
+			$("#newsTrendNewsListPop .newsKeyword").empty().append(keyword);
+			var param = {
+				"url": "/sems/contents/selectNewsTrendNewsList"
+				, "type": "post"
+				, "data": {"keywordUid": keywordUid}
+				, "async": false
+				, "callback": function (data) {
+					var list = data.list;
+					var target = $("#newsTrendNewsListPop TABLE.newsList TBODY");
+
+					$(target).empty();
+					list.forEach((item) => {
+						const checked = (item.dpYn === 'Y') ? "checked" : "";
+						$(target).append(`
+							<tr>
+								<td>${item.rowNum}</td>
+								<td>${item.publishedDt}</td>
+								<td>${item.provider}</td>
+								<td class="left"><a href="${item.providerLinkPage}" target="_blank">${item.title}</a></td>
+								<td><input type="checkbox" name="newsUid" value="${item.newsUid}" ${checked} ${rights.indexOf("C") === -1 ? "disabled" : ""} /></td>
+							</tr>
+						`);
+					});
+				}
+			};
+
+			_comLib.callAjax(param);
+		}
+
+		$(function () {
+			fnSetEvent();
+		});
+	</script>
+
+	<div id="newsTrendNewsListPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+		<div class="dimmed"></div>
+		<div class="xycenter">
+			<section class="modal-area large">
+				<div class="modal-head">
+					<h2 class="tit">키워드별 뉴스 리스트</h2>
+					<button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+				</div>
+
+				<section class="modal-cont">
+					<div class="form-content">
+						<form id="applyNewsFrm">
+							<fieldset>
+								<legend>키워드별 뉴스 리스트</legend>
+								<div class="search-wrap">
+									<div class="table-wrap">
+										<table class="inner-input align-left">
+											<caption>출처 상세 조회</caption>
+											<colgroup>
+												<col style="width: 15%;">
+												<col style="width: *;">
+											</colgroup>
+											<tbody>
+											<tr>
+												<th>선택 키워드</th>
+												<td><span class="newsKeyword"></span></td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- //table-wrap -->
+								<div class="result-wrap">
+									<!-- //sorting-wrap -->
+									<div class="table-wrap ">
+										<table class="newsList">
+											<caption>출처 리스트</caption>
+											<colgroup>
+												<col style="width: 10%;">
+												<col style="width: 15%;">
+												<col style="width: 15%;">
+												<col style="width: *;">
+												<col style="width: 10%;">
+											</colgroup>
+											<thead>
+											<tr>
+												<th>순위</th>
+												<th>일자</th>
+												<th>출처</th>
+												<th>기사명</th>
+												<th>전시여부</th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+									<!-- //table-wrap -->
+								</div>
+								<!-- //result-list -->
+								<div class="btn-wrap">
+									<th:block th:if="${session.BoMbrInfo.rights.contains('C')}">
+										<button type="button" class="btn-primary">저장</button>
+									</th:block>
+									<button type="button" class="btn-sub btn-close">닫기</button>
+								</div>
+								<!-- //btn-wrap -->
+							</fieldset>
+						</form>
+					</div>
+					<!-- form-content -->
+				</section>
+				<!--//modal-cont-->
+			</section>
+			<!--//modal-area-->
+		</div>
+		<!-- //xycenter -->
+	</div>
+	<!--//modal-wrap-->
+</th:block>
+</html>

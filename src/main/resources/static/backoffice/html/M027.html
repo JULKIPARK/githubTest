@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 컨텐츠 관리 > 컨텐츠 공통 > 컨텐츠 검색</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div class="modal-wrap show"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="xycenter">
+            <div class="xycenter">
+                <section class="modal-area large">
+                    <div class="modal-head">
+                        <h2 class="tit">컨텐츠 검색</h2>
+                        <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                    </div>
+                    <section class="modal-cont">
+                        <div class="form_content">
+                            <form action="">
+                                <fieldset>
+                                    <legend>컨텐츠 검색</legend>     
+                                    <div class="search-wrap">
+                                        <div class="table-wrap">
+                                            <table class="inner-input align-left">
+                                                <caption>컨텐츠 검색</caption>
+                                                <colgroup>
+                                                    <col style="width: 10%;">
+                                                    <col style="width: 20%;">
+                                                    <col style="width: 10%;">
+                                                    <col style="width: 20%;">
+                                                    <col style="width: 15%;">
+                                                    <col style="width: *;">
+                                                </colgroup>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>컨텐츠명/번호</th> 
+                                                        <td colspan="3">
+                                                            <div class="selectinput-wrap">
+                                                                <select name="" class="select" title="컨텐츠명">
+                                                                    <option value="">컨텐츠명</option>
+                                                                    <option value="">컨텐츠번호</option>
+                                                                </select>
+                                                                <input type="text" placeholder="" title="컨텐츠 입력">
+                                                            </div>
+                                                        </td>
+                                                        <th>컨텐츠종류/등록방식</th> 
+                                                        <td>
+                                                            <div class="select-group">
+                                                                <select name="" id="class01" class="select">
+                                                                    <option value="">전체</option>
+                                                                    <option value="">문서</option>
+                                                                    <option value="">영상</option>
+                                                                </select>
+                                                                <select name="" id="" class="select" disabled="disabled">
+                                                                    <option value="">전체</option>
+                                                                    <option value="">컨텐츠업로드</option>
+                                                                    <option value="">아웃링크</option><!-- 문서선택시만 노출 -->
+                                                                    <option value="">임베드 코드 입력</option><!-- 영상선택시만 노출 -->
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>출처</th> 
+                                                        <td colspan="3">
+                                                            <div class="selectinput-wrap">
+                                                                <select name="" class="select" title="출처명">
+                                                                    <option value="">출처명</option>
+                                                                    <option value="">출처번호</option>
+                                                                </select>
+                                                                <input type="text" placeholder="" title="출처 입력">
+                                                            </div>
+                                                        </td>
+                                                        <th>국내/해외</th> 
+                                                        <td>
+                                                            <ul class="flex ck-list">
+                                                                <li>
+                                                                    <input type="radio" name="area" id="radio01">
+                                                                    <label for="radio01">전체</label>
+                                                                </li>
+                                                                <li>
+                                                                    <input type="radio" name="area" id="radio02">
+                                                                    <label for="radio02">국내</label>
+                                                                </li>
+                                                                <li>
+                                                                    <input type="radio" name="area" id="radio03">
+                                                                    <label for="radio03">해외</label>
+                                                                </li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>유형 분류</th>
+                                                        <td colspan="3">
+                                                            <div class="select-group">
+                                                                <select name="" id="class01" class="select">
+                                                                    <option value="">전체</option>
+                                                                    <option value="">삼일발간물</option>
+                                                                    <option value="">기준/가이드라인</option>
+                                                                    <option value="">법/제도</option>
+                                                                    <option value="">보고/연구</option>
+                                                                    <option value="">교육/안내</option>
+                                                
+                                                                </select>
+                                                                <select name="" id="" class="select" disabled="disabled">
+                                                                    <option value="">전체</option>
+                                                                    <option value="">뉴스레터</option>
+                                                                    <option value="">레포트</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <th rowspan="2">컨텐츠번호<br>다중검색</th>
+                                                        <td rowspan="2">
+                                                            <textarea name="" id="" cols="" rows=""></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>업무 분류</th>
+                                                        <td>
+                                                            <select name="" id="" class="select w100p">
+                                                                <option value="">전체</option>
+                                                                <option value="">ESG경영관리</option>
+                                                                <option value="">전략/계획</option>
+                                                                <option value="">실행</option>
+                                                                <option value="">공시</option>
+                                                                <option value="">평가</option>
+                                                            </select>
+        
+                                                        </td>
+                                                        <th>주제분류</th>
+                                                        <td>
+                                                            <select name="" id="" class="select w100p">
+                                                                <option value="">전체</option>
+                                                                <option value="">ESG일반</option>
+                                                                <option value="">환경</option>
+                                                                <option value="">사회</option>
+                                                                <option value="">거버넌스</option>
+                                                                <option value="">금융</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- //table-wrap -->
+                                       
+                                        <div class="btn-wrap">
+                                            <button type="button" class="btn-primary">조회</button>
+                                            <button type="button" class="btn-sub">초기화</button>
+                                        </div>
+                                        <!-- //btn-wrap -->
+                                    </div>     
+                                    <!-- search-wrap -->                                                                                                                                                                         
+                                    <div class="result-wrap">                                                                                                                                                         
+                                        <div class="sorting-wrap">
+                                            <span class="count">50개</span>
+                                            <select name="" id="" class="select" title="페이지 이동선택">
+                                                <option value="">1/13</option>
+                                            </select>
+                                            <div class="btn-ctl">
+                                                <button type="button" class="btn-download">다운로드</button>
+                                            </div>
+                                        </div>
+                                        <!-- //sorting-wrap -->
+                                        <div class="table-wrap ">
+                                            <table>
+                                                <caption>출처 리스트</caption>
+                                                <colgroup>
+                                                    <col style="width: 5%;">
+                                                    <col style="width: 5%;">
+                                                    <col style="width: 5%;">
+                                                    <col style="width: 10%;">
+                                                    <col style="width: *;">
+                                                    <col style="width: 6%;">
+                                                    <col style="width: 6%;">
+                                                    <col style="width: 7%;">
+                                                    <col style="width: 7%;">
+                                                    <col style="width: 7%;">
+                                                    <col style="width: 7%;">
+                                                    <col style="width: 8%;">
+                                                    <col style="width: 5%;">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>NO</th>
+                                                        <th>종류</th>
+                                                        <th>컨텐츠 번호</th>
+                                                        <th>컨텐츠명</th>
+                                                        <th>출처</th>
+                                                        <th>언어</th>
+                                                        <th>유형분류</th>
+                                                        <th>유형세분류</th>
+                                                        <th>업무분류</th>
+                                                        <th>주제분류</th>
+                                                        <th>등록방식</th>
+                                                        <th>형태</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input type="checkbox" title="선택"></td>
+                                                        <td>1</td>
+                                                        <td>문서</td>
+                                                        <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                        <td class="left"><span class="ellipsis">GRI 1: Foundation 2021</span></td>
+                                                        <td>GRI</td>
+                                                        <td>영문</td>
+                                                        <td>기준/표준</td>
+                                                        <td></td>
+                                                        <td>공시</td>
+                                                        <td>ESG일반</td>
+                                                        <td>컨텐츠업로드</td>
+                                                        <td>E-pub</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" title="선택"></td>
+                                                        <td>2</td>
+                                                        <td>문서</td>
+                                                        <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                        <td class="left"><span class="ellipsis">GRI 1: Foundation 2021</span></td>
+                                                        <td>GRI</td>
+                                                        <td>영문</td>
+                                                        <td>기준/표준</td>
+                                                        <td></td>
+                                                        <td>공시</td>
+                                                        <td>ESG일반</td>
+                                                        <td>컨텐츠업로드</td>
+                                                        <td>E-pub</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" title="선택"></td>
+                                                        <td>3</td>
+                                                        <td>문서</td>
+                                                        <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                        <td class="left"><span class="ellipsis">GRI 1: Foundation 2021</span></td>
+                                                        <td>GRI</td>
+                                                        <td>영문</td>
+                                                        <td>기준/표준</td>
+                                                        <td></td>
+                                                        <td>공시</td>
+                                                        <td>ESG일반</td>
+                                                        <td>아웃 링크</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" title="선택"></td>
+                                                        <td>4</td>
+                                                        <td>문서</td>
+                                                        <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                        <td class="left"><span class="ellipsis">GRI 1: Foundation 2021GRI 1: Foundation 2021</span></td>
+                                                        <td>GRI</td>
+                                                        <td>영문</td>
+                                                        <td>기준/표준</td>
+                                                        <td></td>
+                                                        <td>공시</td>
+                                                        <td>ESG일반</td>
+                                                        <td>컨텐츠업로드</td>
+                                                        <td>E-pub</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="nodata" colspan="13">nodata</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- //table-wrap -->
+                                    </div>
+                                    <!-- "result-wrap --> 
+                                    <div class="btn-wrap">
+                                        <button type="button" class="btn-primary">컨텐츠 추가</button>
+                                        <button type="button" class="btn-sub btn-close">닫기</button>
+                                    </div>
+                                    <!-- //btn-wrap -->                           
+                                </fieldset>
+                            </form>  
+                        </div>
+                        <!--//form_content-->
+                    </section>
+                    <!--//modal-cont-->
+                </section>       
+                <!--//modal-area--> 
+            </div>
+            <!--//xycenter--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap--> 
+</body>
+</html>

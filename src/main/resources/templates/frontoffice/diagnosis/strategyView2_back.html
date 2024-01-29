@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+			// 이벤트 설정
+			$("#dtnDiagnosis").bind("click", fnDiagnosis);	//진단 시작하기
+		});
+		
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+		
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+		});
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+	<form id="frm">
+	
+<!-- content -->
+            <section class="content">
+                <div class="tit-head">
+                    <div class="group">
+                        <h3>ESG 경영 활동 가이드</h3>
+                        <p class="txt">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영 활동에 도움이 될 수 있는 참고 자료를 추천합니다.</p>
+                    </div>
+                    <span class="square"></span>
+                </div>
+              <span class="square"></span>            
+                <div class="esg-wrap-ct default-width">
+                	<dl class="lnb">
+                		<dd>
+                			<ul class="section-list">
+                				<li><a href="/diagnosis/businessInfo">ESG 경영 활동 가이드 개요</a></li>
+                			</ul>
+                		</dd>
+						<dd>
+	              			<div class="section-tit">ESG 전략 계획</div>
+	              			<ul class="section-list">
+	              				<li ><a href="javascript:fnGoStrategy(1);">ESG 경영전략 수립</a></li>
+	              				<li class="on"><a href="javascript:fnGoStrategy(2);">ESG 경영체계 수립</a></li>
+	              			</ul>
+	              		</dd>
+	              		
+	              		<dd>
+	              			<div class="section-tit">ESG 과제</div>
+	              			<ul class="section-list">
+	              				<li><a href="javascript:fnGoEnvironment(1);">환경 과제</a></li>
+	              				<li><a href="javascript:fnGoEnvironment(2);">사회 과제</a></li>
+	              				<li><a href="javascript:fnGoEnvironment(3);">거버넌스 과제</a></li>
+	              				<li><a href="javascript:fnGoEnvironment(4);">지속가능금융</a></li>
+	              				<li><a href="javascript:fnGoEnvironment(5);">ESG 영향평가</a></li>
+	              				<li><a href="javascript:fnGoEnvironment(6);">시스템 운영</a></li>
+	              			</ul>
+	              		</dd>
+	              		
+	              		<dd>
+	              			<div class="section-tit">ESG 공시・인증・평가</div>
+	              			<ul class="section-list">
+	              				<li><a href="javascript:fnCertifiedView(1);">ESG 공시</a></li>
+	              				<li><a href="javascript:fnCertifiedView(2);">ESG 평가</a></li>
+	              				<li><a href="javascript:fnCertifiedView(3);">ESG 인증</a></li>
+	              			</ul>
+	              		</dd>
+
+                	</dl>
+                	
+                	<div class="esg01-wrap">
+                   		<section class="section">
+                    	    <div class="">
+                    	        <!-- //tab-list -->
+                    	        <div class="tab-cont">
+                    	            <div class="cont" style="display:none;">
+                    	                <section class="section default-width">
+                    	                    <h4 class="tit-line-left">개요</h4>
+                    	                    <div class="txt-line-box">
+                    	                        <p>ESG 경영전략 수립은 내·외부 환경분석을 통해 기업의 전략적 방향성과 핵심 가치체계를 ESG 관점에서 재정립하고, 이를 반영하여 비즈니스 전략, 목표, 실행과제를 수립하는 단계입니다.</p>  
+                    	                    </div>
+                    	                </section>
+                    	                <section class="section default-width">
+                    	                    <h4 class="tit-line-left">주요 실행 과제</h4>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 전사 비전 수립</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>환경경영과 사회적 책임경영을 실현하기 위한 전략적 방향성과 비전 수립</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 중장기 목표 수립</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>ESG 책임과 성과에 대한 중장기 단계별 목표 및 경영계획 수립</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 실행과제 및 계획 수립</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>기업의 핵심 사업 및 활동, 제품, 서비스의 성격, 규모 등의 내부 환경과, 제도적 규제, 산업 동향, 이해관계자에 의한 영향 등의 외부 환경을 고려하여 기업이 직면한 ESG 기회와 위험 요인을 분석∙식별</li>
+                    	                                <li>영향도와 시급성이 높은 주요 이슈를 선정하여 실행과제 정의</li>
+                    	                                <li>실행과제를 이행하기 위한 구체적인 이행계획을 단기, 중기, 장기로 구분하여 수립</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                </section>
+                    	                <section class="section default-width">
+                    	                    <h4 class="tit-line-left">필요 업무역량</h4>
+                    	                    <ul class="col-box-wrap">
+                    	                        <li>전사 비전, 목표, 경영전략 수립 역량</li>
+                    	                        <li>중장기 로드맵 수립 및 전략과제 정의 역량</li>
+                    	                        <li>구체적인 과제별 이행계획 수립 역량</li>
+                    	                        <li>ESG 경영활동 전반에 대한 이해, 지식</li>
+                    	                    </ul>
+                    	                </section>
+                    	                <section class="section default-width">
+                    	                    <h4 class="tit-line-left">관련 컨텐츠</h4>
+                    	                    <div class="slide-wrap">
+                    	                        <div class="ul img-slide-sub"> 
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                        </div>
+                    	                    </div>
+                    	                </section>
+                    	               
+                    	            </div>
+                    	            <!-- //cont -->
+                    	            <div class="cont">
+                    	                <section class="section">
+                    	                    <h4 class="tit-line-left">개요</h4>
+                    	                    <div class="txt-line-box">
+                    	                        <p>효과적인 ESG 관리를 위해 전사 차원에서 중점 관리영역을 정의하고, 해당 영역별 이슈를 관리하고 적시에 경영진 보고가 가능한 운영체계를 수립하는 단계입니다.</p>
+                    	                    </div>
+                    	                </section>
+                    	                <section class="section">
+                    	                    <h4 class="tit-line-left">주요 실행 과제</h4>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 의사결정체계 구축</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>ESG와 관련한 기업의 주요 경영 이슈와 의사결정사항을 주기적으로 검토∙논의할 수 있도록 절차를 수립하고, 의사결정을 위한 이사회 및 이사회 산하 위원회, 경영진, 전담조직, 실무협의체의 구성, 역할∙책임 정의</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 경영관리체계 구축</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>사업 계획에 따른 ESG 경영활동 수행, 모니터링, 업무 개선과 성과평가, 보고 등의 일련의 프로세스를 정의하고, 이를 내재화하기 위한 R&R과 기준∙지침의 수립</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 영역별 KPI 정의</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>기업의 ESG 주요 이슈를 고려하여, ESG 경영 활동 목표 달성을 위한 ESG 성과관리지표(KPI) 수립</li>
+                    	                                <li>KPI를 통해 세부 조직과 개별 구성원 단위까지 ESG 활동에 대한 명확한 목표를 제시하고, ESG 성과를 효율적으로 모니터링∙관리 가능</li>
+                    	                                <li>ESG 경영목표 달성 상의 문제점을 파악하여 개선 활동으로 연계</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 영역별 규정 ∙ 지침 작성 </span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>ESG 영역별 세부 활동 과제를 운영하고 관리하기 위한 내부 관리 정책과 기준∙지침 수립</li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                    <dl class="table-style">
+                    	                        <dt class="th"><span>ESG 리스크 관리체계 수립</span></dt>
+                    	                        <dd class="td">
+                    	                            <ul class="bul-square">
+                    	                                <li>ESG 경영활동에 영향을 주는 위험과 기회를 식별하여 ESG 리스크를 정의하고, 식별된 ESG 리스크를 측정∙평가, 모니터링, 보고, 통제∙경감하기 위한 업무 프로세스와 규정∙지침 수립</li>
+                    	                                <li>ESG 리스크별 위험 수준 도달 시의 유형∙단계별 대응 계획, 주체, 시나리오 정의 </li>
+                    	                            </ul>
+                    	                        </dd>
+                    	                    </dl>
+                    	                </section>
+                    	                <section class="section">
+                    	                    <h4 class="tit-line-left">필요 업무역량</h4>
+                    	                    <ul class="col-box-wrap">
+                    	                        <li>ESG 경영활동 전반에 대한 이해, 지식</li>
+                    	                        <li>전사 의사결정체계, 경영관리체계 수립 역량</li>
+                    	                        <li>업무 정책 및 지침 정의 역량</li>
+                    	                    </ul>
+                    	                </section>
+                    	                <section class="section">
+                    	                    <h4 class="tit-line-left">관련 컨텐츠</h4>
+                    	                    <div class="slide-wrap">
+                    	                        <div class="ul img-slide-sub"> 
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject"><span>컨텐츠 종류</span>ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                            <div class="li">
+                    	                                <a href="javascript:void(0)">
+                    	                                    <span class="thumbnail"><img src="/assets/img/temp/img_02.png" alt="ESG 공시기준 제정과 기업의 대응"></span>
+                    	                                    <div class="info-wrap">
+                    	                                        <p class="bul-square">공시/ESG일반/GRI</p>
+                    	                                        <p class="subject">ESG 공시기준 제정과 기업의 대응</p>
+                    	                                    </div>
+                    	                                </a>
+                    	                            </div>
+                    	                        </div>
+                    	                    </div>
+                    	                </section>
+                    	            </div>
+                    	        </div>
+                    	        <!-- //tab-list -->
+                    	    </div>
+                    	</section>
+					</div>
+                </div>
+                
+                <section class="section service-wrap">
+				    <div class="service-content">
+				        <h4 class="tit-line-left">서비스 안내</h4>
+				        <div class="service-area">
+				            <dl class="service-list-sj">
+				            	<dd>
+				            		<div class="subj">전사 ESG 비전 ∙ 전략 수립 컨설팅</div>
+				            		<ul class="detail-list">
+				            			<li>ESG 경영 환경 분석과 ESG 현황 진단</li>
+				            			<li>ESG 경영을 위한 비전, 핵심가치, 핵심역량, 전략 수립</li>
+				            		</ul>
+				            	</dd>
+				            	
+				            	<dd>
+				            		<div class="subj">ESG 로드맵과 추진계획 수립 컨설팅</div>
+				            		<ul class="detail-list">
+				            			<li>ESG 영역별 중장기 목표와 KPI 수립</li>
+				            			<li>ESG 경영을 위한 추진과제와 계획, 단계별 로드맵 수립</li>
+				            		</ul>
+				            	</dd>
+				            </dl>
+				            	
+				            <button type="button" class="counsel-btn">
+				            	<a href="">삼일 서비스 문의하기<span><img src="/assets/img/common/counsel-arrow.svg"></span></a>
+				            </button>
+				        </div>
+				    </div>
+				</section>
+                
+                
+            </section>
+		
+	</form>
+     <div class="floating-wrap">
+       <button type="button"><span>온라인 문의</span></button>
+     </div>		
+</div>
+</html>

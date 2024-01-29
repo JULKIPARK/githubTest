@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+<th:block layout:fragment="css">
+<link rel="stylesheet" th:href="@{/assets/css/fullcalendar.min.css}" />
+</th:block>
+<th:block layout:fragment="script">
+	<script th:src="@{/assets/js/jquery.tmpl.js}"></script>
+	<script th:src="@{/assets/js/Chart.min.js}"></script>
+	<script th:src="@{/assets/js/chartjs-plugin-doughnutlabel.js}"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			result();
+		});
+		function result(){
+			var formData, param = {};
+			formData = _formLib.getFormData("sfrm");
+
+			param = {
+				"url" : "/diagnosis/selfDiagnosisResultJson"
+				, "type" : "post"
+				, "data" : formData
+				, "async" : false
+				, "callback" : function(data) {
+					if(data.info != null){
+
+						$("#result_date").html(data.info.fstInsDt);
+						$("#indstySclsNm").html(data.info.indstySclsNm);
+						if(data.info.ref1Cd != "A0007")
+						{
+							$("#h_bank").attr("rowspan","1");
+							$("#h_bank_rv").remove();
+
+							$("#h_bankMo").attr("rowspan","1");
+							$("#h_bank_rvMo").remove();
+						}
+
+					}
+					if(data.list != null){
+						for(var i = 0; i < data.list.length; i++)
+						{
+							$("#result_data .ct span").eq(i).html(data.list[i].awResult)
+							$("#result_data .ct_nm").eq(i).html(data.list[i].cdNm)
+							if(data.list[i].awResultCd == "C")
+								$("#result_data .ct span").eq(i).addClass("un");
+							else if(data.list[i].awResultCd != "C")
+								$("#result_data .ct").eq(i).addClass("lgb");
+
+
+							$("#resultMo_data .ct span").eq(i).html(data.list[i].awResult)
+							$("#resultMo_data .ct_nm").eq(i).html(data.list[i].cdNm)
+							if(data.list[i].awResultCd == "C")
+								$("#resultMo_data .ct span").eq(i).addClass("un");
+							else if(data.list[i].awResultCd != "C") {
+								$("#resultMo_data .ct").eq(i).addClass("lgb");
+								$("#resultMo_data .ct span").eq(i).addClass("black");
+							}
+
+
+						}
+
+
+					}
+					if(data.sub != null){
+						var Str1 = "{0} 수행이 미흡하다고 답변하여, ";
+						var Str2 = "<b class='red-tx'>ESG 경영 성숙도가 {1}</b>(으)로 측정되었습니다.";
+						for(var i = 0; i < data.sub.length; i++)
+						{
+
+							var gStr = data.sub[i].GNm;
+							if(gStr != null)
+							{
+								gStr = "[" + gStr.replace(/,/g,'],[') + "]";
+							}
+							var reStr = (gStr != null ? Str1.replace("{0}",gStr) : "") + Str2.replace("{1}",data.sub[i].GSum)
+							$("."+data.sub[i].GCd).html(reStr);
+						}
+					}
+					if((data.sum1 == null || data.sum1 == '') && (data.sum2 == null || data.sum2 == ''))
+						$(".resultEtc").hide();
+					if(data.sum1 != null){
+			  			$("#tmpl_slist").tmpl(data.sum1).appendTo("#eResult");
+			  			$("#tmpl_slist2").tmpl(data.sum1).appendTo("#eMoResult");
+			  			$(".resultEtc").show();
+					}
+					if(data.sum2 != null){
+			  			$("#tmpl_slist").tmpl(data.sum2).appendTo("#sResult");
+			  			$("#tmpl_slist2").tmpl(data.sum2).appendTo("#sMoResult");
+			  			$(".resultEtc").show();
+					}
+					if(data.chart2 != null){
+						var dt1 = data.chart2[0].ESum;
+						var dt2 = data.chart2[0].RSum;
+						var dt3 = data.chart2[0].SSum;
+						var data2 = {
+								  labels: [
+								    'ESG 전략 계획',
+								    'ESG 공시∙인증',
+								    'ESG 과제 이행'
+								  ],
+								  datasets: [{
+								    label: '',
+								    data: [dt3, dt2, dt1],
+								    fill: true,
+								    backgroundColor: 'rgba(208, 74, 2, 0.2)',
+								    borderColor: 'rgb(208, 74, 2)',
+								    pointBackgroundColor: 'rgb(255, 99, 132)',
+								    pointBorderColor: '#fff',
+								    pointHoverBackgroundColor: '#fff',
+								    pointHoverBorderColor: 'rgb(255, 99, 132)'
+								  }]
+								};
+						var myDoughnutChart2 = new Chart($('#chart2'), {
+							  type: 'radar',
+							  data: data2,
+							  options: {
+								    scale: {
+								        angleLines: {
+								            display: false
+								        },
+								        ticks: {
+								            suggestedMin: 50,
+								            suggestedMax: 100
+								        }
+								    },
+								    legend: {
+								        display: false
+								    },
+							    plugins: {
+							        responsive: true,
+
+							    }
+							  }
+							});
+					}
+					if(data.chart1 != null){
+						var dt1 = data.chart1[0].DSum;
+						var dt2 = 100-data.chart1[0].DSum;
+						var data = {
+								  labels: [
+									    '성숙도',
+									    ''
+									  ],
+								  datasets: [{
+								    data: [dt1, dt2 ],
+								    backgroundColor: [
+								      'rgb(208, 74, 2)',
+								      'rgb(125, 125, 125)'
+								    ],
+								    hoverOffset: 1
+								  }]
+								};
+
+
+						var myDoughnutChart = new Chart($('#chart1'), {
+							  type: 'doughnut',
+							  data: data,
+							  options: {
+								    legend: {
+								        display: false
+								    },
+								  cutoutPercentage: 90,
+							      title: {
+							          display: true,
+							          text: 'ESG 경영 성숙도',
+							        },
+							    plugins: {
+							        tooltip: {
+							            enabled: false // <-- this option disables tooltips
+							          },
+							      doughnutlabel: {
+							        labels: [
+							          {
+							            text: dt1,
+							            font: {
+							              size: '60'
+							            },
+							            color: 'rgb(208, 74, 2)'
+							          },
+							          {
+							            text: '/100',
+							            font: {
+							              size: '30'
+							            },
+							            color: 'rgb(125, 125, 125)'
+							          }
+							        ]
+							      }
+							    }
+							  }
+							});
+
+					}
+
+
+
+
+				}
+			};
+			_comLib.callAjax(param);
+
+
+		}
+
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<form id="sfrm" >
+		<input type="hidden" name="actTgtResultUid" id="actTgtResultUid" th:value="${actTgtResultUid}">
+		<input type="hidden" name="mbrUid" id="mbrUid" th:value="${session.FoMbrInfo.mbrUid}">
+
+		<section class="sub content-diagnosis-result">
+			<div class="sub-title-a">
+				<div class="ct">
+					<div class="tit">ESG 경영 자가진단</div>
+					<div class="subs">기업이 ESG 경영을 위해 어떤 활동을 하고 있는지를 자가 진단하고, 필요한 ESG 경영활동에 대한 가이드를 제공합니다.</div>
+				</div>
+				<div class="bgBack"></div>
+				<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+			</div>
+
+			<div class="content mar_b60" id="result">
+			    <section class="esg01-wrap default-width pt60">
+			        <!--20230901 수정//-->
+			        <h3 class="tit-line-left">ESG 경영 자가진단 결과</h3>
+			        <span class="data-date">진단일 : <data id="result_date"></data></span>
+			        <div class="result-wrapper">
+			            <section class="chart-wrap">
+			                <h4>종합 진단 결과</h4>
+			                <div class="chart-area">
+			                    <div class="chart" style="width:50%">
+			                       <canvas id="chart1"  ></canvas>
+			                    </div>
+			                    <div class="chart" style="width:50%">
+			                        <canvas id="chart2"  ></canvas>
+			                    </div>
+			                </div>
+			            </section>
+			            <!-- //chart-wrap -->
+
+
+			            <!--수정 있음 09.20-->
+
+			            <section class="section e_pc " id="result_data">
+			                <h4>활동별 경영 현황</h4>
+			                <div class="table-wrap">
+			                    <table class="left rowline line color">
+			                        <caption>활동별 경영 현황</caption>
+			                        <colgroup>
+			                            <col style="width: 24%;">
+			                            <col style="width: 19%;">
+			                            <col style="width: 34%;">
+			                            <col style="width: 23%;">
+			                        </colgroup>
+			                        <tbody>
+			                            <tr>
+			                                <th class="col-01" rowspan="6">ESG 전략계획</th>
+			                                <th class="col-02" rowspan="3">ESG 경영전략 수립</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-02" rowspan="3">ESG 경영체계 수립</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="4" class="csrdS">
+
+			                                </td>
+			                            </tr>
+			                        </tbody>
+			                    </table>
+
+			                    <div class="btn-area">
+			                        <a href="/diagnosis/strategyView?tabId=1" class="btn-primary">ESG 전략계획 경영 가이드 더보기</a>
+			                    </div>
+			                </div>
+			                <!-- //table-wrap -->
+			                <div class="table-wrap">
+			                    <table class="left rowline line color">
+			                        <caption>활동별 경영 현황</caption>
+			                        <colgroup>
+			                            <col style="width: 24%;">
+			                            <col style="width: 19%;">
+			                            <col style="width: 34%;">
+			                            <col style="width: 23%;">
+			                        </colgroup>
+			                        <tbody>
+			                            <tr>
+			                                <th class="col-03" rowspan="21">ESG 과제 이행</th>
+			                                <th class="col-04" rowspan="5">환경 과제</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                 <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-04" rowspan="5">사회 과제</th>
+			                               <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                 <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                               <td class="ct_nm"></td>
+			                                 <td class="ct "><span></span></td>
+			                            </tr>
+
+			                            <tr>
+			                                <th class="col-04" rowspan="4">거버넌스 과제</th>
+			                               <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                               <td class="ct_nm"></td>
+			                               <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+
+			                            <tr>
+			                                <th rowspan="2" class="col-04">과제이행 관리</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+
+			                             <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+
+
+			                            <tr>
+			                                <th rowspan="2" class="col-04" id="h_bank">지속가능 금융</th>
+			                               <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr id="h_bank_rv">
+			                               <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-04" rowspan="2">ESG 영향평가</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                               <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-04" >ESG 시스템 운영</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+
+			                            <tr>
+			                                <td colspan="4"  class="csrdE">
+
+			                                </td>
+			                            </tr>
+			                        </tbody>
+			                    </table>
+
+			                    <div class="btn-area"><a href="/diagnosis/environmentView?tabId=1" class="btn-primary">ESG 과제이행 경영 가이드 더보기</a></div>
+
+			                </div>
+			                <!-- //table-wrap -->
+			                <!-- //table-wrap -->
+			                <div class="table-wrap">
+			                    <table class="left rowline line color">
+			                        <caption>활동별 경영 현황</caption>
+			                        <colgroup>
+			                            <col style="width: 24%;">
+			                            <col style="width: 19%;">
+			                            <col style="width: 34%;">
+			                            <col style="width: 23%;">
+			                        </colgroup>
+			                        <tbody>
+			                            <tr>
+			                                <th class="col-05" rowspan="5">ESG 공시∙인증</th>
+			                                <th class="col-06">ESG 공시</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-06">ESG 평가</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <th class="col-06" rowspan="2">ESG 인증</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+
+			                            <tr>
+			                                <td colspan="4"  class="csrdR">
+
+			                                </td>
+			                            </tr>
+			                        </tbody>
+			                    </table>
+
+			                    <div class="btn-area">
+			                        <a href="/diagnosis/certifiedView?tabId=1" class="btn-primary">ESG 공시 ∙ 인증 경영 가이드 더보기</a>
+			                    </div>
+			                </div>
+			                <!-- //table-wrap -->
+			            </section>
+
+						<section class="section e_mo self-mo-result " id="resultMo_data">
+							<h4>활동별 경영 현황</h4>
+							<div class="table-a">
+								<table cellpadding="0" cellspacing="0">
+									<colgroup>
+										<col style="width:30%"/>
+										<col style="width:50%"/>
+										<col style="width:20%"/>
+									</colgroup>
+									<thead>
+										<tr>
+											<th colspan="3">ESG 전략계획</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr>
+											<th class="bold" rowspan="3">ESG 경영전략 수립</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<th class="bold" rowspan="3">ESG 경영체계 수립</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<th colspan="3" class="to csrdS">
+											</th>
+										</tr>
+									</tbody>
+								</table>
+								<div class="btn">
+									<a href="/diagnosis/strategyView?tabId=1">ESG 전략계획 경영 가이드 더보기</a>
+								</div>
+							</div>
+
+
+							<div class="table-a">
+								<table cellpadding="0" cellspacing="0">
+									<colgroup>
+										<col style="width:30%"/>
+										<col style="width:50%"/>
+										<col style="width:20%"/>
+									</colgroup>
+									<thead>
+										<tr>
+											<th colspan="3">ESG 과제 이행</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr>
+											<th class="bold" rowspan="5">환경 과제</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+
+										<tr>
+											<th class="bold" rowspan="5">사회 과제</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+										<tr>
+											<th class="bold" rowspan="4">거버넌스 과제</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+
+										<tr>
+											<th rowspan="2" class="bold">과제이행 관리</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+			                             <tr>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+
+			                            <tr>
+			                                <th rowspan="2" class="bold" id="h_bankMo">지속가능 금융</th>
+			                                <td class="ct_nm"></td>
+			                                <td class="ct"><span ></span></td>
+			                            </tr>
+			                            <tr id="h_bank_rvMo">
+			                               <td class="ct_nm"></td>
+			                                <td class="ct "><span></span></td>
+			                            </tr>
+
+										<tr>
+											<th class="bold" rowspan="2">ESG 영향평가</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+
+
+										<tr>
+											<th class="bold"  >ESG 시스템 운영</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<th colspan="3" class="to csrdE">
+
+											</th>
+										</tr>
+									</tbody>
+								</table>
+
+								<div class="btn">
+									<a href="/diagnosis/environmentView?tabId=1">ESG 과제이행 경영 가이드 더보기</a>
+								</div>
+							</div>
+
+
+							<div class="table-a">
+								<table cellpadding="0" cellspacing="0">
+									<colgroup>
+										<col style="width:30%"/>
+										<col style="width:50%"/>
+										<col style="width:20%"/>
+									</colgroup>
+									<thead>
+										<tr>
+											<th colspan="3">ESG 공시∙인증</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr>
+											<th class="bold">ESG 공시</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<th class="bold">ESG 평가</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<th class="bold" rowspan="2">ESG 인증</th>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+										<tr>
+											<td class="ct_nm"></td>
+											<th class="ct"><span></span></th>
+										</tr>
+
+
+										<tr>
+											<th colspan="3" class="to csrdR">
+
+											</th>
+										</tr>
+									</tbody>
+								</table>
+
+								<div class="btn">
+									<a href="/diagnosis/certifiedView?tabId=1">ESG 공시 ∙ 인증 경영 가이드 더보기</a>
+								</div>
+							</div>
+						</section>
+
+			              <!--수정 있음 여기까지 09.20-->
+
+
+			            <!-- //chart-wrap -->
+			            <section class="section pt60 resultEtc">
+			                <h4><span class="tit-bar"></span>산업별 주요 Topic</h4>
+			                <div class="txt-line-box small">
+			                    ESG 경영 프로세스 중 ‘ESG 과제 이행’ 단계 수행 시, 귀사가 속해 있는 <strong class="txt-primary" id="">[<data id="indstySclsNm"></data>]</strong> 업종은 ESG 위험 요소를 효과적으로 관리하고 공시 및 평가에 선제적으로 대응하기 위해 다음의 세부 활동 수행에 조금 더 신경 쓸 필요가 있습니다.
+			                </div>
+
+							<div class="table-wrap mt32 e_pc resultEtc">
+			                    <table class="line">
+			                        <caption>뉴스레터</caption>
+			                        <colgroup>
+			                            <col style="width: 7%;">
+			                            <col style="width: 93%;">
+			                        </colgroup>
+			                        <thead>
+			                            <tr>
+			                                <th>영역</th>
+			                                <th>
+			                                    <div class="inner-flag">
+			                                       <span>주요 토픽</span>
+			                                       <div class="flag-wrap">
+			                                            <span class="very">매우중요</span>
+			                                            <span class="important">중요</span>
+			                                        </div>
+			                                    </div>
+			                                </th>
+			                            </tr>
+			                        </thead>
+			                        <tbody>
+			                            <tr>
+			                                <td>E</td>
+			                                <td class="lf">
+			                                    <div class="flag-wrap" id="eResult"></div>
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td>S</td>
+			                                <td class="lf">
+			                                    <div class="flag-wrap"  id="sResult"></div>
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td>G</td>
+			                                <td class="lf">
+			                                    <div class="flag-wrap"  id="gResult">
+													공통 적용 영역
+			                                    </div>
+			                                </td>
+			                            </tr>
+			                        </tbody>
+			                    </table>
+			                </div>
+
+
+							<div class="letter-table e_mo resultEtc">
+								<ul class="letter-arl">
+									<li class="veryimp">매우 중요</li>
+									<li class="imp">중요</li>
+								</ul>
+
+			                    <table cellpadding="0" cellspacing="0">
+			                        <colgroup>
+			                            <col style="width:30%;">
+			                            <col style="width:70%;">
+			                        </colgroup>
+
+									<tr>
+										<td class="greyBack">영역</td>
+										<td>E</td>
+									</tr>
+
+									<tr>
+										<td class="greyBack">주요토픽</td>
+										<td>
+											<ul class="topicList" id="eMoResult">
+
+											</ul>
+										</td>
+									</tr>
+			                    </table>
+
+								<table cellpadding="0" cellspacing="0">
+			                        <colgroup>
+			                            <col style="width:30%;">
+			                            <col style="width:70%;">
+			                        </colgroup>
+
+									<tr>
+										<td class="greyBack">영역</td>
+										<td>S</td>
+									</tr>
+
+									<tr>
+										<td class="greyBack">주요토픽</td>
+										<td>
+											<ul class="topicList" id="sMoResult">
+
+											</ul>
+										</td>
+									</tr>
+			                    </table>
+
+								<table cellpadding="0" cellspacing="0">
+			                        <colgroup>
+			                            <col style="width:30%;">
+			                            <col style="width:70%;">
+			                        </colgroup>
+
+									<tr>
+										<td class="greyBack">영역</td>
+										<td>G</td>
+									</tr>
+
+									<tr>
+										<td class="greyBack">주요토픽</td>
+										<td>
+											공통 적용 영역
+										</td>
+									</tr>
+			                    </table>
+			                </div>
+			            </section>
+			        </div>
+			        <!-- //result-wrap -->
+			    </section>
+			     <!-- //esg01-wrap -->
+			</div>
+		</section>
+
+	</form>
+
+</div>
+</html>
+<script id="tmpl_slist" type="text/x-jquery-tmpl">
+<span class="${RValue}">${RType}</span>
+</script>
+<script id="tmpl_slist2" type="text/x-jquery-tmpl">
+<li class="${RValue}">${RType}</li>
+</script>

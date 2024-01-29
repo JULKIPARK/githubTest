@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/subwrapLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		var TpicUid ;
+		$(function(){
+			// 이벤트 설정
+
+			/*<![CDATA[*/
+			TpicUid = [[${tpicUid}]];
+			/*]]>*/
+
+			$.post("/diagnosis/selectContList", {tpicUid : TpicUid}, function(data){
+
+				$("#tmpl_relation").tmpl(data.list).appendTo("#relation-list");
+				// 빈 카테고리 라인 제거
+				$('#relation-list .po').each((idx, item) => {
+					if (!$.trim($(item)[0].innerHTML)) {
+						$(item)[0].remove();
+					}
+				});
+	 			$(".relation-list").slick({
+			    autoplay: true,
+			    speed: 500,
+			    arrows: true,
+			    dots: false,
+			    infinite: true,
+			    cssEase: "linear",
+			    speed: 300,
+			    slidesToShow: 3,
+			    slidesToScroll: 1,
+			    responsive: [
+			      {
+			        breakpoint: 1180,
+			        settings: {
+			          slidesToShow: 2,
+			          dots: false,
+			          arrows: false,
+			        },
+			      },
+			      {
+			        breakpoint: 767,
+			        settings: {
+			          slidesToShow: 1,
+			          dots: false,
+			          arrows: true,
+			        },
+			      },
+			    ],
+			  });
+
+			});
+		});
+
+		function fnGoStrategy(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/strategyView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnGoEnvironment(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/environmentView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		function fnCertifiedView(tabId){
+			var frm = $('<form></form>');
+			frm.attr('method', 'get');
+			frm.attr("action", "/diagnosis/certifiedView");
+			frm.append($('<input/>', {type: 'hidden', name: 'tabId', value: tabId}));//선택 할 탭
+			frm.appendTo('body');
+			frm.submit();
+		}
+
+		$(document).ready(function(){
+			$('.menu01').addClass("on");
+			$('.submenu03_02').addClass("on");
+		});
+
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+		<form id="frm">
+			<section class="sub">
+				<div class="sub-title-a">
+					<div class="ct">
+						<div class="tit">ESG 경영활동 가이드</div>
+						<div class="subs">ESG 경영에 필요한 활동과 필요 역량을 단계별로 정의하고, ESG 경영활동에 도움이 될 수 있는 참고 자료를 추천합니다.</div>
+					</div>
+					<div class="bgBack"></div>
+					<div class="bg"><img src="/assets/img/common/bg_tit.png"></div>
+				</div>
+
+				<div class="mo_dropmenu">
+					<div class="nav">사회과제<span><img src="/assets/img/common/ico_selectdesign.png"></span></div>
+					<ul class="dropmenu-list">
+						<li><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요</a></li>
+					<li><strong>ESG 전략 · 계획</strong></li>
+					<li><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립</a></li>
+					<li><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립</a></li>
+					<li><strong>ESG 과제 이행</strong></li>
+					<li><a href="/diagnosis/environmentView?tabId=1">환경 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=2">사회 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=4">지속가능 금융</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가</a></li>
+					<li><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영</a></li>
+					<li><strong>ESG 공시 · 인증</strong></li>
+					<li><a href="/diagnosis/certifiedView?tabId=1">ESG 공시</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=2">ESG 평가</a></li>
+					<li><a href="/diagnosis/certifiedView?tabId=3">ESG 인증</a></li>
+					</ul>
+				</div>
+
+
+				<div class="esg-guide default-width">
+					<dl class="leftMenu">
+						<dd>
+							<div class="depth-1"></div>
+							<ul class="depth-2-menulist">
+								<li class="submenu01"><a href="/diagnosis/businessInfo">ESG 경영활동 가이드 개요<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 전략 · 계획</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu02_01"><a href="/diagnosis/strategyView?tabId=1">ESG 경영전략 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu02_02"><a href="/diagnosis/strategyView?tabId=2">ESG 경영체계 수립<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 과제 이행</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu03_01"><a href="/diagnosis/environmentView?tabId=1">환경 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_02"><a href="/diagnosis/environmentView?tabId=2">사회 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_03"><a href="/diagnosis/environmentView?tabId=3">거버넌스 과제<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_04"><a href="/diagnosis/environmentView?tabId=4">지속가능 금융<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_05"><a href="/diagnosis/environmentView?tabId=5">ESG 영향 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu03_06"><a href="/diagnosis/environmentView?tabId=6">ESG 시스템 운영<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+
+						<dd>
+							<div class="depth-1">ESG 공시 ・ 인증</div>
+							<ul class="depth-2-menulist">
+								<li class="submenu04_01"><a href="/diagnosis/certifiedView?tabId=1">ESG 공시<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu04_02"><a href="/diagnosis/certifiedView?tabId=2">ESG 평가<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+								<li class="submenu04_03"><a href="/diagnosis/certifiedView?tabId=3">ESG 인증<span><img src="/assets/img/common/ico_arrow4_9.png"></span></a></li>
+							</ul>
+						</dd>
+					</dl>
+
+					<div class="content">
+						<div class="border-txbox-a">
+							<div class="sub-common-tit">개요</div>
+							<div class="border-box">
+								기업은 경영활동 과정 내에서 임직원, 협력사, 소비자, 지역사회 등 사회 전체에 이익이 되는 방향으로 운영하여 사회적 책임을 다해야 합니다. 특히 최근 기업뿐 아니라 전체 공급망에 대한 책임이 중요한 경영 이슈로 대두되고 있으며 기업의 사회적 책임과 관련된 법률 준수, 이해관계자 관심 사항 및 업종 특성을 고려한 경영관리가 요구되고 있습니다.<br/><br/>
+								이슈 영역별 사업목표와 계획 수립부터 이에 대한 정책과 프로그램 기획 및 운영, 필수 지표 측정 및 모니터링, 과제 이행에 대한 성과 평가까지 모든 업무가 연계되어야 하며, 이 과정에서 ISO 인증 및 사회 주제 관련 글로벌 이니셔티브 가입까지 함께 검토할 수 있습니다.
+							</div>
+						</div>
+
+						<div class="guide-work">
+							<div class="sub-common-tit">주요 실행 과제</div>
+							<dl class="work-list">
+								<dd>
+									<div class="subj-box"><span>공급망 ESG 관리</span></div>
+									<ul class="work-detail-list">
+										<li>
+											공급망 내 ESG 위험 진단
+											<span>공급망 내 발생 가능한 ESG 위험 검토</span>
+											<span>협력사에 대한 ESG 실사(현장 방문, 직원 인터뷰 등) 시행</span>
+										</li>
+
+										<li>
+											공급망 위험 대응체계 구축
+											<span>실사 결과에 기반한 개선 방안 수립 및 개선 활동 점검</span>
+											<span>공급망 위험 보고체계 확보</span>
+											<span>목표 및 과제 설정 지원, 이행 현황 및 성과 점검, 투자 등 금전적 혜택 제공과 기술 및 설비 지원, 교육 제공 등 다양한 협력사 지원 방안 수립</span>
+										</li>
+
+										<li>
+											공급망 내 분쟁광물 사용 여부 확인 및 관련 규제 준수
+											<span>공급망 내 발생 가능한 ESG 위험 검토</span>
+											
+											<h5>
+												※ 분쟁광물: 콩고민주공화국, 우간다 등 아프리카 분쟁 지역에서 무장 단체의 자금 조달 목적으로 불법적으로 생산되는 광물로 금, 주석석(주석의 원광), 콜탄(탄탈럼의 원광), 철망간중석(텅스텐의 원광) 4가지 광물을 지칭함
+											<h5>
+											
+										</li>
+
+										<li class="more-btn">
+								 			<a href="/action/socialView?tabId=1" >
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>인권 이슈 관리</span></div>
+									<ul class="work-detail-list">
+										<li>
+											인권보호 원칙에 입각한 인권경영 선언 및 정책 수립
+											<span>임직원의 인권보호 원칙 준수를 위한 교육 등 프로그램 기획∙운영</span>
+											<span>UNGC 인권, 노동 영역 지지 선언 등 글로벌 이니셔티브 참여</span>
+										</li>
+										<li>
+											인권 리스크 관리 체계 수립
+											<span>기업 및 협력사 구성원 전체를 대상으로, 강제 노동, 고용 및 노동 정책, 산업 안전 등의 영역에 대해 인권영향 평가 시행하여 인권 리스크 식별</span>
+											<span>식별된 리스크에 대한 개선 목표를 수립하고, 인권 교육, 인권 침해 신고 체계 구축, 인권 보호 캠페인 시행 등 인권 리스크 경감 활동 시행 및 결과를 보고∙공개</span>
+										</li>
+
+										<li class="more-btn">
+								 			<a href="/action/socialView?tabId=2">
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+								<dd>
+									<div class="subj-box"><span>인적자본 관리</span></div>
+									<ul class="work-detail-list">
+										<li>
+											산업안전보건 관리
+											<span>안전보건 원칙 및 정책 수립</span>
+											<span>안전보건 관련 법령∙규제 변화 업무 반영</span>
+											<span>안전보건 관리 전문 인력 확보, 전담 조직 구성 및 역할∙책임 명시</span>
+											<span>안전 관련 ISO 인증 취득</span>
+										</li>
+
+										<li>
+											다양성 및 포용 관리
+											<span>다양성을 반영한 고용∙노동 정책 수립</span>
+											<span>성별 임직원 비율, 장애인 고용 비율 등 다양성 점검 지표 설정</span>
+											<span>임직원 인식 개선을 위한 프로그램 기획∙운영</span>
+										</li>
+
+										
+
+										<li class="more-btn">
+								 			<a href="/action/socialView?tabId=3">
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+
+								<dd>
+									<div class="subj-box"><span>지역사회 공헌</span></div>
+									<ul class="work-detail-list">
+										
+
+										<li>
+											정기 협의체, 이슈별 공청회 운영 등을 통한 지역사회 소통 채널 확보
+											<span>
+												지역사회 의견 수렴 및 경영활동 반영 절차 구축
+											</span>
+											<span>
+												지역사회 투자 활동, 일자리 창출 등 지역사회 공헌 프로그램 기획 및 운영
+											</span>
+										</li>
+
+										<li class="more-btn">
+								 			<a href="/action/socialView?tabId=5">
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+
+								<dd>
+									<div class="subj-box"><span>소비자 보호</span></div>
+									<ul class="work-detail-list">
+										<li>
+											소비자 정보 보호
+											<span>정보보호체계 및 시스템 구축, 인증 취득</span>
+											<span>정보보호 계획 수립 및 관리 방안 운영</span>
+											<span>개인정보 침해 현황 공시, 구제 절차∙방안 수립</span>
+										</li>
+										<li>
+											제품 안전 및 품질 관리체계 수립
+											<span>제품 안전 및 품질 기준 수립 및 준수</span>
+											<span>개선사항 반영</span>
+										</li>
+										<li>
+											소비자 보호 정책 및 프로그램 수립/운영
+											<span>소비자 클레임 대응 프로세스 구축</span>
+											<span>마케팅 윤리 준수를 위한 규정 수립, 임직원 교육, 마케팅 활동 모니터링 시행</span>
+											<span>업종별 필수 서비스에 대한 접근성 확보 방안 수립∙운영</span>
+										</li>
+
+										<li class="more-btn">
+								 			<a href="/action/socialView?tabId=4">
+								 				더 알아보기 <span><img src="/assets/img/common/linkbox-arrow.png"></span>
+								 			</a>
+										</li>
+									</ul>
+								</dd>
+
+
+								<dd>
+									<div class="subj-box"><span>사회 과제 이행 모니터링 및 관리</span></div>
+									<ul class="work-detail-list">
+										<li>사회 주제 KPI 모니터링 체계 구축 및 모니터링 실시</li>
+										<li>이행 과제에 대한 성과 측정 및 점검∙개선, 기준과 지침 수립</li>
+										<li>모니터링 결과 기반 성과 평가와 개선점 도출 활용</li>
+									</ul>
+								</dd>
+
+							</dl>
+						</div>
+
+
+						<div class="needs-work">
+							<div class="sub-common-tit">필요 업무역량</div>
+							<ul class="needs-list">
+								<li>산업군에 대한 이해와 필수 법∙규제에 대한 배경지식</li>
+								<li>공시 기준, 시장 및 경쟁자 현황 분석을 통한 주요 사회 이슈 식별 역량</li>
+								<li>주요 이슈별 사업 및 프로그램의 기획 역량</li>
+								<li>산업안전보건, 고용 및 노동 제도, 제품 품질 관리, 소비자 정보 보호 분야에 대한 전문 지식</li>
+								<li>임직원, 지역사회, 소비자 등 다양한 이해관계자와의 커뮤니케이션 역량</li>
+								<li>사업 수행 결과, 측정값 및 사회 성과 지표에 대한 이해</li>
+								<li>모니터링 결과 정리 및 개선사항 도출 역량</li>
+								<li>사회 전략 및 목표 기반 성과 평가 역량</li>
+							</ul>
+						</div>
+
+						<div class="guide-relation">
+							<div class="sub-common-tit">관련 컨텐츠</div>
+
+						<ul class="relation-list" id="relation-list">
+
+						</ul>
+						</div>
+
+					</div>
+				</div>
+
+
+				<div class="guide-service">
+					<div class="container">
+						<div class="sub-common-tit">서비스 안내</div>
+
+						<dl class="service-list">
+							<dd>
+								<div class="subj">공급망 인권영향평가 및 인권 실사 대응</div>
+								<ul class="detail-list">
+									<li>기업의 운영과 공급망 전반에 걸친 인권 영향 평가 지원</li>
+									<li>산업별 공급망 관리 이니셔티브 가입 자문</li>
+									<li>인권 실사 등 ESG 공시 프레임워크 컴플라이언스 자문 </li>
+								</ul>   								
+							</dd>
+							<dd>
+								<div class="subj">지속가능 공급망 구축</div>
+								<ul class="detail-list">
+									<li>공급망 내 주요 리스크 식별 및 분석</li>
+									<li>공급망 관리 체계 및 절차 수립</li>
+									<li>주요 공급망 규제에 따른 영향 분석 및 자문</li>
+								</ul>     
+							</dd>
+						</dl>
+
+						<div class="back-btn onlineBtn">
+							삼일 서비스 문의하기 <span><img src="/assets/img/common/ico_arrow_right.png"></span>
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</form>
+</div>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<!-- Fragment -->
+<th:block th:fragment="fragmentContentSearchPop">
+  <script th:inline="javascript" type="text/javascript">
+    $.fn.clearForm = function () {
+      return this.each(function () {
+        var type = this.type,
+            tag = this.tagName.toLowerCase();
+        if (tag === "form") {
+          return $(":input", this).clearForm();
+        }
+        if (
+            type === "text" ||
+            type === "password" ||
+            type === "hidden" ||
+            tag === "textarea"
+        ) {
+          this.value = "";
+        } else if (type === "checkbox" || type === "radio") {
+          this.checked = false;
+        } else if (tag === "select") {
+          this.selectedIndex = -1;
+        }
+      });
+    };
+
+    $(function () {
+      // 이벤트 설정
+      function fnInitEvent() {
+        //페이지 사이즈 변경
+        $("#optPageSizeContentSearchPop").bind("change", function () {
+          $('#optPageNumberContentSearchPop').find('option:first').attr('selected', 'selected');//선택된 페이지 초기화
+          fnSelectContentSearchPopList();	//페이지 사이즈변경
+        });
+
+        //페이지 번호 변경
+        $("#optPageNumberContentSearchPop").bind("change", fnSelectContentSearchPopList);
+
+        // 콘텐츠종류를 선택시 하위 활성화
+        $('#schContKindOpt').bind("change", function () {
+          if ($('#schContKindOpt').val() === 'ALL') {
+            $('#schContRmthdOpt').attr('disabled', 'disabled');
+          } else {
+            $('#schContRmthdOpt').removeAttr('disabled');
+          }
+        });
+
+        // 유형분류를 선택시 하위 활성화
+        $('#schContTpLclsfOpt').bind('change', function () {
+          if ($('#schContTpLclsfOpt').val() == "ALL") {
+            $('#schContTpMclsfOpt').attr('disabled', 'disabled');
+          } else {
+            $('#schContTpMclsfOpt').removeAttr('disabled');
+          }
+        });
+
+        $("#btnSearchContentSearchPop").bind("click", fnSelectContentSearchPopList);	//조회
+        $("#btnResetContentSearchPop").bind("click", $('#formContentSearchPop').clearForm());		//초기화
+
+        $("#btnApplyContentSearchPop").bind("click", function() {
+          var contUids=[];
+
+          $('[name="chkCont"]:checked').each(function() {
+            contUids.push($(this).val());
+          });
+
+          // console.log('contUids', contUids);
+
+          // displayList.html 에 존재하는 함수 call
+          cbSaveContentTopic(contUids);
+
+          $("#ContentSearchPop").removeAttr("show");
+        });	//컨텐츠 추가
+      }
+
+      // 화면 이벤트 초기화
+      fnInitEvent();
+    });
+
+    //목록조회
+    function fnSelectContentSearchPopList() {
+      var formData, param = {};
+      formData = _formLib.getFormData("formContentSearchPop");
+      param = {
+        "url": "/sems/contents/selectContentSearchPopList"
+        , "type": "post"
+        , "data": formData
+        , "async": false
+        , "callback": function (fragment) {
+          $("#divContentList").replaceWith(fragment);
+
+          //페이징처리
+          var currPage = $('#optPageNumberContentSearchPop').val();//현재 선택된 페이지
+          $('#optPageNumberContentSearchPop').empty();//페이지 option 삭제
+          for (var count = 1; count <= $("#totalPageContentSearchPop").val(); count++) {
+            var selTxt = "";
+            if (count == currPage) {
+              selTxt = "selected='selected'";//현재 페이지 선택
+            }
+            var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $(
+                "#totalPageContentSearchPop").val() + "</option>");
+
+            $('#optPageNumberContentSearchPop').append(option);
+          }
+
+          $("#ContentSearchPop").addClass("show");
+        }
+      };
+      _comLib.callAjax(param);
+    }
+  </script>
+
+  <!-- //wrap -->
+  <div id="ContentSearchPop" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+    <div class="dimmed"></div>
+    <div class="xycenter">
+      <div class="xycenter">
+        <section class="modal-area large">
+          <div class="modal-head">
+            <h2 class="tit">컨텐츠 검색</h2>
+            <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+          </div>
+          <section class="modal-cont">
+            <div class="form_content">
+              <form id="formContentSearchPop">
+                <fieldset>
+                  <legend>컨텐츠 검색</legend>
+                  <div class="search-wrap">
+                    <div class="table-wrap">
+                      <table class="inner-input align-left">
+                        <caption>컨텐츠 검색</caption>
+                        <colgroup>
+                          <col style="width: 10%;">
+                          <col style="width: 20%;">
+                          <col style="width: 10%;">
+                          <col style="width: 20%;">
+                          <col style="width: 15%;">
+                          <col style="width: *;">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                          <th>컨텐츠명/번호</th>
+                          <td colspan="3">
+                            <div class="selectinput-wrap">
+                              <select name="schContentOpt" class="select" title="컨텐츠명">
+                                <option value="01">컨텐츠명</option>
+                                <option value="02">컨텐츠번호</option>
+                              </select>
+                              <input type="text" name="schContentWrd" placeholder="" title="컨텐츠 입력">
+                            </div>
+                          </td>
+                          <th>컨텐츠종류/등록방식</th>
+                          <td>
+                            <div class="select-group">
+                              <select name="schContKindOpt" id="schContKindOpt" class="select">
+                                <option value="ALL">전체</option>
+                                <option value="10">문서</option>
+                                <option value="20">영상</option>
+                              </select>
+                              <select name="schContRmthdOpt" id="schContRmthdOpt" class="select"
+                                      disabled="disabled">
+                                <option value="ALL">전체</option>
+                                <option value="10">컨텐츠업로드</option>
+                                <option value="20">아웃링크</option><!-- 문서선택시만 노출 -->
+                                <!-- <option value="30">임베드 코드 입력</option> --><!-- 영상선택시만 노출 -->
+                              </select>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>출처</th>
+                          <td colspan="3">
+                            <div class="selectinput-wrap">
+                              <select name="schSrcOpt" class="select" title="출처명">
+                                <option value="01">출처명</option>
+                                <option value="02">출처번호</option>
+                              </select>
+                              <input type="text" name="schSrcWrd" placeholder="" title="출처 입력">
+                            </div>
+                          </td>
+                          <th>국내/해외</th>
+                          <td>
+                            <ul class="flex ck-list">
+                              <li>
+                                <input type="radio" name="schDmstcChk" value="ALL" id="radio01">
+                                <label for="radio01">전체</label>
+                              </li>
+                              <li>
+                                <input type="radio" name="schDmstcChk" value="Y" id="radio02">
+                                <label for="radio02">국내</label>
+                              </li>
+                              <li>
+                                <input type="radio" name="schDmstcChk" value="N" id="radio03">
+                                <label for="radio03">해외</label>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>유형 분류</th>
+                          <td colspan="3">
+                            <div class="select-group">
+                              <select name="schContTpLclsfOpt" id="schContTpLclsfOpt"
+                                      class="select">
+                                <option value="ALL">전체</option>
+                                <option value="10">삼일발간물</option>
+                                <option value="20">기준/가이드라인</option>
+                                <option value="30">법/제도</option>
+                                <option value="40">보고/연구</option>
+                                <option value="50">교육/안내</option>
+
+                              </select>
+                              <select name="schContTpMclsfOpt" id="schContTpMclsfOpt" class="select"
+                                      disabled="disabled">
+                                <option value="ALL">전체</option>
+                                <option value="10">뉴스레터</option>
+                                <option value="20">레포트</option>
+                              </select>
+                            </div>
+                          </td>
+                          <th rowspan="2">컨텐츠번호<br>다중검색</th>
+                          <td rowspan="2">
+                          <textarea name="schContUnoArr" id="schContUnoArr" cols=""
+                                    rows=""></textarea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>업무 분류</th>
+                          <td>
+                            <select name="schTaskClsfOpt" id="schTaskClsfOpt" class="select w100p">
+                              <option value="ALL">전체</option>
+                              <option value="10">ESG경영관리</option>
+                              <option value="20">전략/계획</option>
+                              <option value="30">실행</option>
+                              <option value="40">공시</option>
+                              <option value="50">평가</option>
+                            </select>
+
+                          </td>
+                          <th>주제분류</th>
+                          <td>
+                            <select name="schTopicOpt" id="schTopicOpt" class="select w100p">
+                              <option value="ALL">전체</option>
+                              <option value="10">ESG일반</option>
+                              <option value="20">환경</option>
+                              <option value="30">사회</option>
+                              <option value="40">거버넌스</option>
+                              <option value="50">금융</option>
+                            </select>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- //table-wrap -->
+                    <div class="btn-wrap">
+                      <button type="button" id="btnSearchContentSearchPop" class="btn-primary">조회
+                      </button>
+                      <button type="button" id="btnResetContentSearchPop" class="btn-sub">초기화
+                      </button>
+                    </div>
+                    <!-- //btn-wrap -->
+                  </div>
+                  <!-- search-wrap -->
+                  <div class="result-wrap">
+                    <div class="sorting-wrap">
+                      <select id="optPageSizeContentSearchPop" name="optPageSizeContentSearchPop"
+                              class="select"
+                              title="데이터 건수">
+                        <option value="10">10개</option>
+                        <option value="50">50개</option>
+                        <option value="100">100개</option>
+                      </select>
+                      <select name="optPageNumberContentSearchPop"
+                              id="optPageNumberContentSearchPop"
+                              class="select"
+                              title="페이지 이동선택"></select>
+                      <div class="btn-ctl">
+                        <button type="button" class="btn-download">다운로드</button>
+                      </div>
+                    </div>
+                    <!-- //sorting-wrap -->
+                    <div id="divContentList" class="table-wrap">
+                      <!-- 페이징 정보 -->
+                      <th:block th:unless="${#lists.isEmpty(list)}">
+                        <input type="hidden" id="totalCountContentList"
+                               th:value="${PageInfo.totalCount}"/>
+                        <input type="hidden" id="pageNumerContentSearchPop"
+                               th:value="${PageInfo.pageNumber}"/>
+                        <input type="hidden" id="totalPageContentSearchPop"
+                               th:value="${PageInfo.totalPage}"/>
+                      </th:block>
+                      <table>
+                        <caption>소속 리스트</caption>
+                        <colgroup>
+                          <col style="width: 5%;">
+                          <col style="width: 5%;">
+                          <col style="width: 5%;">
+                          <col style="width: 10%;">
+                          <col style="width: *;">
+                          <col style="width: 6%;">
+                          <col style="width: 6%;">
+                          <col style="width: 7%;">
+                          <col style="width: 7%;">
+                          <col style="width: 7%;">
+                          <col style="width: 7%;">
+                          <col style="width: 8%;">
+                          <col style="width: 5%;">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                          <th><input type="checkbox" id="chkAll" name="chkAll" value="전체선택" title="선택"></th>
+                          <th>NO</th>
+                          <th>종류</th>
+                          <th>컨텐츠 번호</th>
+                          <th>컨텐츠명</th>
+                          <th>출처</th>
+                          <th>언어</th>
+                          <th>유형분류</th>
+                          <th>유형세분류</th>
+                          <th>업무분류</th>
+                          <th>주제분류</th>
+                          <th>등록방식</th>
+                          <th>형태</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, stat : ${list}">
+                          <td><input type="checkbox" id="chkCont_[[${item.contUid}]]" name="chkCont" th:value="|${item.contUid}|"
+                                     title="선택"></td>
+                          <td>1</td>
+                          <td th:text="${item.contKindCd}">문서</td>
+                          <td><a href="javascript:void(0);" class="link" th:text="${item.contUno}">CDIA00012</a>
+                          </td>
+                          <td class="left"><span class="ellipsis" th:text="${item.contNm}">GRI 1: Foundation 2021</span>
+                          </td>
+                          <td th:text="${item.srcUid}">GRI</td>
+                          <td th:text="${item.splyLangCdNm}">영문</td>
+                          <td th:text="${item.contTpLclsfCdNm}">기준/표준</td>
+                          <td th:text="${item.contTpMclsfCdNm}"></td>
+                          <td th:text="${item.taskClsfCdNm}">공시</td>
+                          <td th:text="${item.tpicMnuCdNm}">ESG일반</td>
+                          <td th:text="${item.contRmthdCdNm}">컨텐츠업로드</td>
+                          <td th:text="${item.contSplyTpCdNm}">E-pub</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(list)}">
+                          <td class="nodata" colspan="13">데이터가 존재하지 않습니다.</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- //table-wrap -->
+                  </div>
+                  <!-- "result-wrap -->
+                  <div class="btn-wrap">
+                    <button type="button" id="btnApplyContentSearchPop" class="btn-primary">컨텐츠 추가
+                    </button>
+                    <button type="button" class="btn-sub btn-close">닫기</button>
+                  </div>
+                  <!-- //btn-wrap -->
+                </fieldset>
+              </form>
+            </div>
+            <!--//form_content-->
+          </section>
+          <!--//modal-cont-->
+        </section>
+        <!--//modal-area-->
+      </div>
+      <!-- //xycenter -->
+    </div>
+    <!-- //xycenter -->
+  </div>
+  <!--//modal-wrap-->
+</th:block>
+</html>

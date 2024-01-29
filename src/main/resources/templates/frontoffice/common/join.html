@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{frontoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		$(function(){
+			// 이벤트 설정
+			$("#btnJoin").bind("click", fnJoin);	//회원가입
+			$("#btnCancel").bind("click", fnCancel);	//회원가입 취소
+			
+			//한글입력 안되게 처리
+			$(".onlyAlpabet").on("keyup", function(){
+				var inputVal = $(this).val();
+				$(this).val(inputVal.replace(/[^A-Za-z0-9+]/gi,''));
+			});
+			
+			$(".onlyNuMber").on("keyup", function() {
+				$(this).val($(this).val().replace(/[^0-9]/g,""));
+			});
+			
+			//ESG 관심 영역 checkbox 생성
+			$.post("/common/selectCodeList", {"grpCd":"INTR_CD"}, function(data){
+				var list = data.list;
+				var innerHtml = "";
+				$.each(list, function(index, item) {
+					innerHtml+="<li>";
+					innerHtml+="	<input type='checkbox' id='ck"+index+"' name='regIntrCd' value='"+item.cd+"'>";
+			f		innerHtml+="	<label for='ck"+index+"'><span>"+item.cdNm+"</span></label>";
+					innerHtml+="</li>";
+				});
+				$("#intrCdList").append(innerHtml);
+			});
+		});
+		
+		//중복확인
+		function fnCheckMbrId(){
+			var regMbrId = $("#regMbrId").val();
+			var regPass = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,12}$/;//6자 이상, 12자리 이하의 영문, 숫자를 조합(!regPass.test(regMbrId))			 
+			
+			if(_formLib.isEmpty(regMbrId)){
+				alert('아이디를 입력해주세요');
+				return;
+			}			
+			if(regMbrId.length<6 || regMbrId.length>12){
+				alert('아이디는 6자 이상, 12자리 이하의 영문 혹은 숫자를 조합');
+				return;
+			}
+			
+			//암호체크
+			//영문, 숫자, 특수문자 중 2가지 이상 조합하여 20자리 이내의 암호 정규식 ( 2 가지 조합)
+			var regMbrPwd = $("#regMbrPwd").val();
+			var chkMbrPwd = $("#chkMbrPwd").val();
+			var regPwPass = /^(?!((?:[A-Za-z]+)|(?:[~!@#$%^&*()_+=]+)|(?:[0-9]+))$)[A-Za-z\d~!@#$%^&*()_+=]{8,16}$/;
+			
+			//비밀번호 확인 오류
+			if(regMbrPwd!=chkMbrPwd){
+				alert("비밀번호를 확인해 주세요.");
+                return;
+			}
+			if(!regPwPass.test(regMbrId)){
+				alert("영문/숫자/특수문자(공백제외)만 허용하며, 2개 이상 조합");
+                return;
+			}
+
+            // 이메일 체크
+                var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+                if(!regExp.test($("#regCompMail").val)){
+                	alert("이메일 형식에 맞춰 입력해 주세요. 예) gildong@naver.co.kr");
+                    $("#regCompMail").focus();
+                    return;
+                }
+            }
+			
+			$.post(
+				"/common/checkDuplicate"
+				, {mbrId:regMbrId}
+				, function(data){
+					if(data.isDuplicate){
+				    	alert('이미 사용중인 아이디입니다.');
+					}
+					else{
+				    	alert('사용가능한 아이디입니다.');
+					}
+				}
+			);
+		}
+		
+		function fnJoin(){
+			var formData, param = {};
+			formData = _formLib.getFormData("loginFrm");
+			
+			param = {
+				"url" : "/common/signUp"
+				, "type" : "post"
+				, "data" : formData
+				, "async" : false
+				, "callback" : function(data) {
+					if(data.msg == "success"){
+						window.location.href = "/";
+					}else{
+						alert(data.msg);
+					}
+				}
+			};
+			_comLib.callAjax(param);
+		}
+		
+		//취소하기
+		function fnCancel(){
+			window.location.href = "/";
+		}
+	</script>
+</th:block>
+			
+<div layout:fragment="content">
+	<form id="loginFrm">
+	
+		<!-- content -->
+		<div class="sub-wrap">
+			<section class="join-wrap">
+				<form id="joinFrm">
+					<fieldset>
+						<legend>회원가입</legend>
+						<h3 class="tit">회원가입</h3>
+						<section class="sub-section">
+							<div class="tit-wrap"><h4 class="tit">개인 정보</h4></div>
+							<ul class="input-list">
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="join01">아이디<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<div class="input-mix">	
+												<input type="text" id="regMbrId" name="regMbrId" maxlength="12" class="txt matching onlyAlpabet" placeholder="아이디를 입력해주세요">
+												<button type="button" onclick="fnCheckMbrId();" class="btn-white btn125"><span>중복 확인</span></button>
+											</div>
+											<p class="guide-txt">6자 이상, 12자리 이하의 영문 혹은 숫자를 조합</p>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regMbrPwd">비밀번호<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="password" id="regMbrPwd" name="regMbrPwd" maxlength="12"class="txt" placeholder="비밀번호를 입력해주세요">
+											<p class="guide-txt">영문(대・소문자 구분)/숫자/특수문자 중 3가지 이상 조합, 최소 8자 이상, 16자 이하</p>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="chkMbrPwd">비밀번호 확인<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="password" id="chkMbrPwd" class="txt" placeholder="비밀번호를 한번 더 입력해주세요">
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>  
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regMbrNm">이름<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="text" id="regMbrNm" name="regMbrNm" class="txt selected" placeholder="이름을 입력해주세요">
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>   
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regCphonNo">전화번호</label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="text" id="regCphonNo" name="regCphonNo" class="txt error onlyNuMber" value="" placeholder="숫자만 입력해주세요" numberOnly>
+											<p class="error-message">숫자만 입력해주세요.</p>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>  
+							</ul>
+						</section>
+						<!-- //sub-section -->
+						<section class="sub-section">
+							<div class="tit-wrap"><h4 class="tit">소속(회사/기관) 정보</h4></div>
+							<ul class="input-list">
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="coprNm">소속(회사/기관)<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<div class="input-mix">
+												<input type="text" id="coprNm" class="txt" placeholder="회사 또는 기관명을 입력해주세요">
+												<input type="hidden" id="regCoprUid" name="regCoprUid">	
+												<button type="button" class="btn-white btn125"><span>소속 검색</span></button>
+											</div>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regDeptNm">부서명</label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="text" id="regDeptNm" name="regDeptNm" class="txt" placeholder="소속 내 부서명을 입력해주세요">
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regPosNm">직급</label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="text" id="regPosNm" name="regPosNm" class="txt" placeholder="소속 내 직급을 입력해주세요">
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>  
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regCompMail">소속 이메일<span class="required"><i class="blind">필수입력</i></span></label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<div class="input-mix">	
+												<input type="text" id="regCompMail" name="regCompMail" class="txt" placeholder="회사 또는 기관에서 사용하는 이메일을 입력해주세요">
+												<button type="button" class="btn-white btn125"><span>인증 확인</span></button>
+											</div>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>   
+								<li class="list">
+									<div class="input-wrap">
+										<div class="label-wrap">
+											<label for="regCoprPhonNo">소속 전화번호</label>
+										</div>
+										<!-- //label-wrap -->
+										<div class="input-area">
+											<input type="text" id="regCoprPhonNo" name="regCoprPhonNo" class="txt onlyNuMber" placeholder="숫자만 입력해주세요" numberOnly>
+										</div>
+										<!-- //input-wrap -->
+									</div>
+								</li>  
+							</ul>
+						</section>
+						<!-- //sub-section -->
+						<section class="sub-section">
+							<div class="tit-wrap"><h4 class="tit">ESG 관심 영역</h4><span>(ESG 관심 영역 복수 선택)</span></div>
+							<ul class="box-check-wrap row3" id="intrCdList"></ul>
+						</section>
+						<section class="sub-section">
+							<div class="tit-wrap"><h4 class="tit">이용약관 동의</h4></div>
+							<div class="agree-list-wrap">
+								<div class="checkbox-wrap">
+									<input type="checkbox" id="chkAll">
+									<label for="chkAll"><span>전체 동의</span></label>
+								</div>
+								<p class="guide-txt">선택항목에 동의하지 않을 경우도 회원가입 및 일반적인 서비스를 이용할 수 있습니다.</p>
+								<ul class="agree-list">
+									<li>
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck08">
+											<label for="ck08"><span>이용약관 동의 (필수)</span></label>
+										</div>
+										<p class="guide-txt">삼일ESG 플랫폼의 서비스를 이용하시려면 이용약관 및 개인정보 수집 및 이용동의(필수)에 모두 동의하셔야 합니다.</p>
+										<button type="button" onclick="$('#popTermsView').addClass('show')" class="btn-cont-view"><span>내용 보기</span></button>
+									</li>
+    
+									<li>
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck09">
+											<label for="ck09"><span>개인정보 수집 및 이용 동의 (필수)</span></label>
+										</div>
+										<p class="guide-txt">개인정보 수집 및 이용에 대하여 동의를 거부할 권리가 있으나, 동의거부 시에는 본 사이트의 회원가입이 제한됩니다.</p>
+										<button type="button" onclick="$('#popEssentialView').addClass('show')" class="btn-cont-view"><span>내용 보기</span></button>
+									</li>
+									<li>
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck10">
+											<label for="ck10"><span>개인정보 수집 및 이용 동의 (선택)</span></label>
+										</div>  
+										<p class="guide-txt">상기 선택적 동의 항목에 동의하지 않아도 회원가입이 가능합니다.</p>
+										<button type="button" onclick="$('#popOptionsView').addClass('show')" class="btn-cont-view"><span>내용 보기</span></button>
+									</li>
+								</ul>
+							 </div>
+						</section>
+						<section class="sub-section">
+							<div class="tit-wrap"><h4 class="tit">뉴스레터 수신 동의</h4></div>
+							<ul class="agree-col-list">
+								<li>
+									<div class="radio-wrap">
+										<input type="radio" id="ra01" name="newsletter" value="Y">
+										<label for="ra01"><span>수신</span></label>
+									</div>
+								</li>
+								<li>
+									<div class="radio-wrap">
+										<input type="radio" id="ra02" name="newsletter"  value="N">
+										<label for="ra02"><span>비수신</span></label>
+									</div>
+								</li>
+							</ul>
+							<div class="agree-inner-wrap">
+								<ul class="agree-col-list">
+									<li class="inner-cont-view">
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck13" disabled="disabled">
+											<label for="ck13"><span>광고성 정보 수신 및 마케팅 활용 동의 (선택)</span></label>
+										</div>
+										<button type="button" onclick="$('#popMarketingView').addClass('show')" class="btn-cont-view"><span>내용 보기</span></button>
+									</li>
+									<li>
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck14" disabled="disabled">
+											<label for="ck14"><span>이메일</span></label>
+										</div>
+									</li>
+									<li>
+										<div class="checkbox-wrap">
+											<input type="checkbox" id="ck15" disabled="disabled">
+											<label for="ck15"><span>SMS</span></label>
+										</div>
+									</li>
+								</ul>
+								<p class="guide-txt">상기 마케팅 동의 항목에 동의하셔야, 주간 뉴스레터/안내문자 등 서비스를 제공받을 수 있습니다.</p>
+							</div>
+						</section>
+						<div class="btn-wrap">
+							<button type="button" id="btnCancel" class="btn-white"><span>취소하기</span></button>
+							<button type="button" id="btnJoin" class="btn-primary disabled"><span>등록하기</span></button><!-- 비활성화상태 class="disabled" -->
+						</div>
+					</fieldset>
+				</form>
+			</section>
+			<!-- //member-wrap -->
+		</div>
+		<!-- //content -->
+		
+	</form>
+	
+    
+    <!-- SamilESG 이용약관 팝업 -->
+    <div id="popTermsView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">SamilESG 이용약관</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            <h1 class="tit">제 1조 (목적)</h1>
+                            <p class="txt">본 약관은 SamilESG.com(이하 ‘본 사이트’라 한다)을 운영하는 삼일회계법인 (이하 ‘당사’라 한다)에서 제공하는 인터넷 관련 서비스(이하 ‘서비스’라 하며 접속 가능한 유, 무선 단말기의 종류와 상관없이 이용 가능한 사이트가 제공하는 모든 서비스를 의미합니다)를 이용함에 있어 회원의 권리 • 의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+                            <div class="divider-line"></div>
+                            <h1 class="tit">제 2조 (정의)</h1>
+                            <ul class="list">
+                                <li>1.‘당사’가 운영하는 ‘본 사이트’는 “ESG서비스 제공 플랫폼”이며 더불어 서비스하는 모바일 웹을 포함합니다.</li>
+                                <li>2.‘회원’이라 함은 ‘본 사이트’에 개인정보를 제공하여 회원등록을 한 자로서, ‘본 사이트’에 정해진 회원 가입 방침에 따라 ‘본 사이트’의 정보를 지속적으로 제공받으며, ‘본 사이트’가 제공하는 ‘서비스’를 계속적으로 이용할 수 있는 자를 말합니다.</li>
+                                <li>3.‘비밀번호’라 함은 회원의 동일성 확인과 회원의 권익 및 비밀보호를 위하여 회원 스스로가 설정하여 ‘본 사이트’에 등록한 영문과 숫자의 조합을 말합니다.</li>
+                                <li>4.본 약관에서 정의되지 않은 용어는 관계법령이 정하는 바에 따르며 그 외에는 일반적인 상관례에 의합니다.</li>
+                            </ul>
+                            <div class="divider-line"></div>
+                            <h1 class="tit">제 3조 (약관의 명시와 설명 및 개정)</h1>
+                            <ul class="list">
+                                <li>1.‘당사’는 이 약관의 내용과 상호를 회원이 쉽게 알 수 있도록 ‘본 사이트’의 초기 ‘서비스’ 화면에 게시합니다. 다만, 약관의 구체적 내용은 회원이 연결화면을 통하여 볼 수 있습니다</li>
+                                <li>2.‘회원’이라 함은 ‘본 사이트’에 개인정보를 제공하여 회원등록을 한 자로서, ‘본 사이트’에 정해진 회원 가입 방침에 따라 ‘본 사이</li>
+                            </ul>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+    
+    <!-- 개인정보처리방침 (필수) 팝업 -->
+    <div id="popEssentialView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">SamilESG 개인정보처리방침 (필수)</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            <p class="txt">본 사이트의 운영사인 삼일회계법인과 관계사 프라이스워터하우스쿠퍼스컨설팅, 삼일인포마인, 삼일아카데미 (이하 운영사 및 관계사를 통칭 “당사”)는 『개인정보보호법』 등 준수하고, 그에 의거한 개인정보처리방침을 정하여 이용자의 권익보호에 최선을 다하고 있습니다.
+                            </p>
+                            <h1 class="tit">[개인정보 수집항목]</h1>
+                            <p class="txt">회원가입 시 이용자로부터 수집하는 개인정보는 아래와 같습니다. </p>
+                            <ul class="list">
+                                <li>- 필수항목: 아이디, 비밀번호, 이름, 전화번호, 소속(회사/기관), 부서명, 직급, 소속 이메일</li>
+                                <li>- 선택항목: 팩스번호, 소속 전화번호, ESG 관심영역</li>
+                            </ul>
+                            <p class="txt">서비스 이용 과정에서 추가 정보를 수집할 경우, 수집 시점에서 이용자에게 별도의 개인정보 수집 동의를 받습니다. </p>
+                            <p class="txt">PC웹, 모바일 웹/앱 이용 과정에서 단말기정보(OS, 화면사이즈, 디바이스 아이디, 폰기종, 단말기 모델명), IP주소, 쿠키, 방문일시, 부정이용기록, 서비스 이용 기록 등의 정보가 자동으로 생성되어 수집될 수 있습니다. </p>
+                            <div class="divider-line"></div>
+                            <h1 class="tit">[개인정보 수집이용 목적]</h1>
+                            <p class="txt">당사는 다음의 목적을 위하여 개인정보를 처리하고 있으며, 개인정보는 다음의 목적 이외의 용도로는 이용하지 않습니다. 이용 목적이 변경 및 추가될 경우에는 사전에 이용자의 동의를 받은 후 처리 및 이용합니다. </p>
+                                <ul class="list">
+                                <li>- 회원 가입 의사와 확인, 이용자의 본인 확인, 이용자 식별, 회원탈퇴 의사 확인, 서비스 오류 및 부정이용 방지 등 회원관리
+                                </li>
+                            </ul>
+                        
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->  
+    
+    <!-- SamilESG 개인정보처리방침 (선택) -->
+    <div id="popOptionsView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">SamilESG 개인정보처리방침 (선택)</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            <p class="txt">본 사이트의 운영사인 삼일회계법인과 관계사 프라이스워터하우스쿠퍼스컨설팅, 삼일인포마인, 삼일아카데미 (이하 운영사 및 관계사를 통칭 “당사”)는 『개인정보보호법』 등 준수하고, 그에 의거한 개인정보처리방침을 정하여 이용자의 권익보호에 최선을 다하고 있습니다.
+                                당사는 본 사이트에서 서비스를 제공함에 있어 이용자의 편의를 위해 아래와 같이 선택적 정보를 수집 및 이용하고 있습니다.
+                            </p>
+                            <h1 class="tit">[개인정보 선택적 수집항목]</h1>
+                            <ul class="list">
+                                <li>- 선택적 수집항목: 팩스번호, 소속 전화번호, ESG 관심영역</li>
+                                <li>- 수집목적: 이용자 식별과 고객 맞춤형 서비스 제공, 원활한 의사소통</li>
+                                <li>- 보유 및 이용기간: 회원 탈퇴 시까지</li>
+                            </ul>
+                            <h1 class="tit">[개인정보 수집에 대한 거부 권리 및 그에 따른 서비스 제한사항] </h1>
+                            <p class="txt">회원 가입 시 상기 항목에 대해 동의를 거부할 수 있으나 개인정보수정 시 선택정보를 입력한 경우 선택정보 수집 및 이용에 동의한 것으로 간주됩니다.</p>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->
+    
+    <!-- 마케팅 활용 동의(선택) -->
+    <div id="popMarketingView" class="modal-wrap"><!-- class="show" 제거시 비노출 default가 hidden 처리 -->
+        <div class="dimmed"></div>
+        <div class="center">
+            <section class="modal-area w1024">
+                <div class="modal-head left">
+                    <h2 class="tit">광고성 정보 수신 및 마케팅 활용 동의(선택)</h2>
+                    <button type="button" class="btn-close bf"><span class="blind">닫기</span></button>
+                </div>
+                <div class="modal-cont">
+                   <section class="policy-wrap scroll-area">
+                        <div class="policy-cont">
+                            <h1 class="tit">제1조 (목적)</h1>
+                            <p class="txt">삼일회계법인은 고객님들에게 보다 다양한 정보를 제공하고, 서비스의 질을 향상시키기 위하여 삼일회계법인 제휴/관계사에게 「개인정보보호법」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률 」 및 「신용정보의 이용 및 보호에 관한 법률」의 규정을 준수하여 회원님의 개인(신용)정보를 제 3자에게 상품소개 및 홍보 등 영업목적으로 제공할 수 있습니다.
+                            </p>
+                            <div class="divider-line"></div>
+                            <h1 class="tit">제2조 (수집 및 활용 관련 정보)</h1>
+                            <p class="txt">개인정보가 제공되는 삼일회계법인 제휴/관계사와  제공된 정보의 이용목적은 아래와 같습니다. 회원님들 중 이 개인정보의 제 3자 마케팅 활용동의서 등에 동의하신 회원님들의 정보만이 제공되며, 제공된 정보는 명시된 이용목적을 벗어나 이용되지 않고, 개인정보 유출 등 사고가 일어나지 않도록 더욱 철저한 보안이 이루어지도록 노력하고 있습니다. </p>
+                            <div class="divider-line"></div>
+                            <p class="txt">제공받는 자: 삼일회계법인 제휴/관계사(삼일아카데미, 삼일인포마인)</p>
+                            <p class="txt">제공 항목 : 성명, 소속, 직급, 이메일</p>
+                            <p class="txt">제공 목적 : 뉴스레터, 발간물 제공 및 서비스 홍보</p>
+                            <p class="txt">제공 기간 : 제공받는 자의 개인정보취급방침에 따름</p>
+                        </div>
+                   </section>
+                   <!-- //policy-wrap -->
+                    <div class="btn-wrap">
+                        <button type="button" onclick="$('.modal-wrap').removeClass('show');" class="btn-primary small w170"><span>확인</span></button>
+                    </div>
+                </div>
+                <!--//modal-cont-->
+            </section>       
+            <!--//modal-area--> 
+        </div>
+        <!-- //xycenter -->
+    </div>
+    <!--//modal-wrap-->     
+</div>
+</html>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.management.mapper.ScheduleMapper">
+
+	<!-- ESG일정 관리 목록 조회 -->
+	<select id="selectScheduleList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SCHDL_UID
+			, SCHDL_TTL
+			, SCHDL_TP_CD
+			, ESG_DB.fnCommCdNm('SCHDL_TP_CD', CSI.SCHDL_TP_CD) SCHDL_TP_CD_NM
+			, SCHDL_GB_CD
+			, ESG_DB.fnCommCdNm('SCHDL_GB_CD', CSI.SCHDL_GB_CD) SCHDL_GB_CD_NM
+			, SCHDL_STT_DTE
+			, SCHDL_END_DTE
+			, UDTMN_SCHDL_YY
+			, UDTMN_SCHDL_MM
+			, (CASE
+				WHEN UDTMN_SCHDL_MM <![CDATA[>=]]> '01' AND UDTMN_SCHDL_MM <![CDATA[<=]]> '12' THEN CONCAT(UDTMN_SCHDL_MM, N'월')
+				WHEN UDTMN_SCHDL_MM = '21' THEN N'1분기'
+				WHEN UDTMN_SCHDL_MM = '22' THEN N'2분기'
+				WHEN UDTMN_SCHDL_MM = '23' THEN N'3분기'
+				WHEN UDTMN_SCHDL_MM = '24' THEN N'4분기'
+				ELSE ''
+			END) UDTMN_SCHDL
+			, SCHDL_CN
+			, LINK_URL
+			, FORMAT(DATEADD(HOUR, 9, CSI.FST_INS_DT),'yyyy.MM.dd') FST_INS_DT
+			, FST_INS_ID
+			, (SELECT MBR_NM FROM ESG_DB.MB_MBR_INFO WHERE MBR_ID = CSI.FST_INS_ID) AS FST_INS_MBR_NM /* 등록자 */
+		FROM
+			ESG_DB.CS_SCHDL_INFO CSI
+		<where>
+			<!-- 검색조건 : 관리일정 기간 -->
+			<if test="schSchdlSttDte != null and !schSchdlSttDte.equals('') and schSchdlEndDte != null and !schSchdlEndDte.equals('')">
+				AND (CASE
+						WHEN SCHDL_GB_CD = '30' THEN CASE
+							WHEN UDTMN_SCHDL_MM = '21' THEN CONCAT(UDTMN_SCHDL_YY, '.01.01')
+							WHEN UDTMN_SCHDL_MM = '22' THEN CONCAT(UDTMN_SCHDL_YY, '.04.01')
+							WHEN UDTMN_SCHDL_MM = '23' THEN CONCAT(UDTMN_SCHDL_YY, '.07.01')
+							WHEN UDTMN_SCHDL_MM = '24' THEN CONCAT(UDTMN_SCHDL_YY, '.10.01')
+							ELSE CONCAT(UDTMN_SCHDL_YY, '.', UDTMN_SCHDL_MM, '.01')
+						END
+						ELSE SCHDL_STT_DTE
+					END) <![CDATA[<=]]> #{schSchdlEndDte}
+				AND (CASE
+						WHEN SCHDL_GB_CD = '10' THEN SCHDL_STT_DTE
+						WHEN SCHDL_GB_CD = '30' THEN CASE
+							WHEN UDTMN_SCHDL_MM = '21' THEN CONCAT(UDTMN_SCHDL_YY, '.03.31')
+							WHEN UDTMN_SCHDL_MM = '22' THEN CONCAT(UDTMN_SCHDL_YY, '.06.30')
+							WHEN UDTMN_SCHDL_MM = '23' THEN CONCAT(UDTMN_SCHDL_YY, '.09.30')
+							WHEN UDTMN_SCHDL_MM = '24' THEN CONCAT(UDTMN_SCHDL_YY, '.12.31')
+							ELSE CONCAT(UDTMN_SCHDL_YY, '.', UDTMN_SCHDL_MM, '.31')
+						END
+						ELSE SCHDL_END_DTE
+					END) <![CDATA[>=]]> #{schSchdlSttDte}
+			</if>
+
+		<!-- 검색조건 : 일정유형 -->
+			<if test="SchSchdlTpCd != null and !SchSchdlTpCd.equals('')">
+				AND CSI.SCHDL_TP_CD IN
+				<foreach item="SchSchdlTpCdItem" index="index" collection="SchSchdlTpCdList" separator="," open="(" close=")">
+					#{SchSchdlTpCdItem}
+				</foreach>
+			</if>
+
+			<!-- 검색조건 : 제목검색 -->
+			<if test="schSrcWrd != null and !schSrcWrd.equals('')">
+				AND CSI.SCHDL_TTL LIKE CONCAT('%', #{schSrcWrd}, '%')
+			</if>
+		</where>
+		ORDER BY
+			CASE
+				WHEN SCHDL_GB_CD IN ('10', '20') THEN 1
+				ELSE 2
+			END
+			, SCHDL_STT_DTE
+			, SCHDL_TTL
+	</select>
+
+	<!-- ESG일정 관리 상세 조회 -->
+	<select id="selectScheduleView" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SCHDL_UID
+			, SCHDL_TTL
+			, SCHDL_TP_CD
+			, ESG_DB.fnCommCdNm('SCHDL_TP_CD', SCHDL_TP_CD) SCHDL_TP_CD_NM
+			, SCHDL_GB_CD
+			, ESG_DB.fnCommCdNm('SCHDL_GB_CD', SCHDL_GB_CD) SCHDL_GB_CD_NM
+			, SCHDL_STT_DTE
+			, SCHDL_END_DTE
+			, UDTMN_SCHDL_YY
+			, UDTMN_SCHDL_MM
+		    , (CASE
+				WHEN UDTMN_SCHDL_MM <![CDATA[>=]]> '01' AND UDTMN_SCHDL_MM <![CDATA[<=]]> '12' THEN CONCAT(UDTMN_SCHDL_MM, N'월')
+				WHEN UDTMN_SCHDL_MM = '21' THEN N'1분기'
+				WHEN UDTMN_SCHDL_MM = '22' THEN N'2분기'
+				WHEN UDTMN_SCHDL_MM = '23' THEN N'3분기'
+				WHEN UDTMN_SCHDL_MM = '24' THEN N'4분기'
+		        ELSE ''
+			END) UDTMN_SCHDL
+			, SCHDL_CN
+			, LINK_URL
+		FROM
+			ESG_DB.CS_SCHDL_INFO
+		WHERE
+			SCHDL_UID = #{schdlUid}
+	</select>
+
+	<!-- ESG일정 등록 -->
+	<insert id="insertSchdlInfo" parameterType="camelcasemap">
+		<selectKey keyProperty="schdlUid" resultType="int" order="BEFORE">
+			UPDATE ESG_DB.sequences
+			SET currval = sequences.CURRVAL + 1
+			OUTPUT inserted.currval
+			WHERE NAME = 'CS_SCHDL_INFO_SQ01'
+		</selectKey>
+
+		INSERT INTO ESG_DB.CS_SCHDL_INFO (
+			SCHDL_UID
+			, SCHDL_TTL
+			, SCHDL_TP_CD
+			, SCHDL_GB_CD
+			, SCHDL_STT_DTE
+			, SCHDL_END_DTE
+			, UDTMN_SCHDL_YY
+			, UDTMN_SCHDL_MM
+			, SCHDL_CN
+			, LINK_URL
+			, FST_INS_DT
+			, FST_INS_ID
+			, LST_UPD_DT
+			, LST_UPD_ID
+		) VALUES (
+			#{schdlUid}
+			, #{schdlTtl}
+			, #{schdlTpCd}
+			, #{schdlGbCd}
+			, #{schdlSttDte}
+			, #{schdlEndDte}
+			, #{udtmnSchdlYy}
+			, #{udtmnSchdlMm}
+			, #{schdlCn}
+			, #{linkUrl}
+			, CURRENT_TIMESTAMP
+			, #{fstInsId}
+			, CURRENT_TIMESTAMP
+			, #{lstUpdId}
+		)
+	</insert>
+
+	<!-- ESG일정 수정 -->
+	<update id="updateSchdlInfo" parameterType="hashMap">
+		UPDATE ESG_DB.CS_SCHDL_INFO
+		SET
+			SCHDL_UID = #{schdlUid}
+			, SCHDL_TTL = #{schdlTtl}
+			, SCHDL_TP_CD = #{schdlTpCd}
+			, SCHDL_GB_CD = #{schdlGbCd}
+			, SCHDL_STT_DTE = #{schdlSttDte}
+			, SCHDL_END_DTE = #{schdlEndDte}
+			, UDTMN_SCHDL_YY = #{udtmnSchdlYy}
+			, UDTMN_SCHDL_MM = #{udtmnSchdlMm}
+			, SCHDL_CN = #{schdlCn}
+			, LINK_URL = #{linkUrl}
+			, LST_UPD_DT = CURRENT_TIMESTAMP
+			, LST_UPD_ID = #{lstUpdId}
+		WHERE
+			SCHDL_UID = #{schdlUid}
+	</update>
+
+	<!-- ESG일정 삭제 -->
+	<delete id="deleteSchdlInfo" parameterType="camelcasemap">
+		DELETE FROM
+		    ESG_DB.CS_SCHDL_INFO
+		WHERE
+			SCHDL_UID IN
+		<foreach item="schdlUid" index="index" collection="schdlUids" separator="," open="(" close=")">
+			#{schdlUid}
+		</foreach>
+	</delete>
+	
+</mapper>

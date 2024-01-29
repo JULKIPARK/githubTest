@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body>
+
+	<h4 class="tit">필터</h4>
+	<button type="button" class="btn-reset" onclick="resetFilter();"><span>초기화</span></button>
+	<!-- 자료출처// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">자료출처</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck099" data-filter="dmstc" value="Y">
+							<label for="ck099">
+								<span>국내</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck100" data-filter="dmstc" value="N">
+							<label for="ck100">
+								<span>해외</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //자료출처 -->
+	<!-- 언어// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">언어</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck09" data-filter="lang" value="10">
+							<label for="ck09">
+								<span>국문</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck10" data-filter="lang" value="20">
+							<label for="ck10">
+								<span>영문</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //언어 -->
+	<!-- 발간연도// -->
+	<div class="filter-toggle current">
+		<button type="button" class="btn-ctl">발간연도</button>
+		<div class="filter-area">
+			<div class="filter-list">
+				<ul class="list">
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck091" data-filter="years" value="2023">
+							<label for="ck091">
+								<span>2023년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck101" data-filter="years" value="2022">
+							<label for="ck101">
+								<span>2022년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck111" data-filter="years" value="2021">
+							<label for="ck111">
+								<span>2021년</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox-wrap">
+							<input type="checkbox" id="ck121" data-filter="years" value="2020">
+							<label for="ck121">
+								<span>2021년 이전</span>
+								<!--<span class="count">123</span>-->
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- //ilter-list -->
+		</div>
+		<!-- //filter-area -->
+	</div>
+	<!-- //발간연도 -->
+</body>
+</html>

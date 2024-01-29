@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+	<!-- footerFragment -->
+	<footer id="leftMenu" th:fragment="leftMenuFragment">
+		
+		<!-- aside -->
+		<aside class="aside">   
+			<nav id="nav" class="menu">
+				<ul>
+					<li><a href="/backoffice" class="depth1">Home</a></li>
+					<li><a href="/backoffice/contents/newsList" class="depth1">컨텐츠 관리</a>
+						<ul class="depth2-wrap">
+							<li><a href="/backoffice/contents/rssNewsList">신규 뉴스 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/contents/newsList" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/contents/newsList">등록 뉴스 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/contents/newsList">등록 뉴스 조회 &middot; 삭제</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/contents/selectDocumentList">문서 &middot; 영상 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/contents/selectDocumentList">컨텐츠 등록</a></li>
+									<li><a href="/backoffice/contents/selectDocumentList">컨텐츠 조회</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/contents/contentList">컨텐츠 정보 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/contents/srcList">출처 조회</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/contents/srcList">출처 조회</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/contents/selectDocumentList">컨텐츠 등록</a></li>
+									<li><a href="/backoffice/contents/selectDocumentList">컨텐츠 조회</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><a href="/backoffice/custom/memberList" class="depth1">고객 관리</a>
+						<ul class="depth2-wrap">
+							<li><a href="/backoffice/custom/memberList">회원관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/custom/memberList">회원 조회</a></li>
+									<li><a href="/backoffice/custom/memberList">권한 그룹 관리</a></li>
+									<li><a href="/backoffice/custom/memberList">회원 통계</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/custom/csList">문의 &middot; 요청 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/custom/csList" class="current">문의 &middot; 요청 조회</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><a href="/backoffice/management/selectCurationList" class="depth1">웹사이트 관리</a>
+						<ul class="depth2-wrap">
+							<li><a href="/backoffice/management/selectCurationList">큐레이션 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/management/selectCurationList">주요 화면 관리</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/management/selectOperateList">운영 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/management/selectOperateList">활동로그 관리</a></li>
+									<li><a href="/backoffice/management/selectOperateList">서비스 현황 관리</a></li>
+								</ul>
+							</li>
+							<li><a href="/backoffice/management/selectScheduleList">ESG일정 관리</a>
+								<ul class="depth3-wrap">
+									<li><a href="/backoffice/management/selectScheduleList">ESG 캘린더 관리</a></li>
+									<li><a href="/backoffice/management/selectScheduleList">ESG 일정 등록 &middot; 변경</a></li>
+									<li><a href="/backoffice/management/selectScheduleList">ESG 일정 상세 조회</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</aside>
+		<!-- //aside -->
+	</footer>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// Youtube 영상 재생시간 적용
+				$('BUTTON[name=doRun1]').on('click', function() {
+					runSetPlaytimeForYoutube();
+				});
+
+				// MP4 영상 재생시간 적용
+				$('BUTTON[name=doRun2]').on('click', function() {
+					runSetPlaytimeForMp4();
+				});
+
+			};
+
+			let runSetPlaytimeForYoutube = function () {
+				console.log(`[MODULE] ${moduleNm} -> runSetPlaytimeForYoutube()`);
+
+				var formData, param = {};
+				// formData = new FormData();
+				// formData.append('key', 'value');
+				param = {
+					"url": "/sems/management/selectContentListForYoutube"
+					, "type": "post"
+					, "data": null
+					, "async": false
+					, "callback": function (data) {
+						var items = data.list;
+
+						items.forEach(function(item, idx) {
+							item.youtubeId = item.youtubeId.split('?')[0];
+
+							// Youtube API
+							$.get(`https://www.googleapis.com/youtube/v3/videos?id=${item.youtubeId}&key=AIzaSyBT0uIT3-a8HV3ZG7VyRIv7JZhdSOi6yeY&part=contentDetails`, function(data) {
+								var duration = data.items[0].contentDetails.duration;
+								var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+								var hours = "00", minutes = "00", seconds = "00";
+
+								if (reptms.test(duration)) {
+									var matches = reptms.exec(duration);
+									if (matches[1]) hours = matches[1].padStart(2, '0');
+									if (matches[2]) minutes = matches[2].padStart(2, '0');
+									if (matches[3]) seconds = matches[3].padStart(2, '0');
+
+									// ToDo: 파라메터 설정
+									var formData2 = new FormData();
+									formData2.append('contUid', item.contUid);
+									formData2.append('vodQuntyHh', hours);
+									formData2.append('vodQuntyMi', minutes);
+									formData2.append('vodQuntySec', seconds);
+
+									$.ajax({
+										type: 'POST'
+										, enctype: 'multipart/form-data'
+										, url: '/sems/management/updateContentDurationInfo'
+										, data: formData2
+										, dataType: 'json'
+										, processData: false
+										, contentType: false
+										, cache: false
+										, success: function (res) {
+										}
+									});
+								}
+
+							})
+							.fail(function(error) {
+								console.error('Error:', error);
+							});
+						});
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let runSetPlaytimeForMp4 = function () {
+				console.log(`[MODULE] ${moduleNm} -> runSetPlaytimeForMp4()`);
+
+				param = {
+					"url": "/sems/management/selectContentListForMp4"
+					, "type": "post"
+					, "data": null
+					, "async": false
+					, "callback": function (data) {
+						var items = data.list;
+
+						items.forEach(function(item, idx) {
+							// if (idx <= 0) {
+								// 재생시간
+								$('#convDiv').append(`<video id="videoPlayer${item.contUid}${item.seqNo}" src="${item.linkUrl}" preload="metadata" style="display: none;"></video>`);
+
+								document.getElementById(`videoPlayer${item.contUid}${item.seqNo}`).onloadedmetadata = function () {
+									var duration = this.duration;
+
+									var hours = String(Math.floor(duration / 3600)).padStart(2, '0');
+									duration %= 3600;
+									var minutes = String(Math.floor(duration / 60)).padStart(2, '0');
+									var seconds = String(Math.floor(duration % 60)).padStart(2, '0');
+
+									console.log(`CONT_UID : ${item.contUid}, ${hours}:${minutes}:${seconds}`);
+
+									var formData2 = new FormData();
+									formData2.append('contUid', item.contUid);
+									formData2.append('seqNo', item.seqNo);
+									formData2.append('linkUrl', item.linkUrl);
+									formData2.append('vodQuntyHh', hours);
+									formData2.append('vodQuntyMi', minutes);
+									formData2.append('vodQuntySec', seconds);
+
+									$.ajax({
+										type: 'POST'
+										, enctype: 'multipart/form-data'
+										, url: '/sems/management/updateContentDurationInfo'
+										, data: formData2
+										, dataType: 'json'
+										, processData: false
+										, contentType: false
+										, cache: false
+										, success: function (res) {
+										}
+									});
+								};
+							// }
+						});
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/management/selectScheduleList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+						$("#schdlListDiv").replaceWith(fragment);
+						$("#schdlTotalCountView").text("총 " + _formLib.addComma($("#schdlTotalCount").val()) + "건");
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let delData = function () {
+				console.log(`[MODULE] ${moduleNm} -> delData`);
+
+				var formData = new FormData($("#searchListFrm")[0]);
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/management/deleteSchedule"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("삭제에 성공하였습니다.");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+					}
+				});
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 등록일자
+				$("#searchListFrm BUTTON[name=doSetRangeOneMonth]").on("click", function() {
+					_comLib.setDatePicker("schSchdlSttDte", "schSchdlEndDte", "yy.mm.dd");
+					var stDay = _comLib.preMonth(1);
+					$("#searchListFrm INPUT[name=schSchdlSttDte]").val(stDay);
+					$("#searchListFrm INPUT[name=schSchdlEndDte]").val(_comLib.toDay());
+				}).trigger("click");
+				$("#searchListFrm BUTTON[name=doSetRangeThreeMonth]").on("click", function() {
+					_comLib.setDatePicker("schSchdlSttDte", "schSchdlEndDte", "yy.mm.dd");
+					var stDay = _comLib.preMonth(3);
+					$("#searchListFrm INPUT[name=schSchdlSttDte]").val(stDay);
+					$("#searchListFrm INPUT[name=schSchdlEndDte]").val(_comLib.toDay());
+				});
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+					$("#searchListFrm BUTTON[name=doSetRangeOneMonth]").trigger('click');
+				});
+
+				// 일정등록 버튼
+				$("BODY").on('click', '#searchListFrm BUTTON[name=doSchdlAdd]', function() {
+					regist.openPop();
+				});
+
+				// 일정삭제 버튼
+				$("BODY").on('click', '#searchListFrm BUTTON[name=doSchdlDel]', function() {
+					if (!$("#searchListFrm input[name=schdlUid]:checked").length) {
+						alert('선택된 대이터가 없습니다.');
+						return;
+					}
+
+					if (!confirm("체크된 데이터의 모든내용이 삭제됩니다. \n삭제 하시겠습니까?")) {
+						return;
+					}
+
+					delData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#schdlListDiv A.link', function() {
+					view.openPop($(this).data('id'));
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function () {
+			let moduleNm = "view";
+			let dataId;
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function (_schdlUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_schdlUid})`);
+
+				setData(_schdlUid, function () {
+					dataId = _schdlUid;
+					$('#schdlViewPop').addClass('show');
+					$('.dimmed').removeAttr('style');
+				})
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 삭제버튼
+				$("#schdlViewPop BUTTON[name=doDelete]").on("click", function () {
+					if (confirm('정말 삭제하시겠습니까?')) {
+						delData();
+					}
+				});
+
+				// 수정버튼
+				$("#schdlViewPop BUTTON[name=doEdit]").on("click", function () {
+					console.log('EDIT');
+					$('#schdlViewPop').removeClass('show');
+					regist.openPop(dataId);
+				});
+			};
+
+			let setData = function (_schdlUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_schdlUid})`);
+
+				getData(_schdlUid, function (data) {
+					var info = data.item;
+
+					$("#schdlViewPop #schdlTpCdNm").empty().append(info.schdlTpCdNm);
+					$("#schdlViewPop INPUT[name=schdlTtl]").val(info.schdlTtl);
+					if (info.schdlGbCd !== '30') {
+						var tmpStr = info.schdlSttDte;
+						if (info.schdlGbCd === '20') {
+							tmpStr += ' ~ ' + info.schdlEndDte;
+						}
+						$("#schdlViewPop INPUT[name=schdlDte]").val(tmpStr);
+					} else {
+						$("#schdlViewPop INPUT[name=schdlDte]").val(info.udtmnSchdlYy + '년 ' + info.udtmnSchdl);
+					}
+					$("#schdlViewPop TEXTAREA[name=schdlCn]").val(info.schdlCn);
+					$("#schdlViewPop INPUT[name=linkUrl]").val(info.linkUrl);
+					$("#schdlViewPop BUTTON[name=doDelete], #schdlViewPop BUTTON[name=doEdit]").show();
+					if (info.mbrgbcd !== '10') {
+						$("#schdlViewPop BUTTON[name=doDelete], #schdlViewPop BUTTON[name=doEdit]").hide();
+					}
+
+					_callback();
+				});
+			};
+
+			let getData = function (_schdlUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_schdlUid})`);
+
+				var param = {
+					"url": "/sems/management/selectScheduleView"
+					, "type": "post"
+					, "data": {"schdlUid": _schdlUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+
+				_comLib.callAjax(param);
+			};
+
+			let delData = function () {
+				console.log(`[MODULE] ${moduleNm} -> delData`);
+
+				$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData();
+				formData.set("schdlUid", dataId);
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: "/sems/management/deleteSchedule"
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("삭제에 성공하였습니다.");
+						$("#schdlViewPop").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+						$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+				, getData
+			};
+		})();
+
+		/* 데이터 입력 모듈 */
+		let regist = (function () {
+			let moduleNm = "regist";
+			let schdlCnEdit;
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				schdlCnEdit = ace.edit("schdlCnEdit", {
+					theme: "ace/theme/textmate",
+					mode: "ace/mode/text",
+					selectionStyle: "text",
+					highlightActiveLine: false,
+					showPrintMargin: false
+				})
+
+				setEvent();
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 일정구분
+				$('#frmSchdlRegistPop INPUT[name=schdlGbCd]').on('change', function() {
+					var checked = $('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked');
+					$(checked).parent().parent().find('INPUT:not([type=radio]), SELECT').val('').prop('disabled', true);
+					$(checked).parent().find('INPUT:not([type=radio]), SELECT').prop('disabled', false);
+				}).trigger('change');
+
+				// 등록버튼
+				$("#frmSchdlRegistPop BUTTON[name=doSave]").on("click", function () {
+					// 일정제목
+					if ($('#frmSchdlRegistPop INPUT[name=schdlTtl]').val() === '') {
+						alert('일정제목을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlTtl]').focus();
+						return;
+					}
+
+					// 일정유형
+					if ($('#frmSchdlRegistPop SELECT[name=schdlTpCd]').val() === '') {
+						alert('일정유형을 선택해 주세요.');
+						$('#frmSchdlRegistPop SELECT[name=schdlTpCd]').focus();
+						return;
+					}
+
+					// 일정
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '10'
+						&& $('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').val() === '') {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').focus();
+						return;
+					}
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '20'
+						&& ($('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').val() === ''
+							|| $('#frmSchdlRegistPop INPUT[name=schdlEndDte]').val() === '')) {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)').focus();
+						return;
+					}
+					if ($('#frmSchdlRegistPop INPUT[name=schdlGbCd]:checked').val() === '30'
+						&& (!$('#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]').val()
+							|| !$('#frmSchdlRegistPop SELECT[name=udtmnSchdlMm]').val())) {
+						alert('일정을 입력해 주세요.');
+						$('#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]').focus();
+						return;
+					}
+
+					// 상세내용
+					$('#frmSchdlRegistPop TEXTAREA[name=schdlCn]').val(schdlCnEdit.getValue());
+
+					saveData();
+				});
+			};
+
+			let openPop = function (_dataId) {
+				console.log(`[MODULE] ${moduleNm} -> openPop()`);
+
+				$("#frmSchdlRegistPop").resetForm();
+				$("#frmSchdlRegistPop INPUT[name=schdlUid]").val('');
+				$('#frmSchdlRegistPop INPUT[name=schdlGbCd]').trigger('change');
+				schdlCnEdit.setValue('');
+				$("#schdlRegistPop").addClass("show");
+
+				if (_dataId !== undefined) {
+					view.getData(_dataId, function(data) {
+						var info = data.item;
+
+						$("#frmSchdlRegistPop INPUT[name=schdlUid]").val(info.schdlUid);
+						$("#frmSchdlRegistPop INPUT[name=schdlTtl]").val(info.schdlTtl);
+						$("#frmSchdlRegistPop SELECT[name=schdlTpCd]").val(info.schdlTpCd);
+						$("#frmSchdlRegistPop INPUT[name=schdlGbCd][value='"+info.schdlGbCd+"']").prop('checked', true).trigger('change');
+						if (info.schdlGbCd !== '30') {
+							$("#frmSchdlRegistPop INPUT[name=schdlSttDte]:not(:disabled)").val(info.schdlSttDte);
+							if (info.schdlGbCd === '20') {
+								$("#frmSchdlRegistPop INPUT[name=schdlEndDte]:not(:disabled)").val(info.schdlEndDte);
+							}
+						} else {
+							$("#frmSchdlRegistPop SELECT[name=udtmnSchdlYy]").val(info.udtmnSchdlYy);
+							$("#frmSchdlRegistPop SELECT[name=udtmnSchdlMm]").val(info.udtmnSchdlMm);
+						}
+						schdlCnEdit.setValue(info.schdlCn, -1);
+						$("#frmSchdlRegistPop INPUT[name=linkUrl]").val(info.linkUrl);
+					})
+				}
+
+				$("#frmSchdlRegistPop INPUT[name=schdlTtl]").focus();
+			};
+
+			let saveData = function () {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("show");
+				var formData = new FormData($("#frmSchdlRegistPop")[0]);
+
+				var url = "/sems/management/insertSchedule";
+				if ($.trim($('#frmSchdlRegistPop INPUT[name=schdlUid]').val()) !== '') {
+					url = "/sems/management/updateSchedule";
+				}
+
+				$.ajax({
+					type: 'POST'
+					, enctype: 'multipart/form-data'
+					, url: url
+					, data: formData
+					, dataType: 'json'
+					, processData: false
+					, contentType: false
+					, cache: false
+					, success: function (res) {
+						alert("저장에 성공하였습니다.");
+						$("#schdlRegistPop").removeClass("show");
+						list.getData();
+					}
+					, error: function (res) {
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+					, complete: function() {
+						$("#schdlRegistPop SECTION.modal-area").LoadingOverlay("hide");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function () {
+			page.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<style>
+		BUTTON {
+			margin: 10px;
+		}
+	</style>
+	<div id="convDiv" style="padding: 20px;">
+		<ul>
+			<li>
+				<button name="doRun1" class="btn-primary">Youtube 영상 재생시간 적용</button>
+			</li>
+			<li>
+				<button name="doRun2" class="btn-primary">MP4 영상 재생시간 적용</button>
+			</li>
+		</ul>
+	</div>
+</div>
+</html>

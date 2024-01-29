@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>Samil ESG 관리자 포털 - 웹사이트 관리 > 큐레이션 관리 > 주요 화면 관리</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../img/common/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/jquery-ui.datepicker.min.css" />
+    <link rel="stylesheet" href="../css/pwcadmin.css" />
+    <script type="text/javascript" src="../js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.datepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>  
+</head>
+<body>
+    <div id="accessibility">
+        <a href="#cont-section">본문 바로가기</a>
+        <a href="#nav">주메뉴 바로가기</a>
+    </div>
+    <div class="wrap">
+        <!-- header -->
+        <header class="header">
+            <h1 class="logo"><a href="javascript:void(0);">관리자 포털</a></h1>
+            <div class="utility">
+                <ul>
+                    <li>정승은님 [seungeun.jung]</li>
+                    <li><a href="javascript:void(0);">로그아웃</a></li>
+                    <li><a href="javascript:void(0);">업무공지</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--// header -->
+        <!-- wrap -->
+        <div class="container">
+            <!-- aside -->
+            <aside class="aside">   
+                <nav id="nav" class="menu">
+                    <ul>
+                        <li><a href="javascript:void(0);" class="depth1">Home</a></li>
+                        <li><a href="javascript:void(0);" class="depth1">컨텐츠 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">뉴스 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="">신규 입수 뉴스 조회 &middot; 등록</a></li>
+                                        <li><a href="javascript:void(0);">등록 뉴스 조회 &middot; 삭제</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문서 &middot; 영상 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">컨텐츠 등록</a></li>
+                                        <li><a href="javascript:void(0);">컨텐츠 조회</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">컨텐츠 정보 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">출처 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">고객 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">회원관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">회원 조회</a></li>
+                                        <li><a href="javascript:void(0);">권한 그룹 관리</a></li>
+                                        <li><a href="javascript:void(0);">회원 통계</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">문의 &middot; 요청 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);" class="current">문의 &middot; 요청 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0);" class="depth1">웹사이트 관리</a>
+                            <ul class="depth2-wrap">
+                                <li><a href="javascript:void(0);">큐레이션 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">주요 화면 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">운영 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">활동로그 관리</a></li>
+                                        <li><a href="javascript:void(0);">서비스 현황 관리</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);">ESG일정 관리</a>
+                                    <ul class="depth3-wrap">
+                                        <li><a href="javascript:void(0);">ESG 캘린더 관리</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 등록 &middot; 변경</a></li>
+                                        <li><a href="javascript:void(0);">ESG 일정 상세 조회</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            <!-- //aside -->            
+            <!-- container -->
+            <section id="cont-section" class="content">
+                <div class="location">
+                    <h3>주요 화면 관리</h3>
+                    <ul class="breadcrumb">
+                        <li>웹사이트 관리</li>
+                        <li>큐레이션 관리</li>
+                        <li>주요 화면 관리</li>
+                    </ul>
+                </div>
+                <!-- //location -->
+                <div class="section-wrap flex esg-wrap">
+                    <div class="section-wrap-left">
+                        <section>
+                            <h4 class="tit">메뉴/화면 조회</h4>
+                            <!-- 20230727 수정 -->
+                            <div class="btn-group-r flex">
+                                <button type="button" class="btn-primary">저장</button>
+                            </div>
+                            <div class="search-wrap mt20"><!-- 20230727 수정 -->
+                                <div class="table-wrap">
+                                    <table class="inner-input">
+                                        <caption>화면 구분 메뉴</caption>
+                                        <colgroup>
+                                            <col style="width: 30%;">
+                                            <col style="width: *;">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th>구분</th><!-- 20230727 수정 -->
+                                                <td>
+                                                    <!-- 20230727 수정 -->
+                                                    <ul class="ck-list-gap">
+                                                        <li>
+                                                            <input type="radio" name="nck" id="nck01" checked="checked">
+                                                            <label for="nck01">ESG 실행</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="nck" id="nck02">
+                                                            <label for="nck02">ESG 공시 &middot; 인증</label>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>메뉴</th><!-- 20230727 수정 -->
+                                                <td>
+                                                    <!-- 20230727 수정 -->
+                                                    <div class="inputrd-ck-mix">
+                                                        <ul class="ck-list-gap">
+                                                            <li>
+                                                                <input type="radio" name="nck2" id="nck03" checked="checked">
+                                                                <label for="nck03">환경(E)</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" name="nck2" id="nck04">
+                                                                <label for="nck04">사회(S)</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" name="nck2" id="nck05">
+                                                                <label for="nck05">거버넌스(G)</label>
+                                                            </li>
+                                                            <li>
+                                                                <input type="radio" name="nck2" id="nck06">
+                                                                <label for="nck06">금융</label>
+                                                            </li>
+                                                        </ul>
+                                                        <input type="checkbox" id="open" disabled="disabled" checked="checked">
+                                                        <label for="open">전시중</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                            </div>
+                            <!-- //search-wrap -->
+                            <div class="result-wrap">
+                                <div class="table-wrap">
+                                    <table class="inner-input">
+                                        <caption>토픽 리스트 출력</caption>
+                                        <colgroup>
+                                            <col style="width: 22%;">
+                                            <col style="width: 22%;">
+                                            <col style="width: *;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>전시여부</th>
+                                                <th>전시순서</th>
+                                                <th>토픽명</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="1" title="순서" class="ct display"></td>
+                                                <td>온실가스 (Net Zero)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="2" title="순서" class="ct display"></td>
+                                                <td>Scope3</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="3" title="순서" class="ct display"></td>
+                                                <td>탄소국경세</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="4" title="순서" class="ct display"></td>
+                                                <td>친환경제품/서비스</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="5" title="순서" class="ct display"></td>
+                                                <td>생물다양성(Biodiversity)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="6" title="순서" class="ct display"></td>
+                                                <td>에너지전환</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택"></td>
+                                                <td><input type="text" value="7" title="순서" class="ct display"></td>
+                                                <td>순환경제(Circular Economy)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" title="선택" disabled="disabled" checked="checked"></td>
+                                                <td><input type="text" value="8" title="순서" class="ct display" disabled="disabled"></td>
+                                                <td>자연자본(Nature)</td>
+                                            </tr>
+                                            <tr class="current"><!-- checkbox 선택시 class="current" 추가 -->
+                                                <td><input type="checkbox" title="선택" checked="checked"></td>
+                                                <td><input type="text" value="" title="순서" class="ct display"></td>
+                                                <td>새 토픽 </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="btn-add-wrap">
+                                        <button type="button" class="btn-add"><span>주제 추가</span></button>
+                                    </div>
+                                </div>
+                                <!-- //table-wrap --> 
+                            </div>
+                            <!-- //result-wrap -->
+                        </section>
+                    </div>
+                    <div class="section-wrap-right">
+                        <section>
+                            <h4 class="tit">메뉴/화면 정보</h4>
+                            <div class="btn-group-r flex">
+                                <button type="button" class="btn_link">미리보기</button>
+                                <button type="button" class="btn-primary">저장</button>
+                            </div>
+                            <div class="search-wrap mt20">
+                                <div class="table-wrap">
+                                    <table class="inner-input">
+                                        <caption>화면 정보</caption>
+                                        <colgroup>
+                                            <col style="width: 15%;">
+                                            <col style="width: 35%;">
+                                            <col style="width: 15%;">
+                                            <col style="width: 35%;">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th>구분</th>
+                                                <td>ESG 실행</td>
+                                                <th>메뉴구분</th>
+                                                <td>E(환경)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>토픽명</th>
+                                                <td>
+                                                    <input type="text" title="토픽명" class="w100p"><!-- 20230727 수정 -->
+                                                </td>
+                                                <th>화면번호</th>
+                                                <td>M1002</td>
+                                            </tr>
+                                            <tr>
+                                                <th>전시 여부</th>
+                                                <td>
+                                                    <ul class="flex ck-list">
+                                                        <li>
+                                                            <input type="radio" name="area" id="radio01" checked="checked">
+                                                            <label for="radio01">전체공개</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="area" id="radio02">
+                                                            <label for="radio02">일부공개</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" name="area" id="radio03">
+                                                            <label for="radio03">비전시</label>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <th>일부 공개 대상</th>
+                                                <td>
+                                                    <ul class="flex ck-list">
+                                                        <li>
+                                                            <input type="checkbox" name="area" id="ck01">
+                                                            <label for="ck01">그룹A</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" name="area" id="ck02">
+                                                            <label for="ck02">그룹B</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" name="area" id="ck03">
+                                                            <label for="ck03">그룹C</label>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>전시 기간</th>
+                                                <td colspan="3">
+                                                    <div class="date-select flex date-ck-mix">
+                                                    <div class="datepicker-wrap flex">
+                                                        <input type="text" class="datepicker">
+                                                        <input type="text" value="00" class="time">:<input type="text" class="time" value="00">
+                                                        <span class="separator"> - </span>
+                                                        <input type="text" class="datepicker" >
+                                                        <input type="text" value="23" class="time">:<input type="text" class="time" value="59">
+                                                    </div>
+                                                    <input type="checkbox" id="period01"><label for="period01">기간설정사용</label>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //table-wrap -->
+                            </div>
+                            <!-- //search-wrap -->
+                            <div class="tab-wrap">
+                                <ul class="tab-list flex">
+                                    <li><a href="javascript:void(0);">추천 컨텐츠</a></li>
+                                    <li><a href="javascript:void(0);">핵심 개념<span class="required"><i class="blind">필수입력</i></span></a></li>
+                                    <li><a href="javascript:void(0);" class="current">프레임워크<span class="required"><i class="blind">필수입력</i></span></a></li><!-- ESG 공시〮평가〮인증 일때 노출 -->
+                                    <li><a href="javascript:void(0);">삼일 제공 서비스<span class="required"><i class="blind">필수입력</i></span></a></li>
+                                </ul>
+                                <div class="cont-wrap">
+                                    <!-- 추천 컨텐츠 -->
+                                    <div class="cont">
+                                        <div class="total-grid">
+                                            <dl>
+                                                <dt>컨텐츠 합계</dt>
+                                                <dd>165</dd>
+                                                <dt>삼일인사이트</dt>
+                                                <dd>7</dd>
+                                                <dt>최신동향</dt>
+                                                <dd>85</dd>
+                                                <dt>ESG-tube</dt>
+                                                <dd>43</dd>
+                                                <dt>자료모음</dt>
+                                                <dd>60</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="result-wrap">
+                                            <div class="sorting-wrap">
+                                                <select name="" class="select" title="">
+                                                    <option value="">전체</option>
+                                                </select>
+                                                <div class="btn-ctl">
+                                                    <button type="button" class="btn-download">다운로드</button>
+                                                    <button type="button" class="btn-default">컨텐츠 추가</button>
+                                                    <button type="button" class="btn-default">컨텐츠 삭제</button>
+                                                    <button type="button" class="btn-primary">저장</button>
+                                                </div>
+                                            </div>
+                                            <!-- //sorting-wrap -->
+                                            <div class="table-wrap xscroll-wrap">
+                                                <table class="w1400">
+                                                    <caption>회원 리스트</caption>
+                                                    <colgroup>
+                                                        <col style="width: 2%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 6%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 7%;">
+                                                        <col style="width: *;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 6%;">
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 6%;">
+                                                        <col style="width: 6%;">
+                                                    </colgroup>
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>전시여부</th>
+                                                            <th>정렬방식</th>
+                                                            <th>전시순서</th>
+                                                            <th>종류</th>
+                                                            <th>컨텐츠 번호</th>
+                                                            <th>컨텐츠명</th>
+                                                            <th>출처</th>
+                                                            <th>언어</th>
+                                                            <th>유형분류</th>
+                                                            <th>유형세분류</th>
+                                                            <th>업무분류</th>
+                                                            <th>주제분류</th>
+                                                            <th>등록방식</th>
+                                                            <th>형태</th>
+                                                            <th>등록일</th>
+                                                            <th>수정일</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><input type="checkbox" title="선택"></td>
+                                                            <td><input type="checkbox" title="전시여부"></td>
+                                                            <td>
+                                                                <select name="" id="" class="select">
+                                                                    <option value="">최신순</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" value="1" title="순서" class="ct display">
+                                                            </td>
+                                                            <td>문서</td>
+                                                            <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                            <td class="left"><span class="ellipsis">GRI 1: Foundation 2021 GRI 1: Foundation 2021</span></td>
+                                                            <td>GRI</td>
+                                                            <td>국문</td>
+                                                            <td>삼일발간물</td>
+                                                            <td>레포트</td>
+                                                            <td>공시</td>
+                                                            <td>ESG일반</td>
+                                                            <td>컨텐츠업로드</td>
+                                                            <td>MP4</td>
+                                                            <td>2023-09-20</td>
+                                                            <td>2023-11-20</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="checkbox" title="선택" disabled="disabled"></td>
+                                                            <td><input type="checkbox" title="전시여부" disabled="disabled"></td>
+                                                            <td>
+                                                                <select name="" id="" class="select" disabled="disabled">
+                                                                    <option value="">최신순</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" value="1" title="순서" class="ct display" disabled="disabled">
+                                                            </td>
+                                                            <td>문서</td>
+                                                            <td><a href="javascript:void(0);" class="link">CDIA00012</a></td>
+                                                            <td class="left"><span class="ellipsis">GRI 1: Foundation 2021</span></td>
+                                                            <td>GRI</td>
+                                                            <td>국문</td>
+                                                            <td>삼일발간물</td>
+                                                            <td>레포트</td>
+                                                            <td>공시</td>
+                                                            <td>ESG일반</td>
+                                                            <td>컨텐츠업로드</td>
+                                                            <td>MP4</td>
+                                                            <td>2023-09-20</td>
+                                                            <td>2023-11-20</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="nodata" colspan="17">nodata</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- //table-wrap -->                                 
+                                        </div>
+                                        <!-- //result-list --> 
+                                    </div>
+                                    <!-- //추천 컨텐츠 -->
+                                    <!-- 핵심 개념 -->
+                                    <div class="cont">
+                                        <section>
+                                            <h4 class="tit">핵심개념 요약</h4>
+                                            <div class="btn-group-r">
+                                                <button type="button" class="btn-primary">저장</button>
+                                            </div>
+                                            <textarea name="" id="" cols="" rows="" title="핵심개념 요약" class="h100">
+2023년 10월부터 EU에서 탄소국경세가 시범 운영되며, 2026년부터 본격적으로 시행됩니다.EU로 수입되는 철강, 알루미늄 등 6개 제품군에 대해 탄소국경세(Carbon Border Adjustment Mechanism. 이하 “CBAM”)를 적용하며, 가격은 EU ETS(탄소배출거래가격)에 연동될 예정임에 따라 관련 기업의 대응이 필요할 것으로 보입니다.
+CBAM은 온실가스 배출 규제가 느슨한 국가(비 EU)에사 규제가 엄격한 국가(EU)로 물품을 수출할 때 발생하는 가격차이를 보전하기 위해 비용을 부과하는 일종의 무역관 관세입니다. 잠정 합의안에 따르면 시범 기간(23.10.01～2025.12.31)에는 EU로 수입되는 CBAM 대상 제품의 온실가스(Greenhouse Gas
+                                            </textarea>
+                                        </section>   
+                                        <section>
+                                            <h4 class="tit">핵심개념 전체</h4>
+                                            <div class="btn-group-r">
+                                                <button type="button" class="btn-primary">저장</button>
+                                            </div>
+                                            <!-- //btn-wrap -->                                                
+                                            <div class="edit-wrap">
+                                                <img src="../img/temp/editor.png" style="width:100%" alt="editor">
+                                            </div>
+                                        </section>     
+                                    </div>
+                                    <!-- //핵심 개념 -->
+                                    <!-- 프레임워크 -->
+                                    <div class="cont current">
+                                        <div class="btn-group-txtr">
+                                            <button type="button" class="btn-primary">저장</button>
+                                        </div>
+                                        <div class="edit-wrap">
+                                            <img src="../img/temp/editor.png" style="width:100%" alt="editor">
+                                        </div>
+                                    </div>
+                                    <!-- //프레임워크 -->
+                                    <!-- 삼일 제공 서비스 -->
+                                    <div class="cont">
+                                        <section>
+                                            <h4 class="tit">삼일 제공 서비스 요약</h4>
+                                            <div class="btn-group-r">
+                                                <button type="button" class="btn-primary">저장</button>
+                                            </div>
+                                            <textarea name="" id="" cols="" rows="">
+● 탄소 집약적 제품을 EU로 수출하는 기업 대상 고려 요소 및 자문 및 컨설팅
+● 10월부터 시작되는 새로운 보고 요건에 대비하기 위해 필요한 액션 플랜 수립
+                                            </textarea>
+                                        </section>
+                                        <section>
+                                            <h4 class="tit">삼일 제공 서비스 전체</h4>
+                                            <div class="btn-group-r">
+                                                <button type="button" class="btn-primary">저장</button>
+                                            </div>
+                                            <div class="table-wrap mix-table">
+                                                <table>
+                                                    <caption>삼일 제공 서비스</caption>
+                                                    <colgroup>
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 10%;">
+                                                        <col style="width: *;">
+                                                    </colgroup>   
+                                                    <thead>
+                                                        <tr>
+                                                            <th>NO</th>
+                                                            <th>구분</th>
+                                                            <th>내용</th>
+                                                        </tr>
+                                                    </thead>  
+                                                    <tbody>
+                                                        <tr>
+                                                            <th rowspan="2">1</th>
+                                                            <th>제목</th>
+                                                            <td>
+                                                                <textarea name="" id="" cols="" rows="">
+● 탄소 집약적 제품을 EU로 수출하는 기업 대상 고려 요소 및 자문 및 컨설팅
+                                                         
+                                                                </textarea>
+                                                            </td>
+                                                        </tr>   
+                                                        <tr>
+                                                            <th class="line">상세</th>
+                                                            <td>
+                                                                <textarea name="" id="" cols="" rows="">
+다양한 시나리오 기반 수출에 대한 CBAM의 잠재적 재정적 영향 분석
+현재 사업의 가치사슬(Value Chain) 점검 및 변경 필요 부문 자문
+마케팅 전략에 대한 잠재적 효과 분석                                                           
+                                                                </textarea>
+                                                            </td>
+                                                        </tr>                                                    
+                                                    </tbody>                                               
+                                                </table>
+                                                <!-- //table-wrap -->                                                
+                                                <div class="btn-add-wrap">
+                                                    <button type="button" class="btn-add"><span>행 추가</span></button>
+                                                </div>
+                                            </div>                                            
+                                        </section>
+                                        <section>
+                                            <h4 class="tit">전문가 리스트</h4>
+                                            <div class="btn-group-r">
+                                                <button type="button" class="btn-primary">저장</button>
+                                            </div>
+                                            <div class="table-wrap mix-table">
+                                                <table>
+                                                    <caption>전문가 리스트</caption>
+                                                    <colgroup>
+                                                        <col style="width: 5%;">
+                                                        <col style="width: 10%;">
+                                                        <col style="width: *;">
+                                                    </colgroup>   
+                                                    <thead>
+                                                        <tr>
+                                                            <th>NO</th>
+                                                            <th>구분</th>
+                                                            <th>내용</th>
+                                                        </tr>
+                                                    </thead>  
+                                                    <!-- 20230721 전문가 리스트 수정 -->
+                                                    <tbody>
+                                                        <tr>
+                                                            <th rowspan="3">1</th>
+                                                            <th><label for="Partner">소속</label></th>
+                                                            <td>
+                                                                <input type="text" id="Partner" class="w100p" value="삼일회계법인 Tax 본부">
+                                                            </td>
+                                                        </tr>   
+                                                        <tr>
+                                                            <th class="line"><label for="addr">이름/직급 </label></th>
+                                                            <td>
+                                                                <div class="flex selectinput-mix">
+                                                                    <input type="text" id="addr" class=""value="김홍현">
+                                                                    <select name="" id="" class="select" title="직급">
+                                                                        <option value="">Partner</option>
+                                                                        <option value="">Director</option>
+                                                                        <option value="">Senior manager</option>
+                                                                        <option value="">Manager</option>
+                                                                        <option value="">직접입력</option>
+                                                                    </select>
+                                                                    <input type="text" id="" class="write-area" value="" disabled="disabled"><!-- 직접입력 선택시 활성화 -->
+                                                                </div>
+                                                            </td>
+                                                        </tr>   
+                                                        <tr>
+                                                            <th class="line"><label for="telnum">홈페이지</label></th>
+                                                            <td>
+                                                                <input type="text" id="telnum" class="w100p" value="https://www.pwc.com/kr/ko/tax.html">
+                                                            </td>
+                                                        </tr>                                                  
+                                                    </tbody>                                              
+                                                </table>
+                                            </div>  
+                                            <!-- //table-wrap --> 
+                                            <div class="btn-add-wrap">
+                                                <button type="button" class="btn-add"><span>행 추가</span></button>
+                                            </div>                                         
+                                        </section>        
+                                    </div>
+                                    <!-- //삼일 제공 서비스 -->
+                                </div>
+                                <!-- //cont-wrap -->
+                            </div>
+                            <!-- //tab-wrap -->
+                        </section>
+                    </div>
+                </div>
+            </section>
+            <!-- //content -->
+        </div>
+        <!-- //container -->
+    </div>
+    <!-- //wrap -->
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{backoffice/layout/defaultLayout}">
+
+<th:block layout:fragment="script">
+	<script type="text/javascript">
+		/* 페이지 공통 모듈 */
+		let page = (function () {
+			let moduleNm = "page";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setData();
+			};
+
+			let getData = function (_callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+			};
+
+			let setData = function () {
+				console.log(`[MODULE] ${moduleNm} -> setData`);
+			};
+
+			return {
+				init
+			};
+		})();
+
+		/* 데이터 리스트 모듈 */
+		let list = (function () {
+			let moduleNm = "list";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let getData = function () {
+				console.log(`[MODULE] ${moduleNm} -> getData`);
+
+				var formData, param = {};
+				formData = _formLib.getFormData("searchListFrm");
+				param = {
+					"url": "/sems/custom/selectMemberList"
+					, "type": "post"
+					, "data": formData
+					, "async": false
+					, "callback": function (fragment) {
+
+						$("#mbrListDiv").replaceWith(fragment);
+						$("#mbrTotalCountView").text("총 " + _formLib.addComma($("#mbrTotalCount").val()) + "건");
+
+						//페이징처리
+						var currPage = $('#mbrPageNum').val();//현재 선택된 페이지
+						$('#mbrPageNum').empty();//페이지 option 삭제
+						for (var count = 1; count <= $("#mbrTotalPage").val(); count++) {
+							var selTxt = "";
+							if (count == currPage) {
+								selTxt = "selected='selected'";//현재 페이지 선택
+							}
+
+							var option = $("<option value='" + count + "' " + selTxt + ">" + count + "/" + $("#mbrTotalPage").val() + "</option>");
+							$('#mbrPageNum').append(option);
+						}
+					}
+				};
+				_comLib.callAjax(param);
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				// 가입일/탈퇴일
+				$("#searchListFrm input[name=period]").on("change", function () {
+					if ($(this).is(":checked")) {
+						$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").prop("disabled", ($(this).val() !== "D"));
+						// if ($(this).val() !== "D") {
+							_comLib.setDatePicker("schStrtDate", "schEndDate", "yy.mm.dd");
+							_comLib.setDatePicker("schEndDate", null, "yy.mm.dd");
+
+							var stDay = _comLib.preDay(7);
+							if ($(this).val() === "1") {
+								stDay = _comLib.preMonth(1);
+							}
+							if ($(this).val() === "3") {
+								stDay = _comLib.preMonth(3);
+							}
+							if ($(this).val() === "6") {
+								stDay = _comLib.preMonth(6);
+							}
+
+							$("#searchListFrm INPUT[name=schStrtDate]").val(stDay);
+							$("#searchListFrm INPUT[name=schEndDate]").val(_comLib.toDay());
+						// }
+					}
+				}).trigger('change');
+
+				// ESG 관심영역
+				$("#searchListFrm input[name=schIntrCd]").on("change", function () {
+					if ($(this).is(":checked")) {
+						if ($(this).val() === 'ALL') {
+							$("#searchListFrm input[name=schIntrCd]:not([value=ALL])").prop("checked", false);
+						} else {
+							$("#searchListFrm input[name=schIntrCd][value=ALL]").prop("checked", false);
+						}
+					}
+				}).trigger('change');
+
+				// 조회버튼
+				$("#searchListFrm BUTTON[name=doSearch]").on("click", function () {
+					// 파라메터로 넘어온 조건 값 적용
+					var params = new URLSearchParams(window.location.search);
+					var initTodayJoin = params.get('initTodayJoin');
+					if (initTodayJoin === 'Y') {
+						// 가입일 조건을 오늘 날짜로 설정
+						$("#searchListFrm SELECT[name=schJoinType]").val('J');
+						$("#searchListFrm INPUT[name=period][value=D]").prop('checked', true);
+						$("#searchListFrm INPUT[name=schStrtDate], #searchListFrm INPUT[name=schEndDate]").val(_comLib.toDay());
+					}
+
+					$("#mbrPageNum").val('1');
+					getData();
+				}).trigger("click");
+
+				// 초기화버튼
+				$("#searchListFrm BUTTON[name=doInit]").on("click", function () {
+					$("#searchListFrm").resetForm();
+				});
+
+				// 데이터 페이징갯수
+				$("#mbrPageSize").on("change", function () {
+					$("#mbrPageNum").val('1');
+					getData();
+				});
+
+				// 데이터 페이지
+				$("#mbrPageNum").on("change", function () {
+					getData();
+				});
+
+				// 데이터 상세보기
+				$('BODY').on('click', '#mbrListDiv TBODY TD.mbrUidTd A', function () {
+					view.openPop($(this).data('id'));
+				});
+
+				// 엑셀 다운로드
+				$("#btnExcelDown").on('click', function () {
+					if (!confirm("다운로드 하시겠습니까?")) {
+						return;
+					}
+
+					var data = "";
+					var formObj = $('<form></form>');
+					var formData = _formLib.getFormData("searchListFrm");
+					formObj.attr('method', 'post');
+					formObj.attr("action", "/sems/custom/selectMemberListExcelDown");
+					formObj.append($('<input/>', {type: 'hidden', name: 'schJoinType', value: formData.schJoinType}));//검색조건 : 가입일/탈퇴일 구분
+					formObj.append($('<input/>', {type: 'hidden', name: 'schStrtDate', value: formData.schStrtDate}));//검색조건 : 가입일/탈퇴일
+					formObj.append($('<input/>', {type: 'hidden', name: 'schCoprNm', value: formData.schCoprNm}));//검색조건 : 소속채번
+					formObj.append($('<input/>', {type: 'hidden', name: 'schMbrStCd', value: formData.schMbrStCd}));//검색조건 : 회원상태코드
+					formObj.append($('<input/>', {type: 'hidden', name: 'schMrkTAgreYn', value: formData.schMrkTAgreYn}));//검색조건 : 마케팅동의여부
+					formObj.append($('<input/>', {type: 'hidden', name: 'schNsltAgreYn', value: formData.schNsltAgreYn}));//검색조건 : 뉴스레터동의여부
+					formObj.append($('<input/>', {type: 'hidden', name: 'schIntrCd', value: formData.schIntrCd}));//검색조건 : ESG 관심영역
+					formObj.append($('<input/>', {type: 'hidden', name: 'schType', value: formData.schType}));//검색조건 : 아이디, 회원명, 회원번호
+					formObj.append($('<input/>', {type: 'hidden', name: 'schText', value: formData.schText}));//검색조건 : 검색어
+					formObj.appendTo('body');
+					formObj.submit();
+				});
+			};
+
+			return {
+				init
+				, getData
+			};
+		})();
+
+		/* 데이터 상세보기 모듈 */
+		let view = (function () {
+			let moduleNm = "view";
+
+			let init = function () {
+				console.log(`[MODULE] ${moduleNm} -> init`);
+
+				setEvent();
+			};
+
+			let openPop = function (_mbrUid) {
+				console.log(`[MODULE] ${moduleNm} -> openPop(${_mbrUid})`);
+
+				setData(_mbrUid, function () {
+					$("#memberViewPop").addClass("show");
+				})
+			};
+
+			let setEvent = function () {
+				console.log(`[MODULE] ${moduleNm} -> setEvent`);
+
+				$('#memberViewPop BUTTON[name=doChgWriteMode]').on('click', function() {
+					$('#memberViewPop TEXTAREA[name=memo]').prop('readonly', !$('#memberViewPop TEXTAREA[name=memo]').prop('readonly')).focus();
+				});
+				$('#memberViewPop BUTTON[name=doSave]').on('click', function() {
+					var content = $.trim($('#memberViewPop TEXTAREA[name=memo]').val());
+
+					// if (!content) {
+					// 	alert('메모 내용을 입력해 주세요.');
+					// 	$('#memberViewPop TEXTAREA[name=memo]').focus();
+						// return;
+					// }
+
+					saveData();
+				});
+
+				$("#memberViewPop SELECT[name=selfCheckHst]").on('change', function() {
+					$("#memberViewPop INPUT[name=selfCheckHstIndustry]").val($(this).val());
+				});
+			};
+
+			let setData = function (_mbrUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> setData(${_mbrUid})`);
+
+				$("#mbrForm").resetForm();
+
+				getData(_mbrUid, function (data) {
+					var info = data.item;
+
+					$("#memberViewPop INPUT[name=mbrUid]").val(info.mbrUid);
+					$("#memberViewPop INPUT[name=mbrUno]").val(info.mbrUno);
+					$("#memberViewPop INPUT[name=mbrId]").val(info.mbrId);
+					$("#memberViewPop INPUT[name=mbrGbNm]").val(info.mbrGbNm);
+					$("#memberViewPop INPUT[name=mbrNm]").val(info.mbrNm);
+					$("#memberViewPop INPUT[name=coprNm]").val(info.coprNm);
+					$("#memberViewPop INPUT[name=cphonNo]").val(info.cphonNo);
+					$("#memberViewPop INPUT[name=deptNm]").val(info.deptNm);
+					$("#memberViewPop INPUT[name=posNm]").val(info.posNm);
+					$("#memberViewPop INPUT[name=compMail]").val(info.compMail);
+					$("#memberViewPop INPUT[name=coprPhonNo]").val(info.coprPhonNo);
+					// ESG 관심영역
+					if (info.intrCdArry != null && info.intrCdArry.length > 0) {
+						$.each(info.intrCdArry.split(","), function (index, element) {
+							$("input[name='intrCdLst'][value=" + element + "]").prop("checked", true);
+						});
+					}
+
+					$("#memberViewPop SELECT[name=selfCheckHst]").empty();
+					if (info.selfCheckHstList != null && info.selfCheckHstList.length > 0) {
+						info.selfCheckHstList.forEach(function(item, idx) {
+							$("#memberViewPop SELECT[name=selfCheckHst]").append(`<option value="${item.indstyLclsCdNm}">${item.fstInsDt}</option>`);
+						});
+						$("#memberViewPop SELECT[name=selfCheckHst]").trigger('change');
+					}
+
+					$("#memberViewPop SELECT[name=csrdHst]").empty();
+					if (info.csrdHstList != null && info.csrdHstList.length > 0) {
+						info.csrdHstList.forEach(function(item, idx) {
+							$("#memberViewPop SELECT[name=csrdHst]").append(`<option value="">${item.fstInsDt}</option>`);
+						});
+					}
+
+					$("#memberViewPop INPUT[name=askCnt]").val('0 / 0');
+					if (info.askCntList != null && info.askCntList.length > 0) {
+						var totCnt = 0;
+						var compCnt = 0;
+						info.askCntList.forEach(function(item, idx) {
+							totCnt += parseInt(item.askStCdCnt);
+							if (item.askStCd === '50') {
+								compCnt += parseInt(item.askStCdCnt);
+							}
+						});
+						$("#memberViewPop INPUT[name=askCnt]").val(`${compCnt} / ${totCnt}`);
+					}
+
+
+					$("#memberViewPop INPUT[name=mrktAgreYn]").val(info.mrktAgreYn);
+					$("#memberViewPop INPUT[name=nsltAgreYn]").val(info.nsltAgreYn);
+					$("#memberViewPop INPUT[name=mbrStNm]").val(info.mbrStNm);
+					$("#memberViewPop INPUT[name=joinDt]").val(info.joinDt);
+					$("#memberViewPop INPUT[name=lstUpdDt]").val(info.lstUpdDt);
+					$("#memberViewPop INPUT[name=whdwlAprvDt]").val(info.whdwlAprvDt);
+					$("#memberViewPop TEXTAREA[name=memo]").val(info.memo);
+
+					_callback();
+				});
+			};
+
+			let getData = function (_mbrUid, _callback) {
+				console.log(`[MODULE] ${moduleNm} -> getData(${_mbrUid})`);
+
+				var param = {
+					"url": "/sems/custom/selectMemberView"
+					, "type": "post"
+					, "data": {"mbrUid": _mbrUid}
+					, "async": false
+					, "callback": function (data) {
+						_callback(data);
+					}
+				};
+
+				_comLib.callAjax(param);
+			};
+
+			let saveData = function() {
+				console.log(`[MODULE] ${moduleNm} -> saveData`);
+
+				var formData = new FormData($("#mbrForm")[0]);
+				$.ajax({
+					type:'POST'
+					, enctype:'multipart/form-data'
+					, url : "/sems/custom/inserMbrMemo"
+					, data : formData
+					, dataType: 'json'
+					, processData:false
+					, contentType:false
+					, cache:false
+					, success:function(res){
+						alert("저장에 성공하였습니다.");
+						$('#memberViewPop TEXTAREA[name=memo]').prop('readonly', true);
+					}
+					,error:function(res){
+						alert("오류 발생.\n관리자에게 문의해주세요.");
+					}
+				});
+			};
+
+			return {
+				init
+				, openPop
+			};
+		})();
+
+		$(function () {
+			page.init();
+			list.init();
+			view.init();
+		});
+	</script>
+</th:block>
+
+<div layout:fragment="content">
+	<th:block layout:fragment="script_sub"></th:block>
+	<form id="searchListFrm">
+		<!-- content -->
+		<section id="cont-section" class="content">
+			<div class="location">
+				<h3>회원 조회</h3>
+				<ul class="breadcrumb">
+					<li>고객 관리</li>
+					<li>회원 관리</li>
+					<li>회원 조회</li>
+				</ul>
+			</div>
+			<!-- //location -->
+			<div class="search-wrap">
+				<fieldset>
+					<legend>상세 검색</legend>
+					<div class="table-wrap">
+						<table class="inner-input">
+							<caption>회원 조회</caption>
+							<colgroup>
+								<col style="width: 15%;">
+								<col style="width: 35%;">
+								<col style="width: 10%;">
+								<col style="width: 15%;">
+								<col style="width: 10%;">
+								<col style="width: 15%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>가입일/탈퇴일</th>
+								<td colspan="5">
+									<div class="period-wrap flex">
+										<select id="schJoinType" name="schJoinType" class="select" title="가입일 탈퇴일 선택">
+											<option th:value="J">가입일</option>
+											<option th:value="W">탈퇴일</option>
+										</select>
+										<ul class="flex ck-list">
+											<li>
+												<input type="radio" name="period" id="month1" value="1">
+												<label for="month1">1개월</label>
+											</li>
+											<li>
+												<input type="radio" name="period" id="month3" value="3">
+												<label for="month3">3개월</label>
+											</li>
+											<li>
+												<input type="radio" name="period" id="month6" value="6">
+												<label for="month6">6개월</label>
+											</li>
+											<li class="date-select">
+												<input type="radio" name="period" id="month" value="D" checked>
+												<label for="month">직접 선택</label>
+												<div class="datepicker-wrap">
+													<input type="text" name="schStrtDate" id="schStrtDate" class="datepicker">
+													<span class="separator"> - </span>
+													<input type="text" name="schEndDate" id="schEndDate" class="datepicker">
+												</div>
+											</li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>회원 구분</th>
+								<td>
+									<div class="flex">
+										<ul id="mbrGbCdList" class="flex ck-list flex1">
+											<li>
+												<input type="radio" id="schMbrGbCd01" name="schMbrGbCd" value="ALL" checked="checked">
+												<label for="schMbrGbCd01">전체</label>
+											</li>
+											<li>
+												<input type="radio" id="schMbrGbCd02" name="schMbrGbCd" value="10">
+												<label for="schMbrGbCd02">그룹A</label>
+											</li>
+											<li>
+												<input type="radio" id="schMbrGbCd03" name="schMbrGbCd" value="20">
+												<label for="schMbrGbCd03">그룹B</label>
+											</li>
+											<li>
+												<input type="radio" id="schMbrGbCd04" name="schMbrGbCd" value="30">
+												<label for="schMbrGbCd04">그룹C</label>
+											</li>
+											<li>
+												<input type="radio" id="schMbrGbCd05" name="schMbrGbCd" value="40">
+												<label for="schMbrGbCd05">그룹D</label>
+											</li>
+										</ul>
+										<div class="tooltip-wrap">
+											<button type="button" class="tooltip"><span class="blind">도움말</span></button>
+											<div class="tooltip-cont">
+												<strong>[도움말]</strong>
+												<ul class="list">
+													<li>그룹 A: 운영관리자</li>
+													<li>그룹 B: 삼일 ESG 플랫폼</li>
+													<li>그룹 C: PwC 사용자</li>
+													<li>그룹 D: 외부 가입자</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</td>
+								<th><label for="schCoprNm" class="label">소속</label></th>
+								<td colspan="3">
+									<div class="inputbtn-wrap">
+										<input type="text" id="schCoprNm" name="schCoprNm" placeholder="기관, 기업 입력">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>상태</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schMbrStCd" value="ALL" checked="checked">
+											<label for="stateall">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schMbrStCd" value="10">
+											<label for="state1">가입</label>
+										</li>
+										<li>
+											<input type="radio" name="schMbrStCd" value="30">
+											<label for="state3">탈퇴</label>
+										</li>
+									</ul>
+								</td>
+								<th>개인정보 제3자 제공 동의</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schMrkTAgreYn" value="ALL" checked="checked">
+											<label for="agreeall">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schMrkTAgreYn" value="Y">
+											<label for="agree1">동의</label>
+										</li>
+										<li>
+											<input type="radio" name="schMrkTAgreYn" value="N">
+											<label for="agree2">미동의</label>
+										</li>
+									</ul>
+								</td>
+								<th>뉴스레터</th>
+								<td>
+									<ul class="flex ck-list">
+										<li>
+											<input type="radio" name="schNsltAgreYn" value="ALL" checked="checked">
+											<label for="newsall">전체</label>
+										</li>
+										<li>
+											<input type="radio" name="schNsltAgreYn" value="Y">
+											<label for="news1">신청</label>
+										</li>
+										<li>
+											<input type="radio" name="schNsltAgreYn" value="N">
+											<label for="news2">미신청</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>ESG 관심영역</th>
+								<td colspan="5">
+									<!-- 회원상태코드 목록 -->
+									<ul id="mbrStCdList" class="flex ck-list">
+										<li>
+											<input type='checkbox' id="schIntrCd01" name='schIntrCd' value='ALL' checked>
+											<label for='schIntrCd01'>전체</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd02" name='schIntrCd' value='10'>
+											<label for='schIntrCd02'>ESG 전략·계획</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd03" name='schIntrCd' value='20'>
+											<label for='schIntrCd03'>ESG 공시·평가</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd04" name='schIntrCd' value='30'>
+											<label for='schIntrCd04'>ESG 인증·검증</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd05" name='schIntrCd' value='40'>
+											<label for='schIntrCd05'>ESG 실행 - 환경</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd06" name='schIntrCd' value='50'>
+											<label for='schIntrCd06'>ESG 실행 - 사회</label>
+										</li>
+										<li>
+											<input type='checkbox' id="schIntrCd07" name='schIntrCd' value='60'>
+											<label for='schIntrCd07'>ESG 실행 - 거버넌스</label>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>아이디, 회원명, 회원번호</th>
+								<td colspan="5">
+									<div class="selectinput-wrap">
+										<select name="schType" class="select" title="조회기준">
+											<option value="ID">아이디</option>
+											<option value="NAME">회원명</option>
+											<option value="NUM">회원번호</option>
+										</select>
+										<input type="text" name="schText" placeholder="아이디, 회원명, 회원번호 검색" class="w200" title="조회기준 입력">
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-wrap -->
+					<div class="btn-wrap">
+						<button id="btnSearch" type="button" name="doSearch" class="btn-primary">조회</button>
+						<button id="btnReset" type="button" name="doInit" class="btn-sub">초기화</button>
+					</div>
+					<!-- //btn-wrap -->
+				</fieldset>
+			</div>
+			<!-- //search-wrap -->
+			<div class="result-wrap">
+				<div class="total">
+					<span class="lable">회원 리스트</span> - <strong id="mbrTotalCountView">총 123건</strong>
+				</div>
+				<!-- total -->
+				<div class="sorting-wrap">
+					<select id="mbrPageSize" name="mbrPageSize" class="select" title="데이터 건수">
+						<option value="10" selected="selected">10개</option>
+						<option value="50">50개</option>
+						<option value="100">100개</option>
+					</select>
+					<select id="mbrPageNum" name="mbrPageNum" class="select" title="페이지 이동선택"> </select>
+					<div class="btn-ctl">
+						<button type="button" id="btnExcelDown" name="doExcelDown" class="btn-download">다운로드</button>
+					</div>
+				</div>
+				<!-- //sorting-wrap -->
+				<div id="mbrListDiv" class="table-wrap xscroll-wrap">
+					<!-- 페이징 정보 -->
+					<th:block th:unless="${#lists.isEmpty(list)}">
+						<input type="hidden" id="mbrTotalCount" th:value="${PageInfo.totalCount}"/>
+						<input type="hidden" id="mbrPageNumber" th:value="${PageInfo.pageNumber}"/>
+						<input type="hidden" id="mbrTotalPage" th:value="${PageInfo.totalPage}"/>
+					</th:block>
+					<table class="w1400">
+						<caption>회원 리스트</caption>
+						<colgroup>
+							<col style="width: 4%;">
+							<col style="width: 6%;">
+							<col style="width: 8%;">
+							<col style="width: 5%;">
+							<col style="width: 5%;">
+							<col style="width: 8%;">
+							<col style="width: 6%;">
+							<col style="width: 5%;">
+							<col style="width: 16%;">
+							<col style="width: 7%;">
+							<col style="width: *;">
+							<col style="width: 5%;">
+							<col style="width: 5%;">
+							<col style="width: 5%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>NO</th>
+							<th>회원 번호</th>
+							<th>아이디</th>
+							<th>회원명</th>
+							<th>회원 구분</th>
+							<th>소속</th>
+							<th>부서명</th>
+							<th>직급</th>
+							<th>소속 이메일</th>
+							<th>소속 전화</th>
+							<th>ESG 관심영역</th>
+							<th>개인정보 제3자 제공 동의</th>
+							<th>뉴스레터</th>
+							<th>상태</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="item, stat : ${list}">
+							<td th:text="${stat.count}">1</td>
+							<td class="mbrUidTd"><a th:text="${item.mbrUno}" th:attr="data-id=${item.mbrUid}" class="member">23A000001</a></td>
+							<td th:text="${item.mbrId}">pwcesg</td>
+							<td th:text="${item.mbrNm}">김삼일</td>
+							<td th:text="${item.mbrGbNm}">그룹 A</td>
+							<td th:text="${item.coprNm}">삼일PwC</td>
+							<td th:text="${item.deptNm}">ESG 플랫폼</td>
+							<td th:text="${item.posNm}">A</td>
+							<td th:text="${item.compMail}">samil.kim@pwc.com</td>
+							<td th:text="${item.coprPhonNo}">02-709-1234</td>
+							<td th:text="${item.intrCdNmArry}">ESG 실행 – 환경, ESG 실행 – 거버넌스</td>
+							<td th:text="${item.mrktAgreYn}">Y</td>
+							<td th:text="${item.nsltAgreYn}">Y</td>
+							<td th:text="${item.mbrStNm}">가입</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(list)}">
+							<td style="text-align: center;" colspan="14">데이터가 존재하지 않습니다.</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //table-wrap -->
+			</div>
+			<!-- //result-list -->
+		</section>
+		<!-- //content -->
+	</form>
+
+	<!-- 회원상세 popup fragment-->
+	<th:block th:replace="/backoffice/custom/member/memberViewPop :: memberViewPop"></th:block>
+</div>
+</html>

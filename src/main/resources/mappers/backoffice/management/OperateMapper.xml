@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pwc.pwcesg.backoffice.management.mapper.OperateMapper">
+
+	<!-- 관리자활동로그 목록 조회 -->
+	<select id="selectOperateList" parameterType="camelcasemap" resultType="camelcasemap">
+		SELECT
+			SAL.SEQ
+			, FORMAT(DATEADD(HOUR, 9, SAL.FST_INS_DT), 'yyyy.MM.dd HH:mm') AS ACCS_DT
+			, SAL.DEVICE_IP
+			, SAL.DEVICE_TP_CD
+			, ESG_DB.FNCOMMCDNM('DEVICE_TP_CD', SAL.DEVICE_TP_CD) AS DEVICE_TP_CD_NM
+			, SSAL.MBR_ID
+			, (CASE
+				   WHEN SMSI.MNU_LV_2 IS NULL THEN SMSI.MNU_LV_1
+				   WHEN SMSI.MNU_LV_2 IS NOT NULL AND SMSI.MNU_LV_3 IS NULL THEN CONCAT(SMSI.MNU_LV_1, '/', SMSI.MNU_LV_2)
+				   WHEN SMSI.MNU_LV_3 IS NOT NULL THEN CONCAT(SMSI.MNU_LV_1, '/', SMSI.MNU_LV_2, '/', SMSI.MNU_LV_3)
+			   END) AS MNU_LV
+			, SMSI.CRUD_TYPE
+		FROM
+			ESG_DB.ST_MNU_SCR_INFO SMSI
+			JOIN ESG_DB.ST_ACCS_LOG SAL
+				ON SAL.ACCS_URI = SMSI.ACCS_URI
+			JOIN ESG_DB.ST_SESN_ACCS_LOG SSAL
+				ON SSAL.SESN_ID = SAL.SESN_ID
+		<where>
+			<!-- 검색조건 : 기간 -->
+			<choose>
+				<when test="accsSttDte != null and !accsSttDte.equals('') and (accsSttHh == null or accsSttHh.equals('') or accsSttMm == null or accsSttMm.equals(''))">
+					AND FORMAT(DATEADD(HOUR, 9, SAL.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[>=]]> #{accsSttDte}
+				</when>
+				<when test="accsSttDte != null and !accsSttDte.equals('') and (accsSttHh != null and !accsSttHh.equals('') and accsSttMm != null and !accsSttMm.equals(''))">
+					AND FORMAT(DATEADD(HOUR, 9, SAL.FST_INS_DT), 'yyyy.MM.dd HH:mm') <![CDATA[>=]]> CONCAT(#{accsSttDte}, ' ', #{accsSttHh}, ':', #{accsSttMm})
+				</when>
+			</choose>
+			<choose>
+				<when test="accsEndDte != null and !accsEndDte.equals('') and (accsEndHh == null or accsEndHh.equals('') or accsEndMm == null or accsEndMm.equals(''))">
+					AND FORMAT(DATEADD(HOUR, 9, SAL.FST_INS_DT), 'yyyy.MM.dd') <![CDATA[<=]]> #{accsEndDte}
+				</when>
+				<when test="accsEndDte != null and !accsEndDte.equals('') and (accsEndHh != null and !accsEndHh.equals('') and accsEndMm != null and !accsEndMm.equals(''))">
+					AND FORMAT(DATEADD(HOUR, 9, SAL.FST_INS_DT), 'yyyy.MM.dd HH:mm') <![CDATA[<=]]> CONCAT(#{accsEndDte}, ' ', #{accsEndHh}, ':', #{accsEndMm})
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 회원ID -->
+			<if test="mbrId != null and !mbrId.equals('')">
+				AND UPPER(SSAL.MBR_ID) = UPPER(#{mbrId})
+			</if>
+
+			<!-- 검색조건 : 화면 -->
+			<choose>
+				<when test="mnuLv3 != null and !mnuLv3.equals('')">
+					AND SMSI.MNU_SRC_UID = #{mnuLv3}
+				</when>
+				<when test="mnuLv2 != null and !mnuLv2.equals('')">
+					AND SMSI.MNU_SRC_UID LIKE CONCAT(#{mnuLv2}, '%')
+				</when>
+				<when test="mnuLv1 != null and !mnuLv1.equals('')">
+					AND SMSI.MNU_SRC_UID LIKE CONCAT(#{mnuLv1}, '%')
+				</when>
+			</choose>
+
+			<!-- 검색조건 : 접속방식 -->
+			<if test="deviceTpCd != null and !deviceTpCd.equals('ALL')">
+				AND SAL.DEVICE_TP_CD = #{deviceTpCd}
+			</if>
+		</where>
+		ORDER BY
+			SAL.SEQ DESC
+	</select>
+
+	<!-- 관리자화면 목록 조회 -->
+	<select id="selectMnuScrList" resultType="camelcasemap">
+		SELECT
+			SMSI.MNU_SRC_UID
+			,SMSI.MNU_LV_1
+			,SMSI.MNU_LV_2
+			,SMSI.MNU_LV_3
+		FROM
+			ESG_DB.ST_MNU_SCR_INFO SMSI
+		ORDER BY
+			SMSI.MNU_SRC_UID
+	</select>
+	
+</mapper>
