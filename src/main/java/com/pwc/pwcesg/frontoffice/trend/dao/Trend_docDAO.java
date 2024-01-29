@@ -857,7 +857,6 @@ public class Trend_docDAO {
 		//SITE@keyword
 		sbLog.append(site + "@" + paramVO.getKwd());
 		
-		
 		searchVO.setUrl(url);
 		searchVO.setCharset(charset);
 		searchVO.setFields(docField);
@@ -875,8 +874,9 @@ public class Trend_docDAO {
 			log.info(restUrl); 
 			RestResultVO restVO = new RestResultVO();
 			boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출	
-			if(!success)
-				return null;
+			
+				//if(!success)
+				//return null;
 			
 			return restVO;
 			}else {
@@ -884,8 +884,8 @@ public class Trend_docDAO {
 			log.info(restUrl);
 			RestResultVO restVO = new RestResultVO();
 			boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출
-			if(!success)
-				return null;
+		     	//if(!success)
+				//return null;
 			
 			return restVO;
 			}		
@@ -1003,8 +1003,8 @@ public class Trend_docDAO {
 				log.info(restUrl);
 				RestResultVO restVO = new RestResultVO();
 				boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출
-				if(!success)
-					return null;
+				//if(!success)
+					//return null;
 				
 				return restVO;
 				}	

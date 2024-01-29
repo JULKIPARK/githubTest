@@ -56,7 +56,6 @@ public class MediaDAO {
 	/** REST 모듈 */
 	@Resource(name="restModule")
 	private RestModule restModule;
-	
 
 	
 	/**
@@ -77,9 +76,11 @@ public class MediaDAO {
 			searchVO.setCharset(charset);	
 			searchVO.setFields(mediaField);		
 			searchVO.setFrom(mediaFrom);
-		 	if(paramVO.getKwd().isEmpty()==false) {
+		//키워드가 비어있지 않다면
+			if(paramVO.getKwd().isEmpty()==false) {
 				  searchVO.setHilightTxt(mediaHilight);
 				}else {
+		//키워드가 비어있으면			
 				  searchVO.setHilightTxt(mediaHilight2);	
 				}
 			searchVO.setQuery(URLEncoder.encode(query.toString(), charset));
@@ -603,7 +604,11 @@ public class MediaDAO {
 		searchVO.setCharset(charset);
 		searchVO.setFields(mediaField);
 		searchVO.setFrom(mediaFrom);
-		searchVO.setHilightTxt(mediaHilight2);
+		if(paramVO.getKwd().isEmpty()==false) {
+			  searchVO.setHilightTxt(mediaHilight);
+			}else {
+			  searchVO.setHilightTxt(mediaHilight2);	
+			}
 		searchVO.setQuery(URLEncoder.encode(query.toString(), charset));
 		searchVO.setLogInfo(URLEncoder.encode(sbLog.toString(), charset));
 		
@@ -651,7 +656,11 @@ public class MediaDAO {
 			searchVO.setCharset(charset);	
 			searchVO.setFields(mediaField);		
 			searchVO.setFrom(mediaFrom);
-			searchVO.setHilightTxt(mediaHilight2);	
+			if(paramVO.getKwd().isEmpty()==false) {
+				  searchVO.setHilightTxt(mediaHilight);
+				}else {
+				  searchVO.setHilightTxt(mediaHilight2);	
+				}
 			squery.append(URLEncoder.encode(query.toString(), charset) + URLEncoder.encode("cont_tp_lclsf_cd='10'", charset));
 			
 			//ESG 키워드
@@ -981,21 +990,34 @@ public class MediaDAO {
 		searchVO.setCharset(charset);
 		searchVO.setFields(mediaField);
 		searchVO.setFrom(mediaFrom);
-		searchVO.setHilightTxt(mediaHilight2);
+		if(paramVO.getKwd().isEmpty()==false) {
+			  searchVO.setHilightTxt(mediaHilight);
+			}else {
+			  searchVO.setHilightTxt(mediaHilight2);	
+			}
 		searchVO.setQuery(URLEncoder.encode(query.toString(), charset));
 		searchVO.setLogInfo(URLEncoder.encode(sbLog.toString(), charset));
 		
 		//URL 생성
-		String restUrl = dcUtil.getRestURL2(paramVO, searchVO); //get방식 URL생성
-		log.info(restUrl);
+		if(paramVO.getKwd().isEmpty()==false) {
+			  String restUrl = dcUtil.getRestURL(paramVO, searchVO);
+			log.info(restUrl); 
+			RestResultVO restVO = new RestResultVO();
+			boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출	
+			if(!success)
+				return null;
 			
-		RestResultVO restVO = new RestResultVO();
-		boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출	
-		
-		if(!success)
-			return null;
-		
-		return restVO;
+			return restVO;
+			}else {
+			  String restUrl = dcUtil.getRestURL2(paramVO, searchVO);
+			log.info(restUrl);
+			RestResultVO restVO = new RestResultVO();
+			boolean success = restModule.restSearch(restUrl, restVO, searchVO.getFields());  //get방식 호출
+			if(!success)
+				return null;
+			
+			return restVO;
+			}	
 	}
 	
 	
